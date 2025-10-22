@@ -11,7 +11,7 @@
 
       <!-- Left mural -->
       <div class="hidden md:flex w-1/2 bg-gradient-to-br from-orange-400 to-blue-600 items-center justify-center p-10">
-        <img src="../source/img/download__1_-removebg-preview.png"
+        <img src="{{ asset('client/img/download__1_-removebg-preview.png') }}"
              alt="Register Illustration"
              class="w-80 drop-shadow-xl rounded-xl">
       </div>

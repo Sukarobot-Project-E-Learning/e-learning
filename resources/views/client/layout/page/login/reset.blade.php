@@ -12,7 +12,7 @@
 
       <!-- Ilustrasi: MUNCUL di mobile & di desktop -->
       <div class="flex w-full md:w-1/2 bg-gradient-to-br from-orange-400 to-blue-600 items-center justify-center p-8 md:p-10">
-        <img src="../source/img/download__1_-removebg-preview.png"
+        <img src="{{ asset('client/img/download__1_-removebg-preview.png') }}"
              alt="Illustration"
              class="w-48 sm:w-64 md:w-80 drop-shadow-xl rounded-xl">
       </div>

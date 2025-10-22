@@ -92,7 +92,7 @@
 
     <!-- Sidebar: Harga & Benefit -->
     <div class="rounded-3xl shadow-lg bg-white p-6 flex flex-col items-center text-center hover:shadow-2xl transition fade-up">
-      <img src="../source/img/Kita ke Sana - Hindia.jpeg" alt="Event" class="rounded-xl mb-6 shadow-lg poster-hover">
+      <img src="{{ asset('client/img/Kita ke Sana - Hindia.jpeg') }}" alt="Event" class="rounded-xl mb-6 shadow-lg poster-hover">
       <h4 class="text-3xl font-semibold text-gray-800 mb-2">Rp.390.000</h4>
 
       <button onclick="window.location.href='{{ url('/pembayaran') }}'"

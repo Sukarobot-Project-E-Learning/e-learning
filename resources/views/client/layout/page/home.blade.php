@@ -805,7 +805,7 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
      <!-- Foto -->
      <div class="mt-5 flex justify-center md:justify-start">
        <img
-         src="../source/img/eventilustrator.jpeg"
+         src="{{ asset('client/img/eventilustrator.jpeg') }}"
          alt="Ilustrasi Tanya"
          class="w-56 sm:w-64 md:w-72 rounded-xl select-none"
        />
