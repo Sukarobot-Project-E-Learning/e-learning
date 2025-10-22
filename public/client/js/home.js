@@ -58,21 +58,7 @@ AOS.init({
 });
 
 // === Popup otomatis saat halaman dimuat ===
-window.addEventListener("load", () => {
-  const popup = document.getElementById("popup");
-  const closePopup = document.getElementById("closePopup");
-  const body = document.body;
-
-  if (popup && closePopup) {
-    popup.classList.remove("hidden");
-    body.classList.add("no-scroll");
-
-    closePopup.addEventListener("click", () => {
-      popup.classList.add("hidden");
-      body.classList.remove("no-scroll");
-    });
-  }
-});
+// (Kode popup dipindahkan ke bawah untuk menghindari duplikasi)
 
 // === SWIPER EVENT (khusus tombol navigasi prev/next custom) ===
 const eventSwiper = new Swiper(".mySwiper", {
@@ -136,32 +122,46 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// === Popup otomatis dengan handler close ===
 window.addEventListener("load", () => {
-    const popup = document.getElementById("popup");
-    const closePopup = document.getElementById("closePopup");
-    const body = document.body;
+  const popup = document.getElementById("popup");
+  const closePopup = document.getElementById("closePopup");
+  const body = document.body;
 
-    if (popup && closePopup) {
-      // Tampilkan popup otomatis
+  if (popup && closePopup) {
+    // Tampilkan popup otomatis setelah halaman dimuat
+    setTimeout(() => {
       popup.classList.remove("hidden");
       body.classList.add("overflow-hidden");
+    }, 500); // delay 500ms agar animasi halaman selesai dulu
 
-      // Tombol X menutup popup
-      closePopup.addEventListener("click", (e) => {
-        e.stopPropagation();
-        popup.classList.add("hidden");
-        body.classList.remove("overflow-hidden");
-      });
+    // Fungsi untuk menutup popup
+    const closePopupHandler = () => {
+      popup.classList.add("hidden");
+      body.classList.remove("overflow-hidden");
+    };
 
-      // Klik di luar area popup juga menutup
-      popup.addEventListener("click", (e) => {
-        if (e.target === popup) {
-          popup.classList.add("hidden");
-          body.classList.remove("overflow-hidden");
-        }
-      });
-    }
-  });
+    // Tombol X menutup popup
+    closePopup.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closePopupHandler();
+    });
+
+    // Klik di area gelap (overlay) juga menutup popup
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) {
+        closePopupHandler();
+      }
+    });
+
+    // ESC key untuk menutup popup
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !popup.classList.contains("hidden")) {
+        closePopupHandler();
+      }
+    });
+  }
+});
 
 
   const filterBtns = document.querySelectorAll(".filter-btn");

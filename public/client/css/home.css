@@ -145,10 +145,9 @@
   }
 
   /* Nonaktifkan scroll saat popup aktif */
-  body.no-scroll {
+  body.no-scroll,
+  body.overflow-hidden {
     overflow: hidden;
-    position: fixed;
-    width: 100%;
   }
 
   /* Responsif di handphone */
