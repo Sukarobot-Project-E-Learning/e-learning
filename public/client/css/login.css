@@ -1,0 +1,29 @@
+@keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes muralMove {
+    0%, 100% {
+      transform: scale(1) translate(0,0);
+    }
+    50% {
+      transform: scale(1.05) translate(5px, -5px);
+    }
+  }
+
+  /* animasi teks */
+  .animate-fade {
+    opacity: 0;
+  }
+
+  /* animasi mural */
+  .animate-mural {
+    animation: muralMove 6s ease-in-out infinite;
+  }

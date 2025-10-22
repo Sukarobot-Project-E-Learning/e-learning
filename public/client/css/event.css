@@ -1,0 +1,25 @@
+body { background-color: #f3f4f6; }
+.fade { transition: all 0.4s ease; }
+.wave { background: linear-gradient(135deg, rgba(255,140,0,0.08), rgba(0,100,255,0.05)); }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.animate-slideup { animation: slideup 0.8s ease forwards; }
+.animate-fadein { animation: fadein 1s ease forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes slideup { 0% { opacity:0; transform:translateY(20px);} 100%{opacity:1; transform:translateY(0);} }
+@keyframes fadein { 0%{opacity:0;} 100%{opacity:1;} }
+@keyframes float { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+.shape { position:absolute; border-radius:50%; opacity:0.2; animation: float 6s ease-in-out infinite alternate; }
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+  /* Momentum swipe agar terasa lembut saat digeser di HP */
+  .scrollbar-hide {
+    -webkit-overflow-scrolling: touch;
+  }

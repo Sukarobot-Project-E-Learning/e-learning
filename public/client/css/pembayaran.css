@@ -1,0 +1,64 @@
+@keyframes popup {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-popup { animation: popup 0.4s ease-out forwards; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-spinner {
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #f97316;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+
+  .checkmark {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3; stroke: #22c55e;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #22c55e;
+    animation: scale .3s ease-in-out .9s both;
+  }
+  .checkmark__circle {
+    stroke-dasharray: 166; stroke-dashoffset: 166;
+    stroke-width: 3; stroke: #22c55e;
+    fill: none;
+    animation: stroke .6s cubic-bezier(.65,.05,.36,1) forwards;
+  }
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48; stroke-dashoffset: 48;
+    animation: stroke .3s cubic-bezier(.65,.05,.36,1) .6s forwards;
+  }
+  @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+  @keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadein { animation: fadein 0.4s ease forwards; }
+
+  /* Animasi lingkaran + centang */
+  @keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes drawCircle {
+    0% { stroke-dashoffset: 151; }
+    100% { stroke-dashoffset: 0; }
+  }
+
+  @keyframes drawCheck {
+    0% { stroke-dashoffset: 36; }
+    100% { stroke-dashoffset: 0; }
+  }
