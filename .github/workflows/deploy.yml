@@ -90,6 +90,14 @@ jobs:
         script: |
           cd /var/www/e-learning
 
+          echo "🔧 Setting proper permissions first..."
+
+          # Set proper permissions BEFORE running artisan commands
+          sudo chown -R www-data:www-data /var/www/e-learning
+          sudo chmod -R 755 /var/www/e-learning
+          sudo chmod -R 775 /var/www/e-learning/storage
+          sudo chmod -R 775 /var/www/e-learning/bootstrap/cache
+
           echo "🔧 Running Laravel optimization commands..."
 
           # Clear all caches
@@ -101,12 +109,6 @@ jobs:
           sudo -u www-data php artisan config:cache
           sudo -u www-data php artisan route:cache
           sudo -u www-data php artisan view:cache
-
-          # Set proper permissions
-          sudo chown -R www-data:www-data /var/www/e-learning
-          sudo chmod -R 755 /var/www/e-learning
-          sudo chmod -R 775 /var/www/e-learning/storage
-          sudo chmod -R 775 /var/www/e-learning/bootstrap/cache
 
           echo "✅ E-Learning optimization completed!"
 
