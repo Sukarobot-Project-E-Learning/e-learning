@@ -21,7 +21,7 @@
     <div
       class="relative bg-white rounded-2xl shadow-xl overflow-hidden
              w-[85%] max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]
-             transform transition-all duration-300 scale-100"
+             transform transition-all duration-300 scale-80"
     >
       <!-- Tombol X -->
       <button
@@ -35,7 +35,7 @@
       <img
         src="{{ asset('client/img/blog1.jpeg') }}"
         alt="Poster Event"
-        class="w-full h-auto rounded-b-2xl object-cover"
+        class="w-full h-auto rounded-b-2xl object-cover scale-80"
       />
     </div>
   </div>

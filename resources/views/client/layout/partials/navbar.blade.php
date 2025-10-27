@@ -1,4 +1,4 @@
-<header class="sticky-nav h-nav">
+<header class="sticky-nav h-16">
     <div class="nav-container">
       <!-- Logo -->
       <a href="{{ url('client/img/Sukarobot-logo.png') }}" class="nav-logo" aria-label="Sukarobot Home">
