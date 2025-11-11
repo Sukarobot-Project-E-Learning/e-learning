@@ -1,0 +1,279 @@
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f7f7;
+    color: #000;
+    line-height: 1.5;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  /* Sidebar Styles */
+  #sidebar {
+    z-index: 40;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  #sidebar.hidden {
+    transform: translateX(-100%);
+  }
+  
+  @media (max-width: 1024px) {
+    #sidebar {
+      transform: translateX(-100%);
+    }
+    #sidebar.show {
+      transform: translateX(0);
+    }
+    main {
+      margin-left: 0 !important;
+    }
+  }
+  
+  /* Search Input */
+  #kelas-search {
+    font-size: 0.875rem;
+    background-color: #fff;
+  }
+  
+  #kelas-search:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Sidebar buttons: make filter buttons look like sort buttons but orange themed */
+  #sidebar .sort-btn,
+  #sidebar .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #374151; /* gray-700 */
+    cursor: pointer;
+    transition: all 0.18s ease-in-out;
+    width: 100%;
+    text-align: left;
+  }
+
+  #sidebar .sort-btn:hover,
+  #sidebar .filter-btn:hover {
+    background: #f1f5f9; /* light */
+    color: #0b2442;
+  }
+
+  #sidebar .sort-btn.active {
+    background: #eef2ff; /* subtle blue */
+    border-color: rgba(59,130,246,0.15);
+    color: #0b2442;
+    box-shadow: 0 6px 18px rgba(14,165,233,0.06);
+  }
+
+  /* Orange theme for category active */
+  #sidebar .filter-btn.active {
+    background: #ff6f00; /* orange */
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(255,111,0,0.12);
+    border-color: rgba(255,111,0,0.15);
+  }
+
+  /* Make filter buttons pill-like within sidebar */
+  #sidebar .filter-btn { border-radius: 8px; padding: 0.5rem 1rem; }
+
+  /* Smaller icon sizes inside sidebar buttons */
+  #sidebar .sort-btn svg, #sidebar .filter-btn svg { width: 16px; height: 16px; }
+
+  nav ul li:hover {
+    color: #FF6F00; /* orange */
+  }
+  nav ul li:last-child a.button-masuk {
+    background: #2e5b9a; /* navy blue */
+    color: white;
+    padding: 0.45rem 1.25rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: background 0.3s;
+    display: inline-block;
+  }
+  nav ul li:last-child a.button-masuk:hover {
+    background: #2e5b9a; /* lebih gelap navy */
+  }
+
+  /* Filter Buttons */
+  .filters {
+    margin: 1.5rem 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-btn {
+    padding: 0.4rem 1.3rem;
+    border: 2px solid #2e5b9a; /* navy blue */
+    border-radius: 30px;
+    background: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #2e5b9a;
+    outline-offset: 2px;
+    transition: all 0.3s ease;
+    user-select: none;
+    min-width: 130px;
+    text-align: center;
+  }
+  .filter-btn.active,
+  .filter-btn:hover {
+    background: #FF6F00; /* orange */
+    border-color: #FF6F00;
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
+  }
+
+  .kelas-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+    gap: 20px;
+    padding: 0 2rem 2rem 2rem;
+  }
+
+  /* Kartu Kelas */
+  .kelas-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
+    background: white;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    position: relative;
+    height: 100%;
+  }
+  .kelas-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  /* gambar kartu */
+  .kelas-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background: #eee;
+    box-shadow: inset 0 0 6px rgb(0 0 0 / 0.1);
+  }
+
+  .kelas-desc {
+    flex-grow: 1;
+    padding: 1rem 1.25rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .kelas-kategori {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    width: max-content;
+    margin-bottom: 0.4rem;
+    color: white;
+    user-select: none;
+    letter-spacing: 0.03em;
+  }
+  .kategori-webinar {
+    background-color: #0B2242; /* navy blue */
+  }
+  .kategori-seminar {
+    background-color: #FF6F00; /* orange */
+  }
+  .kategori-offline {
+    background-color: #07305a; /* gelap navy */
+  }
+  .kategori-online {
+    background-color: #1454a8; /* biru navy sedikit cerah */
+  }
+  .kategori-sertifikasi {
+    background-color: #333;
+  }
+  .kelas-judul {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: #222;
+    line-height: 1.3;
+    flex-grow: 1;
+  }
+  .kelas-detail {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 1rem;
+    flex-grow: 0;
+  }
+  .kelas-harga {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #0B2242; /* navy blue */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .kelas-harga::before {
+    content: "Rp";
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  /* Animasi Fade */
+  .kelas-card.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    transform: scale(0.95);
+  }
+  .kelas-card.fade-in {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header {
+      padding: 0.8rem 1rem;
+    }
+    nav ul {
+      gap: 1rem;
+    }
+    .filters {
+      margin: 1rem;
+    }
+    .kelas-container {
+      grid-template-columns: 1fr;
+      padding: 0 1rem 1rem 1rem;
+    }
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }

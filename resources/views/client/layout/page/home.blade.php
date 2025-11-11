@@ -1,6 +1,19 @@
 @extends('client.layout.main')
 @section('css')
-<link rel="stylesheet" href="{{ asset('client/css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/home.css') }}">
+<style>
+  /* Make the active filter button show orange bg + white text.
+     This allows JS to toggle the `active` class and change styling dynamically.
+  */
+  .filter-btn { transition: background-color .18s ease, color .18s ease; }
+  .filter-btn.active {
+    background-color: #f97316; /* tailwind bg-orange-500 */
+    color: #ffffff;
+    border-color: transparent;
+  }
+  /* Keep hover state consistent for non-active buttons */
+  .filter-btn:hover { background-color: rgba(249,115,22,0.06); }
+</style>
 @endsection
 
 @section('body')
@@ -21,35 +34,30 @@
     <div
       class="relative bg-white rounded-2xl shadow-xl overflow-hidden
              w-[85%] max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]
-             transform transition-all duration-300 scale-80"
+             transform transition-all duration-300 scale-90"
     >
       <!-- Tombol X -->
       <button
         id="closePopup"
-        class="absolute top-2 right-2 p-1.5 sm:p-2 rounded-full text-gray-700 font-bold text-lg leading-none hover:bg-gray-200"
+        class="absolute top-2 right-2 p-1.5 sm:p-2 rounded-full z-1 text-gray-700 font-bold text-lg leading-none hover:bg-gray-200"
       >
         ✕
       </button>
 
       <!-- Poster -->
       <img
-        src="{{ asset('client/img/blog1.jpeg') }}"
+        src="{{ asset('assets/elearning/client/img/blog1.jpeg') }}"
         alt="Poster Event"
-        class="w-full h-auto rounded-b-2xl object-cover scale-80"
+        class="w-full h-auto rounded-b-2xl object-cover scale-100"
       />
     </div>
   </div>
 
  <!-- Script -->
 
-
-
-
-
-
 <!-- Hero -->
 <section
- class="pt-28 pb-16 bg-gradient-to-r from-blue-50 via-white to-orange-50 relative overflow-hidden"
+ class="hero pt-28 pb-16 bg-gradient-to-r from-blue-50 via-white to-orange-50 relative overflow-hidden"
 >
  <div
    class="absolute top-8 sm:top-20 right-6 sm:right-20 w-40 sm:w-72 h-40 sm:h-72 bg-orange-200/30 rounded-full blur-3xl animate-pulse pointer-events-none"
@@ -88,14 +96,14 @@
        data-aos-delay="150"
      >
        <a
-         href="{{ url('/kelas') }}"
+         href="{{ url('/elearning/kelas') }}"
          class="px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-         >Lihat Kelas</a
+         >Lihat Program</a
        >
        <a
          href="{{ url('/event') }}"
          class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-         >Cari Event</a
+         >Daftar kompetisi</a
        >
      </div>
 
@@ -155,7 +163,7 @@
    class="flex justify-center md:justify-end"
  >
    <img
-     src="{{ asset('client/img/ilustrator.jpeg') }}"
+     src="{{ asset('assets/elearning/client/img/ilustrator.jpeg') }}"
      alt="Ilustrasi Robotik"
      class="w-full max-w-xs sm:max-w-md md:max-w-full h-auto max-h-[400px] object-contain transition-transform hover:scale-105"
    />
@@ -168,10 +176,10 @@
 <section id="event" class="py-16 bg-gradient-to-b from-white to-orange-50">
  <div class="max-w-7xl mx-auto px-6 text-center mb-10" data-aos="fade-up">
    <h2 class="text-3xl font-bold text-gray-800">
-     🎉 Jangan Kelewatan Event Menarik
+     🎉 Jangan Kelewatan Promo Menarik
    </h2>
    <p class="text-gray-600 mt-2">
-     Ikuti berbagai event robotics yang kami selenggarakan.
+     Temukan berbagai promo program yang kami selenggarakan.
    </p>
  </div>
 
@@ -184,8 +192,8 @@
        <!-- Banner 1 -->
        <div class="swiper-slide">
          <img
-         src="{{ asset('client/img/banner.jpeg') }}"
-           class="w-full h-[140px] sm:h-[160px] md:h-[180px] lg:h-[200px] xl:h-[220px] object-cover"
+         src="{{ asset('assets/elearning/client/img/banner.jpeg') }}"
+           class="w-full h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px] xl:h-[300px] object-cover"
            alt="Event 1"
          />
        </div>
@@ -193,8 +201,8 @@
        <!-- Banner 2 -->
        <div class="swiper-slide">
          <img
-          src="{{ asset('client/img/download (2).jpeg') }}"
-           class="w-full h-[140px] sm:h-[160px] md:h-[180px] lg:h-[200px] xl:h-[220px] object-cover"
+          src="{{ asset('assets/elearning/client/img/event.jpeg') }}"
+           class="w-full h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px] xl:h-[300px] object-cover"
            alt="Event 2"
          />
        </div>
@@ -202,8 +210,8 @@
        <!-- Banner 3 -->
        <div class="swiper-slide">
          <img
-           src="https://source.unsplash.com/1600x500/?robotics,technology"
-           class="w-full h-[140px] sm:h-[160px] md:h-[180px] lg:h-[200px] xl:h-[220px] object-cover"
+           src="{{ asset('assets/elearning/client/img/banner (2).jpeg') }}"
+           class="w-full h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px] xl:h-[300px] object-cover"
            alt="Event 3"
          />
        </div>
@@ -265,44 +273,44 @@
       <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
         Di <span class="font-semibold text-blue-700">Sukarobot</span>, belajar bukan sekadar teori —
         tapi petualangan seru untuk menyalakan imajinasi, menantang rasa ingin tahu,
-        dan menciptakan teknologi masa depan lewat pengalaman nyata dan mentor hebat.
+        dan menciptakan teknologi masa depan lewat pengalaman nyata dan mentor hebat
       </p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10 max-w-6xl mx-auto px-6">
       <div data-aos="zoom-in" data-aos-delay="100"
         class="flex gap-4 items-start p-5 rounded-xl bg-white shadow hover:shadow-md transition">
-        <img src="{{ asset('client/img/home4.jpeg') }}" class="w-14 sm:w-16 md:w-20 object-cover rounded" alt="Kurikulum" />
+        <img src="{{ asset('assets/elearning/client/img/home4.jpeg') }}" class="w-14 sm:w-16 md:w-20 object-cover rounded" alt="Kurikulum" />
         <p class="text-gray-700">
           <span class="font-semibold text-blue-700">Kurikulum Terkini:</span>
-          Belajar dengan materi yang selalu berkembang mengikuti teknologi robotik terbaru.
+          Belajar dengan materi yang selalu berkembang mengikuti teknologi robotik terbaru
         </p>
       </div>
 
       <div data-aos="zoom-in" data-aos-delay="200"
         class="flex gap-4 items-start p-5 rounded-xl bg-white shadow hover:shadow-md transition">
-        <img src="{{ asset('client/img/home3.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Mentor" />
+        <img src="{{ asset('assets/elearning/client/img/home3.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Mentor" />
         <p class="text-gray-700">
           <span class="font-semibold text-blue-700">Mentor Profesional:</span>
-          Dipandu langsung oleh para ahli dan praktisi industri robotik.
+          Dipandu langsung oleh para ahli dan praktisi industri robotik
         </p>
       </div>
 
       <div data-aos="zoom-in" data-aos-delay="300"
         class="flex gap-4 items-start p-5 rounded-xl bg-white shadow hover:shadow-md transition">
-        <img src="{{ asset('client/img/home5.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Komunitas" />
+        <img src="{{ asset('assets/elearning/client/img/home5.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Komunitas" />
         <p class="text-gray-700">
           <span class="font-semibold text-blue-700">Komunitas Solid:</span>
-          Tumbuh dan belajar bersama ribuan pelajar kreatif dari seluruh Indonesia.
+          Tumbuh dan belajar bersama ribuan pelajar kreatif dari seluruh Indonesia
         </p>
       </div>
 
       <div data-aos="zoom-in" data-aos-delay="400"
         class="flex gap-4 items-start p-5 rounded-xl bg-white shadow hover:shadow-md transition">
-        <img src="{{ asset('client/img/home1.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Proyek" />
+        <img src="{{ asset('assets/elearning/client/img/home1.jpeg') }}" class="w-14 sm:w-16 md:w-20" alt="Proyek" />
         <p class="text-gray-700">
           <span class="font-semibold text-blue-700">Proyek Nyata:</span>
-          Bangun robot impianmu lewat proyek langsung yang seru dan menantang.
+          Bangun robot impianmu lewat proyek langsung yang seru dan menantang
         </p>
       </div>
     </div>
@@ -311,75 +319,78 @@
 
 
 
-<section id="program" class="py-20 bg-gradient-to-b from-white to-orange-50 relative overflow-hidden">
+  <section id="program" class="py-20 bg-gradient-to-b from-white to-orange-50 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
-      <!-- Judul & Filter -->
-      <div class="text-center mb-10">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-4">Program</h2>
-        <div class="flex flex-wrap justify-center gap-3">
-          <button class="filter-btn active bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300" data-filter="all">Semua</button>
-          <button class="filter-btn bg-white text-gray-700 border border-gray-300 hover:bg-orange-100 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300" data-filter="robotik">Pelatihan</button>
-          <button class="filter-btn bg-white text-gray-700 border border-gray-300 hover:bg-orange-100 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300" data-filter="ai">Training</button>
-          <button class="filter-btn bg-white text-gray-700 border border-gray-300 hover:bg-orange-100 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300" data-filter="iot">Sertifikasi</button>
+      <!-- Category cards (kursus / pelatihan / sertifikasi / outing class / outboard) -->
+       
+      <div class="max-w-7xl mx-auto px-6 mb-8" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-8" data-aos="fade-up">
+          <h2 class="text-3xl font-bold text-gray-800">
+            Apa yang Ingin Anda Pelajari?
+          </h2>
+          <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+            Pilih kategori di bawah ini untuk mempeajari semua program
+          </p>
         </div>
-      </div>
-
-      <!-- SLIDER -->
-      <div class="relative">
-        <div id="program-slider" class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4">
-          <!-- CARD -->
-          <div class="program-card min-w-[200px] sm:min-w-[230px] md:min-w-[250px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 snap-start flex-shrink-0" data-category="robotik">
-            <img src="{{ asset('client/img/posterevent.jpeg') }}" alt="Program 1" class="w-full h-32 object-cover rounded-t-xl">
-            <div class="p-3">
-              <h3 class="text-sm md:text-base font-semibold text-gray-800 mb-1">Program Robotik Dasar</h3>
-              <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-2">
-                Pelajari dasar pemrograman dan perakitan robot secara interaktif.
-              </p>
-              <a href="/dtail_kelas" class="text-orange-600 hover:text-orange-700 text-xs md:text-sm font-medium">Lihat Detail →</a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
+          <!-- Card 1 -->
+          <a href="{{ asset('/elearning/kelas#filter=kursus') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+            <div class="space-y-2">
+              <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Kursus</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pembelajaran terstruktur yang fokus pada penguasaan pengetahuan atau keterampilan tertentu dalam jangka waktu tertentu</p>
+              <img src="{{ asset('assets/elearning/client/img/home4.jpeg') }}" alt="Bootcamp" class="w-32 h-32 mx-auto mt-4 object-contain rounded-md" />
             </div>
-          </div>
+          </a>
 
-          <div class="program-card min-w-[200px] sm:min-w-[230px] md:min-w-[250px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 snap-start flex-shrink-0" data-category="ai">
-            <img src="{{ asset('client/img/posterevent.jpeg') }}" alt="Program 2" class="w-full h-32 object-cover rounded-t-xl">
-            <div class="p-3">
-              <h3 class="text-sm md:text-base font-semibold text-gray-800 mb-1">Kecerdasan Buatan (AI)</h3>
-              <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-2">
-                Mengenal konsep dasar Artificial Intelligence dalam dunia modern.
-              </p>
-              <a href="/dtail_kelas" class="text-orange-600 hover:text-orange-700 text-xs md:text-sm font-medium">Lihat Detail →</a>
+          <!-- Card 2 -->
+          <a href="{{ asset('/elearning/kelas#filter=pelatihan') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+            <div class="space-y-2">
+              <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Pelatihan</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">Kegiatan untuk meningkatkan keterampilan praktis (terutama yang digunakan dalam pekerjaan)</p>
+              <img src="{{ asset('assets/elearning/client/img/home3.jpeg') }}" alt="Kursus" class="w-32 h-32 mx-auto mt-4 object-contain rounded-md" />
             </div>
-          </div>
+          </a>
 
-          <div class="program-card min-w-[200px] sm:min-w-[230px] md:min-w-[250px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 snap-start flex-shrink-0" data-category="iot">
-            <img src="{{ asset('client/img/posterevent.jpeg') }}" alt="Program 3" class="w-full h-32 object-cover rounded-t-xl">
-            <div class="p-3">
-              <h3 class="text-sm md:text-base font-semibold text-gray-800 mb-1">Internet of Things (IoT)</h3>
-              <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-2">
-                Program yang mengajarkan konsep IoT untuk kehidupan cerdas.
-              </p>
-              <a href="/dtail_kelas" class="text-orange-600 hover:text-orange-700 text-xs md:text-sm font-medium">Lihat Detail →</a>
+          <!-- Card 3 -->
+          <a href="{{ asset('/elearning/kelas#filter=sertifikasi') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+            <div class="space-y-2">
+              <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Sertifikasi</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">Proses penilaian kompetensi untuk membuktikan seseorang memenuhi standar tertentu dalam bidang tertentu</p>
+              <img src="{{ asset('assets/elearning/client/img/home5.jpeg') }}" alt="Corporate" class="w-32 h-32 mx-auto mt-4 object-contain rounded-md" />
             </div>
-          </div>
+          </a>
 
-          <div class="program-card min-w-[200px] sm:min-w-[230px] md:min-w-[250px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 snap-start flex-shrink-0" data-category="robotik">
-            <img src="{{ asset('client/img/posterevent.jpeg') }}" alt="Program 4" class="w-full h-32 object-cover rounded-t-xl">
-            <div class="p-3">
-              <h3 class="text-sm md:text-base font-semibold text-gray-800 mb-1">Robot Kompetisi</h3>
-              <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-2">
-                Pelatihan robot untuk kompetisi nasional dan internasional.
-              </p>
-              <a href="/dtail_kelas" class="text-orange-600 hover:text-orange-700 text-xs md:text-sm font-medium">Lihat Detail →</a>
+          <!-- Card 4 -->
+          <a href="{{ asset('/elearning/kelas#filter=outingclass') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+            <div class="space-y-2">
+              <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Outing Class</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pembelajaran di luar kelas yang bertujuan memperluas wawasan dengan pengalaman langsung</p>
+              <img src="{{ asset('assets/elearning/client/img/home1.jpeg') }}" alt="CDHX" class="w-32 h-32 mx-auto mt-4 object-contain rounded-md" />
             </div>
-          </div>
-        </div>
+          </a>
 
-        <!-- Tombol Lihat Semua -->
-        <div class="text-center mt-10">
-          <a href="/kelas" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-2 rounded-full transition-all duration-300">
-            Lihat Semua Program
+          <!-- Card 5 -->
+          <a href="{{ asset('/elearning/kelas#filter=outboard') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+            <div class="space-y-2">
+              <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Outboard</h3>
+              <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pengembangan diri dan tim (team building) yang dilakukan di luar ruangan dengan permainan dan simulasi</p>
+              <img src="{{ asset('assets/elearning/client/img/home2.jpeg') }}" alt="Millennial" class="w-32 h-32 mx-auto mt-4 object-contain rounded-md" />
+            </div>
+          </a>
           </a>
         </div>
       </div>
+
+      <div class="mt-14 text-center" data-aos="zoom-in" data-aos-delay="200">
+          <a
+            href="{{ url('/elearning/kelas') }}"
+            class="inline-block px-8 py-3 bg-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition duration-300"
+          >
+            Lihat Program
+          </a>
+        </div>
+      </div>
+      </div>    
     </div>
   </section>
 
@@ -407,7 +418,7 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
     class="flex justify-center md:justify-start"
   >
     <img
-      src="{{ asset('client/img/posterevent.jpeg') }}"
+      src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}"
       alt="Poster Event Robotik"
       class="w-full max-w-xs sm:max-w-md md:max-w-full h-auto rounded-2xl shadow-xl object-cover hover:scale-105 transition-transform duration-500"
     />
@@ -530,10 +541,10 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
         <img
           src="https://randomuser.me/api/portraits/women/45.jpg"
           alt="Instruktur"
-          class="w-24 h-24 mx-auto rounded-full object-cover mb-4 border-4 border-orange-500 shadow-md"
+          class="w-24 h-24 mx-auto rounded-full object-cover mb-4 border-4 border-blue-500 shadow-md"
         />
         <h3 class="text-xl font-bold text-gray-800">Siti Ramadhani</h3>
-        <p class="text-blue-600 font-semibold text-sm mt-1">Programmer AI</p>
+        <p class="text-orange-500 font-semibold text-sm mt-1">Programmer AI</p>
         <p class="mt-3 text-gray-600 text-sm leading-relaxed">
           Spesialis kecerdasan buatan dan pembelajaran mesin yang aktif dalam penelitian AI di bidang robotik.
         </p>
@@ -683,7 +694,7 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
    <!-- Baris 1 (ke kiri) -->
    <div class="partner-track flex items-center track-left">
      <img
-       src="https://upload.wikimedia.org/wikipedia/commons/4/44/Tesla_logo.png"
+       src="https://upload.wikimedia.org/wikipedia/commons/6/62/Tesla_Motors_Logo.svg"
        class="partner-logo"
        alt="Tesla"
      />
@@ -805,7 +816,7 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
      <!-- Foto -->
      <div class="mt-5 flex justify-center md:justify-start">
        <img
-         src="{{ asset('client/img/eventilustrator.jpeg') }}"
+         src="{{ asset('assets/elearning/client/img/eventilustrator.jpeg') }}"
          alt="Ilustrasi Tanya"
          class="w-56 sm:w-64 md:w-72 rounded-xl select-none"
        />
@@ -847,10 +858,7 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
  </div>
 </section>
 
-
-
-
-<script src="{{ asset('client/js/home.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/home.js') }}"></script>
 @endsection
 
 

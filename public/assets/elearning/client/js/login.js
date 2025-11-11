@@ -1,0 +1,117 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const card = document.getElementById("login-card");
+    const form = document.getElementById("login-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const errorMessages = document.getElementById("error-messages");
+    const errorList = document.getElementById("error-list");
+
+    // animasi card muncul
+    setTimeout(() => {
+      card.classList.remove("opacity-0", "scale-90");
+      card.classList.add("opacity-100", "scale-100");
+    }, 300);
+
+    // animasi teks muncul bertahap
+    const fadeElements = document.querySelectorAll(".animate-fade");
+    fadeElements.forEach((el, i) => {
+      setTimeout(() => {
+        el.style.animation = "fadeUp 0.6s ease forwards";
+      }, 600 + i * 300);
+    });
+
+    // Handle login form submit
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Reset error messages
+        errorMessages.classList.add("hidden");
+        errorList.innerHTML = "";
+
+        // Disable button dan ubah text
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-pulse">Logging in...</span>';
+
+        // Get form data
+        const formData = {
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        };
+
+        try {
+            // Call API login
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Simpan token ke localStorage
+                localStorage.setItem("auth_token", result.data.access_token);
+                localStorage.setItem("user_data", JSON.stringify(result.data.user));
+
+                // Tampilkan pesan sukses
+                alert(result.message || "Login berhasil! 👋");
+
+                // Redirect ke dashboard
+                window.location.href = "/dashboard";
+            } else {
+                // Tampilkan error
+                showErrors(result.errors || { general: [result.message] });
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            showErrors({
+                general: ["Terjadi kesalahan koneksi. Pastikan server berjalan."]
+            });
+        } finally {
+            // Enable button kembali
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+
+    // Function untuk menampilkan error
+    function showErrors(errors) {
+        errorList.innerHTML = "";
+
+        Object.keys(errors).forEach(key => {
+            const errorArray = Array.isArray(errors[key]) ? errors[key] : [errors[key]];
+            errorArray.forEach(error => {
+                const li = document.createElement("li");
+                li.textContent = error;
+                errorList.appendChild(li);
+            });
+        });
+
+        errorMessages.classList.remove("hidden");
+        errorMessages.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    // Google Login Handler (untuk nanti)
+    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener("click", () => {
+            alert("Google OAuth belum diimplementasikan. Akan segera ditambahkan!");
+            // TODO: Implementasi Google OAuth
+            /*
+            google.accounts.oauth2.initCodeClient({
+              client_id: "GANTI_DENGAN_CLIENT_ID_KAMU.apps.googleusercontent.com",
+              scope: "email profile openid",
+              ux_mode: "popup",
+              callback: (response) => {
+                console.log("Kode login:", response);
+                // Kirim response.code ke server untuk verifikasi token
+              },
+            }).requestCode();
+            */
+        });
+    }
+});

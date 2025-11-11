@@ -18,9 +18,9 @@
       </div>
       <div class="relative w-full h-64 md:h-72 overflow-hidden rounded-xl shadow-lg animate-float">
         <div id="slider" class="flex w-full h-full transition-transform duration-700">
-          <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
-          <img src="{{ asset('client/img/posterevent1.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
-          <img src="{{ asset('client/img/posterevent2.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
+          <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
+          <img src="{{ asset('assets/elearning/client/img/posterevent1.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
+          <img src="{{ asset('assets/elearning/client/img/posterevent2.jpeg') }}" class="w-full h-full object-cover flex-shrink-0" />
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
       </div>
@@ -44,7 +44,7 @@
         </a>
       </div>
       <div class="flex justify-center md:justify-end">
-        <img src="{{ asset('client/img/home3.jpeg') }}" alt="Illustration" class="w-56 h-56 object-contain animate-fadein">
+        <img src="{{ asset('assets/elearning/client/img/home3.jpeg') }}" alt="Illustration" class="w-56 h-56 object-contain animate-fadein">
       </div>
     </div>
   </section>
@@ -84,7 +84,7 @@
           <!-- Example Card -->
           <a href="{{ url('/dtail_event') }}" class="event robotic block h-full">
             <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-              <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
+              <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
               <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
                 <div>
                   <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -103,7 +103,7 @@
           <!-- Example Card -->
 <a href="{{ url('/dtail_event') }}" class="event robotic block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -121,7 +121,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event robotic block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent1.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent1.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -139,7 +139,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event robotic block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent2.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent2.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -157,7 +157,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event robotic block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -175,7 +175,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event coding block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent2.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent2.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -193,7 +193,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event coding block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -211,7 +211,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event coding block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent1.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent1.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -229,7 +229,7 @@
 
   <a href="{{ url('/dtail_event') }}" class="event ai block h-full">
     <div class="bg-white border rounded-xl hover:shadow-2xl hover:scale-105 transition overflow-hidden h-full flex flex-col">
-      <img src="{{ asset('client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
+      <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" class="w-full h-36 object-cover" />
       <div class="p-3 md:p-4 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-center gap-1 flex-wrap mb-1">
@@ -260,5 +260,5 @@
 
 @endsection
 
-<link rel="stylesheet" href="{{  asset('client/css/event.css') }}">
-<script src="{{ asset('client/js/event.js') }}"></script>
+<link rel="stylesheet" href="{{  asset('assets/elearning/client/css/event.css') }}">
+<script src="{{ asset('assets/elearning/client/js/event.js') }}"></script>

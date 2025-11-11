@@ -51,7 +51,7 @@
         <div class="p-3 rounded-lg">
           <label class="flex items-center gap-3 cursor-pointer text-sm sm:text-base">
             <input type="radio" name="payment" value="Bank" class="payment-radio focus:outline-none">
-            <img src="{{ asset('client/img/1.jpeg') }}" class="w-6">
+            <img src="{{ asset('assets/elearning/client/img/1.jpeg') }}" class="w-6">
             <span>BSI</span>
           </label>
           <div id="bankOptions" class="hidden mt-3 space-y-2">
@@ -60,7 +60,7 @@
               <input type="radio" name="bank" value="BCA|1234567890|PT. Contoh Digital" class="hidden peer">
               <div
                 class="peer-checked:bg-blue-50 p-2 rounded flex gap-2 items-center">
-                <img src="{{ asset('client/img/1.jpeg') }}" class="w-8">
+                <img src="{{ asset('assets/elearning/client/img/1.jpeg') }}" class="w-8">
                 <div>
                   <p class="font-semibold">BSI</p>
                   <p class="text-xs text-gray-600">1234567890 a.n PT. Contoh Digital</p>
@@ -72,7 +72,7 @@
               <input type="radio" name="bank" value="Mandiri|9876543210|PT. Contoh Digital" class="hidden peer">
               <div
                 class="peer-checked:bg-blue-50 p-2 rounded flex gap-2 items-center">
-                <img src="{{ asset('client/img/DANA-scaled.jpeg') }}" class="w-8">
+                <img src="{{ asset('assets/elearning/client/img/DANA-scaled.jpeg') }}" class="w-8">
                 <div>
                   <p class="font-semibold">Dana</p>
                   <p class="text-xs text-gray-600">9876543210 a.n PT. Contoh Digital</p>

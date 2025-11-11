@@ -1,6 +1,6 @@
 @extends('client.layout.main')
 @section('css')
-<link rel="stylesheet" href="{{ asset('client/css/DetailKelas.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/DetailKelas.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 @endsection
 
@@ -140,5 +140,5 @@
     </div>
   </div>
 
-<script src="{{ asset('client/js/DetailKelas.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/DetailKelas.js') }}"></script>
 @endsection

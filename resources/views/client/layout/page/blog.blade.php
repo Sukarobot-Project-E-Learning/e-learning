@@ -29,7 +29,7 @@
 
     <div class="hidden md:flex items-center justify-center">
       <div class="w-full h-56 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-200 to-blue-200 border border-gray-200 shadow-lg flex items-center justify-center">
-        <img src="{{ asset('client/img/blogilustrator.jpeg') }}"
+        <img src="{{ asset('assets/elearning/client/img/blogilustrator.jpeg') }}"
              alt="robot-illustration" class="w-full h-full object-cover opacity-90" />
       </div>
     </div>
@@ -115,6 +115,6 @@
 </main>
 
 <!-- Script -->
-<script src="{{ asset('client/js/blog.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('client/css/blog.css') }}">
+<script src="{{ asset('assets/elearning/client/js/blog.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/blog.css') }}">
 @endsection

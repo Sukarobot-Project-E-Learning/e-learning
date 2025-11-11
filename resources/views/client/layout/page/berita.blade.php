@@ -1,6 +1,6 @@
 @extends('client.layout.main')
 @section('css')
-<link rel="stylesheet" href="{{ asset('client/css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/home.css') }}">
 @endsection
 
 @section('body')
