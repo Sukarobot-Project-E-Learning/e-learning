@@ -1,0 +1,69 @@
+:root{
+  --blue-500: #2b8af6;
+  --blue-600: #1e6fe6;
+  --muted: #6b7280;
+  --bg-soft: #f6fbff;
+}
+
+/* Sidebar visual styles to match the provided mock */
+aside.w-64{
+  background: #ffffff;
+  border-right: 1px solid rgba(15,23,42,0.04);
+  box-shadow: 0 6px 18px rgba(8,16,44,0.04);
+}
+
+/* override any utility that set orange header — prefer white header with blue icon */
+aside .bg-orange-500{ background: transparent !important; color: #0f172a !important }
+aside .bg-orange-500 i{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:10px; background: linear-gradient(180deg,var(--blue-500),var(--blue-600)); color:#fff; box-shadow: 0 8px 20px rgba(59,130,246,0.16); font-size:18px }
+aside .bg-orange-500 span{ margin-left:8px; font-weight:700 }
+
+/* Navigation items (left column) */
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:calc(100% - 12px);
+  padding:12px 18px;
+  margin-left:8px;
+  /* border-radius:999px; pill */
+  color: #0f172a;
+  background: transparent;
+  border: none;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  cursor: pointer;
+}
+
+.nav-item i{ color: #374151; min-width:20px; text-align:center }
+
+.nav-item:hover{ transform: translateX(6px) }
+
+.nav-item.active{
+  background: linear-gradient(90deg, rgba(59,130,246,1) 0%, rgba(37,99,235,1) 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.18);
+}
+.nav-item.active i{ filter:brightness(1.3) }
+
+/* section visibility helpers */
+.section{ display:none }
+.section.active{ display:block }
+
+/* Buttons */
+.btn-orange{ background:linear-gradient(90deg,var(--blue-500),var(--blue-600)); color:#fff; padding:8px 14px; border-radius:10px; border:none }
+.btn-orange:hover{ filter:brightness(.97); transform:translateY(-1px) }
+
+.btn-blue{ background:#0f172a; color:#fff; padding:8px 14px; border-radius:10px; border:none }
+
+/* Logout area styling */
+aside .p-4 button{ background:transparent; color:#ef4444; border:none; display:flex; align-items:center; gap:8px; font-weight:600 }
+
+/* small responsive tweak to push main area when sidebar visible */
+@media(max-width:900px){
+  aside.w-64{ position:relative; width:100%; height:auto }
+  main{ margin-left:0 !important }
+}
+
+/* subtle helper for the blue circular spinner if used */
+.ds-spinner{ width:48px; height:48px; border-radius:50%; border:4px solid rgba(59,130,246,0.15); border-top-color:var(--blue-600); animation: ds-spin .9s linear infinite; margin:0 auto }
+@keyframes ds-spin{ to{ transform:rotate(360deg) } }
+

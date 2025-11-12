@@ -73,19 +73,12 @@
     color: #0b2442;
   }
 
-  #sidebar .sort-btn.active {
+  #sidebar .sort-btn.active,
+  #sidebar .filter-btn.active {
     background: #eef2ff; /* subtle blue */
     border-color: rgba(59,130,246,0.15);
     color: #0b2442;
     box-shadow: 0 6px 18px rgba(14,165,233,0.06);
-  }
-
-  /* Orange theme for category active */
-  #sidebar .filter-btn.active {
-    background: #ff6f00; /* orange */
-    color: #fff;
-    box-shadow: 0 10px 24px rgba(255,111,0,0.12);
-    border-color: rgba(255,111,0,0.15);
   }
 
   /* Make filter buttons pill-like within sidebar */
@@ -94,59 +87,7 @@
   /* Smaller icon sizes inside sidebar buttons */
   #sidebar .sort-btn svg, #sidebar .filter-btn svg { width: 16px; height: 16px; }
 
-  nav ul li:hover {
-    color: #FF6F00; /* orange */
-  }
-  nav ul li:last-child a.button-masuk {
-    background: #2e5b9a; /* navy blue */
-    color: white;
-    padding: 0.45rem 1.25rem;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: background 0.3s;
-    display: inline-block;
-  }
-  nav ul li:last-child a.button-masuk:hover {
-    background: #2e5b9a; /* lebih gelap navy */
-  }
-
   /* Filter Buttons */
-  .filters {
-    margin: 1.5rem 2rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter-btn {
-    padding: 0.4rem 1.3rem;
-    border: 2px solid #2e5b9a; /* navy blue */
-    border-radius: 30px;
-    background: white;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    color: #2e5b9a;
-    outline-offset: 2px;
-    transition: all 0.3s ease;
-    user-select: none;
-    min-width: 130px;
-    text-align: center;
-  }
-  .filter-btn.active,
-  .filter-btn:hover {
-    background: #FF6F00; /* orange */
-    border-color: #FF6F00;
-    color: white;
-    box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3);
-  }
-
-  .kelas-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
-    gap: 20px;
-    padding: 0 2rem 2rem 2rem;
-  }
 
   /* Kartu Kelas */
   .kelas-card {

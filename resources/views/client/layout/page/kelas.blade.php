@@ -18,6 +18,13 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4 4m0 0l4-4m-4 4v-12"/></svg>
             <span>Terlama</span>
           </button>
+          <button class="sort-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition flex items-center space-x-2 text-sm" data-sort="oldest">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <rect x="4" y="4" width="16" height="16" rx="3" ry="3" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+            </svg>
+            <span>Tersedia</span>
+          </button>
         </div>
       </div>
 
@@ -45,14 +52,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Available Slots Filter -->
-      <div class="mb-6">
-        <label class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer">
-          <input type="checkbox" id="hide-soldout-kelas" class="rounded text-blue-600 focus:ring-blue-500">
-          <span>Kelas Tersedia</span>
-        </label>
-      </div>
     </div>
   </aside>
 
@@ -71,6 +70,7 @@
         
         <!-- Search Box -->
         <div class="relative max-w-md w-full">
+          <h2 class="text-2xl font-bold text-blue-700 mb-4">Semua Kelas</h2>
           <input type="text" id="kelas-search" placeholder="Cari kelas..."
             class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
           <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
