@@ -60,17 +60,12 @@
     <!-- Header with search and total count -->
     <div class="p-6 bg-white shadow-sm mb-5">
       <div class="flex justify-between items-center gap-4">
-        <div class="flex items-center gap-4">
-          <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
+
+        <!-- Nama Kategori -->
+        <h2 class="header text-2xl font-bold text-blue-700">Semua Kelas</h2>
         
         <!-- Search Box -->
         <div class="relative max-w-md w-full">
-          <h2 class="text-2xl font-bold text-blue-700 mb-4">Semua Kelas</h2>
           <input type="text" id="kelas-search" placeholder="Cari kelas..."
             class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
           <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +105,7 @@
           </div>
         </div>
         <div class="mt-auto">
-          <span class="text-orange-600 font-bold text-lg">Rp 390.000</span>
+          <span class="text-orange-600 font-bold">Rp 390.000</span>
         </div>
       </div>
     </article>

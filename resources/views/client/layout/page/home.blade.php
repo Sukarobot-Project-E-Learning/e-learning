@@ -1,19 +1,6 @@
 @extends('client.layout.main')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/home.css') }}">
-<style>
-  /* Make the active filter button show orange bg + white text.
-     This allows JS to toggle the `active` class and change styling dynamically.
-  */
-  .filter-btn { transition: background-color .18s ease, color .18s ease; }
-  .filter-btn.active {
-    background-color: #f97316; /* tailwind bg-orange-500 */
-    color: #ffffff;
-    border-color: transparent;
-  }
-  /* Keep hover state consistent for non-active buttons */
-  .filter-btn:hover { background-color: rgba(249,115,22,0.06); }
-</style>
 @endsection
 
 @section('body')

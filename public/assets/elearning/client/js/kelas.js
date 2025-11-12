@@ -5,13 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const hideSoldInput = document.getElementById('hide-soldout-kelas');
   const container = document.querySelector('.kelas-container');
   const jumlahKelas = document.querySelector('.jumlah-kelas');
+  const headerTitle = document.querySelector('.header'); // ← ambil elemen header judul
 
-  if (!container) return; // nothing to do
+  if (!container) return;
 
   let cards = Array.from(container.querySelectorAll('.kelas-card'));
   const updateJumlahKelas = (count) => { if (jumlahKelas) jumlahKelas.textContent = `${count} Kelas`; };
 
-  // store original order
   cards.forEach((c, i) => c.dataset.origIndex = i);
 
   let activeCategory = (document.querySelector('.filter-btn.bg-orange-500') || document.querySelector('.filter-btn.active'))?.dataset.filter || 'all';
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function getSlots(card) {
     if (card.dataset.slots) return parseInt(card.dataset.slots, 10) || 0;
     const text = card.innerText || '';
-    if (/kuota\s*habis/i.test(text) || /kuota habis/i.test(text) || /kuota\s*habis/i.test(text)) return 0;
+    if (/kuota\s*habis/i.test(text)) return 0;
     const m = text.match(/sisa\s+(\d+)/i);
     return m ? parseInt(m[1], 10) : Infinity;
   }
@@ -41,8 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
     return card.innerText.toLowerCase().includes(searchQuery.toLowerCase());
   }
 
+  function updateHeaderTitle() {
+    if (!headerTitle) return;
+    if (activeCategory === 'all') {
+      headerTitle.textContent = 'Semua Kelas';
+    } else {
+      headerTitle.textContent = activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1);
+    }
+  }
+
   function applyAll() {
-    // recompute (in case DOM changed)
     cards = Array.from(container.querySelectorAll('.kelas-card'));
 
     let filtered = cards.filter(c => {
@@ -52,33 +60,27 @@ document.addEventListener("DOMContentLoaded", () => {
       return true;
     });
 
-    // sort by data-date if present else original index
     filtered.sort((a, b) => {
       const da = a.dataset.date ? new Date(a.dataset.date).getTime() : parseInt(a.dataset.origIndex || 0, 10);
       const db = b.dataset.date ? new Date(b.dataset.date).getTime() : parseInt(b.dataset.origIndex || 0, 10);
       return sortOrder === 'newest' ? db - da : da - db;
     });
 
-    // hide all first
     cards.forEach(c => c.style.display = 'none');
-
-    // show filtered in sorted order
     filtered.forEach(c => { c.style.display = 'block'; container.appendChild(c); });
 
     updateJumlahKelas(filtered.length);
+    updateHeaderTitle(); // ← update judul setiap kali filter berubah
   }
 
   function debounce(fn, wait = 200) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); }; }
 
-  // initial apply
-  // If there's a hash like #filter=kursus, apply it; otherwise apply default
   function handleHashFilter() {
     const hash = window.location.hash || '';
     if (hash.startsWith('#filter=')) {
       const filterValue = decodeURIComponent(hash.replace('#filter=', ''));
       const targetBtn = document.querySelector(`.filter-btn[data-filter="${filterValue}"]`);
       if (targetBtn) {
-        // activate visual state
         filterButtons.forEach(b => { b.classList.remove('bg-orange-500', 'text-white'); b.classList.add('text-blue-600'); });
         targetBtn.classList.add('bg-orange-500', 'text-white');
         targetBtn.classList.remove('text-blue-600');
@@ -90,14 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return false;
   }
 
-  if (!handleHashFilter()) {
-    applyAll();
-  }
+  if (!handleHashFilter()) applyAll();
 
-  // listen for hash changes (so linking to #filter=... works)
   window.addEventListener('hashchange', () => { handleHashFilter(); });
 
-  // filter button handlers (category)
   filterButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -106,12 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.classList.remove('text-blue-600');
       activeCategory = btn.dataset.filter || 'all';
       applyAll();
-      // update URL hash for routing/linking
       try { window.location.hash = `filter=${encodeURIComponent(activeCategory)}`; } catch (err) { /* ignore */ }
     });
   });
 
-  // sort handlers
   sortButtons.forEach(sb => {
     sb.addEventListener('click', (e) => {
       e.preventDefault();
@@ -122,11 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // init sort active
   const activeSort = document.querySelector('.sort-btn.active') || document.querySelector('.sort-btn[data-sort="newest"]');
   if (activeSort) { activeSort.classList.add('active'); sortOrder = activeSort.dataset.sort || 'newest'; }
 
-  // search
   if (searchInput) {
     searchInput.addEventListener('input', debounce((e) => {
       searchQuery = e.target.value || '';
@@ -134,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 200));
   }
 
-  // hide sold out
   if (hideSoldInput) {
     hideSoldInput.addEventListener('change', (e) => {
       hideSold = !!e.target.checked;

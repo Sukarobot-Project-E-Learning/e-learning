@@ -1,207 +1,233 @@
-/* ===== Partner Section Infinite Loop ===== */
+/* =========================================
+   PARTNER SECTION (INFINITE LOOP)
+========================================= */
 #partner {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(to right, #fff7ed, #eff6ff);
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, #fff7ed, #eff6ff);
+  padding: 3rem 1rem;
+}
 
-  .partner-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-  }
+.partner-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
 
-  .partner-track {
-    display: flex;
-    width: max-content;
-  }
+.partner-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 25s linear infinite;
+}
 
+.partner-logo {
+  height: 42px;
+  margin: 0 24px;
+  opacity: 0.8;
+  filter: grayscale(100%) opacity(0.7);
+  transition: transform 0.3s ease, filter 0.3s ease;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.partner-logo:hover {
+  transform: scale(1.1);
+  filter: grayscale(0%) opacity(1);
+}
+
+/* Animasi bergerak dua arah */
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Efek gradasi pinggir */
+#partner::before,
+#partner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+#partner::before {
+  left: 0;
+  background: linear-gradient(to right, white 0%, transparent 100%);
+}
+#partner::after {
+  right: 0;
+  background: linear-gradient(to left, white 0%, transparent 100%);
+}
+
+/* =========================================
+   PROGRAM SLIDER LABEL
+========================================= */
+#program-slider .absolute.top-3.right-3 > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#program-slider .absolute.top-3.right-3 > span svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+#program-slider .absolute.top-3.right-3 > span > * {
+  line-height: 1;
+}
+
+/* =========================================
+   POPUP POSTER
+========================================= */
+@keyframes popupShow {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+.popup-card {
+  position: relative;
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  animation: popupShow 0.4s ease-out;
+  width: 90vw;
+  max-width: 380px;
+  max-height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.poster-img {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.close-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+body.no-scroll,
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+/* =========================================
+   GLOBAL UTILITIES
+========================================= */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+.filter-btn.active {
+  background-color: #f97316;
+  color: white;
+  border: none;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+/* --- Extra Small Devices (≤480px) --- */
+@media (max-width: 480px) {
+  #partner {
+    padding: 2rem 0.5rem;
+  }
   .partner-logo {
-    height: 48px;
-    margin: 0 40px;
-    opacity: 0.8;
-    filter: grayscale(100%) opacity(0.7);
-    transition: transform 0.3s ease, filter 0.3s ease;
-    object-fit: contain;
-    flex-shrink: 0;
+    height: 30px;
+    margin: 0 16px;
   }
-
-  .partner-logo:hover {
-    transform: scale(1.1);
-    filter: grayscale(0%) opacity(1);
-  }
-
-  /* Animasi bergerak dua arah */
-  @keyframes scroll-left {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  @keyframes scroll-right {
-    from { transform: translateX(-50%); }
-    to { transform: translateX(0); }
-  }
-
-  /* Efek gradasi pinggir */
-  #partner::before,
-  #partner::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 100px;
-    height: 100%;
-    z-index: 5;
-    pointer-events: none;
-  }
-  #partner::before {
-    left: 0;
-    background: linear-gradient(to right, white 0%, transparent 100%);
-  }
-  #partner::after {
-    right: 0;
-    background: linear-gradient(to left, white 0%, transparent 100%);
-  }
-
-  /* Responsif */
-  @media (max-width: 768px) {
-    .partner-logo {
-      height: 36px;
-      margin: 0 24px;
-    }
-  }
-
-  #program-slider .absolute.top-3.right-3 > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    }
-
-    #program-slider .absolute.top-3.right-3 > span svg {
-    width: 1rem;
-    height: 1rem;
-    flex: 0 0 auto;
-    }
-    
-    /* Pastikan teks angka tidak memiliki line-height yang membuatnya turun */
-    #program-slider .absolute.top-3.right-3 > span > * { line-height: 1; }
-
-
-
-  /* ===================== POPUP POSTER ===================== */
-
-  /* Animasi popup muncul */
-  @keyframes popupShow {
-    from {
-      transform: scale(0.85);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  /* Overlay blur */
-  .popup-overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.55);
-    z-index: 9999;
-    transition: opacity 0.3s ease;
-  }
-
-  /* Popup container */
   .popup-card {
-    position: relative;
-    background: #fff;
-    border-radius: 1rem;
-    overflow: hidden;
-    animation: popupShow 0.4s ease-out;
     width: 85vw;
-    max-width: 380px;
-    max-height: 85vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 320px;
   }
-
-  /* Poster gambar rasio 3:4 */
-  .poster-img {
-    aspect-ratio: 3 / 4;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 1rem;
-  }
-
-  /* Tombol close */
   .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.85);
-    border: none;
-    border-radius: 50%;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1.1rem;
-    transition: 0.25s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    top: 6px;
+    right: 6px;
+    padding: 5px 8px;
+    font-size: 1rem;
   }
-  .close-btn:hover {
-    background: rgba(255, 255, 255, 1);
-    transform: scale(1.1);
+}
+
+/* --- Small Devices (≤640px) --- */
+@media (max-width: 640px) {
+  .partner-logo {
+    height: 34px;
+    margin: 0 20px;
   }
-
-  /* Nonaktifkan scroll saat popup aktif */
-  body.no-scroll,
-  body.overflow-hidden {
-    overflow: hidden;
+  #program-slider {
+    gap: 0.75rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
+}
 
-  /* Responsif di handphone */
-  @media (max-width: 640px) {
-    .popup-card {
-      width: 80vw;
-      max-width: 300px;
-      max-height: 80vh;
-    }
-
-    .poster-img {
-      border-radius: 0.75rem;
-    }
-
-    .close-btn {
-      top: 6px;
-      right: 6px;
-      padding: 5px 8px;
-      font-size: 1rem;
-    }
+/* --- Medium Devices (≤768px) --- */
+@media (max-width: 768px) {
+  .partner-logo {
+    height: 36px;
+    margin: 0 24px;
   }
+  .popup-card {
+    width: 80vw;
+    max-width: 340px;
+  }
+}
 
+/* --- Large Devices (≥1024px) --- */
+@media (min-width: 1024px) {
+  .partner-logo {
+    height: 50px;
+    margin: 0 40px;
+  }
+}
 
-     /* Hilangkan scrollbar */
-     .scrollbar-hide::-webkit-scrollbar { display: none; }
-     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-     /* Filter Active */
-     .filter-btn.active {
-       background-color: #f97316;
-       color: white;
-       border: none;
-     }
-
-     /* Responsif tambahan agar rapi */
-     @media (max-width: 640px) {
-       #program-slider {
-         gap: 1rem;
-         padding-left: 0.25rem;
-         padding-right: 0.25rem;
-       }
-     }
+/* --- Extra Large Devices (≥1280px) --- */
+@media (min-width: 1280px) {
+  #partner {
+    padding: 5rem 0;
+  }
+  .partner-logo {
+    height: 60px;
+    margin: 0 48px;
+  }
+}
