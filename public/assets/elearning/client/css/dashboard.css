@@ -67,3 +67,10 @@ aside .p-4 button{ background:transparent; color:#ef4444; border:none; display:f
 .ds-spinner{ width:48px; height:48px; border-radius:50%; border:4px solid rgba(59,130,246,0.15); border-top-color:var(--blue-600); animation: ds-spin .9s linear infinite; margin:0 auto }
 @keyframes ds-spin{ to{ transform:rotate(360deg) } }
 
+/* Material simbol dashboard program */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1;
+}

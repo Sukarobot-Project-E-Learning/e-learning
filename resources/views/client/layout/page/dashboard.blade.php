@@ -28,34 +28,168 @@
     <!-- Profil -->
     <section id="profile" class="section active">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Profil Pengguna</h2>
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <div class="flex flex-col md:flex-row gap-6">
-          <img src="https://via.placeholder.com/120" alt="User Avatar" class="rounded-full w-28 h-28 border-4 border-orange-400 object-cover">
-          <div class="flex-1">
-            <p><strong>Nama:</strong> John Doe</p>
-            <p><strong>Email:</strong> john@example.com</p>
-            <p><strong>Nomor HP:</strong> 08123456789</p>
-            <div class="mt-4 flex gap-3">
-              <button class="btn-orange">Edit Profil</button>
-              <button class="btn-blue">Ubah Password</button>
+      <!-- Profile Content Card -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <!-- ProfileHeader -->
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
+            <div class="flex gap-4 items-center">
+              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDBDjCTGbitKi4HKxS-lcHOIYpm3q1OOVwfOOFCffsixahxD9-jrY_r5KSVvSs8wuEJAct1NfLFnOOQ5jxNvvia92SI42CxJhDXRS4CRnIdcRNAGvBNzz6E225OQ91RhAqHTNNrEkTktI0P9S8oDc9F9VgZt2-yvlp6iT986TJ0UEQdQJYcp2ZlhG7-gg5y-3oaO288ahNXDo3-rrPJin8Q7__-bUmcBdzMXFlV_Y7XHju_oaPHZr9cT_5tPbvB2foL39FNxGNKwk4");'></div>
+              <div class="flex flex-col justify-center">
+                <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">Budi Santoso</p>
+                <p class="text-[#616f89] text-base font-normal leading-normal">budi.santoso@email.com</p>
+              </div>
             </div>
+            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto">
+            <span class="truncate">Ganti Foto</span>
+            </button>
           </div>
         </div>
+        <!-- Form Section -->
+        <form class="p-6 space-y-8">
+          <!-- Personal Information Section -->
+          <div>
+            <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Informasi Pribadi</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- TextField: Nama Lengkap -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="Budi Santoso"/>
+              </div>
+              <!-- TextField: Email -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="budi.santoso@email.com"/>
+              </div>
+              <!-- TextField: Bio -->
+              <div class="flex flex-col md:col-span-2">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="bio">Bio Singkat</label>
+                <textarea class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal min-h-32" id="bio" placeholder="Ceritakan sedikit tentang diri Anda...">Siswa yang bersemangat untuk belajar teknologi dan desain.</textarea>
+              </div>
+            </div>
+          </div>
+            <!-- Security Section -->
+            <div>
+              <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Ubah Kata Sandi</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- TextField: Kata Sandi Lama -->
+                <div class="flex flex-col">
+                  <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
+                  <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
+                </div>
+                <!-- TextField: Kata Sandi Baru -->
+                <div class="flex flex-col">
+                  <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
+                  <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
+                </div>
+              </div>
+          </div>
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
+            <span class="truncate">Batal</span>
+            </button>
+            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-orange-500 text-white text-base font-bold leading-normal tracking-[0.015em]" type="submit">
+            <span class="truncate">Simpan Perubahan</span>
+            </button>
+          </div>
+        </form>
       </div>
     </section>
 
     <!-- Program -->
     <section id="program" class="section hidden">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Program Saya</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach(['Kursus','Pelatihan','Sertifikasi','Outing Class','Outboard'] as $program)
-        <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-orange-500 hover:shadow-lg transition">
-          <h3 class="font-semibold text-lg text-gray-800">{{ $program }}</h3>
-          <p class="text-gray-500 mt-1 text-sm">Lihat detail dan progres pembelajaran Anda.</p>
-          <button class="btn-blue mt-3">Lihat Program</button>
-        </div>
-        @endforeach
+      <div class="flex flex-wrap gap-2 mb-6">
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-blue-500 text-white">Semua Kelas</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Kursus</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Pelatihan</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Sertifikasi</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Outing Class</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Outboard</button>
       </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+            <div class="relative">
+            <div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" data-alt="Abstract graphic design elements" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCEJSQL2WBpLKYVxdc66LfZFXWcBZ4tFSK2YLrw4b9sdXkFl-9gYbt97SdL_uoiwb4FOYkbMml8NbErMXrFFw3nJGik1qzXyaRXkDU_ccXAIhr71b6tE-azDFOVrZJuzFXVpTqUTKDOaHa-REhNqYNnmTrNAp0qtswvW7aH5BRjtGh6SbqPrpl1Q2Lj8vTE-HSlAVI4AEfkX3H7kqq3p73g958N7sXnwCw0Jr2dZsMskU0S6dKdG94V0CA3FpAu5QngCQxvIRSTU7s");'></div>
+            <span class="absolute top-3 left-3 bg-yellow-400/20 text-yellow-800 text-xs font-semibold px-2.5 py-1 rounded-full">Kursus</span>
+            </div>
+            <div class="flex flex-col p-5 gap-4 flex-1">
+              <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">Dasar-dasar Desain Grafis dengan Figma</h2>
+              <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: 15 Okt 2023</p>
+              <div class="w-full">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-600">Progres</span>
+                <span class="text-sm font-medium text-primary">75%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-orange-500 h-2 rounded-full" style="width: 75%"></div>
+              </div>
+              </div>
+              <button class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-orange-500 text-white text-sm font-medium leading-normal hover:bg-orange-600 focus:ring-4 focus:ring-primary/30">
+              <span class="truncate">Lanjutkan Belajar</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+          <div class="relative">
+          <div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" data-alt="People collaborating around a table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC8Gtm3Pa4CMSXP81AuBjbYpl0Ih3j7KPFCufGVliiH02zWLsM6gCOjDpsxv7Jg3kirPg9zLdKJTLPdjq0Y0J1vJ7asGBgHiq8uF02v4D55KrMQuDaXBnWOOghuLX-51KcpCBePEp8_PoGugahjG9MoLyXLx_2o-ufqmpsJ1gGrptAmyA1ytywyKuIBqj9jr7Nl8NaVuVt0B5w2_BGkNhquCexZbreBFSJ2opwc63XDB85hAQbqcJV_MgjGyq7bn8nlC8RuKXs6cB4");'></div>
+          <span class="absolute top-3 left-3 bg-purple-400/20 text-purple-800 text-xs font-semibold px-2.5 py-1 rounded-full">Pelatihan</span>
+          </div>
+            <div class="flex flex-col p-5 gap-4 flex-1">
+            <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">Manajemen Proyek Agile untuk Pemula</h2>
+            <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: 12 Sep 2023</p>
+            <div class="w-full">
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-gray-600">Progres</span>
+                <span class="text-sm font-medium text-primary">40%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-orange-500 h-2 rounded-full" style="width: 40%"></div>
+              </div>
+            </div>
+            <button class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-orange-500 text-white text-sm font-medium leading-normal hover:bg-orange-600 focus:ring-4 focus:ring-primary/30">
+            <span class="truncate">Lanjutkan Belajar</span>
+            </button>
+            </div>
+          </div>
+            <div class="flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+            <div class="relative">  
+              <div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" data-alt="Illustration of a certificate with a seal" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCxlEy-QNmZuN4IkQii4igq5qMoK-qPbVtADXDas6HAuJ2KvICP9bj9oOvt6WGgDdt89TVzP8TJfIAplMnjfm_dE9WDrglNNH4DNjghuBwah2qCcGtDP5Zq34edOfyFzlqfb4Q3gWsV_0tuhOlmMPugb9ApANNOet9Ct0bAn7AJLkpbcYUZ23RmMRiP2wyCPlsdtIkQuHATR6TEHF0Lg41ouOeQnT-vI9UqGKU4WeDYpt_uhCE0Iy6IyHYFRaioYcss1-nR-LUOnlA");'></div>
+              <span class="absolute top-3 left-3 bg-green-400/20 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Sertifikasi</span>
+            </div>
+            <div class="flex flex-col p-5 gap-4 flex-1">
+              <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">Sertifikasi Digital Marketing Profesional</h2>
+              <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: 05 Agu 2023</p>
+              <div class="w-full">
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-600">Progres</span>
+                  <span class="text-sm font-medium text-green-600">100% Selesai</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+              <button class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-500 text-white text-sm font-medium leading-normal hover:bg-gray-600 focus:ring-4 focus:ring-gray-300">
+              <span class="truncate">Lihat Detail</span>
+              </button>
+            </div>
+          </div>
+      </div>
+      <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 mt-10 pt-6">
+          <div class="-mt-px flex w-0 flex-1">
+            <a class="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 " href="#">
+            <span class="material-symbols-outlined mr-3 h-5 w-5"><</span>Sebelumnya</a>
+          </div>
+          <div class="hidden md:-mt-px md:flex">
+            <a aria-current="page" class="inline-flex items-center border-t-2 border-primary px-4 pt-4 text-sm font-medium text-primary" href="#">1</a>
+            <a class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 " href="#">2</a>
+            <a class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 " href="#">3</a>
+          </div>
+          <div class="-mt-px flex w-0 flex-1 justify-end">
+            <a class="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 " href="#">Selanjutnya<span class="material-symbols-outlined ml-3 h-5 w-5">></span></a>
+          </div>
+      </nav>
     </section>
 
     <!-- Sertifikat -->
@@ -111,3 +245,4 @@
   </main>
 </div>
 @endsection
+
