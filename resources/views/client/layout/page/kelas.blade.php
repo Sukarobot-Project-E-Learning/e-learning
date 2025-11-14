@@ -4,7 +4,7 @@
 <!-- Main Container with Sidebar -->
 <div class="flex min-h-screen bg-gray-50">
   <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-lg fixed h-screen overflow-y-auto transition-transform duration-300 ease-in-out" id="sidebar">
+  <aside id="sidebar" class="w-64 bg-white shadow-lg fixed h-screen overflow-y-auto transform transition-transform duration-300 ease-in-out z-40">
     <div class="p-5">
       <!-- Sort Options -->
       <div class="mb-6">
@@ -61,8 +61,20 @@
     <div class="p-6 bg-white shadow-sm mb-5">
       <div class="flex justify-between items-center gap-4">
 
-        <!-- Nama Kategori -->
-        <h2 class="header text-2xl font-bold text-blue-700">Semua Kelas</h2>
+        <div class="flex gap-2 items-center">
+          <!-- sidebar toggle -->
+          <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
+          <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-30 lg:max-w-screen"></div>
+
+          <!-- Nama Kategori -->
+          <h2 class="header text-2xl font-bold text-blue-700">Semua Kelas</h2>
+        </div>
+        
         
         <!-- Search Box -->
         <div class="relative max-w-md w-full">
@@ -238,10 +250,9 @@
       </div>
     </article>
   </a>
-
-  
-
 </main>
+
+
 
 @endsection
 

@@ -6,6 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".kelas-container");
     const jumlahKelas = document.querySelector(".jumlah-kelas");
     const headerTitle = document.querySelector(".header");
+    const sidebar = document.getElementById("sidebar");
+    const burgerBtn = document.getElementById("sidebar-toggle");
+    const overlay = document.getElementById("sidebar-overlay");
+
+    burgerBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("translate-x-full");
+        overlay.classList.remove("hidden");
+    });
+
+    overlay.addEventListener("click", () => {
+        sidebar.classList.toggle("translate-x-full");
+        overlay.classList.add("hidden");
+    });
 
     if (!container) return;
 
