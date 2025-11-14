@@ -83,14 +83,14 @@
        data-aos-delay="150"
      >
        <a
-         href="{{ url('/elearning/kelas') }}"
+         href="{{ url('#program') }}"
          class="px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-         >Lihat Program</a
+         >Kategori Program</a
        >
        <a
-         href="{{ url('/event') }}"
+         href="{{ url('#event') }}"
          class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-         >Daftar kompetisi</a
+         >Lihat Kompetisi</a
        >
      </div>
 
@@ -159,8 +159,8 @@
  </div>
 </section>
 
-<!-- Event Section -->
-<section id="event" class="py-16 bg-gradient-to-b from-white to-orange-50">
+<!-- Carousel Section -->
+<section id="carousel" class="py-16 bg-gradient-to-b from-white to-orange-50">
  <div class="max-w-7xl mx-auto px-6 text-center mb-10" data-aos="fade-up">
    <h2 class="text-3xl font-bold text-gray-800">
      🎉 Jangan Kelewatan Promo Menarik
@@ -305,7 +305,7 @@
 
 
 
-
+  <!-- Program Section -->
   <section id="program" class="py-20 bg-gradient-to-b from-white to-orange-50 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
       <!-- Category cards (kursus / pelatihan / sertifikasi / outing class / outboard) -->
@@ -420,14 +420,14 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
     <h2
       class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-blue-700"
     >
-      <span class="block text-orange-500">Event Robotik</span>
+      <span class="block text-orange-500">Kompetisi Robotik</span>
       <span class="block">Terdekat & Terpopuler</span>
     </h2>
 
     <p
       class="mt-4 text-base sm:text-lg text-gray-600 max-w-xl mx-auto md:mx-0 leading-relaxed"
     >
-      Bergabunglah dengan event dan kompetisi robotik terkini!
+      Bergabunglah dengan kompetisi robotik terkini!
       Temukan inovasi, kolaborasi, dan inspirasi dari para ahli teknologi di seluruh Indonesia.
     </p>
 
@@ -437,14 +437,14 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
       data-aos-delay="150"
     >
       <a
-        href="{{ url('/event') }}"
+        href="{{ url('https://brc.sukarobot.com/') }}"
         class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-        >Lihat Semua Event</a
+        >BRC</a
       >
       <a
-        href="{{ url('/dtail_event') }}"
+        href="{{ url('https://src.sukarobot.com/') }}"
         class="px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition"
-        >Daftar Sekarang</a
+        >SRC</a
       >
     </div>
 

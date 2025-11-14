@@ -1,59 +1,55 @@
 /* Reset & Base */
 * {
     box-sizing: border-box;
-  }
-  body {
+}
+body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background: #f7f7f7;
     color: #000;
     line-height: 1.5;
-  }
-  a {
+}
+a {
     text-decoration: none;
     color: inherit;
-  }
-  ul {
+}
+ul {
     list-style: none;
     padding-left: 0;
     margin: 0;
-  }
-  
-  /* Sidebar Styles */
-  #sidebar {
+}
+
+/* Sidebar Styles */
+#sidebar {
     z-index: 40;
     transition: transform 0.3s ease-in-out;
-  }
-  
-  #sidebar.hidden {
-    transform: translateX(-100%);
-  }
-  
-  @media (max-width: 1024px) {
+}
+
+@media (max-width: 1024px) {
     #sidebar {
-      transform: translateX(-100%);
+        transform: translateX(-100%);
     }
     #sidebar.show {
-      transform: translateX(0);
+        transform: translateX(0);
     }
     main {
-      margin-left: 0 !important;
+        margin-left: 0 !important;
     }
-  }
-  
-  /* Search Input */
-  #kelas-search {
+}
+
+/* Search Input */
+#kelas-search {
     font-size: 0.875rem;
     background-color: #fff;
-  }
-  
-  #kelas-search:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
+}
 
-  /* Sidebar buttons: make filter buttons look like sort buttons but orange themed */
-  #sidebar .sort-btn,
-  #sidebar .filter-btn {
+#kelas-search:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Sidebar buttons: make filter buttons look like sort buttons but orange themed */
+#sidebar .sort-btn,
+#sidebar .filter-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -65,32 +61,39 @@
     transition: all 0.18s ease-in-out;
     width: 100%;
     text-align: left;
-  }
+}
 
-  #sidebar .sort-btn:hover,
-  #sidebar .filter-btn:hover {
+#sidebar .sort-btn:hover,
+#sidebar .filter-btn:hover {
     background: #f1f5f9; /* light */
     color: #0b2442;
-  }
+}
 
-  #sidebar .sort-btn.active,
-  #sidebar .filter-btn.active {
+#sidebar .sort-btn.active,
+#sidebar .filter-btn.active {
     background: #eef2ff; /* subtle blue */
-    border-color: rgba(59,130,246,0.15);
+    border-color: rgba(59, 130, 246, 0.15);
     color: #0b2442;
-    box-shadow: 0 6px 18px rgba(14,165,233,0.06);
-  }
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.06);
+}
 
-  /* Make filter buttons pill-like within sidebar */
-  #sidebar .filter-btn { border-radius: 8px; padding: 0.5rem 1rem; }
+/* Make filter buttons pill-like within sidebar */
+#sidebar .filter-btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+}
 
-  /* Smaller icon sizes inside sidebar buttons */
-  #sidebar .sort-btn svg, #sidebar .filter-btn svg { width: 16px; height: 16px; }
+/* Smaller icon sizes inside sidebar buttons */
+#sidebar .sort-btn svg,
+#sidebar .filter-btn svg {
+    width: 16px;
+    height: 16px;
+}
 
-  /* Filter Buttons */
+/* Filter Buttons */
 
-  /* Kartu Kelas */
-  .kelas-card {
+/* Kartu Kelas */
+.kelas-card {
     display: flex;
     flex-direction: column;
     border-radius: 16px;
@@ -101,12 +104,12 @@
     transition: box-shadow 0.3s;
     position: relative;
     height: 100%;
-  }
-  .kelas-card:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  }
-  /* gambar kartu */
-  .kelas-img {
+}
+.kelas-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+/* gambar kartu */
+.kelas-img {
     width: 100%;
     height: 160px;
     object-fit: cover;
@@ -114,20 +117,20 @@
     border-top-right-radius: 16px;
     background: #eee;
     box-shadow: inset 0 0 6px rgb(0 0 0 / 0.1);
-  }
+}
 
-  .kelas-desc {
+.kelas-desc {
     flex-grow: 1;
     padding: 1rem 1.25rem 1.5rem 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
-  .kelas-kategori {
+}
+.kelas-kategori {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: inline-block;
     padding: 3px 10px;
     border-radius: 20px;
@@ -136,85 +139,85 @@
     color: white;
     user-select: none;
     letter-spacing: 0.03em;
-  }
-  .kategori-webinar {
-    background-color: #0B2242; /* navy blue */
-  }
-  .kategori-seminar {
-    background-color: #FF6F00; /* orange */
-  }
-  .kategori-offline {
+}
+.kategori-webinar {
+    background-color: #0b2242; /* navy blue */
+}
+.kategori-seminar {
+    background-color: #ff6f00; /* orange */
+}
+.kategori-offline {
     background-color: #07305a; /* gelap navy */
-  }
-  .kategori-online {
+}
+.kategori-online {
     background-color: #1454a8; /* biru navy sedikit cerah */
-  }
-  .kategori-sertifikasi {
+}
+.kategori-sertifikasi {
     background-color: #333;
-  }
-  .kelas-judul {
+}
+.kelas-judul {
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.6rem;
     color: #222;
     line-height: 1.3;
     flex-grow: 1;
-  }
-  .kelas-detail {
+}
+.kelas-detail {
     font-size: 0.85rem;
     color: #555;
     margin-bottom: 1rem;
     flex-grow: 0;
-  }
-  .kelas-harga {
+}
+.kelas-harga {
     font-weight: 700;
     font-size: 1rem;
-    color: #0B2242; /* navy blue */
+    color: #0b2242; /* navy blue */
     display: flex;
     align-items: center;
     gap: 6px;
-  }
-  .kelas-harga::before {
+}
+.kelas-harga::before {
     content: "Rp";
     font-weight: 600;
     font-size: 0.9rem;
-  }
+}
 
-  /* Animasi Fade */
-  .kelas-card.fade-out {
+/* Animasi Fade */
+.kelas-card.fade-out {
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
     transform: scale(0.95);
-  }
-  .kelas-card.fade-in {
+}
+.kelas-card.fade-in {
     opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: auto;
     transform: scale(1);
-  }
+}
 
-  /* Responsive */
-  @media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 600px) {
     header {
-      padding: 0.8rem 1rem;
+        padding: 0.8rem 1rem;
     }
     nav ul {
-      gap: 1rem;
+        gap: 1rem;
     }
     .filters {
-      margin: 1rem;
+        margin: 1rem;
     }
     .kelas-container {
-      grid-template-columns: 1fr;
-      padding: 0 1rem 1rem 1rem;
+        grid-template-columns: 1fr;
+        padding: 0 1rem 1rem 1rem;
     }
-  }
+}
 
-  .scrollbar-hide::-webkit-scrollbar {
+.scrollbar-hide::-webkit-scrollbar {
     display: none;
-  }
-  .scrollbar-hide {
+}
+.scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
+}
