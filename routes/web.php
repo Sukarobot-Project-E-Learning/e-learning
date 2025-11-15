@@ -17,12 +17,28 @@ use App\Http\Controllers\Client\AuthController as ClientAuthController;
 
 // Admin Login Routes (Public)
 Route::prefix('admin')->name('admin.')->group(function () {
+    // Redirect /admin to /admin/login (if not logged in) or /admin/dashboard (if logged in as admin)
+    Route::get('/', function () {
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('admin.login');
+    });
+    
     Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'adminLogin']);
 });
 
 // Instructor Login Routes (Public)
 Route::prefix('instructor')->name('instructor.')->group(function () {
+    // Redirect /instructor to /instructor/login (if not logged in) or /instructor/dashboard (if logged in as instructor)
+    Route::get('/', function () {
+        if (auth()->check() && auth()->user()->role === 'trainer') {
+            return redirect()->route('instructor.dashboard');
+        }
+        return redirect()->route('instructor.login');
+    });
+    
     Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showInstructorLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'instructorLogin']);
 });
