@@ -186,48 +186,36 @@
                     </thead>
 
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                        @php
-                        $programs = [
-                            ['id' => 1, 'title' => 'Strategi Digital Marketing', 'category' => 'Pelatihan', 'start_date' => '08 October 2025', 'type' => 'Online', 'price' => 'Rp. 30.000'],
-                            ['id' => 2, 'title' => 'Strategi Digital Marketing', 'category' => 'Pelatihan', 'start_date' => '08 October 2025', 'type' => 'Online', 'price' => 'Rp. 30.000'],
-                            ['id' => 3, 'title' => 'Strategi Digital Marketing', 'category' => 'Pelatihan', 'start_date' => '08 October 2025', 'type' => 'Online', 'price' => 'Rp. 30.000'],
-                            ['id' => 4, 'title' => 'Workshop Branding', 'category' => 'Training', 'start_date' => '08 October 2025', 'type' => 'Video', 'price' => 'Rp. 30.000'],
-                            ['id' => 5, 'title' => 'Workshop Branding', 'category' => 'Training', 'start_date' => '08 October 2025', 'type' => 'Video', 'price' => 'Rp. 30.000'],
-                            ['id' => 6, 'title' => 'New Level Digital Skill', 'category' => 'Sertifikasi', 'start_date' => '08 October 2025', 'type' => 'Offline', 'price' => 'Rp. 30.000'],
-                            ['id' => 7, 'title' => 'New Level Digital Skill', 'category' => 'Sertifikasi', 'start_date' => '08 October 2025', 'type' => 'Offline', 'price' => 'Rp. 30.000'],
-                        ];
-                        @endphp
-
-                        @foreach($programs as $program)
+                        @forelse($programs ?? [] as $program)
                         <tr class="text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <td class="px-4 py-3 text-sm">
-                                {{ $program['title'] }}
+                                {{ $program['title'] ?? 'N/A' }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                {{ $program['category'] }}
+                                {{ $program['category'] ?? '-' }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                {{ $program['start_date'] }}
+                                {{ $program['start_date'] ?? '-' }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                {{ $program['type'] }}
+                                {{ $program['type'] ?? '-' }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                {{ $program['price'] }}
+                                {{ $program['price'] ?? '-' }}
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center" style="gap: 12px;">
                                     <!-- Edit Button (Blue Square) -->
                                     <button class="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-150" 
                                             aria-label="Edit"
-                                            onclick="window.location.href='{{ route('admin.programs.edit', $program['id']) }}'">
+                                            onclick="window.location.href='{{ route('admin.programs.edit', $program['id'] ?? '#') }}'">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                                         </svg>
                                     </button>
 
                                     <!-- Delete Button (Red Square) -->
-                                    <form action="{{ route('admin.programs.destroy', $program['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');" class="inline-block m-0">
+                                    <form action="{{ route('admin.programs.destroy', $program['id'] ?? '#') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');" class="inline-block m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 
@@ -244,65 +232,19 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                Tidak ada data program. <a href="{{ route('admin.programs.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah program pertama</a>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination Section -->
-            <div class="flex flex-col items-center justify-between px-4 py-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800 sm:flex-row sm:px-6">
-                <!-- Showing Info -->
-                <div class="flex items-center mb-4 sm:mb-0">
-                    <span class="text-sm text-gray-700 dark:text-gray-400">
-                        Showing <span class="font-semibold text-gray-900 dark:text-white">1</span> to <span class="font-semibold text-gray-900 dark:text-white">{{ count($programs) }}</span> of <span class="font-semibold text-gray-900 dark:text-white">68</span> results
-                    </span>
-                </div>
-
-                <!-- Pagination Controls -->
-                <nav aria-label="Table navigation">
-                    <ul class="inline-flex items-center -space-x-px">
-                        <!-- Previous Button -->
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 py-2 ml-0 text-sm leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                                Previous
-                            </a>
-                        </li>
-                        
-                        <!-- Page Numbers -->
-                        <li>
-                            <a href="#" aria-current="page" class="flex items-center justify-center px-4 py-2 text-sm font-semibold text-white border border-purple-600 bg-purple-600 hover:bg-purple-700 dark:border-purple-500 dark:bg-purple-600 dark:hover:bg-purple-700">1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-4 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-4 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
-                        </li>
-                        <li>
-                            <span class="flex items-center justify-center px-4 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">...</span>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-4 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">67</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-4 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">68</a>
-                        </li>
-                        
-                        <!-- Next Button -->
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                Next
-                                <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+            @include('components.pagination', ['items' => $programs ?? null])
 
         </div>
 

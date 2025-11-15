@@ -64,6 +64,9 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination Section -->
+            @include('components.pagination', ['items' => $quizzes ?? null])
         </div>
     </div>
 @endsection

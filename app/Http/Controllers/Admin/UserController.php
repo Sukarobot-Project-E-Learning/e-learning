@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -12,67 +13,57 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $users = [
-            [
-                'id' => 1,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 5,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 6,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 7,
-                'name' => 'Nama user',
-                'email' => 'emailuser@gmail.com',
-                'phone' => '081234567890',
-                'photo' => null,
-                'status' => 'Aktif'
-            ],
-        ];
+        // Get users from database (combine users table with data_siswas for students)
+        $users = DB::table('users')
+            ->select('id', 'name', 'email', 'role', 'created_at')
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => '-',
+                    'photo' => null,
+                    'status' => 'Aktif',
+                    'role' => $user->role
+                ];
+            });
 
-        return view('admin.users.index', compact('users'));
+        // Also get students from data_siswas
+        $students = DB::table('data_siswas')
+            ->where('status_siswa', 'Aktif')
+            ->select('id', 'nama_lengkap as name', 'telephone as phone', 'file as photo', 'status_siswa as status')
+            ->get()
+            ->map(function($student) {
+                return [
+                    'id' => $student->id,
+                    'name' => $student->name ?? 'N/A',
+                    'email' => '-',
+                    'phone' => $student->phone ?? '-',
+                    'photo' => $student->photo,
+                    'status' => $student->status ?? 'Aktif',
+                    'role' => 'student'
+                ];
+            });
+
+        // Combine all users
+        $allUsers = $users->merge($students);
+        
+        // Manual pagination for combined collection
+        $currentPage = request()->get('page', 1);
+        $perPage = 5;
+        $total = $allUsers->count();
+        $items = $allUsers->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        
+        $allUsers = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('admin.users.index', compact('allUsers'));
     }
 
     /**

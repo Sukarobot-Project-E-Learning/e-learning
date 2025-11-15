@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -12,49 +13,47 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $transactions = [
-            [
-                'id' => 1,
-                'name' => 'Nama User',
-                'proof' => null,
-                'date' => '20 September 2025',
-                'nominal' => 'Rp. 100.000',
-                'status' => 'Lunas'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Nama User',
-                'proof' => null,
-                'date' => '20 September 2025',
-                'nominal' => 'Rp. 100.000',
-                'status' => 'Lunas'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Nama User',
-                'proof' => null,
-                'date' => '20 September 2025',
-                'nominal' => 'Rp. 100.000',
-                'status' => 'Lunas'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Nama User',
-                'proof' => null,
-                'date' => '20 September 2025',
-                'nominal' => 'Rp. 100.000',
-                'status' => 'Lunas'
-            ],
-            [
-                'id' => 5,
-                'name' => 'Nama User',
-                'proof' => null,
-                'date' => '20 September 2025',
-                'nominal' => 'Rp. 100.000',
-                'status' => 'Lunas'
-            ],
-        ];
+        // Get transactions from database with pagination (5 per page)
+        $transactions = DB::table('transactions')
+            ->leftJoin('data_siswas', 'transactions.student_id', '=', 'data_siswas.id')
+            ->leftJoin('users', function($join) {
+                $join->on('transactions.student_id', '=', 'users.id')
+                     ->where('users.role', '=', 'user');
+            })
+            ->leftJoin('data_programs', 'transactions.program_id', '=', 'data_programs.id')
+            ->select(
+                'transactions.*',
+                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as student_name'),
+                'data_programs.program as program_name'
+            )
+            ->orderBy('transactions.created_at', 'desc')
+            ->paginate(5);
+
+        // Transform data after pagination
+        $transactions->getCollection()->transform(function($transaction) {
+            // Format status
+            $statusMap = [
+                'pending' => 'Menunggu',
+                'paid' => 'Lunas',
+                'failed' => 'Gagal',
+                'refunded' => 'Dikembalikan',
+                'cancelled' => 'Dibatalkan'
+            ];
+            $statusLabel = $statusMap[$transaction->status] ?? $transaction->status;
+
+            return [
+                'id' => $transaction->id,
+                'name' => $transaction->student_name ?? 'N/A',
+                'program' => $transaction->program_name ?? 'N/A',
+                'proof' => $transaction->payment_proof,
+                'date' => $transaction->payment_date 
+                    ? date('d F Y', strtotime($transaction->payment_date)) 
+                    : ($transaction->created_at ? date('d F Y', strtotime($transaction->created_at)) : '-'),
+                'nominal' => 'Rp. ' . number_format($transaction->amount, 0, ',', '.'),
+                'status' => $statusLabel,
+                'transaction_code' => $transaction->transaction_code ?? '-'
+            ];
+        });
 
         return view('admin.transactions.index', compact('transactions'));
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InstructorController extends Controller
 {
@@ -13,69 +14,32 @@ class InstructorController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara - instruktur yang mendaftar (pending approval)
-        $instructors = [
-            [
-                'id' => 1,
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com',
-                'phone' => '081234567890',
-                'job' => 'Social Media Manager',
-                'experience' => '7 Tahun',
-                'photo' => null,
-                'expertise' => 'Social Media',
-                'status' => 'Pending', // Pending, Approved, Rejected
-                'created_at' => '2024-01-15'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Jane Smith',
-                'email' => 'jane.smith@example.com',
-                'phone' => '081234567891',
-                'job' => 'Digital Marketing Specialist',
-                'experience' => '5 Tahun',
-                'photo' => null,
-                'expertise' => 'Digital Marketing',
-                'status' => 'Pending',
-                'created_at' => '2024-01-16'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Bob Johnson',
-                'email' => 'bob.johnson@example.com',
-                'phone' => '081234567892',
-                'job' => 'Web Developer',
-                'experience' => '10 Tahun',
-                'photo' => null,
-                'expertise' => 'Web Development',
-                'status' => 'Approved',
-                'created_at' => '2024-01-10'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Alice Williams',
-                'email' => 'alice.williams@example.com',
-                'phone' => '081234567893',
-                'job' => 'Content Creator',
-                'experience' => '3 Tahun',
-                'photo' => null,
-                'expertise' => 'Social Media',
-                'status' => 'Rejected',
-                'created_at' => '2024-01-12'
-            ],
-            [
-                'id' => 5,
-                'name' => 'Charlie Brown',
-                'email' => 'charlie.brown@example.com',
-                'phone' => '081234567894',
-                'job' => 'UI/UX Designer',
-                'experience' => '6 Tahun',
-                'photo' => null,
-                'expertise' => 'Design',
-                'status' => 'Pending',
-                'created_at' => '2024-01-17'
-            ],
-        ];
+        // Get instructors from data_trainers table with pagination (5 per page)
+        $instructors = DB::table('data_trainers')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        // Transform data after pagination
+        $instructors->getCollection()->transform(function($trainer) {
+            // Check if trainer has user account
+            $user = DB::table('users')
+                ->where('email', $trainer->email)
+                ->first();
+
+            return [
+                'id' => $trainer->id,
+                'name' => $trainer->nama,
+                'email' => $trainer->email ?? '-',
+                'phone' => $trainer->telephone ?? '-',
+                'job' => $trainer->lulusan ?? '-',
+                'experience' => '-',
+                'photo' => $trainer->profile ?? null,
+                'expertise' => '-',
+                'status' => $trainer->status_trainer, // Aktif, Tidak Aktif
+                'created_at' => $trainer->created_at ? date('Y-m-d', strtotime($trainer->created_at)) : '-',
+                'has_account' => $user ? true : false
+            ];
+        });
 
         return view('admin.instructors.index', compact('instructors'));
     }

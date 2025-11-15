@@ -27,7 +27,7 @@
                     Program Saya
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    12
+                    {{ number_format($totalPrograms ?? 0) }}
                 </p>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     Tugas/Postest
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    8
+                    {{ number_format($totalQuizzes ?? 0) }}
                 </p>
             </div>
         </div>
@@ -61,7 +61,7 @@
                     Total Siswa
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    156
+                    {{ number_format($totalStudents ?? 0) }}
                 </p>
             </div>
         </div>
@@ -78,7 +78,7 @@
                     Tugas Dikumpulkan
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    89
+                    {{ number_format($totalSubmissions ?? 0) }}
                 </p>
             </div>
         </div>
@@ -153,50 +153,36 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                        @forelse($recentPrograms ?? [] as $program)
                         <tr class="text-gray-700 dark:text-gray-400">
                             <td class="px-4 py-3">
                                 <div class="flex items-center text-sm">
                                     <div>
-                                        <p class="font-semibold">Strategi Digital Marketing</p>
+                                        <p class="font-semibold">{{ $program->title ?? $program->program ?? 'N/A' }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">Pelatihan</td>
-                            <td class="px-4 py-3 text-sm">Online</td>
+                            <td class="px-4 py-3 text-sm">-</td>
+                            <td class="px-4 py-3 text-sm">-</td>
                             <td class="px-4 py-3 text-xs">
-                                <span class="px-2 py-1 text-xs font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                                    Aktif
+                                <span class="px-2 py-1 text-xs font-semibold leading-tight {{ ($program->status ?? '') == 'Aktif' ? 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' : 'text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-100' }} rounded-full">
+                                    {{ $program->status ?? 'N/A' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center space-x-4 text-sm">
-                                    <a href="#" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Edit</a>
+                                    <a href="{{ route('instructor.programs.edit', $program->id ?? '#') }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Edit</a>
                                     <a href="#" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</a>
                                 </div>
                             </td>
                         </tr>
-                        <tr class="text-gray-700 dark:text-gray-400">
-                            <td class="px-4 py-3">
-                                <div class="flex items-center text-sm">
-                                    <div>
-                                        <p class="font-semibold">Workshop Branding</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">Training</td>
-                            <td class="px-4 py-3 text-sm">Video</td>
-                            <td class="px-4 py-3 text-xs">
-                                <span class="px-2 py-1 text-xs font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                                    Aktif
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center space-x-4 text-sm">
-                                    <a href="#" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Edit</a>
-                                    <a href="#" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</a>
-                                </div>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                Belum ada program. <a href="{{ route('instructor.programs.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah program pertama</a>
                             </td>
                         </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

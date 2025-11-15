@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
@@ -12,30 +13,42 @@ class QuizController extends Controller
      */
     public function index()
     {
-        // TODO: Get all quizzes
-        // $quizzes = Quiz::with('instructor', 'program')->get();
-        
-        // Dummy data untuk sementara
-        $quizzes = [
-            [
-                'id' => 1,
-                'title' => 'Postest Digital Marketing',
-                'instructor' => 'John Doe',
-                'program' => 'Strategi Digital Marketing',
-                'total_questions' => 10,
-                'total_responses' => 25,
-                'created_at' => '2024-01-15'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Postest Workshop Branding',
-                'instructor' => 'Jane Smith',
-                'program' => 'Workshop Branding',
-                'total_questions' => 15,
-                'total_responses' => 18,
-                'created_at' => '2024-01-20'
-            ],
-        ];
+        // Get all quizzes from database with pagination (5 per page)
+        $quizzes = DB::table('quizzes')
+            ->leftJoin('data_programs', 'quizzes.program_id', '=', 'data_programs.id')
+            ->leftJoin('data_trainers', 'quizzes.instructor_id', '=', 'data_trainers.id')
+            ->select(
+                'quizzes.*',
+                'data_programs.program as program_name',
+                'data_trainers.nama as instructor_name'
+            )
+            ->orderBy('quizzes.created_at', 'desc')
+            ->paginate(5);
+
+        // Transform data after pagination
+        $quizzes->getCollection()->transform(function($quiz) {
+            // Get total questions count
+            $totalQuestions = DB::table('quiz_questions')
+                ->where('quiz_id', $quiz->id)
+                ->count();
+
+            // Get total responses count
+            $totalResponses = DB::table('quiz_responses')
+                ->where('quiz_id', $quiz->id)
+                ->count();
+
+            return [
+                'id' => $quiz->id,
+                'title' => $quiz->title,
+                'instructor' => $quiz->instructor_name ?? 'N/A',
+                'program' => $quiz->program_name ?? 'N/A',
+                'type' => $quiz->type ?? 'Postest',
+                'status' => $quiz->status ?? 'draft',
+                'total_questions' => $totalQuestions,
+                'total_responses' => $totalResponses,
+                'created_at' => $quiz->created_at ? date('Y-m-d', strtotime($quiz->created_at)) : '-'
+            ];
+        });
 
         return view('admin.quizzes.index', compact('quizzes'));
     }

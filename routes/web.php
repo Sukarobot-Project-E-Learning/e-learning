@@ -15,8 +15,28 @@ use App\Http\Controllers\Client\AuthController as ClientAuthController;
 |
 */
 
-// Admin Routes
+// Admin Login Routes (Public)
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'adminLogin']);
+});
+
+// Instructor Login Routes (Public)
+Route::prefix('instructor')->name('instructor.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showInstructorLoginForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'instructorLogin']);
+});
+
+// Logout Route
+Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+// Fallback login route (redirect to admin login)
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
+// Admin Routes (Protected)
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // User Management
@@ -27,6 +47,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
+    
+    // Program Approval Management (Persetujuan Program dari Instruktur)
+    Route::get('program-approvals', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'index'])->name('program-approvals.index');
+    Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');
+    Route::post('program-approvals/{id}/approve', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'approve'])->name('program-approvals.approve');
+    Route::post('program-approvals/{id}/reject', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'reject'])->name('program-approvals.reject');
 
     // Instructor Management (Konfirmasi Akun Instruktur)
     Route::get('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'index'])->name('instructors.index');
@@ -121,11 +147,7 @@ Route::name('client.')->group(function () {
         return view('client.layout.page.pembayaran');
     })->name('pembayaran');
 
-    // Authentication Pages
-    Route::get('/login', function () {
-        return view('client.layout.page.login.login');
-    })->name('login');
-
+    // Authentication Pages (Login sudah didefinisikan di atas, tidak perlu duplikat)
     Route::get('/register', function () {
         return view('client.layout.page.login.create');
     })->name('register');
@@ -139,8 +161,8 @@ Route::name('client.')->group(function () {
     })->name('dashboard');
 });
 
-// Instructor Routes
-Route::prefix('instructor')->name('instructor.')->group(function () {
+// Instructor Routes (Protected)
+Route::prefix('instructor')->name('instructor.')->middleware(['auth', 'instructor'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
     
     // Profile Management

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProgramController extends Controller
 {
@@ -12,65 +13,35 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $programs = [
-            [
-                'id' => 1,
-                'title' => 'Strategi Digital Marketing',
-                'category' => 'Pelatihan',
-                'start_date' => '08 October 2025',
-                'type' => 'Online',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Strategi Digital Marketing',
-                'category' => 'Pelatihan',
-                'start_date' => '08 October 2025',
-                'type' => 'Online',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Strategi Digital Marketing',
-                'category' => 'Pelatihan',
-                'start_date' => '08 October 2025',
-                'type' => 'Online',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 4,
-                'title' => 'Workshop Branding',
-                'category' => 'Training',
-                'start_date' => '08 October 2025',
-                'type' => 'Video',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 5,
-                'title' => 'Workshop Branding',
-                'category' => 'Training',
-                'start_date' => '08 October 2025',
-                'type' => 'Video',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 6,
-                'title' => 'New Level Digital Skill',
-                'category' => 'Sertifikasi',
-                'start_date' => '08 October 2025',
-                'type' => 'Offline',
-                'price' => 'Rp. 30.000'
-            ],
-            [
-                'id' => 7,
-                'title' => 'New Level Digital Skill',
-                'category' => 'Sertifikasi',
-                'start_date' => '08 October 2025',
-                'type' => 'Offline',
-                'price' => 'Rp. 30.000'
-            ],
-        ];
+        // Get programs from database with pagination (5 per page)
+        $programs = DB::table('data_programs')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        // Transform data after pagination
+        $programs->getCollection()->transform(function($program) {
+            // Get level count for this program
+            $levelCount = DB::table('data_levels')
+                ->where('id_programs', $program->id)
+                ->count();
+
+            // Get active schedule count
+            $scheduleCount = DB::table('schedules')
+                ->where('id_program', $program->id)
+                ->where('ket', 'Aktif')
+                ->count();
+
+            return [
+                'id' => $program->id,
+                'title' => $program->program,
+                'category' => '-',
+                'start_date' => $program->created_at ? date('d F Y', strtotime($program->created_at)) : '-',
+                'type' => '-',
+                'price' => '-',
+                'level_count' => $levelCount,
+                'schedule_count' => $scheduleCount
+            ];
+        });
 
         return view('admin.programs.index', compact('programs'));
     }

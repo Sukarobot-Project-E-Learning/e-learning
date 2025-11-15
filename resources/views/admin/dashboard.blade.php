@@ -27,7 +27,7 @@
                     Pengguna
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    1000
+                    {{ number_format($totalUsers ?? 0) }}
                 </p>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     Modul Aktif
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    1000
+                    {{ number_format($totalLevels ?? 0) }}
                 </p>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     Konten Siswa
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    100
+                    {{ number_format($totalStudents ?? 0) }}
                 </p>
             </div>
         </div>
@@ -79,7 +79,7 @@
                     Total Admin
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    3
+                    {{ number_format($totalAdmins ?? 0) }}
                 </p>
             </div>
         </div>
@@ -96,7 +96,7 @@
                     Total Program
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    1000
+                    {{ number_format($totalPrograms ?? 0) }}
                 </p>
             </div>
         </div>
@@ -113,7 +113,11 @@
                     Total Keuntungan
                 </p>
                 <p class="text-2xl font-bold text-gray-700 dark:text-gray-200">
-                    Rp. 5.000.000
+                    @if($totalRevenue > 0)
+                        Rp. {{ number_format($totalRevenue, 0, ',', '.') }}
+                    @else
+                        Rp. 0
+                    @endif
                 </p>
             </div>
         </div>
