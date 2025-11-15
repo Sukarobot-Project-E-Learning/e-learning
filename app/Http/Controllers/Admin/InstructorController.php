@@ -80,6 +80,24 @@ class InstructorController extends Controller
         return view('admin.instructors.index', compact('instructors'));
     }
 
+    /**
+     * Show the form for creating a new instructor.
+     */
+    public function create()
+    {
+        return view('admin.instructors.create');
+    }
+
+    /**
+     * Store a newly created instructor in storage.
+     */
+    public function store(Request $request)
+    {
+        // TODO: Add validation and store logic here
+        // For now, just redirect back with success message
+
+        return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil ditambahkan');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -88,7 +106,7 @@ class InstructorController extends Controller
     {
         // TODO: Add delete logic here
         // Delete logic here
-        return redirect()->route('elearning.admin.instructors.index')->with('success', 'Instruktur berhasil dihapus');
+        return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil dihapus');
     }
 
     /**
@@ -101,7 +119,7 @@ class InstructorController extends Controller
         // Activate instructor account
         // Send notification email
         
-        return redirect()->route('elearning.admin.instructors.index')->with('success', 'Akun instruktur berhasil disetujui');
+        return redirect()->route('admin.instructors.index')->with('success', 'Akun instruktur berhasil disetujui');
     }
 
     /**
@@ -113,7 +131,7 @@ class InstructorController extends Controller
         // Update instructor status to 'Rejected'
         // Send notification email with rejection reason
         
-        return redirect()->route('elearning.admin.instructors.index')->with('success', 'Pendaftaran instruktur ditolak');
+        return redirect()->route('admin.instructors.index')->with('success', 'Pendaftaran instruktur ditolak');
     }
 }
 
