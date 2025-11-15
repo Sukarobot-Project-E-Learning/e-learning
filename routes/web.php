@@ -67,6 +67,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
     Route::get('transactions/export', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('transactions.export');
     Route::delete('transactions/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'destroy'])->name('transactions.destroy');
+    
+    // Quiz/Tugas Management (Admin juga bisa buat)
+    Route::get('quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'index'])->name('quizzes.index');
+    Route::get('quizzes/create', [\App\Http\Controllers\Admin\QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{id}', [\App\Http\Controllers\Admin\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('quizzes/{id}/edit', [\App\Http\Controllers\Admin\QuizController::class, 'edit'])->name('quizzes.edit');
+    Route::put('quizzes/{id}', [\App\Http\Controllers\Admin\QuizController::class, 'update'])->name('quizzes.update');
+    Route::delete('quizzes/{id}', [\App\Http\Controllers\Admin\QuizController::class, 'destroy'])->name('quizzes.destroy');
 });
 
 // Client/User Routes
@@ -128,4 +137,25 @@ Route::name('client.')->group(function () {
     Route::get('/dashboard', function () {
         return view('client.layout.page.dashboard');
     })->name('dashboard');
+});
+
+// Instructor Routes
+Route::prefix('instructor')->name('instructor.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
+    
+    // Profile Management
+    Route::get('/profile', [\App\Http\Controllers\Instructor\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\Instructor\ProfileController::class, 'update'])->name('profile.update');
+    
+    // Program Management
+    Route::resource('programs', \App\Http\Controllers\Instructor\ProgramController::class);
+    
+    // Quiz/Tugas Management
+    Route::get('quizzes', [\App\Http\Controllers\Instructor\QuizController::class, 'index'])->name('quizzes.index');
+    Route::get('quizzes/create', [\App\Http\Controllers\Instructor\QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('quizzes', [\App\Http\Controllers\Instructor\QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{id}', [\App\Http\Controllers\Instructor\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('quizzes/{id}/edit', [\App\Http\Controllers\Instructor\QuizController::class, 'edit'])->name('quizzes.edit');
+    Route::put('quizzes/{id}', [\App\Http\Controllers\Instructor\QuizController::class, 'update'])->name('quizzes.update');
+    Route::delete('quizzes/{id}', [\App\Http\Controllers\Instructor\QuizController::class, 'destroy'])->name('quizzes.destroy');
 });
