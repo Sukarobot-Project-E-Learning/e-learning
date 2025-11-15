@@ -91,7 +91,7 @@
   <main class="kelas-container grid gap-6 px-6 pb-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
 
   <!-- Card 1 -->
-  <a href="{{ url('elearning/kelas/dtail_kelas') }}" class="block group kelas-card" data-category="kursus">
+  <a href="{{ url('kelas/dtail_kelas') }}" class="block group kelas-card" data-category="kursus">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=1"

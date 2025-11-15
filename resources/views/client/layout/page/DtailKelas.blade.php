@@ -117,7 +117,7 @@
 
         <!-- Tombol -->
         <div class="flex flex-col gap-2">
-          <a href="{{ url('/pembayaran') }}"><button class="w-full bg-gradient-to-r from-orange-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">Beli Kelas</button></a>
+          <a href="{{ url('pembayaran') }}"><button class="w-full bg-gradient-to-r from-orange-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">Beli Kelas</button></a>
           <button class="w-full border border-blue-400 text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition">Tukar Voucher Kelas</button>
         </div>
 

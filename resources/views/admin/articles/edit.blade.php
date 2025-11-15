@@ -23,7 +23,7 @@
 
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="articleForm" action="{{ route('elearning.admin.articles.update', $article['id']) }}" method="POST" enctype="multipart/form-data">
+            <form id="articleForm" action="{{ route('admin.articles.update', $article['id']) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="px-6 py-6 space-y-6">

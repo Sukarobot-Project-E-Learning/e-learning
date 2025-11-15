@@ -55,7 +55,7 @@
 
                 <!-- Tambah Broadcast Button -->
                 <button type="button"
-                        onclick="window.location.href='{{ route('elearning.admin.broadcasts.create') }}'"
+                        onclick="window.location.href='{{ route('admin.broadcasts.create') }}'"
                         class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     Tambah Broadcast
                     <span class="ml-2" aria-hidden="true">+</span>
@@ -83,7 +83,7 @@
                         </p>
                         <div class="flex items-center ml-4" style="gap: 12px;">
                             <!-- Edit Button (Blue Square) -->
-                            <a href="{{ route('elearning.admin.broadcasts.edit', $broadcast['id']) }}"
+                            <a href="{{ route('admin.broadcasts.edit', $broadcast['id']) }}"
                                class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-150"
                                aria-label="Edit">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@
                                 </svg>
                             </a>
                             <!-- Delete Button (Red Square) -->
-                            <form action="{{ route('elearning.admin.broadcasts.destroy', $broadcast['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus broadcast ini?');" class="inline-block m-0">
+                            <form action="{{ route('admin.broadcasts.destroy', $broadcast['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus broadcast ini?');" class="inline-block m-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 

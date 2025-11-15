@@ -72,13 +72,14 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('elearning.admin.instructors.create') }}"
+                {{-- Instructor registration is done by users, not admin --}}
+                {{-- <a href="{{ route('admin.instructors.create') }}"
                    class="inline-flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     <span>Tambah Instruktur</span>
-                </a>
+                </a> --}}
             </div>
         </div>
 
@@ -177,7 +178,7 @@
                                 <div class="flex items-center" style="gap: 12px;">
                                     @if($instructor['status'] == 'Pending')
                                         <!-- Approve Button (Green/Purple) -->
-                                        <form action="{{ route('elearning.admin.instructors.approve', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui akun instruktur ini?');">
+                                        <form action="{{ route('admin.instructors.approve', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui akun instruktur ini?');">
                                             @csrf
                                             <button type="submit" 
                                                     class="flex items-center justify-center w-8 h-8 bg-purple-600 text-white rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 transition-colors duration-150" 
@@ -189,7 +190,7 @@
                                         </form>
 
                                         <!-- Reject Button (Red) -->
-                                        <form action="{{ route('elearning.admin.instructors.reject', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menolak akun instruktur ini?');">
+                                        <form action="{{ route('admin.instructors.reject', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menolak akun instruktur ini?');">
                                             @csrf
                                             <button type="submit" 
                                                     class="flex items-center justify-center w-8 h-8 text-white rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors duration-150"
@@ -204,7 +205,7 @@
                                         </form>
                                     @else
                                         <!-- Delete Button (Red Square) -->
-                                        <form action="{{ route('elearning.admin.instructors.destroy', $instructor['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus instruktur ini?');" class="inline-block m-0">
+                                        <form action="{{ route('admin.instructors.destroy', $instructor['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus instruktur ini?');" class="inline-block m-0">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 

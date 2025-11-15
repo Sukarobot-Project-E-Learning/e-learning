@@ -88,7 +88,7 @@
         <img src="${a.image}" class="w-full h-40 object-cover">
         <div class="p-4">
           <h3 class="font-semibold text-lg text-gray-900">
-            <a href="/berita?id=${a.id}" class="hover:text-blue-600">${a.title}</a>
+            <a href="berita?id=${a.id}" class="hover:text-blue-600">${a.title}</a>
 
           </h3>
           <p class="text-sm text-gray-600 mt-2">${a.excerpt}</p>

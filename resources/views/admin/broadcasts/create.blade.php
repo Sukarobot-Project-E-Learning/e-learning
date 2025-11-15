@@ -23,7 +23,7 @@
 
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="broadcastForm" action="{{ route('elearning.admin.broadcasts.store') }}" method="POST">
+            <form id="broadcastForm" action="{{ route('admin.broadcasts.store') }}" method="POST">
                 @csrf
                 <div class="px-6 py-6 space-y-6">
 

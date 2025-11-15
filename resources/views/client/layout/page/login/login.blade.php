@@ -62,7 +62,7 @@
 
         <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">
           <a href="{{ url('/reset') }}" class="hover:text-blue-600 transition">Lupa Password?</a>
-          <a href="{{ url('/elearning/register') }}" class="hover:text-orange-500 transition">Buat Akun Baru</a>
+          <a href="{{ url('/register') }}" class="hover:text-orange-500 transition">Buat Akun Baru</a>
         </div>
       </div>
     </div>

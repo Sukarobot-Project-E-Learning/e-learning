@@ -74,7 +74,7 @@
 
                 <!-- Tambah Program Button -->
                 <button type="button"
-                        onclick="window.location.href='{{ route('elearning.admin.programs.create') }}'"
+                        onclick="window.location.href='{{ route('admin.programs.create') }}'"
                         class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     Tambah Program
                     <span class="ml-2" aria-hidden="true">+</span>
@@ -220,14 +220,14 @@
                                     <!-- Edit Button (Blue Square) -->
                                     <button class="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-150" 
                                             aria-label="Edit"
-                                            onclick="window.location.href='{{ route('elearning.admin.programs.edit', $program['id']) }}'">
+                                            onclick="window.location.href='{{ route('admin.programs.edit', $program['id']) }}'">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                                         </svg>
                                     </button>
 
                                     <!-- Delete Button (Red Square) -->
-                                    <form action="{{ route('elearning.admin.programs.destroy', $program['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');" class="inline-block m-0">
+                                    <form action="{{ route('admin.programs.destroy', $program['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');" class="inline-block m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

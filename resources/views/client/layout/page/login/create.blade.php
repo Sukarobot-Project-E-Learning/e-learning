@@ -78,7 +78,7 @@
 
         <div class="mt-6 text-sm text-gray-600 text-center">
           Sudah punya akun?
-          <a href="{{ url('/elearning/login') }}" class="text-blue-600 hover:underline">Login</a>
+          <a href="{{ url('/login') }}" class="text-blue-600 hover:underline">Login</a>
         </div>
       </div>
     </div>

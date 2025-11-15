@@ -1,7 +1,7 @@
 <header class="sticky-nav h-16">
     <div class="nav-container">
       <!-- Logo -->
-      <a href="{{ url('/elearning') }}" class="nav-logo" aria-label="Sukarobot Home">
+      <a href="{{ url('/') }}" class="nav-logo" aria-label="Sukarobot Home">
         <img src="{{ asset('assets/elearning/client/img/Sukarobot-logo.png') }}" alt="Sukarobot" class="logo-img" />
       </a>
 
@@ -13,17 +13,17 @@
       <!-- Nav Links -->
       <ul class="custom-nav" id="nav-menu">
         <!-- Home -->
-        <li><a href="{{ url('/elearning') }}">Home</a></li>
-        
+        <li><a href="{{ url('/') }}">Home</a></li>
+
         <!-- Program Dropdown -->
         <li class="custom-dropdown">
-          <a href="{{ url('/elearning/kelas') }}">Program ▾</a>
+          <a href="{{ url('/kelas') }}">Program ▾</a>
           <ul class="custom-dropdown-menu">
-            <li><a href="{{ url('/elearning/kelas#filter=kursus') }}">Kursus</a></li>
-            <li><a href="{{ url('/elearning/kelas#filter=pelatihan') }}">Pelatihan</a></li>
-            <li><a href="{{ url('/elearning/kelas#filter=sertifikasi') }}">Sertifikasi</a></li>
-            <li><a href="{{ url('/elearning/kelas#filter=outingclass') }}">Outing Class</a></li>
-            <li><a href="{{ url('/elearning/kelas#filter=outboard') }}">Outboard</a></li>
+            <li><a href="{{ url('/kelas#filter=kursus') }}">Kursus</a></li>
+            <li><a href="{{ url('/kelas#filter=pelatihan') }}">Pelatihan</a></li>
+            <li><a href="{{ url('/kelas#filter=sertifikasi') }}">Sertifikasi</a></li>
+            <li><a href="{{ url('/kelas#filter=outingclass') }}">Outing Class</a></li>
+            <li><a href="{{ url('/kelas#filter=outboard') }}">Outboard</a></li>
           </ul>
         </li>
 
@@ -40,16 +40,16 @@
         <li class="custom-dropdown">
           <a href="{{ url('#') }}">Tentang Sukarobot ▾</a>
           <ul class="custom-dropdown-menu">
-            <li><a href="{{ url('/elearning/instruktur') }}">Instruktur</a></li>
-            <li><a href="{{ url('/elearning/about') }}">Tentang Kami</a></li>
+            <li><a href="{{ url('/instruktur') }}">Instruktur</a></li>
+            <li><a href="{{ url('/about') }}">Tentang Kami</a></li>
           </ul>
         </li>
 
         <!-- Blog -->
-        <li><a href="{{ url('/elearning/blog') }}">Artikel</a></li>
+        <li><a href="{{ url('/blog') }}">Artikel</a></li>
 
         <!-- Button Masuk -->
-        <li><a href="{{ url('/elearning/login') }}" class="btn-login">Masuk</a></li>
+        <li><a href="{{ url('/login') }}" class="btn-login">Masuk</a></li>
       </ul>
     </div>
   </header>

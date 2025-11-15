@@ -205,7 +205,7 @@
                                        class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                <a href="{{ route('elearning.admin.program-proofs.show', $proof['id']) }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
+                                <a href="{{ route('admin.program-proofs.show', $proof['id']) }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
                                     {{ $proof['name'] }}
                                 </a>
                             </td>
@@ -232,7 +232,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center" style="gap: 12px;">
                                     <!-- Delete Button (Red Square) -->
-                                    <form action="{{ route('elearning.admin.program-proofs.destroy', $proof['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus bukti program ini?');" class="inline-block m-0">
+                                    <form action="{{ route('admin.program-proofs.destroy', $proof['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus bukti program ini?');" class="inline-block m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

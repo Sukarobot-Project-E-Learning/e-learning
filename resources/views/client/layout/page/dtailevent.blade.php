@@ -95,7 +95,7 @@
       <img src="{{ asset('assets/elearning/client/img/Kita ke Sana - Hindia.jpeg') }}" alt="Event" class="rounded-xl mb-6 shadow-lg poster-hover">
       <h4 class="text-3xl font-semibold text-gray-800 mb-2">Rp.390.000</h4>
 
-      <button onclick="window.location.href='{{ url('/pembayaran') }}'"
+      <button onclick="window.location.href='{{ url('pembayaran') }}'"
       class="btn-hover bg-gradient-to-r from-blue-500 to-blue-600 w-full text-white py-3 rounded-xl font-medium mb-3 shadow hover:scale-105 transition">
  Ikuti Event
 </button>

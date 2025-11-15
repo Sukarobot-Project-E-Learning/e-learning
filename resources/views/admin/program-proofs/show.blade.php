@@ -11,21 +11,21 @@
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Bukti Program</h2>
                 <div class="flex gap-2">
-                    <a href="{{ route('elearning.admin.program-proofs.index') }}"
+                    <a href="{{ route('admin.program-proofs.index') }}"
                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
                         Kembali
                     </a>
-                    <form action="{{ route('elearning.admin.program-proofs.accept', $proof->id ?? 1) }}" method="POST" class="inline-block">
+                    <form action="{{ route('admin.program-proofs.accept', $proof->id ?? 1) }}" method="POST" class="inline-block">
                         @csrf
                         <button type="submit" 
                                 class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                             Terima
                         </button>
                     </form>
-                    <form action="{{ route('elearning.admin.program-proofs.reject', $proof->id ?? 1) }}" method="POST" class="inline-block">
+                    <form action="{{ route('admin.program-proofs.reject', $proof->id ?? 1) }}" method="POST" class="inline-block">
                         @csrf
                         <button type="submit" 
                                 class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">

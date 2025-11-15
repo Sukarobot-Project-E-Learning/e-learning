@@ -15,12 +15,8 @@ use App\Http\Controllers\Client\AuthController as ClientAuthController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // Admin Routes
-Route::prefix('elearning/admin')->name('elearning.admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // User Management
@@ -72,7 +68,7 @@ Route::prefix('elearning/admin')->name('elearning.admin.')->group(function () {
 });
 
 // Client/User Routes
-Route::prefix('elearning')->name('elearning.client.')->group(function () {
+Route::name('client.')->group(function () {
     // Home & Public Pages
     Route::get('/', function () {
         return view('client.layout.page.home');

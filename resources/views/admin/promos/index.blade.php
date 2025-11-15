@@ -69,7 +69,7 @@
 
                 <!-- Tambah Promo Button -->
                 <button type="button"
-                        onclick="window.location.href='{{ route('elearning.admin.promos.create') }}'"
+                        onclick="window.location.href='{{ route('admin.promos.create') }}'"
                         class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     Tambah Promo
                     <span class="ml-2" aria-hidden="true">+</span>
@@ -178,7 +178,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center" style="gap: 12px;">
                                     <!-- Edit Button (Blue Square) -->
-                                    <a href="{{ route('elearning.admin.promos.edit', $promo['id']) }}"
+                                    <a href="{{ route('admin.promos.edit', $promo['id']) }}"
                                        class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-150"
                                        aria-label="Edit">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +186,7 @@
                                         </svg>
                                     </a>
                                     <!-- Delete Button (Red Square) -->
-                                    <form action="{{ route('elearning.admin.promos.destroy', $promo['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus promo ini?');" class="inline-block m-0">
+                                    <form action="{{ route('admin.promos.destroy', $promo['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus promo ini?');" class="inline-block m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

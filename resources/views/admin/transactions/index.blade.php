@@ -68,7 +68,7 @@
                 </div>
 
                 <!-- Ekspor Excel Button -->
-                <a href="{{ route('elearning.admin.transactions.export') }}"
+                <a href="{{ route('admin.transactions.export') }}"
                    class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     Ekspor Excel
                 </a>
@@ -222,7 +222,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <!-- Delete Button (Red Square) -->
-                                <form action="{{ route('elearning.admin.transactions.destroy', $transaction['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');" class="inline-block m-0">
+                                <form action="{{ route('admin.transactions.destroy', $transaction['id']) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');" class="inline-block m-0">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
