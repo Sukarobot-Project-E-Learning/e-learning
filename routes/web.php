@@ -52,7 +52,8 @@ Route::get('/login', function () {
 })->name('login');
 
 // Admin Routes (Protected)
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+// Note: Using only 'admin' middleware because it already checks auth
+Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // User Management
@@ -178,7 +179,8 @@ Route::name('client.')->group(function () {
 });
 
 // Instructor Routes (Protected)
-Route::prefix('instructor')->name('instructor.')->middleware(['auth', 'instructor'])->group(function () {
+// Note: Using only 'instructor' middleware because it already checks auth
+Route::prefix('instructor')->name('instructor.')->middleware(['instructor'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
     
     // Profile Management

@@ -21,7 +21,11 @@ class EnsureUserIsAdmin
         }
 
         if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
+            // If user is logged in but not an admin, redirect to admin login
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('admin.login')->with('error', 'Anda tidak memiliki akses sebagai admin. Silakan login dengan akun admin.');
         }
 
         return $next($request);

@@ -16,14 +16,12 @@ class DashboardController extends Controller
     public function index()
     {
         // Get current instructor/trainer ID
-        // TODO: Get from authenticated user or session
-        // For now, we'll get trainer ID from data_trainers based on email or use first active trainer
         $trainerId = null;
         
         // If user is authenticated and has trainer relation
         if (auth()->check()) {
             $user = auth()->user();
-            // Try to find trainer by email
+            // Find trainer by email
             $trainer = DB::table('data_trainers')
                 ->where('email', $user->email)
                 ->first();
@@ -76,14 +74,15 @@ class DashboardController extends Controller
             ->filter()
             ->toArray();
 
-        $uniqueStudentIds = DB::table('big_data')
-            ->whereIn('id_bigData', $scheduleIds)
-            ->distinct()
-            ->pluck('id_siswa')
-            ->filter()
-            ->count();
-
-        $totalStudents = $uniqueStudentIds;
+        $totalStudents = 0;
+        if (!empty($scheduleIds)) {
+            $totalStudents = DB::table('big_data')
+                ->whereIn('id_bigData', $scheduleIds)
+                ->distinct()
+                ->pluck('id_siswa')
+                ->filter()
+                ->count();
+        }
 
         // Get total quizzes/tugas for this instructor
         $totalQuizzes = DB::table('quizzes')

@@ -21,7 +21,11 @@ class EnsureUserIsInstructor
         }
 
         if (Auth::user()->role !== 'trainer') {
-            abort(403, 'Akses ditolak. Hanya instruktur yang dapat mengakses halaman ini.');
+            // If user is logged in but not a trainer, redirect to instructor login
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('instructor.login')->with('error', 'Anda tidak memiliki akses sebagai instruktur. Silakan login dengan akun instruktur.');
         }
 
         return $next($request);
