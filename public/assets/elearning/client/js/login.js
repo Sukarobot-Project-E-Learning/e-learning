@@ -20,62 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Handle login form submit
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        // Reset error messages
-        errorMessages.classList.add("hidden");
-        errorList.innerHTML = "";
-
+    form.addEventListener("submit", (e) => {
         // Disable button dan ubah text
         const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="animate-pulse">Logging in...</span>';
 
-        // Get form data
-        const formData = {
-            email: document.getElementById("email").value,
-            password: document.getElementById("password").value
-        };
-
-        try {
-            // Call API login
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                // Simpan token ke localStorage
-                localStorage.setItem("auth_token", result.data.access_token);
-                localStorage.setItem("user_data", JSON.stringify(result.data.user));
-
-                // Tampilkan pesan sukses
-                alert(result.message || "Login berhasil! 👋");
-
-                // Redirect ke dashboard
-                window.location.href = "/dashboard";
-            } else {
-                // Tampilkan error
-                showErrors(result.errors || { general: [result.message] });
-            }
-        } catch (error) {
-            console.error("Login error:", error);
-            showErrors({
-                general: ["Terjadi kesalahan koneksi. Pastikan server berjalan."]
-            });
-        } finally {
-            // Enable button kembali
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
+        // Form akan submit secara normal (Laravel akan handle)
+        // Button akan di-enable kembali jika ada error (via page reload)
     });
 
     // Function untuk menampilkan error

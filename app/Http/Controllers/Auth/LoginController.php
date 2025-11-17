@@ -141,6 +141,71 @@ class LoginController extends Controller
     }
 
     /**
+     * Show the user login form
+     */
+    public function showUserLoginForm()
+    {
+        // If already logged in as user, redirect to dashboard
+        if (Auth::check() && Auth::user()->role === 'user') {
+            return redirect()->route('client.dashboard');
+        }
+        
+        return view('client.layout.page.login.login');
+    }
+
+    /**
+     * Handle user login request
+     */
+    public function userLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ], [
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'password.required' => 'Password wajib diisi',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        $remember = $request->has('remember');
+
+        // Try to authenticate using Laravel's Auth
+        if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+            
+            // Check if user is regular user (not admin or trainer)
+            if ($user->role !== 'user') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Silakan gunakan halaman login yang sesuai untuk role Anda.'
+                ])->withInput($request->only('email'));
+            }
+            
+            // Check if user is active
+            if (isset($user->is_active) && !$user->is_active) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
+                ])->withInput($request->only('email'));
+            }
+
+            // Update last login
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['last_login_at' => now()]);
+
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('client.dashboard'));
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah.'
+        ])->withInput($request->only('email'));
+    }
+
+    /**
      * Handle logout request
      */
     public function logout(Request $request)
@@ -158,7 +223,7 @@ class LoginController extends Controller
             return redirect()->route('instructor.login')->with('success', 'Anda telah berhasil logout.');
         }
         
-        return redirect()->route('admin.login')->with('success', 'Anda telah berhasil logout.');
+        return redirect()->route('login')->with('success', 'Anda telah berhasil logout.');
     }
 }
 

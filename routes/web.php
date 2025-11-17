@@ -43,13 +43,12 @@ Route::prefix('instructor')->name('instructor.')->group(function () {
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'instructorLogin']);
 });
 
+// User Login Routes (Public)
+Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showUserLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'userLogin']);
+
 // Logout Route
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
-
-// Fallback login route (redirect to admin login)
-Route::get('/login', function () {
-    return redirect()->route('admin.login');
-})->name('login');
 
 // Admin Routes (Protected)
 // Note: Using only 'admin' middleware because it already checks auth
