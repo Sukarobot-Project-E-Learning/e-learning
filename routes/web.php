@@ -55,11 +55,23 @@ Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logo
 Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // User Management
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    // User Management (Students - role='user')
+    Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::post('users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+    Route::put('users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
-    // Admin Management
-    Route::resource('admins', \App\Http\Controllers\Admin\AdminController::class);
+    // Admin Management (role='admin')
+    Route::get('admins', [\App\Http\Controllers\Admin\UserController::class, 'indexAdmins'])->name('admins.index');
+    Route::post('admins', [\App\Http\Controllers\Admin\UserController::class, 'storeAdmin'])->name('admins.store');
+    Route::put('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateAdmin'])->name('admins.update');
+    Route::delete('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyAdmin'])->name('admins.destroy');
+
+    // Instructors List Management (role='instructor')
+    Route::get('instructors-list', [\App\Http\Controllers\Admin\UserController::class, 'indexInstructors'])->name('instructors-list.index');
+    Route::post('instructors-list', [\App\Http\Controllers\Admin\UserController::class, 'storeInstructor'])->name('instructors-list.store');
+    Route::put('instructors-list/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateInstructor'])->name('instructors-list.update');
+    Route::delete('instructors-list/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyInstructor'])->name('instructors-list.destroy');
 
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);

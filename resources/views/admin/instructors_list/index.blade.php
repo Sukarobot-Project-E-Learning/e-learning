@@ -1,25 +1,25 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Admin Management')
+@section('title', 'Instructor Management')
 
 @section('content')
     <div class="container px-6 mx-auto">
         <!-- Page Header -->
         <div class="my-6">
             <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Admin</h2>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Instructor</h2>
                 <button type="button"
                         @click="$dispatch('open-modal', { type: 'create' })"
                         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    Tambah Admin
+                    Tambah Instructor
                 </button>
             </div>
         </div>
 
-        <!-- Admins Table -->
+        <!-- Instructors Table -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
             <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
@@ -66,14 +66,14 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center space-x-4 text-sm">
                                     <button @click="$dispatch('open-modal', { type: 'edit', id: {{ $user->id }}, name: '{{ $user->name }}', email: '{{ $user->email }}', phone: '{{ $user->phone }}' })" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</button>
-                                    <button @click="deleteAdmin({{ $user->id }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
+                                    <button @click="deleteInstructor({{ $user->id }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada admin. <button @click="$dispatch('open-modal', { type: 'create' })" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah admin pertama</button>
+                                Belum ada instructor. <button @click="$dispatch('open-modal', { type: 'create' })" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah instructor pertama</button>
                             </td>
                         </tr>
                         @endforelse
@@ -107,31 +107,6 @@
         resetForm() {
             this.formData = { name: '', email: '', phone: '', password: '' };
             this.userId = null;
-        },
-        submitForm() {
-            const url = this.type === 'create' ? '{{ route("admin.admins.store") }}' : `{{ url("admin/admins") }}/${this.userId}`;
-            const method = this.type === 'create' ? 'POST' : 'PUT';
-
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: JSON.stringify(this.formData)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan data');
-            });
         }
     }"
     @open-modal.window="
@@ -151,7 +126,7 @@
     @click.self="open = false">
         <div class="relative w-full max-w-md p-6 mx-4 bg-white rounded-lg shadow-xl dark:bg-gray-800" @click.stop>
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" x-text="type === 'create' ? 'Tambah Admin' : 'Edit Admin'"></h3>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" x-text="type === 'create' ? 'Tambah Instructor' : 'Edit Instructor'"></h3>
                 <button @click="open = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -198,10 +173,37 @@
     </div>
 
     <script>
-        function deleteAdmin(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus admin ini?')) return;
+        function submitForm() {
+            const data = this.formData;
+            const url = this.type === 'create' ? '{{ route('admin.instructors-list.store') }}' : `{{ url('admin/instructors-list') }}/${this.userId}`;
+            const method = this.type === 'create' ? 'POST' : 'PUT';
 
-            fetch(`{{ url('admin/admins') }}/${id}`, {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan data');
+            });
+        }
+
+        function deleteInstructor(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus instructor ini?')) return;
+
+            fetch(`{{ url('admin/instructors-list') }}/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
