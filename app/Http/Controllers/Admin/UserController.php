@@ -24,6 +24,14 @@ class UserController extends Controller
     }
 
     /**
+     * Show the form for creating a new user.
+     */
+    public function create()
+    {
+        return view('admin.users.create');
+    }
+
+    /**
      * Store a newly created user
      */
     public function store(Request $request)
@@ -32,21 +40,71 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'status' => 'nullable|string',
+            'job' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'country' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        DB::table('users')->insert([
+        $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
+
+        $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
             'role' => 'user',
-            'is_active' => true,
+            'is_active' => $isActive,
+            'job' => $validated['job'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'country' => $validated['country'] ?? 'Indonesia',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
 
-        return response()->json(['success' => true, 'message' => 'User berhasil ditambahkan']);
+        // Upload photo jika ada (opsional)
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+            $uploadPath = public_path('uploads/users');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $photo->move($uploadPath, $photoName);
+            $data['avatar'] = 'uploads/users/' . $photoName;
+        }
+
+        DB::table('users')->insert($data);
+
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan');
+    }
+
+    /**
+     * Show the form for editing the specified user.
+     */
+    public function edit($id)
+    {
+        $user = DB::table('users')->where('id', $id)->first();
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')->with('error', 'User tidak ditemukan');
+        }
+
+        $userData = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone ?? '',
+            'status' => $user->is_active ? 'Aktif' : 'Non-Aktif',
+            'job' => $user->job ?? '',
+            'address' => $user->address ?? '',
+            'country' => $user->country ?? 'Indonesia',
+            'photo' => $user->avatar ?? null,
+        ];
+
+        return view('admin.users.edit', ['user' => (object)$userData]);
     }
 
     /**
@@ -58,13 +116,24 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string|min:8|confirmed',
+            'status' => 'nullable|string',
+            'job' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'country' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
+
+        $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'is_active' => $isActive,
+            'job' => $validated['job'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'country' => $validated['country'] ?? 'Indonesia',
             'updated_at' => now(),
         ];
 
@@ -72,9 +141,21 @@ class UserController extends Controller
             $updateData['password'] = Hash::make($validated['password']);
         }
 
+        // Upload photo jika ada (opsional)
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+            $uploadPath = public_path('uploads/users');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $photo->move($uploadPath, $photoName);
+            $updateData['avatar'] = 'uploads/users/' . $photoName;
+        }
+
         DB::table('users')->where('id', $id)->update($updateData);
 
-        return response()->json(['success' => true, 'message' => 'User berhasil diupdate']);
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate');
     }
 
     /**
@@ -101,6 +182,14 @@ class UserController extends Controller
     }
 
     /**
+     * Show the form for creating a new admin.
+     */
+    public function createAdmin()
+    {
+        return view('admin.admins.create');
+    }
+
+    /**
      * Store a newly created admin
      */
     public function storeAdmin(Request $request)
@@ -109,21 +198,53 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'status' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        DB::table('users')->insert([
+        $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
+
+        $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
             'role' => 'admin',
-            'is_active' => true,
+            'is_active' => $isActive,
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
 
-        return response()->json(['success' => true, 'message' => 'Admin berhasil ditambahkan']);
+        // Upload photo jika ada (opsional)
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+            $uploadPath = public_path('uploads/admins');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $photo->move($uploadPath, $photoName);
+            $data['avatar'] = 'uploads/admins/' . $photoName;
+        }
+
+        DB::table('users')->insert($data);
+
+        return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil ditambahkan');
+    }
+
+    /**
+     * Show the form for editing the specified admin.
+     */
+    public function editAdmin($id)
+    {
+        $admin = DB::table('users')->where('id', $id)->first();
+        
+        if (!$admin) {
+            return redirect()->route('admin.admins.index')->with('error', 'Admin tidak ditemukan');
+        }
+
+        return view('admin.admins.edit', compact('admin'));
     }
 
     /**
@@ -135,13 +256,18 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string|min:8|confirmed',
+            'status' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
+
+        $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
 
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'is_active' => $isActive,
             'updated_at' => now(),
         ];
 
@@ -149,9 +275,21 @@ class UserController extends Controller
             $updateData['password'] = Hash::make($validated['password']);
         }
 
+        // Upload photo jika ada (opsional)
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+            $uploadPath = public_path('uploads/admins');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $photo->move($uploadPath, $photoName);
+            $updateData['avatar'] = 'uploads/admins/' . $photoName;
+        }
+
         DB::table('users')->where('id', $id)->update($updateData);
 
-        return response()->json(['success' => true, 'message' => 'Admin berhasil diupdate']);
+        return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diupdate');
     }
 
     /**

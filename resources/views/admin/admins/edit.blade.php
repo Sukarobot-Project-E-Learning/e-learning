@@ -32,7 +32,7 @@
 
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="adminForm" action="{{ route('admin.admins.update', $admin->id ?? 1) }}" method="POST" enctype="multipart/form-data">
+            <form id="adminForm" action="{{ route('admin.admins.update', $admin->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="px-6 py-6 space-y-6">
@@ -42,12 +42,18 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="status">
                             Status <span class="text-red-500">*</span>
                         </label>
-                        <select name="status" id="status" required
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
-                            <option value="">Pilih Status</option>
-                            <option value="aktif" {{ (isset($admin) && $admin->status == 'aktif') ? 'selected' : '' }}>Aktif</option>
-                            <option value="non-aktif" {{ (isset($admin) && $admin->status == 'non-aktif') ? 'selected' : '' }}>Non-Aktif</option>
-                        </select>
+                        <div class="relative">
+                            <select name="status" id="status" required
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                <option value="aktif" {{ (isset($admin) && $admin->is_active) ? 'selected' : '' }}>Aktif</option>
+                                <option value="non-aktif" {{ (isset($admin) && !$admin->is_active) ? 'selected' : '' }}>Non-Aktif</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Name -->
@@ -108,19 +114,10 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Upload Foto
                         </label>
-                        
-                        <!-- Current Photo Preview (if exists) -->
-                        @if(isset($admin->photo) && $admin->photo)
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">Foto saat ini:</p>
-                            <img src="{{ $admin->photo }}" alt="Current photo" class="w-32 h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600">
-                        </div>
-                        @endif
-
                         <div class="flex items-center justify-center w-full">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ photoPreview: null }"
+                                   x-data="{ photoPreview: '{{ isset($admin->avatar) && $admin->avatar ? asset($admin->avatar) : null }}' }"
                                    @dragover.prevent
                                    @drop.prevent="
                                        let file = $event.dataTransfer.files[0];

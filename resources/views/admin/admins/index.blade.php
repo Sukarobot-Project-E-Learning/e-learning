@@ -8,14 +8,13 @@
         <div class="my-6">
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Admin</h2>
-                <button type="button"
-                        @click="$dispatch('open-modal', { type: 'create' })"
-                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <a href="{{ route('admin.admins.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Tambah Admin
-                </button>
+                </a>
             </div>
         </div>
 
@@ -65,7 +64,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center space-x-4 text-sm">
-                                    <button @click="$dispatch('open-modal', { type: 'edit', id: {{ $user->id }}, name: '{{ $user->name }}', email: '{{ $user->email }}', phone: '{{ $user->phone }}' })" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</button>
+                                    <a href="{{ route('admin.admins.edit', $user->id) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
                                     <button @click="deleteAdmin({{ $user->id }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
                                 </div>
                             </td>
@@ -73,7 +72,7 @@
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada admin. <button @click="$dispatch('open-modal', { type: 'create' })" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah admin pertama</button>
+                                Belum ada admin. <a href="{{ route('admin.admins.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah admin pertama</a>
                             </td>
                         </tr>
                         @endforelse
@@ -83,117 +82,6 @@
 
             <!-- Pagination Section -->
             @include('components.pagination', ['items' => $users ?? null])
-        </div>
-    </div>
-
-    <!-- Create/Edit Modal -->
-    <div x-data="{
-        open: false,
-        type: 'create',
-        userId: null,
-        formData: {
-            name: '',
-            email: '',
-            phone: '',
-            password: ''
-        },
-        init() {
-            this.$watch('open', value => {
-                if (!value) {
-                    this.resetForm();
-                }
-            });
-        },
-        resetForm() {
-            this.formData = { name: '', email: '', phone: '', password: '' };
-            this.userId = null;
-        },
-        submitForm() {
-            const url = this.type === 'create' ? '{{ route("admin.admins.store") }}' : `{{ url("admin/admins") }}/${this.userId}`;
-            const method = this.type === 'create' ? 'POST' : 'PUT';
-
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: JSON.stringify(this.formData)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan data');
-            });
-        }
-    }"
-    @open-modal.window="
-        open = true;
-        type = $event.detail.type;
-        if (type === 'edit') {
-            userId = $event.detail.id;
-            formData.name = $event.detail.name;
-            formData.email = $event.detail.email;
-            formData.phone = $event.detail.phone || '';
-            formData.password = '';
-        }
-    "
-    x-show="open"
-    x-cloak
-    class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50"
-    @click.self="open = false">
-        <div class="relative w-full max-w-md p-6 mx-4 bg-white rounded-lg shadow-xl dark:bg-gray-800" @click.stop>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" x-text="type === 'create' ? 'Tambah Admin' : 'Edit Admin'"></h3>
-                <button @click="open = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <form @submit.prevent="submitForm">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
-                        <input type="text" x-model="formData.name" required
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                        <input type="email" x-model="formData.email" required
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telepon</label>
-                        <input type="text" x-model="formData.phone"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password <span x-show="type === 'edit'" class="text-xs text-gray-500">(Kosongkan jika tidak ingin mengubah)</span></label>
-                        <input type="password" x-model="formData.password" :required="type === 'create'"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
-                </div>
-
-                <div class="flex gap-3 mt-6">
-                    <button type="button" @click="open = false"
-                        class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="flex-1 px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
-                        <span x-text="type === 'create' ? 'Tambah' : 'Update'"></span>
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -220,5 +108,6 @@
                 alert('Terjadi kesalahan saat menghapus data');
             });
         }
+
     </script>
 @endsection

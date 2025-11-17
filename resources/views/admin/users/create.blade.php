@@ -10,9 +10,9 @@
         <div class="my-6">
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah User</h2>
-                <div class="flex flex-col items-end">
+                <div class="flex flex-col items-end" style="gap: 16px;">
                     <a href="{{ route('admin.users.index') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 mb-4">
+                       class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -34,22 +34,15 @@
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
             <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
-                <div class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Form Tambah User</h3>
-                </div>
-
-                <div class="p-6 space-y-6">
+                <div class="px-6 py-6 space-y-6">
                     <!-- Status -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="status">
                             Status <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <select name="status" 
-                                    id="status"
-                                    class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
-                                    required>
+                            <select name="status" id="status" required
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
                                 <option value="Aktif" selected>Aktif</option>
                                 <option value="Non-Aktif">Non-Aktif</option>
                                 <option value="Pending">Pending</option>
@@ -60,201 +53,150 @@
                                 </svg>
                             </div>
                         </div>
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <!-- Nama -->
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="name">
                             Nama <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" 
-                               name="name" 
-                               id="name"
+                        <input type="text" name="name" id="name" required
                                value="{{ old('name') }}"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
                                placeholder="Masukkan nama lengkap"
-                               required>
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="email">
                             Email <span class="text-red-500">*</span>
                         </label>
-                        <input type="email" 
-                               name="email" 
-                               id="email"
+                        <input type="email" name="email" id="email" required
                                value="{{ old('email') }}"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
                                placeholder="Masukkan email"
-                               required>
-                        @error('email')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Nomor Telepon -->
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="phone">
                             Nomor Telepon <span class="text-red-500">*</span>
                         </label>
-                        <input type="tel" 
-                               name="phone" 
-                               id="phone"
+                        <input type="tel" name="phone" id="phone" required
                                value="{{ old('phone') }}"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
                                placeholder="Masukkan nomor telepon"
-                               required>
-                        @error('phone')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Pekerjaan -->
                     <div>
-                        <label for="job" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="job">
                             Pekerjaan
                         </label>
-                        <input type="text" 
-                               name="job" 
-                               id="job"
+                        <input type="text" name="job" id="job"
                                value="{{ old('job') }}"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
-                               placeholder="Masukkan pekerjaan">
-                        @error('job')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               placeholder="Masukkan pekerjaan"
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Alamat -->
                     <div>
-                        <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="address">
                             Alamat
                         </label>
-                        <textarea name="address" 
-                                  id="address"
-                                  rows="3"
-                                  class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
-                                  placeholder="Masukkan alamat lengkap">{{ old('address') }}</textarea>
-                        @error('address')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <textarea name="address" id="address" rows="3"
+                                  placeholder="Masukkan alamat lengkap"
+                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">{{ old('address') }}</textarea>
                     </div>
 
                     <!-- Negara -->
                     <div>
-                        <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="country">
                             Negara
                         </label>
-                        <input type="text" 
-                               name="country" 
-                               id="country"
+                        <input type="text" name="country" id="country"
                                value="{{ old('country', 'Indonesia') }}"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
-                               placeholder="Masukkan negara">
-                        @error('country')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               placeholder="Masukkan negara"
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Password -->
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password">
                             Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" 
-                               name="password" 
-                               id="password"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
+                        <input type="password" name="password" id="password" required
                                placeholder="Masukkan password"
-                               required>
-                        @error('password')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password_confirmation">
                             Konfirmasi Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" 
-                               name="password_confirmation" 
-                               id="password_confirmation"
-                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:focus:shadow-outline-gray"
+                        <input type="password" name="password_confirmation" id="password_confirmation" required
                                placeholder="Konfirmasi password"
-                               required>
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Unggah Foto -->
+                    <!-- Photo Upload -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Unggah Foto
+                            Upload Foto
                         </label>
-                        <div x-data="{ 
-                            file: null, 
-                            preview: null,
-                            dragOver: false,
-                            handleFile(event) {
-                                const file = event.target.files[0] || event.dataTransfer.files[0];
-                                if (file) {
-                                    this.file = file;
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => {
-                                        this.preview = e.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }
-                        }" 
-                        @dragover.prevent="dragOver = true"
-                        @dragleave.prevent="dragOver = false"
-                        @drop.prevent="handleFile($event); dragOver = false">
-                            
-                            <!-- File Input Hidden -->
-                            <input type="file" 
-                                   name="photo" 
-                                   id="photo"
-                                   accept="image/jpeg,image/jpg,image/png"
-                                   @change="handleFile($event)"
-                                   class="hidden">
-                            
-                            <!-- Drag and Drop Area -->
+                        <div class="flex items-center justify-center w-full">
                             <label for="photo" 
-                                   class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600"
-                                   :class="dragOver ? 'bg-gray-100 border-purple-400' : ''">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <svg class="w-8 h-8 mb-2 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
+                                   x-data="{ photoPreview: null }"
+                                   @dragover.prevent
+                                   @drop.prevent="
+                                       let file = $event.dataTransfer.files[0];
+                                       if (file && file.type.startsWith('image/')) {
+                                           let reader = new FileReader();
+                                           reader.onload = (e) => { photoPreview = e.target.result };
+                                           reader.readAsDataURL(file);
+                                           $refs.photoInput.files = $event.dataTransfer.files;
+                                       }
+                                   ">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!photoPreview">
+                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                     </svg>
                                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">Klik untuk upload</span> atau seret dan lepas
+                                        <span class="font-semibold">Seret dan lepas berkas, atau</span> 
+                                        <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk JPG, JPEG, PNG
+                                        Unggah berkas dalam bentuk: JPG, JPEG, PNG
                                     </p>
                                 </div>
+                                <div x-show="photoPreview" class="relative w-full h-full p-4">
+                                    <img :src="photoPreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
+                                    <button type="button" 
+                                            @click.stop.prevent="photoPreview = null; $refs.photoInput.value = ''"
+                                            class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <input id="photo" 
+                                       name="photo" 
+                                       type="file" 
+                                       class="hidden" 
+                                       accept="image/*"
+                                       x-ref="photoInput"
+                                       @change="
+                                           let file = $event.target.files[0];
+                                           if (file) {
+                                               let reader = new FileReader();
+                                               reader.onload = (e) => { photoPreview = e.target.result };
+                                               reader.readAsDataURL(file);
+                                           }
+                                       ">
                             </label>
-
-                            <!-- Preview Image -->
-                            <div x-show="preview" class="mt-4">
-                                <img :src="preview" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-gray-300">
-                                <button type="button" 
-                                        @click="file = null; preview = null; document.getElementById('photo').value = ''"
-                                        class="mt-2 text-sm text-red-600 hover:text-red-800">
-                                    Hapus foto
-                                </button>
-                            </div>
                         </div>
-                        @error('photo')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
                     </div>
                 </div>
 

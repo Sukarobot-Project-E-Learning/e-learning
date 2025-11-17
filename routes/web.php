@@ -57,13 +57,17 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 
     // User Management (Students - role='user')
     Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
     Route::post('users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+    Route::get('users/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::put('users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
     // Admin Management (role='admin')
     Route::get('admins', [\App\Http\Controllers\Admin\UserController::class, 'indexAdmins'])->name('admins.index');
+    Route::get('admins/create', [\App\Http\Controllers\Admin\UserController::class, 'createAdmin'])->name('admins.create');
     Route::post('admins', [\App\Http\Controllers\Admin\UserController::class, 'storeAdmin'])->name('admins.store');
+    Route::get('admins/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'editAdmin'])->name('admins.edit');
     Route::put('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateAdmin'])->name('admins.update');
     Route::delete('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyAdmin'])->name('admins.destroy');
 
