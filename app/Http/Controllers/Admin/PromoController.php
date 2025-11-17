@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PromoController extends Controller
 {
@@ -12,30 +13,21 @@ class PromoController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $promos = [
-            [
-                'id' => 1,
-                'title' => 'Promo Workshop Branding',
-                'poster' => null,
-                'carousel' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Promo Workshop Branding',
-                'poster' => null,
-                'carousel' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Promo Workshop Branding',
-                'poster' => null,
-                'carousel' => null,
-                'status' => 'Non-Aktif'
-            ],
-        ];
+        // Get promos from database with pagination (10 per page)
+        $promos = DB::table('promos')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Transform data after pagination
+        $promos->getCollection()->transform(function($promo) {
+            return [
+                'id' => $promo->id,
+                'title' => $promo->title ?? 'N/A',
+                'poster' => $promo->poster_image,
+                'carousel' => $promo->carousel_image,
+                'status' => $promo->is_active ? 'Aktif' : 'Non-Aktif'
+            ];
+        });
 
         return view('admin.promos.index', compact('promos'));
     }
@@ -57,7 +49,7 @@ class PromoController extends Controller
         // TODO: Handle file upload for poster and carousel
         // TODO: Save to database
 
-        return redirect()->route('elearning.admin.promos.index')
+        return redirect()->route('admin.promos.index')
             ->with('success', 'Promo berhasil ditambahkan');
     }
 
@@ -87,7 +79,7 @@ class PromoController extends Controller
         // TODO: Handle file upload for poster and carousel if changed
         // TODO: Update in database
 
-        return redirect()->route('elearning.admin.promos.index')
+        return redirect()->route('admin.promos.index')
             ->with('success', 'Promo berhasil diperbarui');
     }
 
@@ -96,11 +88,29 @@ class PromoController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-        // TODO: Delete files if exists
-
-        return redirect()->route('elearning.admin.promos.index')
-            ->with('success', 'Promo berhasil dihapus');
+        try {
+            $promo = DB::table('promos')->where('id', $id)->first();
+            if ($promo) {
+                // Delete poster file if exists
+                if ($promo->poster_image) {
+                    $posterPath = public_path($promo->poster_image);
+                    if (file_exists($posterPath)) {
+                        unlink($posterPath);
+                    }
+                }
+                // Delete carousel file if exists
+                if ($promo->carousel_image) {
+                    $carouselPath = public_path($promo->carousel_image);
+                    if (file_exists($carouselPath)) {
+                        unlink($carouselPath);
+                    }
+                }
+            }
+            DB::table('promos')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Promo berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus promo'], 500);
+        }
     }
 }
 

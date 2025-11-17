@@ -104,9 +104,20 @@ class QuizController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Add delete logic here
-        // Delete logic here
-        return redirect()->route('admin.quizzes.index')->with('success', 'Tugas/Postest berhasil dihapus');
+        try {
+            DB::beginTransaction();
+            // Delete quiz questions
+            DB::table('quiz_questions')->where('quiz_id', $id)->delete();
+            // Delete quiz responses
+            DB::table('quiz_responses')->where('quiz_id', $id)->delete();
+            // Delete quiz
+            DB::table('quizzes')->where('id', $id)->delete();
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Tugas/Postest berhasil dihapus']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus tugas/postest'], 500);
+        }
     }
 }
 

@@ -52,7 +52,7 @@
                                 <div class="flex items-center space-x-4 text-sm">
                                     <a href="{{ route('admin.quizzes.show', $quiz['id']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Lihat</a>
                                     <a href="{{ route('admin.quizzes.edit', $quiz['id']) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
-                                    <a href="#" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</a>
+                                    <button @click="deleteQuiz({{ $quiz['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
                                 </div>
                             </td>
                         </tr>
@@ -71,5 +71,30 @@
             @include('components.pagination', ['items' => $quizzes ?? null])
         </div>
     </div>
+
+    <script>
+        function deleteQuiz(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus tugas/postest ini?')) return;
+
+            fetch(`{{ url('admin/quizzes') }}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus data');
+            });
+        }
+    </script>
 @endsection
 

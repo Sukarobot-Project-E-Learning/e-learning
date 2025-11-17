@@ -64,7 +64,7 @@ class TransactionController extends Controller
     public function export()
     {
         // TODO: Implement Excel export
-        return redirect()->route('elearning.admin.transactions.index')
+        return redirect()->route('admin.transactions.index')
             ->with('success', 'Transaksi berhasil diekspor');
     }
 
@@ -73,11 +73,19 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-        // TODO: Delete file if exists
-
-        return redirect()->route('elearning.admin.transactions.index')
-            ->with('success', 'Transaksi berhasil dihapus');
+        try {
+            $transaction = DB::table('transactions')->where('id', $id)->first();
+            if ($transaction && $transaction->payment_proof) {
+                $filePath = public_path($transaction->payment_proof);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            DB::table('transactions')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Transaksi berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus transaksi'], 500);
+        }
     }
 }
 

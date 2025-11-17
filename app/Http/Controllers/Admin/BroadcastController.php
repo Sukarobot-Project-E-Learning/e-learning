@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BroadcastController extends Controller
 {
@@ -12,37 +13,18 @@ class BroadcastController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $broadcasts = [
-            [
-                'id' => 1,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 2,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 3,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 4,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 5,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 6,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-            [
-                'id' => 7,
-                'message' => 'Selamat pagi, peserta Workshop Branding! Jangan lupa acara pengenalan Pelatihan akan diselenggarakan pada hari Senin,...'
-            ],
-        ];
+        // Get broadcasts from database with pagination (10 per page)
+        $broadcasts = DB::table('broadcasts')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Transform data after pagination
+        $broadcasts->getCollection()->transform(function($broadcast) {
+            return [
+                'id' => $broadcast->id,
+                'message' => $broadcast->message ?? 'N/A'
+            ];
+        });
 
         return view('admin.broadcasts.index', compact('broadcasts'));
     }
@@ -64,7 +46,7 @@ class BroadcastController extends Controller
         // TODO: Send broadcast message
         // TODO: Save to database
 
-        return redirect()->route('elearning.admin.broadcasts.index')
+        return redirect()->route('admin.broadcasts.index')
             ->with('success', 'Broadcast berhasil dikirim');
     }
 
@@ -90,7 +72,7 @@ class BroadcastController extends Controller
         // TODO: Add validation
         // TODO: Update in database
 
-        return redirect()->route('elearning.admin.broadcasts.index')
+        return redirect()->route('admin.broadcasts.index')
             ->with('success', 'Broadcast berhasil diperbarui');
     }
 
@@ -99,10 +81,12 @@ class BroadcastController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-
-        return redirect()->route('elearning.admin.broadcasts.index')
-            ->with('success', 'Broadcast berhasil dihapus');
+        try {
+            DB::table('broadcasts')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Broadcast berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus broadcast'], 500);
+        }
     }
 }
 

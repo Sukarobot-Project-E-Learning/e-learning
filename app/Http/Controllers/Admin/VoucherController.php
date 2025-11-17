@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VoucherController extends Controller
 {
@@ -12,65 +13,31 @@ class VoucherController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $vouchers = [
-            [
-                'id' => 1,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 5,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 6,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 7,
-                'name' => 'Nama Voucher',
-                'discount' => '10%',
-                'program_event' => 'Workshop Branding',
-                'code' => 'NCEFLAT20',
-                'status' => 'Aktif'
-            ],
-        ];
+        // Get vouchers from database with pagination (10 per page)
+        $vouchers = DB::table('vouchers')
+            ->leftJoin('data_programs', 'vouchers.program_id', '=', 'data_programs.id')
+            ->select(
+                'vouchers.*',
+                'data_programs.program as program_name'
+            )
+            ->orderBy('vouchers.created_at', 'desc')
+            ->paginate(10);
+
+        // Transform data after pagination
+        $vouchers->getCollection()->transform(function($voucher) {
+            $discount = $voucher->discount_type === 'percentage' 
+                ? $voucher->discount_value . '%' 
+                : 'Rp ' . number_format($voucher->discount_value, 0, ',', '.');
+
+            return [
+                'id' => $voucher->id,
+                'name' => $voucher->name ?? 'N/A',
+                'discount' => $discount,
+                'program_event' => $voucher->program_name ?? 'Semua Program',
+                'code' => $voucher->code ?? 'N/A',
+                'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
+            ];
+        });
 
         return view('admin.vouchers.index', compact('vouchers'));
     }
@@ -91,7 +58,7 @@ class VoucherController extends Controller
         // TODO: Add validation
         // TODO: Save to database
 
-        return redirect()->route('elearning.admin.vouchers.index')
+        return redirect()->route('admin.vouchers.index')
             ->with('success', 'Voucher berhasil ditambahkan');
     }
 
@@ -121,7 +88,7 @@ class VoucherController extends Controller
         // TODO: Add validation
         // TODO: Update in database
 
-        return redirect()->route('elearning.admin.vouchers.index')
+        return redirect()->route('admin.vouchers.index')
             ->with('success', 'Voucher berhasil diperbarui');
     }
 
@@ -130,10 +97,12 @@ class VoucherController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-
-        return redirect()->route('elearning.admin.vouchers.index')
-            ->with('success', 'Voucher berhasil dihapus');
+        try {
+            DB::table('vouchers')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Voucher berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus voucher'], 500);
+        }
     }
 }
 

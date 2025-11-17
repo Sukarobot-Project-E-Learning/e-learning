@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
@@ -12,65 +13,22 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $articles = [
-            [
-                'id' => 1,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 4,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Aktif'
-            ],
-            [
-                'id' => 5,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Draft'
-            ],
-            [
-                'id' => 6,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Draft'
-            ],
-            [
-                'id' => 7,
-                'title' => 'Lengan Robotik Baru untuk Industri Otomotif',
-                'category' => 'Produk',
-                'date' => '20 September 2025',
-                'image' => null,
-                'status' => 'Draft'
-            ],
-        ];
+        // Get articles from database with pagination (10 per page)
+        $articles = DB::table('articles')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Transform data after pagination
+        $articles->getCollection()->transform(function($article) {
+            return [
+                'id' => $article->id,
+                'title' => $article->title ?? 'N/A',
+                'category' => $article->category ?? '-',
+                'date' => $article->created_at ? date('d F Y', strtotime($article->created_at)) : '-',
+                'image' => $article->image,
+                'status' => $article->is_published ? 'Aktif' : 'Draft'
+            ];
+        });
 
         return view('admin.articles.index', compact('articles'));
     }
@@ -92,7 +50,7 @@ class ArticleController extends Controller
         // TODO: Handle file upload for image
         // TODO: Save to database
 
-        return redirect()->route('elearning.admin.articles.index')
+        return redirect()->route('admin.articles.index')
             ->with('success', 'Artikel berhasil ditambahkan');
     }
 
@@ -124,7 +82,7 @@ class ArticleController extends Controller
         // TODO: Handle file upload for image if changed
         // TODO: Update in database
 
-        return redirect()->route('elearning.admin.articles.index')
+        return redirect()->route('admin.articles.index')
             ->with('success', 'Artikel berhasil diperbarui');
     }
 
@@ -133,11 +91,19 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-        // TODO: Delete file if exists
-
-        return redirect()->route('elearning.admin.articles.index')
-            ->with('success', 'Artikel berhasil dihapus');
+        try {
+            $article = DB::table('articles')->where('id', $id)->first();
+            if ($article && $article->image) {
+                $filePath = public_path($article->image);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            DB::table('articles')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus artikel'], 500);
+        }
     }
 }
 
