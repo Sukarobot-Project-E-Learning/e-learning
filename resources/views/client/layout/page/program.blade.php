@@ -33,7 +33,7 @@
         <h3 class="text-sm font-semibold text-gray-600 mb-3">Kategori</h3>
         <div class="space-y-2">
           <button class="filter-btn w-full text-left px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition text-sm" data-filter="all">
-            Semua Kelas
+            Semua Program
           </button>
           <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="kursus">
             Kursus
@@ -69,16 +69,17 @@
             </svg>
           </button>
 
+          <!-- overlay -->
           <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-30 lg:max-w-screen"></div>
 
           <!-- Nama Kategori -->
-          <h2 class="header text-2xl font-bold text-blue-700">Semua Kelas</h2>
+          <h2 class="header text-2xl font-bold text-blue-700">Semua Program</h2>
         </div>
         
         
         <!-- Search Box -->
         <div class="relative max-w-md w-full">
-          <input type="text" id="kelas-search" placeholder="Cari kelas..."
+          <input type="text" id="kelas-search" placeholder="Cari program..."
             class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
           <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -91,7 +92,7 @@
   <main class="kelas-container grid gap-6 px-6 pb-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
 
   <!-- Card 1 -->
-  <a href="{{ url('kelas/dtail_kelas') }}" class="block group kelas-card" data-category="kursus">
+  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="kursus">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=1"
@@ -124,7 +125,7 @@
   </a>
 
   <!-- Card 2 -->
-  <a href="#" class="block group kelas-card" data-category="pelatihan">
+  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="pelatihan">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=2"
@@ -159,7 +160,7 @@
   </a>
 
   <!-- Card 3 -->
-  <a href="#" class="block group kelas-card" data-category="sertifikasi">
+  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="sertifikasi">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=3"
@@ -190,7 +191,7 @@
   </a>
 
   <!-- Card 4 -->
-  <a href="#" class="block group kelas-card" data-category="outingclass">
+  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outingclass">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=4"
@@ -221,7 +222,7 @@
   </a>
 
   <!-- Card 5 -->
-  <a href="#" class="block group kelas-card" data-category="outboard">
+  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outboard">
     <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=5"
@@ -256,5 +257,5 @@
 
 @endsection
 
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/kelas.css') }}">
-<script src="{{ asset('assets/elearning/client/js/kelas.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program.css') }}">
+<script src="{{ asset('assets/elearning/client/js/program.js') }}"></script>

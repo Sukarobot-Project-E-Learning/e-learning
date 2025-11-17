@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateHeaderTitle() {
         if (!headerTitle) return;
         if (activeCategory === "all") {
-            headerTitle.textContent = "Semua Kelas";
+            headerTitle.textContent = "Semua Program";
         } else {
             headerTitle.textContent =
                 activeCategory.charAt(0).toUpperCase() +

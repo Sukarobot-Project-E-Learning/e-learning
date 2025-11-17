@@ -139,29 +139,29 @@ Route::name('client.')->group(function () {
         return view('client.layout.page.home');
     })->name('home');
 
-    Route::get('/about', function () {
-        return view('client.layout.page.about');
-    })->name('about');
+    Route::get('/tentang', function () {
+        return view('client.layout.page.tentang');
+    })->name('tentang');
 
-    Route::get('/kelas', function () {
-        return view('client.layout.page.kelas');
-    })->name('kelas');
+    Route::get('/program', function () {
+        return view('client.layout.page.program');
+    })->name('program');
 
-    Route::get('/kelas/{id}', function () {
-        return view('client.layout.page.DtailKelas');
-    })->name('kelas.detail');
+    Route::get('/program/{id}', function () {
+        return view('client.layout.page.detail-program');
+    })->name('program.detail');
 
-    Route::get('/event', function () {
-        return view('client.layout.page.event');
-    })->name('event');
+    Route::get('/kompetisi', function () {
+        return view('client.layout.page.kompetisi');
+    })->name('kompetisi');
 
-    Route::get('/event/{id}', function () {
-        return view('client.layout.page.dtailevent');
-    })->name('event.detail');
+    Route::get('/kompetisi/{id}', function () {
+        return view('client.layout.page.detail-kompetisi');
+    })->name('kompetisi.detail');
 
-    Route::get('/blog', function () {
-        return view('client.layout.page.blog');
-    })->name('blog');
+    Route::get('/artikel', function () {
+        return view('client.layout.page.artikel');
+    })->name('artikel');
 
     Route::get('/berita', function () {
         return view('client.layout.page.berita');
@@ -177,7 +177,7 @@ Route::name('client.')->group(function () {
 
     // Authentication Pages (Login sudah didefinisikan di atas, tidak perlu duplikat)
     Route::get('/register', function () {
-        return view('client.layout.page.login.create');
+        return view('client.layout.page.login.register');
     })->name('register');
 
     Route::get('/reset-password', function () {

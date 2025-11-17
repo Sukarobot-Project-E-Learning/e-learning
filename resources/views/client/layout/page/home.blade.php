@@ -321,7 +321,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
           <!-- Card 1 -->
-          <a href="{{ url('/kelas#filter=kursus') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+          <a href="{{ url('/program#filter=kursus') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
             <div class="space-y-2">
               <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Kursus</h3>
               <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pembelajaran terstruktur yang fokus pada penguasaan pengetahuan atau keterampilan tertentu dalam jangka waktu tertentu</p>
@@ -330,7 +330,7 @@
           </a>
 
           <!-- Card 2 -->
-          <a href="{{ url('/kelas#filter=pelatihan') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+          <a href="{{ url('/program#filter=pelatihan') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
             <div class="space-y-2">
               <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Pelatihan</h3>
               <p class="text-gray-600 text-sm leading-relaxed">Kegiatan untuk meningkatkan keterampilan praktis (terutama yang digunakan dalam pekerjaan)</p>
@@ -339,7 +339,7 @@
           </a>
 
           <!-- Card 3 -->
-          <a href="{{ url('/kelas#filter=sertifikasi') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+          <a href="{{ url('/program#filter=sertifikasi') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
             <div class="space-y-2">
               <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Sertifikasi</h3>
               <p class="text-gray-600 text-sm leading-relaxed">Proses penilaian kompetensi untuk membuktikan seseorang memenuhi standar tertentu dalam bidang tertentu</p>
@@ -348,7 +348,7 @@
           </a>
 
           <!-- Card 4 -->
-          <a href="{{ url('/kelas#filter=outingclass') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+          <a href="{{ url('/program#filter=outingclass') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
             <div class="space-y-2">
               <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Outing Class</h3>
               <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pembelajaran di luar kelas yang bertujuan memperluas wawasan dengan pengalaman langsung</p>
@@ -357,7 +357,7 @@
           </a>
 
           <!-- Card 5 -->
-          <a href="{{ url('/kelas#filter=outboard') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
+          <a href="{{ url('/program#filter=outboard') }}" class="block bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6">
             <div class="space-y-2">
               <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Outboard</h3>
               <p class="text-gray-600 text-sm leading-relaxed">Kegiatan pengembangan diri dan tim (team building) yang dilakukan di luar ruangan dengan permainan dan simulasi</p>
@@ -370,7 +370,7 @@
 
       <div class="mt-14 text-center" data-aos="zoom-in" data-aos-delay="200">
           <a
-            href="{{ url('/kelas') }}"
+            href="{{ url('/program') }}"
             class="inline-block px-8 py-3 bg-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition duration-300"
           >
             Lihat Program
@@ -471,9 +471,6 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
 </div>
 </section>
 
-
-
-<!-- INSTRUKTUR SECTION -->
 <!-- INSTRUKTUR SECTION -->
 <section
   id="instructor"
@@ -573,21 +570,14 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
     <!-- Tombol View More -->
     <div class="mt-14 text-center" data-aos="zoom-in" data-aos-delay="200">
       <a
-        href="{{ url('/instructor') }}"
+        href="{{ url('/instruktur') }}"
         class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition duration-300"
       >
-        View More →
+        Lihat Selengkapnya →
       </a>
     </div>
   </div>
 </section>
-
-
-
-
-
-
-
 
 <!-- Cerita Alumni -->
 <section id="alumni" class="relative py-20 bg-white overflow-visible">

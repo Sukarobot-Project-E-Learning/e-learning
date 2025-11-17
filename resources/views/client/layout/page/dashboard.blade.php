@@ -6,7 +6,7 @@
 
 <div class="flex min-h-screen bg-gray-50">
   <!-- Sidebar -->
-  <aside class="w-64 bg-white border-r border-gray-200 fixed h-screen flex flex-col justify-between shadow-md">
+  <aside id="sidebar" class="w-64 pt-2 pr-1 bg-white border-r border-gray-200 fixed h-screen lg:flex flex-1 flex-col justify-between shadow-md z-40">
     <div>
       <nav class="mt-4">
         <ul class="space-y-1 text-gray-700">
@@ -18,13 +18,20 @@
         </ul>
       </nav>
     </div>
-    <div class="p-4">
-      <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Keluar</button>
-    </div>
   </aside>
 
   <!-- Main Content -->
-  <main class="ml-64 flex-1 p-8 transition-all duration-300">
+  <main class="ml-64 flex-2 p-8 transition-all duration-300">
+    <!-- sidebar toggle -->
+    <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+
+    <!-- overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-30 lg:max-w-screen"></div>
+    
     <!-- Profil -->
     <section id="profile" class="section active">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Profil Pengguna</h2>
