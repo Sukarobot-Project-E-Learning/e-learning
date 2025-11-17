@@ -10,8 +10,8 @@
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Review dan setujui atau tolak program yang diajukan oleh instruktur</p>
         </div>
 
-        <!-- Table Card -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
+        <!-- Program Approvals Table -->
+        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
             <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -69,19 +69,12 @@
                                 {{ $approval->created_at ? date('d M Y', strtotime($approval->created_at)) : '-' }}
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center space-x-2">
-                                    <a href="{{ route('admin.program-approvals.show', $approval->id) }}" 
-                                       class="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800">
-                                        Detail
-                                    </a>
+                                <div class="flex items-center space-x-4 text-sm">
+                                    <a href="{{ route('admin.program-approvals.show', $approval->id) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Detail</a>
                                     @if($approval->status == 'pending')
-                                    <form action="{{ route('admin.program-approvals.approve', $approval->id) }}" method="POST" class="inline-block">
+                                    <form action="{{ route('admin.program-approvals.approve', $approval->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui program ini?');">
                                         @csrf
-                                        <button type="submit" 
-                                                onclick="return confirm('Apakah Anda yakin ingin menyetujui program ini?')"
-                                                class="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700">
-                                            Setujui
-                                        </button>
+                                        <button type="submit" class="text-green-600 hover:text-green-800 dark:text-green-400">Setujui</button>
                                     </form>
                                     @endif
                                 </div>

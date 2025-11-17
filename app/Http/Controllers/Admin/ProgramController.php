@@ -63,7 +63,7 @@ class ProgramController extends Controller
         // $validated = $request->validate([...]);
         
         // Store logic here
-        return redirect()->route('elearning.admin.programs.index')->with('success', 'Program berhasil ditambahkan');
+        return redirect()->route('admin.programs.index')->with('success', 'Program berhasil ditambahkan');
     }
 
     /**
@@ -82,7 +82,7 @@ class ProgramController extends Controller
     {
         // TODO: Add validation and update logic here
         // Update logic here
-        return redirect()->route('elearning.admin.programs.index')->with('success', 'Program berhasil diupdate');
+        return redirect()->route('admin.programs.index')->with('success', 'Program berhasil diupdate');
     }
 
     /**
@@ -90,9 +90,12 @@ class ProgramController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Add delete logic here
-        // Delete logic here
-        return redirect()->route('elearning.admin.programs.index')->with('success', 'Program berhasil dihapus');
+        try {
+            DB::table('data_programs')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Program berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus program'], 500);
+        }
     }
 }
 

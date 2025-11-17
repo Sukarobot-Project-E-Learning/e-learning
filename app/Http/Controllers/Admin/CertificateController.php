@@ -61,7 +61,7 @@ class CertificateController extends Controller
         // TODO: Handle file upload for blanko
         // TODO: Save to database
 
-        return redirect()->route('elearning.admin.certificates.index')
+        return redirect()->route('admin.certificates.index')
             ->with('success', 'Sertifikat berhasil ditambahkan');
     }
 
@@ -91,7 +91,7 @@ class CertificateController extends Controller
         // TODO: Handle file upload for blanko if changed
         // TODO: Update in database
 
-        return redirect()->route('elearning.admin.certificates.index')
+        return redirect()->route('admin.certificates.index')
             ->with('success', 'Sertifikat berhasil diperbarui');
     }
 
@@ -100,11 +100,19 @@ class CertificateController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Delete from database
-        // TODO: Delete file if exists
-
-        return redirect()->route('elearning.admin.certificates.index')
-            ->with('success', 'Sertifikat berhasil dihapus');
+        try {
+            $certificate = DB::table('certificates')->where('id', $id)->first();
+            if ($certificate && $certificate->certificate_file) {
+                $filePath = public_path($certificate->certificate_file);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            DB::table('certificates')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Sertifikat berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus sertifikat'], 500);
+        }
     }
 }
 

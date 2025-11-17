@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProgramProofController extends Controller
 {
@@ -12,58 +13,35 @@ class ProgramProofController extends Controller
      */
     public function index()
     {
-        // Dummy data untuk sementara
-        $proofs = [
-            [
-                'id' => 1,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 2,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 3,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 4,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 5,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 6,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-            [
-                'id' => 7,
-                'name' => 'Nama User',
-                'program_title' => 'Workshop Branding',
-                'schedule' => '20 September 2025',
-                'documentation' => null
-            ],
-        ];
+        // Get program proofs from database with pagination (10 per page)
+        $proofs = DB::table('program_proofs')
+            ->leftJoin('data_siswas', 'program_proofs.student_id', '=', 'data_siswas.id')
+            ->leftJoin('users', function($join) {
+                $join->on('program_proofs.student_id', '=', 'users.id')
+                     ->where('users.role', '=', 'user');
+            })
+            ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
+            ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
+            ->select(
+                'program_proofs.*',
+                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as student_name'),
+                'data_programs.program as program_title',
+                DB::raw("CONCAT(DATE_FORMAT(schedules.tanggal_mulai, '%d %M %Y'), IF(schedules.tanggal_selesai IS NOT NULL AND schedules.tanggal_selesai != schedules.tanggal_mulai, CONCAT(' - ', DATE_FORMAT(schedules.tanggal_selesai, '%d %M %Y')), '')) as schedule")
+            )
+            ->orderBy('program_proofs.created_at', 'desc')
+            ->paginate(10);
+
+        // Transform data after pagination
+        $proofs->getCollection()->transform(function($proof) {
+            return [
+                'id' => $proof->id,
+                'name' => $proof->student_name ?? 'N/A',
+                'program_title' => $proof->program_title ?? 'N/A',
+                'schedule' => $proof->schedule ?? '-',
+                'documentation' => $proof->documentation,
+                'status' => $proof->status
+            ];
+        });
 
         return view('admin.program-proofs.index', compact('proofs'));
     }
@@ -73,18 +51,31 @@ class ProgramProofController extends Controller
      */
     public function show($id)
     {
-        // Get proof by id
-        $proof = (object)[
-            'id' => $id,
-            'user_name' => 'Nama User',
-            'program_title' => 'Judul Program',
-            'type' => 'Online',
-            'start_date' => '20/09/2025',
-            'start_time' => '09:00 AM',
-            'end_date' => '20/09/2025',
-            'end_time' => '11:00 AM',
-            'documentation' => null
-        ];
+        $proof = DB::table('program_proofs')
+            ->leftJoin('data_siswas', 'program_proofs.student_id', '=', 'data_siswas.id')
+            ->leftJoin('users', function($join) {
+                $join->on('program_proofs.student_id', '=', 'users.id')
+                     ->where('users.role', '=', 'user');
+            })
+            ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
+            ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
+            ->select(
+                'program_proofs.*',
+                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as user_name'),
+                'data_programs.program as program_title',
+                'data_programs.type',
+                'schedules.tanggal_mulai as start_date',
+                'schedules.jam_mulai as start_time',
+                'schedules.tanggal_selesai as end_date',
+                'schedules.jam_selesai as end_time'
+            )
+            ->where('program_proofs.id', $id)
+            ->first();
+
+        if (!$proof) {
+            return redirect()->route('admin.program-proofs.index')
+                ->with('error', 'Bukti program tidak ditemukan.');
+        }
 
         return view('admin.program-proofs.show', compact('proof'));
     }
@@ -94,8 +85,20 @@ class ProgramProofController extends Controller
      */
     public function accept($id)
     {
-        // TODO: Add accept logic here
-        return redirect()->route('elearning.admin.program-proofs.index')->with('success', 'Bukti program berhasil diterima');
+        try {
+            DB::table('program_proofs')
+                ->where('id', $id)
+                ->update([
+                    'status' => 'accepted',
+                    'accepted_by' => auth()->id(),
+                    'accepted_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->route('admin.program-proofs.index')->with('success', 'Bukti program berhasil diterima');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.program-proofs.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -103,8 +106,19 @@ class ProgramProofController extends Controller
      */
     public function reject($id)
     {
-        // TODO: Add reject logic here
-        return redirect()->route('elearning.admin.program-proofs.index')->with('success', 'Bukti program berhasil ditolak');
+        try {
+            DB::table('program_proofs')
+                ->where('id', $id)
+                ->update([
+                    'status' => 'rejected',
+                    'rejected_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->route('admin.program-proofs.index')->with('success', 'Bukti program berhasil ditolak');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.program-proofs.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -112,9 +126,19 @@ class ProgramProofController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Add delete logic here
-        // Delete logic here
-        return redirect()->route('elearning.admin.program-proofs.index')->with('success', 'Bukti program berhasil dihapus');
+        try {
+            $proof = DB::table('program_proofs')->where('id', $id)->first();
+            if ($proof && $proof->documentation) {
+                $filePath = public_path($proof->documentation);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            DB::table('program_proofs')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Bukti program berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus bukti program'], 500);
+        }
     }
 }
 
