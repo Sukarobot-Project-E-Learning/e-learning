@@ -1,4 +1,4 @@
-<header class="sticky-nav h-16">
+<header class="sticky-nav h-16 flex-items-center">
     <div class="nav-container">
       <!-- Logo -->
       <a href="{{ url('/') }}" class="nav-logo" aria-label="Sukarobot Home">
@@ -17,13 +17,13 @@
 
         <!-- Program Dropdown -->
         <li class="custom-dropdown">
-          <a href="{{ url('/kelas') }}">Program ▾</a>
+          <a href="{{ url('/program') }}">Program ▾</a>
           <ul class="custom-dropdown-menu">
-            <li><a href="{{ url('/kelas#filter=kursus') }}">Kursus</a></li>
-            <li><a href="{{ url('/kelas#filter=pelatihan') }}">Pelatihan</a></li>
-            <li><a href="{{ url('/kelas#filter=sertifikasi') }}">Sertifikasi</a></li>
-            <li><a href="{{ url('/kelas#filter=outingclass') }}">Outing Class</a></li>
-            <li><a href="{{ url('/kelas#filter=outboard') }}">Outboard</a></li>
+            <li><a href="{{ url('/program#filter=kursus') }}">Kursus</a></li>
+            <li><a href="{{ url('/program#filter=pelatihan') }}">Pelatihan</a></li>
+            <li><a href="{{ url('/program#filter=sertifikasi') }}">Sertifikasi</a></li>
+            <li><a href="{{ url('/program#filter=outingclass') }}">Outing Class</a></li>
+            <li><a href="{{ url('/program#filter=outboard') }}">Outboard</a></li>
           </ul>
         </li>
 
@@ -41,12 +41,12 @@
           <a href="{{ url('#') }}">Tentang Sukarobot ▾</a>
           <ul class="custom-dropdown-menu">
             <li><a href="{{ url('/instruktur') }}">Instruktur</a></li>
-            <li><a href="{{ url('/about') }}">Tentang Kami</a></li>
+            <li><a href="{{ url('/tentang') }}">Tentang Kami</a></li>
           </ul>
         </li>
 
-        <!-- Blog -->
-        <li><a href="{{ url('/blog') }}">Artikel</a></li>
+        <!-- Artikel -->
+        <li><a href="{{ url('/artikel') }}">Artikel</a></li>
 
         <!-- Button Masuk -->
         <li><a href="{{ url('/login') }}" class="btn-login">Masuk</a></li>
@@ -54,4 +54,5 @@
     </div>
   </header>
 
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/nav.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/navbar.css') }}">
+<script src="{{ asset('assets/elearning/client/js/navbar.js') }}"></script>

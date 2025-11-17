@@ -115,6 +115,6 @@
 </main>
 
 <!-- Script -->
-<script src="{{ asset('assets/elearning/client/js/blog.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/blog.css') }}">
+<script src="{{ asset('assets/elearning/client/js/artikel.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/artikel.css') }}">
 @endsection
