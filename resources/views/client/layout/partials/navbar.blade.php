@@ -48,8 +48,31 @@
         <!-- Artikel -->
         <li><a href="{{ url('/artikel') }}">Artikel</a></li>
 
-        <!-- Button Masuk -->
-        <li><a href="{{ url('/login') }}" class="btn-login">Masuk</a></li>
+        <!-- Jika user belum login -->
+        @guest
+        <!-- Button masuk -->
+          <li><a href="{{ url('/login') }}" class="btn-login">Masuk</a></li>          
+        @endguest
+        
+        <!-- Jika user sudah login -->
+        @auth
+          <!-- Dropdown User -->
+          <li class="custom-dropdown">
+            <button id="userMenuBtn" class="flex items-center gap-2 cursor-pointer">
+                <img src="{{ auth()->user()->avatar }}" 
+                    class="w-8 h-8 rounded-full">
+            </button> 
+            <ul class="custom-dropdown-menu user-menu">
+              <li><a href="{{ url('/dashboard') }}">Dashboard</a></li>
+              <li>
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" class="logout-button cursor-pointer">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        @endauth
       </ul>
     </div>
   </header>
