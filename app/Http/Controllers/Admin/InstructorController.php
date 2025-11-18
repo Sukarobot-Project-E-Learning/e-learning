@@ -114,6 +114,116 @@ class InstructorController extends Controller
     }
 
     /**
+     * Show the form for editing the specified instructor.
+     */
+    public function edit($id)
+    {
+        $user = DB::table('users')->where('id', $id)->first();
+        
+        if (!$user) {
+            return redirect()->route('admin.instructors.index')->with('error', 'Instruktur tidak ditemukan');
+        }
+
+        // Get trainer data if exists
+        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+
+        $instructorData = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone ?? '',
+            'status' => $user->is_active ? 'Approved' : 'Pending',
+            'expertise' => $trainer->lulusan ?? '',
+            'job' => $trainer->pekerjaan ?? '',
+            'experience' => $trainer->pengalaman ?? '',
+            'photo' => $user->avatar ?? null,
+        ];
+
+        return view('admin.instructors.edit', ['instructor' => (object)$instructorData]);
+    }
+
+    /**
+     * Update the specified instructor in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $user = DB::table('users')->where('id', $id)->first();
+        
+        if (!$user) {
+            return redirect()->route('admin.instructors.index')->with('error', 'Instruktur tidak ditemukan');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+            'password' => 'nullable|string|min:8|confirmed',
+            'status' => 'nullable|string|in:Approved,Pending,Rejected',
+            'expertise' => 'nullable|string|max:255',
+            'job' => 'nullable|string|max:255',
+            'experience' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
+
+        $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
+
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'is_active' => $isActive ? 1 : 0,
+            'updated_at' => now(),
+        ];
+
+        // Update password if provided
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        // Upload photo jika ada (opsional)
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+            
+            $photo = $request->file('photo');
+            $photoName = time() . '_' . $photo->getClientOriginalName();
+            $uploadPath = public_path('uploads/instructors');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $photo->move($uploadPath, $photoName);
+            $data['avatar'] = 'uploads/instructors/' . $photoName;
+        }
+
+        // Update users table
+        DB::table('users')->where('id', $id)->update($data);
+
+        // Update or insert data_trainers
+        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+        $trainerData = [
+            'nama' => $validated['name'],
+            'email' => $validated['email'],
+            'telephone' => $validated['phone'] ?? null,
+            'lulusan' => $validated['expertise'] ?? null,
+            'pekerjaan' => $validated['job'] ?? null,
+            'pengalaman' => $validated['experience'] ?? null,
+            'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
+            'updated_at' => now(),
+        ];
+
+        if ($trainer) {
+            DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
+        } else {
+            $trainerData['created_at'] = now();
+            DB::table('data_trainers')->insert($trainerData);
+        }
+
+        return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil diupdate');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)

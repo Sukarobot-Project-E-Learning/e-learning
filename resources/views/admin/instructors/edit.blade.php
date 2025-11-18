@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit User')
+@section('title', 'Edit Instruktur')
 
 @section('content')
 
@@ -9,9 +9,9 @@
         <!-- Page Header -->
         <div class="my-6">
             <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Edit User</h2>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Edit Instruktur</h2>
                 <div class="flex flex-col items-end" style="gap: 16px;">
-                    <a href="{{ route('admin.users.index') }}"
+                    <a href="{{ route('admin.instructors.index') }}"
                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -19,7 +19,7 @@
                         Kembali
                     </a>
                     <button type="submit" 
-                            form="userForm"
+                            form="instructorForm"
                             class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -32,23 +32,22 @@
 
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="userForm" action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+            <form id="instructorForm" action="{{ route('admin.instructors.update', $instructor->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="px-6 py-6 space-y-6">
+
                     <!-- Status -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="status">
                             Status <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <select name="status" 
-                                    id="status"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300"
-                                    required>
-                                <option value="Aktif" {{ old('status', $user->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                <option value="Non-Aktif" {{ old('status', $user->status) == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
-                                <option value="Pending" {{ old('status', $user->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <select name="status" id="status" required
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                <option value="Approved" {{ old('status', $instructor->status) == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                <option value="Pending" {{ old('status', $instructor->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Rejected" {{ old('status', $instructor->status) == 'Rejected' ? 'selected' : '' }}>Rejected</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,14 +57,14 @@
                         </div>
                     </div>
 
-                    <!-- Nama -->
+                    <!-- Name -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="name">
                             Nama <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="name" id="name" required
-                               value="{{ old('name', $user->name) }}"
-                               placeholder="Masukkan nama lengkap"
+                               value="{{ old('name', $instructor->name) }}"
+                               placeholder="Masukkan nama instruktur"
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
@@ -75,51 +74,52 @@
                             Email <span class="text-red-500">*</span>
                         </label>
                         <input type="email" name="email" id="email" required
-                               value="{{ old('email', $user->email) }}"
-                               placeholder="Masukkan email"
+                               value="{{ old('email', $instructor->email) }}"
+                               placeholder="Masukkan email instruktur"
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Nomor Telepon -->
+                    <!-- Phone -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="phone">
                             Nomor Telepon <span class="text-red-500">*</span>
                         </label>
                         <input type="tel" name="phone" id="phone" required
-                               value="{{ old('phone', $user->phone) }}"
+                               value="{{ old('phone', $instructor->phone) }}"
                                placeholder="Masukkan nomor telepon"
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Pekerjaan -->
+                    <!-- Expertise -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="job">
-                            Pekerjaan
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="expertise">
+                            Keahlian <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="job" id="job"
-                               value="{{ old('job', $user->job ?? '') }}"
-                               placeholder="Masukkan pekerjaan"
+                        <input type="text" name="expertise" id="expertise" required
+                               value="{{ old('expertise', $instructor->expertise) }}"
+                               placeholder="Masukkan keahlian instruktur"
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Alamat -->
+                    <!-- Job -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="address">
-                            Alamat
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="job">
+                            Pekerjaan <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="address" id="address" rows="3"
-                                  placeholder="Masukkan alamat lengkap"
-                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">{{ old('address', $user->address ?? '') }}</textarea>
+                        <input type="text" name="job" id="job" required
+                               value="{{ old('job', $instructor->job) }}"
+                               placeholder="Contoh: Web Developer, UI/UX Designer, Digital Marketer"
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Negara -->
+                    <!-- Experience -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="country">
-                            Negara
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="experience">
+                            Pengalaman <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="country" id="country"
-                               value="{{ old('country', $user->country ?? 'Indonesia') }}"
-                               placeholder="Masukkan negara"
+                        <input type="text" name="experience" id="experience" required
+                               value="{{ old('experience', $instructor->experience) }}"
+                               placeholder="Masukkan pengalaman instruktur (contoh: 5 Tahun, 10 Tahun)"
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
@@ -151,7 +151,7 @@
                         <div class="flex items-center justify-center w-full">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ photoPreview: '{{ isset($user->photo) && $user->photo ? asset($user->photo) : (isset($user->avatar) && $user->avatar ? asset($user->avatar) : null) }}' }"
+                                   x-data="{ photoPreview: '{{ isset($instructor->photo) && $instructor->photo ? asset($instructor->photo) : null }}' }"
                                    @dragover.prevent
                                    @drop.prevent="
                                        let file = $event.dataTransfer.files[0];
@@ -201,8 +201,8 @@
                             </label>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </form>
         </div>
 

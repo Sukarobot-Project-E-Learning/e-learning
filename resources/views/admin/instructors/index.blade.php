@@ -70,6 +70,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center space-x-4 text-sm">
+                                    <a href="{{ route('admin.instructors.edit', $instructor['id']) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
                                     @if($instructor['status'] == 'Pending')
                                         <form action="{{ route('admin.instructors.approve', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui akun instruktur ini?');">
                                             @csrf
@@ -79,9 +80,8 @@
                                             @csrf
                                             <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400">Reject</button>
                                         </form>
-                                    @else
-                                        <button @click="deleteInstructor({{ $instructor['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
                                     @endif
+                                    <button @click="deleteInstructor({{ $instructor['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
                                 </div>
                             </td>
                         </tr>
