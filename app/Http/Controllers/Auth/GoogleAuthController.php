@@ -50,10 +50,22 @@ class GoogleAuthController extends Controller
         ]);
         
         try {
+            // Debug log (remove after fixing)
+            \Log::info('Google OAuth Redirect', [
+                'client_id' => config('services.google.client_id'),
+                'redirect_uri' => $redirectUri,
+            ]);
+
             return Socialite::driver('google')
                 ->redirectUrl($redirectUri)
                 ->redirect();
         } catch (\Exception $e) {
+            // Log error
+            \Log::error('Google OAuth Redirect Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Terjadi kesalahan saat mengakses Google OAuth: ' . $e->getMessage()
             ]);
@@ -68,14 +80,20 @@ class GoogleAuthController extends Controller
         try {
             // Get redirect URI for callback
             $redirectUri = env('GOOGLE_REDIRECT_URI') ?: route('google.callback');
-            
+
             // Ensure config is loaded for callback too
             config([
                 'services.google.client_id' => env('GOOGLE_CLIENT_ID'),
                 'services.google.client_secret' => env('GOOGLE_CLIENT_SECRET'),
                 'services.google.redirect' => $redirectUri,
             ]);
-            
+
+            // Debug log (remove after fixing)
+            \Log::info('Google OAuth Config', [
+                'client_id' => config('services.google.client_id'),
+                'redirect' => config('services.google.redirect'),
+            ]);
+
             $googleUser = Socialite::driver('google')
                 ->redirectUrl($redirectUri)
                 ->user();
@@ -177,8 +195,19 @@ class GoogleAuthController extends Controller
                 return redirect()->route('client.dashboard')->with('success', 'Registrasi berhasil! Selamat datang di Sukarobot 🚀');
             }
         } catch (\Exception $e) {
+            // Log the actual error for debugging
+            \Log::error('Google OAuth Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Show detailed error in development, generic in production
+            $errorMessage = config('app.debug')
+                ? 'Google OAuth Error: ' . $e->getMessage()
+                : 'Terjadi kesalahan saat login dengan Google. Silakan coba lagi.';
+
             return redirect()->route('login')->withErrors([
-                'email' => 'Terjadi kesalahan saat login dengan Google. Silakan coba lagi.'
+                'email' => $errorMessage
             ]);
         }
     }
