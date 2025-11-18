@@ -17,14 +17,47 @@ class GoogleAuthController extends Controller
      */
     public function redirectToGoogle()
     {
+        // Get credentials from env
+        $clientId = env('GOOGLE_CLIENT_ID');
+        $clientSecret = env('GOOGLE_CLIENT_SECRET');
+        $redirectUri = env('GOOGLE_REDIRECT_URI');
+        
+        // Debug: Check if env is loaded (remove after fixing)
+        if (empty($clientId) || empty($clientSecret)) {
+            // Try to get from config as fallback
+            $clientId = $clientId ?: config('services.google.client_id');
+            $clientSecret = $clientSecret ?: config('services.google.client_secret');
+            $redirectUri = $redirectUri ?: config('services.google.redirect');
+        }
+        
+        // Validate credentials
+        if (empty($clientId) || empty($clientSecret)) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Konfigurasi Google OAuth belum lengkap. Pastikan GOOGLE_CLIENT_ID dan GOOGLE_CLIENT_SECRET sudah diisi di file .env'
+            ]);
+        }
+        
+        // Build redirect URI if not provided
+        if (empty($redirectUri)) {
+            $redirectUri = route('google.callback');
+        }
+        
         // Ensure config is loaded
         config([
-            'services.google.client_id' => env('GOOGLE_CLIENT_ID'),
-            'services.google.client_secret' => env('GOOGLE_CLIENT_SECRET'),
-            'services.google.redirect' => env('GOOGLE_REDIRECT_URI'),
+            'services.google.client_id' => $clientId,
+            'services.google.client_secret' => $clientSecret,
+            'services.google.redirect' => $redirectUri,
         ]);
         
-        return Socialite::driver('google')->redirect();
+        try {
+            return Socialite::driver('google')
+                ->redirectUrl($redirectUri)
+                ->redirect();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Terjadi kesalahan saat mengakses Google OAuth: ' . $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -33,7 +66,19 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            // Get redirect URI for callback
+            $redirectUri = env('GOOGLE_REDIRECT_URI') ?: route('google.callback');
+            
+            // Ensure config is loaded for callback too
+            config([
+                'services.google.client_id' => env('GOOGLE_CLIENT_ID'),
+                'services.google.client_secret' => env('GOOGLE_CLIENT_SECRET'),
+                'services.google.redirect' => $redirectUri,
+            ]);
+            
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($redirectUri)
+                ->user();
             
             // Check if user exists by email
             $user = DB::table('users')->where('email', $googleUser->email)->first();
