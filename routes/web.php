@@ -47,6 +47,10 @@ Route::prefix('instructor')->name('instructor.')->group(function () {
 Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showUserLoginForm'])->name('login');
 Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'userLogin']);
 
+// Google OAuth Routes (Public)
+Route::get('/auth/google', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
+
 // Logout Route
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 

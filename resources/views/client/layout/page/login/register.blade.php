@@ -76,6 +76,14 @@
           </button>
         </form>
 
+        <div class="mt-6">
+          <a href="{{ route('google.login') }}"
+            class="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-xl hover:bg-gray-50 transition hover:shadow-md active:scale-95">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google">
+            <span>Daftar dengan Google</span>
+          </a>
+        </div>
+
         <div class="mt-6 text-sm text-gray-600 text-center">
           Sudah punya akun?
           <a href="{{ url('/login') }}" class="text-blue-600 hover:underline">Login</a>

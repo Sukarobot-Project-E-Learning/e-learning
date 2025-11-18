@@ -66,11 +66,12 @@
         </form>
 
         <div class="mt-6">
-          <button id="googleLoginBtn"
+          <a href="{{ route('google.login') }}"
+            id="googleLoginBtn"
             class="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-xl hover:bg-gray-50 transition hover:shadow-md active:scale-95">
             <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google">
             <span>Login dengan Google</span>
-          </button>
+          </a>
         </div>
 
         <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">

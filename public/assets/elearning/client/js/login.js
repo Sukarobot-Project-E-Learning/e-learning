@@ -47,23 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
         errorMessages.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    // Google Login Handler (untuk nanti)
+    // Google Login Handler
     const googleLoginBtn = document.getElementById("googleLoginBtn");
     if (googleLoginBtn) {
-        googleLoginBtn.addEventListener("click", () => {
-            alert("Google OAuth belum diimplementasikan. Akan segera ditambahkan!");
-            // TODO: Implementasi Google OAuth
-            /*
-            google.accounts.oauth2.initCodeClient({
-              client_id: "GANTI_DENGAN_CLIENT_ID_KAMU.apps.googleusercontent.com",
-              scope: "email profile openid",
-              ux_mode: "popup",
-              callback: (response) => {
-                console.log("Kode login:", response);
-                // Kirim response.code ke server untuk verifikasi token
-              },
-            }).requestCode();
-            */
+        googleLoginBtn.addEventListener("click", (e) => {
+            // If it's a link, let it navigate naturally
+            // If it's a button, prevent default and navigate
+            if (googleLoginBtn.tagName === 'BUTTON') {
+                e.preventDefault();
+                window.location.href = '/auth/google';
+            }
         });
     }
 });
