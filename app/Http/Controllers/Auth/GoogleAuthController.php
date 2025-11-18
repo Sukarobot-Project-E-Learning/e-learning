@@ -17,6 +17,13 @@ class GoogleAuthController extends Controller
      */
     public function redirectToGoogle()
     {
+        // Ensure config is loaded
+        config([
+            'services.google.client_id' => env('GOOGLE_CLIENT_ID'),
+            'services.google.client_secret' => env('GOOGLE_CLIENT_SECRET'),
+            'services.google.redirect' => env('GOOGLE_REDIRECT_URI'),
+        ]);
+        
         return Socialite::driver('google')->redirect();
     }
 
