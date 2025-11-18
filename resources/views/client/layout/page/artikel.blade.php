@@ -71,7 +71,7 @@
     <div id="articlesGrid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
 
     <div class="mt-10 flex justify-center">
-      <button id="loadMore" class="px-8 py-3 rounded-lg bg-gradient-to-r from-orange-500 via-orange-600 to-blue-900 text-white font-medium shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-blue-800 transition-all duration-200 transform hover:scale-105">
+      <button id="loadMore" class="px-8 py-3 rounded-lg bg-gradient-to-r from-orange-500 via-orange-600 to-blue-900 text-white font-medium shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-blue-800 transition-all duration-200 transform hover:scale-105 cursor-pointer">
         Muat lebih banyak
       </button>
     </div>
@@ -89,29 +89,6 @@
       </div>
     </a>
   </template>
-
-
-  <!-- Tentang Kami -->
-  <section id="about" class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="md:col-span-2 bg-gray-50 rounded-xl p-6 border border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-900">Tentang RoboNews</h3>
-      <p class="mt-3 text-gray-600">RoboNews adalah publikasi resmi perusahaan robotics "RoboTech" (contoh). Kami membagikan perkembangan teknologi, paper riset, dan insight tim engineering. Website ini dirancang untuk menampilkan berita secara profesional namun terasa hangat dan mudah diakses.</p>
-      <div class="mt-4 flex gap-3">
-        <a class="text-sm px-3 py-2 rounded-md bg-gradient-to-r from-orange-500 to-blue-900 text-white font-medium">Karir</a>
-        <a class="text-sm px-3 py-2 rounded-md border border-gray-300 text-gray-700">Hubungi</a>
-      </div>
-    </div>
-
-    <div class="rounded-xl p-6 bg-gray-50 border border-gray-200">
-      <h4 class="font-semibold text-gray-900">Kontak</h4>
-      <p class="text-sm text-gray-600 mt-2">email: contact@robotech.example</p>
-      <p class="text-sm text-gray-600 mt-1">lokasi: Jakarta, Indonesia</p>
-      <div class="mt-4 flex gap-3">
-        <a class="text-sm underline text-blue-900">LinkedIn</a>
-        <a class="text-sm underline text-orange-600">Twitter</a>
-      </div>
-    </div>
-  </section>
 </main>
 
 <!-- Script -->
