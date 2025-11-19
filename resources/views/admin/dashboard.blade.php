@@ -225,22 +225,28 @@
         },
         colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
         stroke: {
-            width: [0, 3, 3, 3],
-            curve: ['smooth', 'smooth', 'smooth', 'smooth']
+            width: [0, 5, 5, 5],
+            curve: ['smooth', 'smooth', 'smooth', 'smooth'],
+            colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+            lineCap: 'round'
         },
         fill: {
             type: ['solid', 'gradient', 'gradient', 'gradient'],
             gradient: {
                 shadeIntensity: 1,
-                opacityFrom: 0.4,
+                opacityFrom: 0.5,
                 opacityTo: 0.1,
                 stops: [0, 90, 100]
             }
         },
         markers: {
-            size: [0, 4, 4, 4],
+            size: [0, 5, 5, 5],
+            strokeWidth: [0, 2, 2, 2],
+            strokeColors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+            fillColors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
             hover: {
-                size: 6
+                size: 7,
+                sizeOffset: 2
             }
         },
         xaxis: {
@@ -288,11 +294,22 @@
         ],
         grid: {
             borderColor: '#e5e7eb',
-            strokeDashArray: 5
+            strokeDashArray: 5,
+            xaxis: {
+                lines: {
+                    show: true
+                }
+            },
+            yaxis: {
+                lines: {
+                    show: true
+                }
+            }
         },
         tooltip: {
             shared: true,
             intersect: false,
+            theme: 'dark',
             y: {
                 formatter: function(value, { seriesIndex }) {
                     if (seriesIndex === 0) {
@@ -322,6 +339,12 @@
         combinedChart.updateOptions({
             xaxis: {
                 categories: yearData.months
+            },
+            stroke: {
+                width: [0, 5, 5, 5],
+                curve: ['smooth', 'smooth', 'smooth', 'smooth'],
+                colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+                lineCap: 'round'
             }
         });
         
