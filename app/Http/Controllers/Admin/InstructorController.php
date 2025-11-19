@@ -94,11 +94,16 @@ class InstructorController extends Controller
             $data['avatar'] = 'uploads/instructors/' . $photoName;
         }
 
+        // Add job to users data if provided
+        if (!empty($validated['job'])) {
+            $data['job'] = $validated['job'];
+        }
+
         // Insert ke tabel users
         $userId = DB::table('users')->insertGetId($data);
 
-        // Insert ke tabel data_trainers jika ada data tambahan
-        if (!empty($validated['expertise']) || !empty($validated['job']) || !empty($validated['experience'])) {
+        // Insert ke tabel data_trainers jika ada data tambahan (hanya kolom yang ada di tabel)
+        if (!empty($validated['expertise'])) {
             DB::table('data_trainers')->insert([
                 'nama' => $validated['name'],
                 'email' => $validated['email'],
@@ -134,8 +139,8 @@ class InstructorController extends Controller
             'phone' => $user->phone ?? '',
             'status' => $user->is_active ? 'Approved' : 'Pending',
             'expertise' => $trainer->lulusan ?? '',
-            'job' => $trainer->pekerjaan ?? '',
-            'experience' => $trainer->pengalaman ?? '',
+            'job' => $user->job ?? '',
+            'experience' => '', // Field tidak tersedia di database
             'photo' => $user->avatar ?? null,
         ];
 
@@ -197,18 +202,21 @@ class InstructorController extends Controller
             $data['avatar'] = 'uploads/instructors/' . $photoName;
         }
 
+        // Add job to users data if provided
+        if (!empty($validated['job'])) {
+            $data['job'] = $validated['job'];
+        }
+
         // Update users table
         DB::table('users')->where('id', $id)->update($data);
 
-        // Update or insert data_trainers
+        // Update or insert data_trainers (only columns that exist in the table)
         $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
         $trainerData = [
             'nama' => $validated['name'],
             'email' => $validated['email'],
             'telephone' => $validated['phone'] ?? null,
             'lulusan' => $validated['expertise'] ?? null,
-            'pekerjaan' => $validated['job'] ?? null,
-            'pengalaman' => $validated['experience'] ?? null,
             'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
             'updated_at' => now(),
         ];
