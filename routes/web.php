@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Client\UserController as UserDashboardController;
 use App\Http\Controllers\Client\AuthController as ClientAuthController;
 
 /*
@@ -203,11 +204,12 @@ Route::name('client.')->group(function () {
     })->name('reset-password');
 
     // Protected Client/User Routes
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('client.layout.page.dashboard');
-        })->name('dashboard');
-    });
+    // Route::middleware(['auth'])->group(function () {
+    //     Route::get('/dashboard', function () {
+    //         return view('client.layout.page.dashboard');
+    //     })->name('dashboard');
+    // });
+    Route::middleware('auth')->get('/dashboard', [UserDashboardController::class, 'profile'])->name('dashboard');
 });
 
 // Instructor Routes (Protected)

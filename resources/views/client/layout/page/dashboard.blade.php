@@ -41,13 +41,13 @@
         <div class="p-6 border-b border-gray-200">
           <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
             <div class="flex gap-4 items-center">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDBDjCTGbitKi4HKxS-lcHOIYpm3q1OOVwfOOFCffsixahxD9-jrY_r5KSVvSs8wuEJAct1NfLFnOOQ5jxNvvia92SI42CxJhDXRS4CRnIdcRNAGvBNzz6E225OQ91RhAqHTNNrEkTktI0P9S8oDc9F9VgZt2-yvlp6iT986TJ0UEQdQJYcp2ZlhG7-gg5y-3oaO288ahNXDo3-rrPJin8Q7__-bUmcBdzMXFlV_Y7XHju_oaPHZr9cT_5tPbvB2foL39FNxGNKwk4");'></div>
+              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }})"></div>
               <div class="flex flex-col justify-center">
-                <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">Budi Santoso</p>
-                <p class="text-[#616f89] text-base font-normal leading-normal">budi.santoso@email.com</p>
+                <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">{{ $user->name }}</p>
+                <p class="text-[#616f89] text-base font-normal leading-normal">{{ $user->email }}</p>
               </div>
             </div>
-            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto">
+            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto" id="photo-change-btn">
             <span class="truncate">Ganti Foto</span>
             </button>
           </div>
@@ -61,17 +61,27 @@
               <!-- TextField: Nama Lengkap -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
-                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="Budi Santoso"/>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
               </div>
               <!-- TextField: Email -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
-                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="budi.santoso@email.com"/>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="{{ $user->email }}"/>
               </div>
-              <!-- TextField: Bio -->
+              <!-- TextField: Phone -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="phone">Nomor Telepon</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
+              </div>
+              <!-- Job -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="job">Pekerjaan</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" placeholder="Tambah pekerjaan Anda..." value="{{ $user->job }}"/>
+              </div>
+              <!-- TextField: Address -->
               <div class="flex flex-col md:col-span-2">
-                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="bio">Bio Singkat</label>
-                <textarea class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal min-h-32" id="bio" placeholder="Ceritakan sedikit tentang diri Anda...">Siswa yang bersemangat untuk belajar teknologi dan desain.</textarea>
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="bio">Alamat</label>
+                <textarea class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal min-h-32" id="bio" placeholder="Tambah alamat Anda...">{{ $user->address }}</textarea>
               </div>
             </div>
           </div>
@@ -250,6 +260,72 @@
       </div>
     </section>
   </main>
+
+  <!-- Ubah foto -->
+  <!-- Overlay -->
+  <div id="photoModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    
+      <!-- Modal content -->
+      <div class="bg-white rounded-2xl w-full max-w-lg shadow-xl animate-fadeIn">
+          
+          <!-- Header -->
+          <div class="flex justify-between items-center px-6 py-4 border-b">
+              <h2 class="text-xl font-bold text-gray-900">Ubah Foto Profil</h2>
+              <button id="closePhotoModal" class="text-gray-500 hover:text-gray-700 text-xl">
+                  &times;
+              </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex border-b px-6">
+              <button class="tab-btn border-b-2 border-blue-600 text-blue-600 font-medium py-3 px-4">
+                  Upload Foto
+              </button>
+              <button class="tab-btn text-gray-500 hover:text-blue-600 py-3 px-4 flex items-center gap-2">
+                  <span class="material-icons text-base">bolt</span>
+                  Buat dengan AI
+              </button>
+          </div>
+
+          <!-- Body -->
+          <div class="px-6 py-6 text-center">
+
+              <!-- Foto preview -->
+              <div class="flex justify-center mb-6">
+                  <div class="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden">
+                      <img id="photoPreview" 
+                          src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" 
+                          class="w-full h-full object-cover">
+                  </div>
+              </div>
+
+              <!-- Upload Box -->
+              <label for="inputPhoto" 
+                    class="border-2 border-dashed border-gray-300 rounded-xl p-6 block cursor-pointer hover:bg-gray-50 transition">
+                  <p class="text-gray-600">Klik untuk memilih foto dari komputer</p>
+                  <p class="text-xs text-gray-400">JPG, PNG, max 2MB</p>
+                  <input type="file" id="inputPhoto" class="hidden" accept="image/*">
+              </label>
+
+          </div>
+
+          <!-- Footer -->
+          <div class="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
+              <button id="cancelPhotoModal" 
+                      class="px-4 py-2 rounded-lg bg-white border text-gray-600 hover:bg-gray-100">
+                  Batal
+              </button>
+
+              <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700">
+                  Simpan Perubahan
+              </button>
+          </div>
+
+      </div>
+
+  </div>
+
+
 </div>
 @endsection
 

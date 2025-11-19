@@ -4,6 +4,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector("aside");
     const sidebarToggle = document.getElementById("sidebar-toggle");
     const sidebarOverlay = document.getElementById("sidebar-overlay");
+    const modal = document.getElementById("photoModal");
+    const openBtn = document.getElementById("photo-change-btn");
+    const closeBtn = document.getElementById("closePhotoModal");
+    const cancelBtn = document.getElementById("cancelPhotoModal");
+    const inputPhoto = document.getElementById("inputPhoto");
+    const preview = document.getElementById("photoPreview");
+
+    // Open modal
+    openBtn.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+    });
+
+    // Close modal
+    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+    cancelBtn.addEventListener("click", () => modal.classList.add("hidden"));
+
+    // Click outside modal → close
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    // Preview image when uploaded
+    inputPhoto.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        preview.src = URL.createObjectURL(file);
+    });
 
     sidebarToggle.addEventListener("click", () => {
         // Toggles sidebar visibility

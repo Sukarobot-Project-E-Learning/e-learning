@@ -59,7 +59,7 @@
           <!-- Dropdown User -->
           <li class="custom-dropdown">
             <button id="userMenuBtn" class="flex items-center gap-2 cursor-pointer">
-                <img src="{{ auth()->user()->avatar }}" 
+                <img src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" 
                     class="w-8 h-8 rounded-full">
             </button> 
             <ul class="custom-dropdown-menu user-menu">
