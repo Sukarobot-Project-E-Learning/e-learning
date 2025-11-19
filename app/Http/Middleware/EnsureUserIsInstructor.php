@@ -20,8 +20,8 @@ class EnsureUserIsInstructor
             return redirect()->route('instructor.login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if (Auth::user()->role !== 'trainer') {
-            // If user is logged in but not a trainer, redirect to instructor login
+        if (Auth::user()->role !== 'instructor') {
+            // If user is logged in but not an instructor, redirect to instructor login
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
