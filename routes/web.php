@@ -194,9 +194,12 @@ Route::name('client.')->group(function () {
         return view('client.layout.page.login.reset');
     })->name('reset-password');
 
-    Route::get('/dashboard', function () {
-        return view('client.layout.page.dashboard');
-    })->name('dashboard');
+    // Protected Client/User Routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/dashboard', function () {
+            return view('client.layout.page.dashboard');
+        })->name('dashboard');
+    });
 });
 
 // Instructor Routes (Protected)
