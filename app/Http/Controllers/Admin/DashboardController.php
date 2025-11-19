@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -44,7 +45,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        // Get chart data for last 12 months
+        // Get chart data for multiple years
         $chartData = $this->getChartData();
 
         return view('admin.dashboard', compact(
@@ -63,59 +64,66 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get chart data for last 12 months
+     * Get chart data for multiple years (2021-2024)
      */
     private function getChartData()
     {
-        $months = [];
-        $revenueData = [];
-        $usersData = [];
-        $instructorsData = [];
-        $programsData = [];
+        $years = [2024, 2023, 2022, 2021];
+        $chartDataByYear = [];
 
-        // Get last 12 months
-        for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $monthStart = $date->copy()->startOfMonth();
-            $monthEnd = $date->copy()->endOfMonth();
-            
-            $months[] = $date->format('M');
-            
-            // Revenue data (from transactions)
-            $revenue = DB::table('transactions')
-                ->where('status', 'paid')
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->sum('amount') ?? 0;
-            $revenueData[] = (int) $revenue;
-            
-            // Users data (total users created in that month)
-            $users = DB::table('users')
-                ->where('role', 'user')
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->count();
-            $usersData[] = $users;
-            
-            // Instructors data (total instructors created in that month)
-            $instructors = DB::table('users')
-                ->where('role', 'instructor')
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->count();
-            $instructorsData[] = $instructors;
-            
-            // Programs data (total programs created in that month)
-            $programs = DB::table('data_programs')
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->count();
-            $programsData[] = $programs;
+        foreach ($years as $year) {
+            $months = [];
+            $revenueData = [];
+            $usersData = [];
+            $instructorsData = [];
+            $programsData = [];
+
+            // Get 12 months for this year
+            for ($month = 1; $month <= 12; $month++) {
+                $date = Carbon::create($year, $month, 1);
+                $monthStart = $date->copy()->startOfMonth();
+                $monthEnd = $date->copy()->endOfMonth();
+                
+                $months[] = $date->format('M');
+                
+                // Revenue data (from transactions)
+                $revenue = DB::table('transactions')
+                    ->where('status', 'paid')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->sum('amount') ?? 0;
+                $revenueData[] = (int) $revenue;
+                
+                // Users data (total users created in that month)
+                $users = DB::table('users')
+                    ->where('role', 'user')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->count();
+                $usersData[] = $users;
+                
+                // Instructors data (total instructors created in that month)
+                $instructors = DB::table('users')
+                    ->where('role', 'instructor')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->count();
+                $instructorsData[] = $instructors;
+                
+                // Programs data (total programs created in that month)
+                $programs = DB::table('data_programs')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->count();
+                $programsData[] = $programs;
+            }
+
+            $chartDataByYear[$year] = [
+                'months' => $months,
+                'revenue' => $revenueData,
+                'users' => $usersData,
+                'instructors' => $instructorsData,
+                'programs' => $programsData
+            ];
         }
 
-        return [
-            'months' => $months,
-            'revenue' => $revenueData,
-            'users' => $usersData,
-            'instructors' => $instructorsData,
-            'programs' => $programsData
-        ];
+        return $chartDataByYear;
     }
 }
 

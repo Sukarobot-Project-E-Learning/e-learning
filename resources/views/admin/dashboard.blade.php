@@ -113,6 +113,22 @@
                         Menampilkan keuangan, pengguna, instruktur, dan program dalam satu chart
                     </p>
                 </div>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                        <span id="combinedYearText">{{ date('Y') }}</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10 dark:bg-gray-700">
+                        <div class="py-1">
+                            <a href="#" @click.prevent="changeCombinedYear(2024); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2024</a>
+                            <a href="#" @click.prevent="changeCombinedYear(2023); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2023</a>
+                            <a href="#" @click.prevent="changeCombinedYear(2022); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2022</a>
+                            <a href="#" @click.prevent="changeCombinedYear(2021); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2021</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="combinedChart"></div>
             <div class="flex justify-start mt-4 space-x-4 text-sm text-gray-600 dark:text-gray-400">
@@ -140,11 +156,36 @@
 
 @push('scripts')
 <script>
-    // Data dari controller
-    const chartData = @json($chartData ?? []);
+    // Data dari controller (multiple years)
+    const chartDataByYear = @json($chartData ?? []);
     
-    // Normalize revenue data untuk chart (dibagi 1000 untuk scaling)
-    const normalizedRevenue = chartData.revenue ? chartData.revenue.map(val => Math.round(val / 1000)) : [];
+    // Get current year
+    const currentYear = {{ date('Y') }};
+    
+    // Get data for current year
+    function getYearData(year) {
+        const yearData = chartDataByYear[year] || {
+            months: [],
+            revenue: [],
+            users: [],
+            instructors: [],
+            programs: []
+        };
+        
+        // Normalize revenue data untuk chart (dibagi 1000 untuk scaling)
+        const normalizedRevenue = yearData.revenue ? yearData.revenue.map(val => Math.round(val / 1000)) : [];
+        
+        return {
+            months: yearData.months || [],
+            revenue: normalizedRevenue,
+            users: yearData.users || [],
+            instructors: yearData.instructors || [],
+            programs: yearData.programs || []
+        };
+    }
+    
+    // Initialize with current year
+    let currentYearData = getYearData(currentYear);
     
     // Combined Chart Configuration
     const combinedChartOptions = {
@@ -152,22 +193,22 @@
             {
                 name: 'Keuangan (dalam ribuan)',
                 type: 'column',
-                data: normalizedRevenue
+                data: currentYearData.revenue
             },
             {
                 name: 'Pengguna',
                 type: 'line',
-                data: chartData.users || []
+                data: currentYearData.users
             },
             {
                 name: 'Instruktur',
                 type: 'line',
-                data: chartData.instructors || []
+                data: currentYearData.instructors
             },
             {
                 name: 'Program',
                 type: 'line',
-                data: chartData.programs || []
+                data: currentYearData.programs
             }
         ],
         chart: {
@@ -203,7 +244,7 @@
             }
         },
         xaxis: {
-            categories: chartData.months || [],
+            categories: currentYearData.months,
             labels: {
                 style: {
                     colors: '#9ca3af'
@@ -268,9 +309,49 @@
         }
     };
 
+    let combinedChart;
+
+    // Function to change year
+    window.changeCombinedYear = function(year) {
+        document.getElementById('combinedYearText').textContent = year;
+        
+        // Get data for selected year
+        const yearData = getYearData(year);
+        
+        // Update chart
+        combinedChart.updateOptions({
+            xaxis: {
+                categories: yearData.months
+            }
+        });
+        
+        combinedChart.updateSeries([
+            {
+                name: 'Keuangan (dalam ribuan)',
+                type: 'column',
+                data: yearData.revenue
+            },
+            {
+                name: 'Pengguna',
+                type: 'line',
+                data: yearData.users
+            },
+            {
+                name: 'Instruktur',
+                type: 'line',
+                data: yearData.instructors
+            },
+            {
+                name: 'Program',
+                type: 'line',
+                data: yearData.programs
+            }
+        ]);
+    };
+
     // Initialize combined chart when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        const combinedChart = new ApexCharts(document.querySelector("#combinedChart"), combinedChartOptions);
+        combinedChart = new ApexCharts(document.querySelector("#combinedChart"), combinedChartOptions);
         combinedChart.render();
     });
 </script>
