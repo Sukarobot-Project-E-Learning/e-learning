@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Detail Persetujuan Program')
+@section('title', 'Detail Pengajuan Program')
 
 @section('content')
     <div class="container px-6 mx-auto">

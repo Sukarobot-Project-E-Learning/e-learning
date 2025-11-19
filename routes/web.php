@@ -92,7 +92,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
     
-    // Program Approval Management (Persetujuan Program dari Instruktur)
+    // Program Approval Management (Pengajuan Program dari Instruktur)
     Route::get('program-approvals', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'index'])->name('program-approvals.index');
     Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');
     Route::post('program-approvals/{id}/approve', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'approve'])->name('program-approvals.approve');

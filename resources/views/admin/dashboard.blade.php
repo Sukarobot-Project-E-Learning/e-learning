@@ -8,7 +8,7 @@
         <h2 class="text-3xl font-bold text-gray-700 dark:text-gray-200">
             Hai Admin,
         </h2>
-        <p class="text-lg text-purple-600 dark:text-purple-400 font-semibold mt-1">
+        <p class="text-lg text-purple-600 dark:text-purple-400 font-semibold mt-3">
             SELAMAT DATANG DI PEMBELAJARAN ELEKTRONIK!
         </p>
     </div>
@@ -101,50 +101,104 @@
         </div>
     </div>
 
-    <!-- Combined Chart Section -->
-    <div class="mb-8">
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <!-- Chart Section - 2 Charts -->
+    <div class="grid gap-6 mb-8 md:grid-cols-2">
+        <!-- Chart 1: Keuangan -->
+        <div class="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h4 class="font-semibold text-gray-800 dark:text-gray-300">
-                        Statistik 12 Bulan Terakhir
+                        Statistik Keuangan
                     </h4>
                     <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Menampilkan keuangan, pengguna, instruktur, dan program dalam satu chart
+                        Keuangan per bulan
                     </p>
                 </div>
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
-                        <span id="combinedYearText">{{ date('Y') }}</span>
+                <div class="relative" x-data="{ open: false }" x-cloak>
+                    <button @click="open = !open" type="button" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                        <span id="revenueYearText">{{ date('Y') }}</span>
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10 dark:bg-gray-700">
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         @click.away="open = false" 
+                         class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-50 dark:bg-gray-700"
+                         style="display: none;"
+                         x-cloak>
                         <div class="py-1">
-                            <a href="#" @click.prevent="changeCombinedYear(2024); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2024</a>
-                            <a href="#" @click.prevent="changeCombinedYear(2023); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2023</a>
-                            <a href="#" @click.prevent="changeCombinedYear(2022); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2022</a>
-                            <a href="#" @click.prevent="changeCombinedYear(2021); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2021</a>
+                            <a href="#" @click.prevent="changeRevenueYear(2024); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2024</a>
+                            <a href="#" @click.prevent="changeRevenueYear(2023); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2023</a>
+                            <a href="#" @click.prevent="changeRevenueYear(2022); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2022</a>
+                            <a href="#" @click.prevent="changeRevenueYear(2021); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2021</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="combinedChart"></div>
-            <div class="flex justify-start mt-4 space-x-4 text-sm text-gray-600 dark:text-gray-400">
-                <div class="flex items-center">
+            <div id="revenueChart"></div>
+            <div class="flex justify-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onclick="toggleRevenueSeries()">
                     <span class="inline-block w-3 h-3 mr-1 bg-teal-500 rounded-full"></span>
                     <span>Keuangan (dalam ribuan rupiah)</span>
                 </div>
-                <div class="flex items-center">
+            </div>
+        </div>
+
+        <!-- Chart 2: Pengguna, Instruktur, Program -->
+        <div class="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h4 class="font-semibold text-gray-800 dark:text-gray-300">
+                        Statistik Pengguna & Program
+                    </h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Pengguna, Instruktur, dan Program per bulan
+                    </p>
+                </div>
+                <div class="relative" x-data="{ open: false }" x-cloak>
+                    <button @click="open = !open" type="button" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                        <span id="usersYearText">{{ date('Y') }}</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         @click.away="open = false" 
+                         class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-50 dark:bg-gray-700"
+                         style="display: none;"
+                         x-cloak>
+                        <div class="py-1">
+                            <a href="#" @click.prevent="changeUsersYear(2024); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2024</a>
+                            <a href="#" @click.prevent="changeUsersYear(2023); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2023</a>
+                            <a href="#" @click.prevent="changeUsersYear(2022); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2022</a>
+                            <a href="#" @click.prevent="changeUsersYear(2021); open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">2021</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="usersChart"></div>
+            <div class="flex justify-center mt-4 space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onclick="toggleUsersSeries(0)">
                     <span class="inline-block w-3 h-3 mr-1 bg-orange-500 rounded-full"></span>
                     <span>Pengguna</span>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onclick="toggleUsersSeries(1)">
                     <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
                     <span>Instruktur</span>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onclick="toggleUsersSeries(2)">
                     <span class="inline-block w-3 h-3 mr-1 bg-purple-500 rounded-full"></span>
                     <span>Program</span>
                 </div>
@@ -187,14 +241,86 @@
     // Initialize with current year
     let currentYearData = getYearData(currentYear);
     
-    // Combined Chart Configuration
-    const combinedChartOptions = {
-        series: [
-            {
-                name: 'Keuangan (dalam ribuan)',
-                type: 'column',
-                data: currentYearData.revenue
+    // Chart 1: Revenue Chart Configuration
+    const revenueChartOptions = {
+        series: [{
+            name: 'Keuangan (dalam ribuan)',
+            data: currentYearData.revenue
+        }],
+        chart: {
+            type: 'column',
+            height: 350,
+            toolbar: {
+                show: false
             },
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800
+            }
+        },
+        colors: ['#14b8a6'],
+        plotOptions: {
+            bar: {
+                borderRadius: 4,
+                columnWidth: '60%'
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: currentYearData.months,
+            labels: {
+                style: {
+                    colors: '#9ca3af'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Keuangan (Rp x1000)',
+                style: {
+                    color: '#14b8a6'
+                }
+            },
+            labels: {
+                style: {
+                    colors: '#9ca3af'
+                },
+                formatter: function(value) {
+                    return 'Rp. ' + value.toLocaleString('id-ID');
+                }
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        grid: {
+            borderColor: '#e5e7eb',
+            strokeDashArray: 5
+        },
+        tooltip: {
+            theme: 'dark',
+            y: {
+                formatter: function(value) {
+                    return 'Rp. ' + (value * 1000).toLocaleString('id-ID');
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    };
+
+    // Chart 2: Users Chart Configuration
+    const usersChartOptions = {
+        series: [
             {
                 name: 'Pengguna',
                 type: 'line',
@@ -212,7 +338,7 @@
             }
         ],
         chart: {
-            height: 400,
+            height: 350,
             type: 'line',
             toolbar: {
                 show: false
@@ -223,29 +349,23 @@
                 speed: 800
             }
         },
-        colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+        colors: ['#f97316', '#3b82f6', '#a855f7'],
         stroke: {
-            width: [0, 5, 5, 5],
-            curve: ['smooth', 'smooth', 'smooth', 'smooth'],
-            colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+            width: [3, 3, 3],
+            curve: 'smooth',
             lineCap: 'round'
         },
         fill: {
-            type: ['solid', 'gradient', 'gradient', 'gradient'],
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.5,
-                opacityTo: 0.1,
-                stops: [0, 90, 100]
-            }
+            type: 'none',
+            opacity: 0
         },
         markers: {
-            size: [0, 5, 5, 5],
-            strokeWidth: [0, 2, 2, 2],
-            strokeColors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
-            fillColors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
+            size: [6, 6, 6],
+            strokeWidth: [2, 2, 2],
+            strokeColors: ['#f97316', '#3b82f6', '#a855f7'],
+            fillColors: ['#f97316', '#3b82f6', '#a855f7'],
             hover: {
-                size: 7,
+                size: 8,
                 sizeOffset: 2
             }
         },
@@ -257,103 +377,87 @@
                 }
             }
         },
-        yaxis: [
-            {
-                title: {
-                    text: 'Keuangan (Rp x1000)',
-                    style: {
-                        color: '#14b8a6'
-                    }
-                },
-                labels: {
-                    style: {
-                        colors: '#9ca3af'
-                    },
-                    formatter: function(value) {
-                        return 'Rp. ' + value.toLocaleString('id-ID');
-                    }
+        yaxis: {
+            title: {
+                text: 'Jumlah',
+                style: {
+                    color: '#3b82f6'
                 }
             },
-            {
-                opposite: true,
-                title: {
-                    text: 'Jumlah',
-                    style: {
-                        color: '#3b82f6'
-                    }
+            labels: {
+                style: {
+                    colors: '#9ca3af'
                 },
-                labels: {
-                    style: {
-                        colors: '#9ca3af'
-                    },
-                    formatter: function(value) {
-                        return value.toLocaleString();
-                    }
+                formatter: function(value) {
+                    return value.toLocaleString();
                 }
             }
-        ],
+        },
         grid: {
             borderColor: '#e5e7eb',
-            strokeDashArray: 5,
-            xaxis: {
-                lines: {
-                    show: true
-                }
-            },
-            yaxis: {
-                lines: {
-                    show: true
-                }
-            }
+            strokeDashArray: 5
         },
         tooltip: {
             shared: true,
             intersect: false,
             theme: 'dark',
             y: {
-                formatter: function(value, { seriesIndex }) {
-                    if (seriesIndex === 0) {
-                        return 'Rp. ' + (value * 1000).toLocaleString('id-ID');
-                    }
+                formatter: function(value) {
                     return value.toLocaleString();
                 }
             }
         },
         legend: {
-            show: true,
-            position: 'top',
-            horizontalAlign: 'right'
+            show: false
         }
     };
 
-    let combinedChart;
+    let revenueChart;
+    let usersChart;
 
-    // Function to change year
-    window.changeCombinedYear = function(year) {
-        document.getElementById('combinedYearText').textContent = year;
-        
-        // Get data for selected year
+    // Function to toggle revenue series
+    window.toggleRevenueSeries = function() {
+        if (revenueChart) {
+            revenueChart.toggleSeries(0);
+        }
+    };
+
+    // Function to toggle users series
+    window.toggleUsersSeries = function(seriesIndex) {
+        if (usersChart) {
+            usersChart.toggleSeries(seriesIndex);
+        }
+    };
+
+    // Function to change revenue year
+    window.changeRevenueYear = function(year) {
+        document.getElementById('revenueYearText').textContent = year;
         const yearData = getYearData(year);
         
-        // Update chart
-        combinedChart.updateOptions({
+        revenueChart.updateOptions({
             xaxis: {
                 categories: yearData.months
-            },
-            stroke: {
-                width: [0, 5, 5, 5],
-                curve: ['smooth', 'smooth', 'smooth', 'smooth'],
-                colors: ['#14b8a6', '#f97316', '#3b82f6', '#a855f7'],
-                lineCap: 'round'
             }
         });
         
-        combinedChart.updateSeries([
-            {
-                name: 'Keuangan (dalam ribuan)',
-                type: 'column',
-                data: yearData.revenue
-            },
+        revenueChart.updateSeries([{
+            name: 'Keuangan (dalam ribuan)',
+            data: yearData.revenue
+        }]);
+    };
+
+    // Function to change users year
+    window.changeUsersYear = function(year) {
+        document.getElementById('usersYearText').textContent = year;
+        const yearData = getYearData(year);
+        
+        usersChart.updateOptions({
+            xaxis: {
+                categories: yearData.months
+            }
+        });
+        
+        usersChart.updateSeries([
             {
                 name: 'Pengguna',
                 type: 'line',
@@ -372,10 +476,13 @@
         ]);
     };
 
-    // Initialize combined chart when DOM is ready
+    // Initialize charts when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        combinedChart = new ApexCharts(document.querySelector("#combinedChart"), combinedChartOptions);
-        combinedChart.render();
+        revenueChart = new ApexCharts(document.querySelector("#revenueChart"), revenueChartOptions);
+        revenueChart.render();
+
+        usersChart = new ApexCharts(document.querySelector("#usersChart"), usersChartOptions);
+        usersChart.render();
     });
 </script>
 @endpush

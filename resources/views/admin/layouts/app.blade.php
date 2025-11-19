@@ -11,6 +11,11 @@
 
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/tailwind.output.css') }}" />
+    
+    <!-- Alpine.js x-cloak -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 
     <!-- Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>

@@ -111,7 +111,7 @@
                         <a class="w-full block" href="{{ route('admin.programs.index') }}">Program</a>
                     </div>
                     <div class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ request()->routeIs('admin.program-approvals.*') ? 'text-gray-800 dark:text-gray-200 font-semibold' : '' }}">
-                        <a class="w-full block" href="{{ route('admin.program-approvals.index') }}">Persetujuan Program</a>
+                        <a class="w-full block" href="{{ route('admin.program-approvals.index') }}">Pengajuan Program</a>
                     </div>
                     <div class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ request()->routeIs('admin.program-proofs.*') ? 'text-gray-800 dark:text-gray-200 font-semibold' : '' }}">
                         <a class="w-full block" href="{{ route('admin.program-proofs.index') }}">Bukti Program</a>

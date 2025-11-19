@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Persetujuan Program')
+@section('title', 'Pengajuan Program')
 
 @section('content')
     <div class="container px-6 mx-auto">
         <!-- Page Header -->
         <div class="my-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Persetujuan Program dari Instruktur</h2>
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengajuan Program dari Instruktur</h2>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Review dan setujui atau tolak program yang diajukan oleh instruktur</p>
         </div>
 
