@@ -51,8 +51,8 @@ Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'userL
 Route::get('/auth/google', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
 
-// Logout Route
-Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+// Logout Route (support both GET and POST)
+Route::match(['get', 'post'], '/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
 // Admin Routes (Protected)
 // Note: Using only 'admin' middleware because it already checks auth
