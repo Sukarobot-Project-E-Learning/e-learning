@@ -54,6 +54,14 @@ Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthContro
 // Logout Route (support both GET and POST)
 Route::match(['get', 'post'], '/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+// Region API Routes (Public)
+Route::prefix('api/regions')->name('api.regions.')->group(function () {
+    Route::get('/provinces', [\App\Http\Controllers\RegionController::class, 'getProvinces'])->name('provinces');
+    Route::get('/kabupaten-kota/{provinceId}', [\App\Http\Controllers\RegionController::class, 'getKabupatenKota'])->name('kabupaten-kota');
+    Route::get('/kecamatan/{kabupatenId}', [\App\Http\Controllers\RegionController::class, 'getKecamatan'])->name('kecamatan');
+    Route::get('/kelurahan/{kecamatanId}', [\App\Http\Controllers\RegionController::class, 'getKelurahan'])->name('kelurahan');
+});
+
 // Admin Routes (Protected)
 // Note: Using only 'admin' middleware because it already checks auth
 Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureUserIsAdmin::class])->group(function () {

@@ -159,9 +159,75 @@
                             </label>
                         </div>
                     </div>
+
+                    <!-- Lokasi Section -->
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Lokasi</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Provinsi -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="province">
+                                    Provinsi
+                                </label>
+                                <select name="province" id="province"
+                                        class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                    <option value="">Pilih Provinsi</option>
+                                </select>
+                            </div>
+
+                            <!-- Kabupaten/Kota -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="city">
+                                    Kabupaten/Kota
+                                </label>
+                                <select name="city" id="city"
+                                        class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                    <option value="">Pilih Kabupaten/Kota</option>
+                                </select>
+                            </div>
+
+                            <!-- Kecamatan -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="district">
+                                    Kecamatan
+                                </label>
+                                <select name="district" id="district"
+                                        class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                    <option value="">Pilih Kecamatan</option>
+                                </select>
+                            </div>
+
+                            <!-- Kelurahan/Desa -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="village">
+                                    Kelurahan/Desa
+                                </label>
+                                <select name="village" id="village"
+                                        class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                    <option value="">Pilih Kelurahan/Desa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- List Alamat Lengkap -->
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="full_address">
+                                Alamat Lengkap
+                            </label>
+                            <textarea name="full_address" id="full_address" rows="3"
+                                      placeholder="Masukkan alamat lengkap"
+                                      class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500"></textarea>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+@push('scripts')
+<script src="{{ asset('assets/elearning/region-selector.js') }}"></script>
+@endpush
+
 @endsection
 

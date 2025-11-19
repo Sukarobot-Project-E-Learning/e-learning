@@ -122,10 +122,6 @@
                                 <select name="province" id="province"
                                         class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
                                     <option value="">Pilih Provinsi</option>
-                                    <option value="jawa-barat" {{ (isset($program) && $program->province == 'jawa-barat') ? 'selected' : '' }}>Jawa Barat</option>
-                                    <option value="jawa-tengah" {{ (isset($program) && $program->province == 'jawa-tengah') ? 'selected' : '' }}>Jawa Tengah</option>
-                                    <option value="jawa-timur" {{ (isset($program) && $program->province == 'jawa-timur') ? 'selected' : '' }}>Jawa Timur</option>
-                                    <option value="dki-jakarta" {{ (isset($program) && $program->province == 'dki-jakarta') ? 'selected' : '' }}>DKI Jakarta</option>
                                 </select>
                             </div>
 
@@ -294,6 +290,10 @@
         </div>
 
     </div>
+
+@push('scripts')
+<script src="{{ asset('assets/elearning/region-selector.js') }}"></script>
+@endpush
 
 @endsection
 
