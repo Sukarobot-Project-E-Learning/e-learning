@@ -92,6 +92,9 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
     
+    // Program Category Management
+    Route::resource('program-categories', \App\Http\Controllers\Admin\ProgramCategoryController::class);
+    
     // Program Approval Management (Persetujuan Program dari Instruktur)
     Route::get('program-approvals', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'index'])->name('program-approvals.index');
     Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');

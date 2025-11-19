@@ -51,7 +51,8 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        return view('admin.programs.create');
+        $categories = \App\Models\ProgramCategory::where('is_active', true)->orderBy('name')->get();
+        return view('admin.programs.create', compact('categories'));
     }
 
     /**
@@ -71,8 +72,9 @@ class ProgramController extends Controller
      */
     public function edit($id)
     {
-        // Get program by id
-        return view('admin.programs.edit');
+        $program = DB::table('data_programs')->where('id', $id)->first();
+        $categories = \App\Models\ProgramCategory::where('is_active', true)->orderBy('name')->get();
+        return view('admin.programs.edit', compact('program', 'categories'));
     }
 
     /**

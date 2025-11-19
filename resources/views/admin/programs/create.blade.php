@@ -44,11 +44,13 @@
                         <select name="category" id="category" required
                                 class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
                             <option value="">Pilih Kategori</option>
-                            <option value="pelatihan">Pelatihan</option>
-                            <option value="sertifikasi">Sertifikasi</option>
-                            <option value="training">Training</option>
-                            <option value="event">Event</option>
+                            @foreach($categories ?? [] as $cat)
+                                <option value="{{ $cat->name }}">{{ $cat->name }}</option>
+                            @endforeach
                         </select>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Tidak menemukan kategori? <a href="{{ route('admin.program-categories.create') }}" class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Tambah kategori baru</a>
+                        </p>
                     </div>
 
                     <!-- Judul -->
