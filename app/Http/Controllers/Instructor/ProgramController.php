@@ -91,8 +91,7 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        $categories = \App\Models\ProgramCategory::where('is_active', true)->orderBy('name')->get();
-        return view('instructor.programs.create', compact('categories'));
+        return view('instructor.programs.create');
     }
 
     /**

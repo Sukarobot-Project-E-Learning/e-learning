@@ -81,11 +81,11 @@
             </li>
 
             <!-- Program (Dropdown) -->
-            <li class="relative px-6 py-3" x-data="{ isOpen: {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-categories.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'true' : 'false' }} }">
-                @if(request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-categories.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*'))
+            <li class="relative px-6 py-3" x-data="{ isOpen: {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'true' : 'false' }} }">
+                @if(request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*'))
                 <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span>
                 @endif
-                <button class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-categories.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'text-gray-800 dark:text-gray-100' : '' }}"
+                <button class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'text-gray-800 dark:text-gray-100' : '' }}"
                         @click="isOpen = !isOpen"
                         aria-haspopup="true">
                     <span class="inline-flex items-center">
@@ -107,9 +107,6 @@
                      x-transition:leave-end="opacity-0 max-h-0"
                      class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium text-gray-500 rounded-md shadow-inner bg-gray-50 dark:text-gray-400 dark:bg-gray-900"
                      aria-label="submenu">
-                    <div class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ request()->routeIs('admin.program-categories.*') ? 'text-gray-800 dark:text-gray-200 font-semibold' : '' }}">
-                        <a class="w-full block" href="{{ route('admin.program-categories.index') }}">Kategori Program</a>
-                    </div>
                     <div class="px-2 py-1 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {{ request()->routeIs('admin.programs.*') ? 'text-gray-800 dark:text-gray-200 font-semibold' : '' }}">
                         <a class="w-full block" href="{{ route('admin.programs.index') }}">Program</a>
                     </div>
