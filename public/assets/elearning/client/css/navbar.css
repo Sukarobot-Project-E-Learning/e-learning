@@ -140,6 +140,11 @@ body {
     color: #333;
 }
 
+.custom-dropdown-menu button {
+    width: 100%;
+    text-align: left;
+}
+
 .custom-dropdown-menu a:hover {
     background: #f5f5f5;
     color: #2563eb;
