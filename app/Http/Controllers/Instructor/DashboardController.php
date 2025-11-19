@@ -103,13 +103,14 @@ class DashboardController extends Controller
         }
 
         // Get recent programs with details
+        // First get distinct program IDs with their latest schedule created_at
         $recentPrograms = DB::table('schedules')
             ->where('id_trainer', $trainerId)
             ->where('ket', 'Aktif')
             ->join('data_programs', 'schedules.id_program', '=', 'data_programs.id')
-            ->select('data_programs.id', 'data_programs.program as title', 'schedules.ket as status')
-            ->distinct()
-            ->orderBy('schedules.created_at', 'desc')
+            ->select('data_programs.id', 'data_programs.program as title', 'schedules.ket as status', DB::raw('MAX(schedules.created_at) as created_at'))
+            ->groupBy('data_programs.id', 'data_programs.program', 'schedules.ket')
+            ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
