@@ -33,7 +33,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('instructor')->name('instructor.')->group(function () {
     // Redirect /instructor to /instructor/login (if not logged in) or /instructor/dashboard (if logged in as instructor)
     Route::get('/', function () {
-        if (auth()->check() && auth()->user()->role === 'trainer') {
+        if (auth()->check() && auth()->user()->role === 'instructor') {
             return redirect()->route('instructor.dashboard');
         }
         return redirect()->route('instructor.login');

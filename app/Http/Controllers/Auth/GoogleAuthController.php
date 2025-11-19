@@ -144,7 +144,7 @@ class GoogleAuthController extends Controller
                 // Redirect based on role
                 if ($user->role === 'admin') {
                     return redirect()->route('admin.dashboard');
-                } elseif ($user->role === 'trainer' || $user->role === 'instructor') {
+                } elseif ($user->role === 'instructor') {
                     return redirect()->route('instructor.dashboard');
                 } else {
                     return redirect()->route('client.dashboard');
