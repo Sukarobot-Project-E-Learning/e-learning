@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/navbar.css') }}">
+    <link rel="stylesheet" href="{{  asset('assets/elearning/client/css/nav.css') }}">
 
       <!-- CSS Khusus Halaman -->
       @yield('css')
@@ -22,7 +22,7 @@
 <!-- Script Khusus Halaman -->
 @yield('js')
 
-<script src="{{ asset('assets/elearning/client/js/navbar.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/nav.js') }}"></script>
 
 </body>
 
