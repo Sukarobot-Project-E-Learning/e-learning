@@ -57,65 +57,69 @@ class InstructorController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
-            'status' => 'nullable|string|in:Approved,Pending,Rejected',
-            'expertise' => 'nullable|string|max:255',
-            'job' => 'nullable|string|max:255',
-            'experience' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'nullable|string|max:20',
+                'password' => 'required|string|min:8|confirmed',
+                'status' => 'nullable|string|in:Approved,Pending,Rejected',
+                'expertise' => 'nullable|string|max:255',
+                'job' => 'nullable|string|max:255',
+                'experience' => 'nullable|string|max:255',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
 
-        $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
+            $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
 
-        $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'instructor',
-            'is_active' => $isActive ? 1 : 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/instructors');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-            $photo->move($uploadPath, $photoName);
-            $data['avatar'] = 'uploads/instructors/' . $photoName;
-        }
-
-        // Add job to users data if provided
-        if (!empty($validated['job'])) {
-            $data['job'] = $validated['job'];
-        }
-
-        // Insert ke tabel users
-        $userId = DB::table('users')->insertGetId($data);
-
-        // Insert ke tabel data_trainers jika ada data tambahan (hanya kolom yang ada di tabel)
-        if (!empty($validated['expertise'])) {
-            DB::table('data_trainers')->insert([
-                'nama' => $validated['name'],
+            $data = [
+                'name' => $validated['name'],
                 'email' => $validated['email'],
-                'telephone' => $validated['phone'] ?? null,
-                'lulusan' => $validated['expertise'] ?? null,
-                'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'instructor',
+                'is_active' => $isActive ? 1 : 0,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        }
+            ];
 
-        return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil ditambahkan');
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/instructors');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $data['avatar'] = 'uploads/instructors/' . $photoName;
+            }
+
+            // Add job to users data if provided
+            if (!empty($validated['job'])) {
+                $data['job'] = $validated['job'];
+            }
+
+            // Insert ke tabel users
+            $userId = DB::table('users')->insertGetId($data);
+
+            // Insert ke tabel data_trainers jika ada data tambahan (hanya kolom yang ada di tabel)
+            if (!empty($validated['expertise'])) {
+                DB::table('data_trainers')->insert([
+                    'nama' => $validated['name'],
+                    'email' => $validated['email'],
+                    'telephone' => $validated['phone'] ?? null,
+                    'lulusan' => $validated['expertise'] ?? null,
+                    'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan instruktur: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -152,83 +156,87 @@ class InstructorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = DB::table('users')->where('id', $id)->first();
-        
-        if (!$user) {
-            return redirect()->route('admin.instructors.index')->with('error', 'Instruktur tidak ditemukan');
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8|confirmed',
-            'status' => 'nullable|string|in:Approved,Pending,Rejected',
-            'expertise' => 'nullable|string|max:255',
-            'job' => 'nullable|string|max:255',
-            'experience' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
-
-        $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
-
-        $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'is_active' => $isActive ? 1 : 0,
-            'updated_at' => now(),
-        ];
-
-        // Update password if provided
-        if (!empty($validated['password'])) {
-            $data['password'] = Hash::make($validated['password']);
-        }
-
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            // Delete old photo if exists
-            if ($user->avatar && file_exists(public_path($user->avatar))) {
-                unlink(public_path($user->avatar));
-            }
+        try {
+            $user = DB::table('users')->where('id', $id)->first();
             
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/instructors');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            if (!$user) {
+                return redirect()->route('admin.instructors.index')->with('error', 'Instruktur tidak ditemukan');
             }
-            $photo->move($uploadPath, $photoName);
-            $data['avatar'] = 'uploads/instructors/' . $photoName;
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|string|max:20',
+                'password' => 'nullable|string|min:8|confirmed',
+                'status' => 'nullable|string|in:Approved,Pending,Rejected',
+                'expertise' => 'nullable|string|max:255',
+                'job' => 'nullable|string|max:255',
+                'experience' => 'nullable|string|max:255',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
+
+            $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
+
+            $data = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $isActive ? 1 : 0,
+                'updated_at' => now(),
+            ];
+
+            // Update password if provided
+            if (!empty($validated['password'])) {
+                $data['password'] = Hash::make($validated['password']);
+            }
+
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($user->avatar && file_exists(public_path($user->avatar))) {
+                    unlink(public_path($user->avatar));
+                }
+                
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/instructors');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $data['avatar'] = 'uploads/instructors/' . $photoName;
+            }
+
+            // Add job to users data if provided
+            if (!empty($validated['job'])) {
+                $data['job'] = $validated['job'];
+            }
+
+            // Update users table
+            DB::table('users')->where('id', $id)->update($data);
+
+            // Update or insert data_trainers (only columns that exist in the table)
+            $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+            $trainerData = [
+                'nama' => $validated['name'],
+                'email' => $validated['email'],
+                'telephone' => $validated['phone'] ?? null,
+                'lulusan' => $validated['expertise'] ?? null,
+                'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
+                'updated_at' => now(),
+            ];
+
+            if ($trainer) {
+                DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
+            } else {
+                $trainerData['created_at'] = now();
+                DB::table('data_trainers')->insert($trainerData);
+            }
+
+            return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal mengupdate instruktur: ' . $e->getMessage());
         }
-
-        // Add job to users data if provided
-        if (!empty($validated['job'])) {
-            $data['job'] = $validated['job'];
-        }
-
-        // Update users table
-        DB::table('users')->where('id', $id)->update($data);
-
-        // Update or insert data_trainers (only columns that exist in the table)
-        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
-        $trainerData = [
-            'nama' => $validated['name'],
-            'email' => $validated['email'],
-            'telephone' => $validated['phone'] ?? null,
-            'lulusan' => $validated['expertise'] ?? null,
-            'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
-            'updated_at' => now(),
-        ];
-
-        if ($trainer) {
-            DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
-        } else {
-            $trainerData['created_at'] = now();
-            DB::table('data_trainers')->insert($trainerData);
-        }
-
-        return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil diupdate');
     }
 
     /**
@@ -236,8 +244,12 @@ class InstructorController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('users')->where('id', $id)->delete();
-        return response()->json(['success' => true, 'message' => 'Instruktur berhasil dihapus']);
+        try {
+            DB::table('users')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Instruktur berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus instruktur: ' . $e->getMessage()], 500);
+        }
     }
 
     /**

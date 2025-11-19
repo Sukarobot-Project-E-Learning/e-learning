@@ -72,13 +72,13 @@
                                 <div class="flex items-center space-x-4 text-sm">
                                     <a href="{{ route('admin.instructors.edit', $instructor['id']) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
                                     @if($instructor['status'] == 'Pending')
-                                        <form action="{{ route('admin.instructors.approve', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui akun instruktur ini?');">
+                                        <form action="{{ route('admin.instructors.approve', $instructor['id']) }}" method="POST" class="inline-block m-0" id="approveForm{{ $instructor['id'] }}">
                                             @csrf
-                                            <button type="submit" class="text-green-600 hover:text-green-800 dark:text-green-400">Approve</button>
+                                            <button type="button" onclick="approveInstructor({{ $instructor['id'] }})" class="text-green-600 hover:text-green-800 dark:text-green-400">Approve</button>
                                         </form>
-                                        <form action="{{ route('admin.instructors.reject', $instructor['id']) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Apakah Anda yakin ingin menolak akun instruktur ini?');">
+                                        <form action="{{ route('admin.instructors.reject', $instructor['id']) }}" method="POST" class="inline-block m-0" id="rejectForm{{ $instructor['id'] }}">
                                             @csrf
-                                            <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400">Reject</button>
+                                            <button type="button" onclick="rejectInstructor({{ $instructor['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Reject</button>
                                         </form>
                                     @endif
                                     <button @click="deleteInstructor({{ $instructor['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
@@ -103,26 +103,102 @@
 
     <script>
         function deleteInstructor(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus instruktur ini?')) return;
-
-            fetch(`{{ url('admin/instructors') }}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, hapus!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`{{ url('admin/instructors') }}/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            Swal.fire({
+                                title: "Dihapus!",
+                                text: result.message || "Instruktur berhasil dihapus.",
+                                icon: "success"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: result.message || "Terjadi kesalahan",
+                                icon: "error"
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Terjadi kesalahan saat menghapus data",
+                            icon: "error"
+                        });
+                    });
                 }
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus data');
             });
         }
+
+        function approveInstructor(id) {
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Anda akan menyetujui akun instruktur ini!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, setujui!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('approveForm' + id).submit();
+                }
+            });
+        }
+
+        function rejectInstructor(id) {
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Anda akan menolak akun instruktur ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, tolak!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('rejectForm' + id).submit();
+                }
+            });
+        }
+
+        // Handle success/error messages from session
+        @if(session('success'))
+            Swal.fire({
+                title: "{{ session('success') }}",
+                icon: "success",
+                draggable: true
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: "Error!",
+                text: "{{ session('error') }}",
+                icon: "error"
+            });
+        @endif
     </script>
 @endsection

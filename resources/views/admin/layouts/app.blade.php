@@ -18,6 +18,9 @@
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Init Alpine -->
     <script src="{{ asset('assets/elearning/admin/js/init-alpine.js') }}"></script>
 

@@ -36,49 +36,53 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
-            'status' => 'nullable|string',
-            'job' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'country' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'nullable|string|max:20',
+                'password' => 'required|string|min:8|confirmed',
+                'status' => 'nullable|string',
+                'job' => 'nullable|string|max:255',
+                'address' => 'nullable|string',
+                'country' => 'nullable|string|max:255',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
 
-        $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
+            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
-        $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'user',
-            'is_active' => $isActive,
-            'job' => $validated['job'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'country' => $validated['country'] ?? 'Indonesia',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
+            $data = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'user',
+                'is_active' => $isActive,
+                'job' => $validated['job'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'country' => $validated['country'] ?? 'Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/users');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/users');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $data['avatar'] = 'uploads/users/' . $photoName;
             }
-            $photo->move($uploadPath, $photoName);
-            $data['avatar'] = 'uploads/users/' . $photoName;
+
+            DB::table('users')->insert($data);
+
+            return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan user: ' . $e->getMessage());
         }
-
-        DB::table('users')->insert($data);
-
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan');
     }
 
     /**
@@ -112,50 +116,54 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8|confirmed',
-            'status' => 'nullable|string',
-            'job' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-            'country' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|string|max:20',
+                'password' => 'nullable|string|min:8|confirmed',
+                'status' => 'nullable|string',
+                'job' => 'nullable|string|max:255',
+                'address' => 'nullable|string',
+                'country' => 'nullable|string|max:255',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
 
-        $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
+            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
-        $updateData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'is_active' => $isActive,
-            'job' => $validated['job'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'country' => $validated['country'] ?? 'Indonesia',
-            'updated_at' => now(),
-        ];
+            $updateData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $isActive,
+                'job' => $validated['job'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'country' => $validated['country'] ?? 'Indonesia',
+                'updated_at' => now(),
+            ];
 
-        if (!empty($validated['password'])) {
-            $updateData['password'] = Hash::make($validated['password']);
-        }
-
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/users');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
             }
-            $photo->move($uploadPath, $photoName);
-            $updateData['avatar'] = 'uploads/users/' . $photoName;
+
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/users');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $updateData['avatar'] = 'uploads/users/' . $photoName;
+            }
+
+            DB::table('users')->where('id', $id)->update($updateData);
+
+            return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal mengupdate user: ' . $e->getMessage());
         }
-
-        DB::table('users')->where('id', $id)->update($updateData);
-
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate');
     }
 
     /**
@@ -163,8 +171,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('users')->where('id', $id)->delete();
-        return response()->json(['success' => true, 'message' => 'User berhasil dihapus']);
+        try {
+            DB::table('users')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'User berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -194,43 +206,47 @@ class UserController extends Controller
      */
     public function storeAdmin(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
-            'status' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'nullable|string|max:20',
+                'password' => 'required|string|min:8|confirmed',
+                'status' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
 
-        $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
+            $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
 
-        $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'admin',
-            'is_active' => $isActive,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
+            $data = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'admin',
+                'is_active' => $isActive,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/admins');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/admins');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $data['avatar'] = 'uploads/admins/' . $photoName;
             }
-            $photo->move($uploadPath, $photoName);
-            $data['avatar'] = 'uploads/admins/' . $photoName;
+
+            DB::table('users')->insert($data);
+
+            return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan admin: ' . $e->getMessage());
         }
-
-        DB::table('users')->insert($data);
-
-        return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil ditambahkan');
     }
 
     /**
@@ -252,44 +268,48 @@ class UserController extends Controller
      */
     public function updateAdmin(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8|confirmed',
-            'status' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|string|max:20',
+                'password' => 'nullable|string|min:8|confirmed',
+                'status' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            ]);
 
-        $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
+            $isActive = ($validated['status'] ?? 'aktif') === 'aktif';
 
-        $updateData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'is_active' => $isActive,
-            'updated_at' => now(),
-        ];
+            $updateData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $isActive,
+                'updated_at' => now(),
+            ];
 
-        if (!empty($validated['password'])) {
-            $updateData['password'] = Hash::make($validated['password']);
-        }
-
-        // Upload photo jika ada (opsional)
-        if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-            $photoName = time() . '_' . $photo->getClientOriginalName();
-            $uploadPath = public_path('uploads/admins');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
             }
-            $photo->move($uploadPath, $photoName);
-            $updateData['avatar'] = 'uploads/admins/' . $photoName;
+
+            // Upload photo jika ada (opsional)
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/admins');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $updateData['avatar'] = 'uploads/admins/' . $photoName;
+            }
+
+            DB::table('users')->where('id', $id)->update($updateData);
+
+            return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diupdate');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal mengupdate admin: ' . $e->getMessage());
         }
-
-        DB::table('users')->where('id', $id)->update($updateData);
-
-        return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diupdate');
     }
 
     /**
@@ -297,8 +317,12 @@ class UserController extends Controller
      */
     public function destroyAdmin($id)
     {
-        DB::table('users')->where('id', $id)->delete();
-        return response()->json(['success' => true, 'message' => 'Admin berhasil dihapus']);
+        try {
+            DB::table('users')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Admin berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus admin: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -320,25 +344,29 @@ class UserController extends Controller
      */
     public function storeInstructor(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'nullable|string|max:20',
+                'password' => 'required|string|min:8',
+            ]);
 
-        DB::table('users')->insert([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'instructor',
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::table('users')->insert([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'instructor',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        return response()->json(['success' => true, 'message' => 'Instructor berhasil ditambahkan']);
+            return response()->json(['success' => true, 'message' => 'Instructor berhasil ditambahkan']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menambahkan instructor: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -346,27 +374,31 @@ class UserController extends Controller
      */
     public function updateInstructor(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:8',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|string|max:20',
+                'password' => 'nullable|string|min:8',
+            ]);
 
-        $updateData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'updated_at' => now(),
-        ];
+            $updateData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'updated_at' => now(),
+            ];
 
-        if (!empty($validated['password'])) {
-            $updateData['password'] = Hash::make($validated['password']);
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            DB::table('users')->where('id', $id)->update($updateData);
+
+            return response()->json(['success' => true, 'message' => 'Instructor berhasil diupdate']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal mengupdate instructor: ' . $e->getMessage()], 500);
         }
-
-        DB::table('users')->where('id', $id)->update($updateData);
-
-        return response()->json(['success' => true, 'message' => 'Instructor berhasil diupdate']);
     }
 
     /**
@@ -374,8 +406,12 @@ class UserController extends Controller
      */
     public function destroyInstructor($id)
     {
-        DB::table('users')->where('id', $id)->delete();
-        return response()->json(['success' => true, 'message' => 'Instructor berhasil dihapus']);
+        try {
+            DB::table('users')->where('id', $id)->delete();
+            return response()->json(['success' => true, 'message' => 'Instructor berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus instructor: ' . $e->getMessage()], 500);
+        }
     }
 }
 
