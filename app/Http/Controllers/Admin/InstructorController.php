@@ -15,9 +15,9 @@ class InstructorController extends Controller
      */
     public function index()
     {
-        // Get instructors from users table with role='instructor' or role='trainer'
+        // Get instructors from users table with role='instructor'
         $instructors = DB::table('users')
-            ->whereIn('role', ['instructor', 'trainer'])
+            ->where('role', 'instructor')
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at', 'last_login_at')
             ->orderBy('created_at', 'desc')
             ->paginate(10);

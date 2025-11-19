@@ -29,7 +29,7 @@ class LoginController extends Controller
     public function showInstructorLoginForm()
     {
         // If already logged in as instructor, redirect to dashboard
-        if (Auth::check() && Auth::user()->role === 'trainer') {
+        if (Auth::check() && Auth::user()->role === 'instructor') {
             return redirect()->route('instructor.dashboard');
         }
         
@@ -109,8 +109,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
             
-            // Check if user is trainer/instructor
-            if ($user->role !== 'trainer') {
+            // Check if user is instructor
+            if ($user->role !== 'instructor') {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Anda tidak memiliki akses sebagai instruktur.'
