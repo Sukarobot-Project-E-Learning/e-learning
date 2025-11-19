@@ -118,7 +118,7 @@
             <div class="flex justify-start mt-4 space-x-4 text-sm text-gray-600 dark:text-gray-400">
                 <div class="flex items-center">
                     <span class="inline-block w-3 h-3 mr-1 bg-teal-500 rounded-full"></span>
-                    <span>Keuangan</span>
+                    <span>Keuangan (dalam ribuan rupiah)</span>
                 </div>
                 <div class="flex items-center">
                     <span class="inline-block w-3 h-3 mr-1 bg-orange-500 rounded-full"></span>
@@ -150,7 +150,7 @@
     const combinedChartOptions = {
         series: [
             {
-                name: 'Keuangan (x1000)',
+                name: 'Keuangan (dalam ribuan)',
                 type: 'column',
                 data: normalizedRevenue
             },
@@ -213,7 +213,7 @@
         yaxis: [
             {
                 title: {
-                    text: 'Keuangan (x1000)',
+                    text: 'Keuangan (Rp x1000)',
                     style: {
                         color: '#14b8a6'
                     }
