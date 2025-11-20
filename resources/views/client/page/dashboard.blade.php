@@ -1,4 +1,4 @@
-@extends('client.layout.main')
+@extends('client.main')
 
 @section('body')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/dashboard.css') }}">
@@ -118,7 +118,7 @@
     <section id="program" class="section hidden">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Program Saya</h2>
       <div class="flex flex-wrap gap-2 mb-6">
-          <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-blue-500 text-white">Semua Kelas</button>
+          <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-blue-500 text-white">Semua Program</button>
           <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Kursus</button>
           <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Pelatihan</button>
           <button class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200">Sertifikasi</button>

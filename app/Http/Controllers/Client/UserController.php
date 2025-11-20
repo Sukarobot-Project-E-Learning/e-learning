@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         // Logic to display user profile
         $user = Auth::user(); // ambil data user dari database
-        return view('client.layout.page.dashboard', compact('user'));
+        return view('client.page.dashboard', compact('user'));
     }
 
     public function updateProfile(Request $request)

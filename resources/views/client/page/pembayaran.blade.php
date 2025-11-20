@@ -1,4 +1,4 @@
-@extends('client.layout.main')
+@extends('client.main')
 @section('css')
 <link rel="stylesheet" href="{{ 'client/css/pembayaran.css' }}">
 @endsection

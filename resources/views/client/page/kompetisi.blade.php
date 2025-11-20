@@ -1,4 +1,4 @@
-@extends('client.layout.main')
+@extends('client.main')
 @section('body')
 
 <!-- Hero Section -->

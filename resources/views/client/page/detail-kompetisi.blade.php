@@ -1,4 +1,4 @@
-@extends('client.layout.main')
+@extends('client.main')
 @section('css')
 <style>
   /* Animasi Fade Up */

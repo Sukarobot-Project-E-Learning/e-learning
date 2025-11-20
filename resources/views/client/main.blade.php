@@ -14,9 +14,9 @@
 </head>
 
 <body>
-    @include('client.layout.partials.navbar')
+    @include('client.partials.navbar')
     @yield('body')
-    @include('client.layout.partials.footer')
+    @include('client.partials.footer')
 
 
 <!-- Script Khusus Halaman -->

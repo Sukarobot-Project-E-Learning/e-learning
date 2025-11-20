@@ -1,4 +1,4 @@
-@extends('client.layout.main')
+@extends('client.main')
 @section('css')
 <link rel="stylesheet" href="{{ 'client/css/about.css' }}">
 @section('body')

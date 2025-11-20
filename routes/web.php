@@ -155,52 +155,52 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 Route::name('client.')->group(function () {
     // Home & Public Pages
     Route::get('/', function () {
-        return view('client.layout.page.home');
+        return view('client.page.home');
     })->name('home');
 
     Route::get('/tentang', function () {
-        return view('client.layout.page.tentang');
+        return view('client.page.tentang');
     })->name('tentang');
 
     Route::get('/program', function () {
-        return view('client.layout.page.program');
+        return view('client.page.program');
     })->name('program');
 
     Route::get('/program/{id}', function () {
-        return view('client.layout.page.detail-program');
+        return view('client.page.detail-program');
     })->name('program.detail');
 
     Route::get('/kompetisi', function () {
-        return view('client.layout.page.kompetisi');
+        return view('client.page.kompetisi');
     })->name('kompetisi');
 
     Route::get('/kompetisi/{id}', function () {
-        return view('client.layout.page.detail-kompetisi');
+        return view('client.page.detail-kompetisi');
     })->name('kompetisi.detail');
 
     Route::get('/artikel', function () {
-        return view('client.layout.page.artikel');
+        return view('client.page.artikel');
     })->name('artikel');
 
     Route::get('/berita', function () {
-        return view('client.layout.page.berita');
+        return view('client.page.berita');
     })->name('berita');
 
     Route::get('/instruktur', function () {
-        return view('client.layout.page.instruktur');
+        return view('client.page.instruktur');
     })->name('instruktur');
 
     Route::get('/pembayaran', function () {
-        return view('client.layout.page.pembayaran');
+        return view('client.page.pembayaran');
     })->name('pembayaran');
 
     // Authentication Pages (Login sudah didefinisikan di atas, tidak perlu duplikat)
     Route::get('/register', function () {
-        return view('client.layout.page.login.register');
+        return view('client.page.login.register');
     })->name('register');
 
     Route::get('/reset-password', function () {
-        return view('client.layout.page.login.reset');
+        return view('client.page.login.reset');
     })->name('reset-password');
 
     // Protected Client/User Routes
