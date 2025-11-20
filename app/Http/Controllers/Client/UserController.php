@@ -15,4 +15,12 @@ class UserController extends Controller
         $user = Auth::user(); // ambil data user dari database
         return view('client.layout.page.dashboard', compact('user'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        // Logic to update user profile
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Maksimal ukuran 2MB
+        ]);
+    }
 }

@@ -271,19 +271,15 @@
           <!-- Header -->
           <div class="flex justify-between items-center px-6 py-4 border-b">
               <h2 class="text-xl font-bold text-gray-900">Ubah Foto Profil</h2>
-              <button id="closePhotoModal" class="text-gray-500 hover:text-gray-700 text-xl">
+              <button id="closePhotoModal" class="text-gray-500 hover:text-gray-700 text-xl cursor-pointer">
                   &times;
               </button>
           </div>
 
           <!-- Tabs -->
-          <div class="flex border-b px-6">
-              <button class="tab-btn border-b-2 border-blue-600 text-blue-600 font-medium py-3 px-4">
+          <div class="flex border-b px-6 justify-center">
+              <button class="tab-btn font-medium py-3 px-4">
                   Upload Foto
-              </button>
-              <button class="tab-btn text-gray-500 hover:text-blue-600 py-3 px-4 flex items-center gap-2">
-                  <span class="material-icons text-base">bolt</span>
-                  Buat dengan AI
               </button>
           </div>
 
@@ -312,11 +308,11 @@
           <!-- Footer -->
           <div class="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
               <button id="cancelPhotoModal" 
-                      class="px-4 py-2 rounded-lg bg-white border text-gray-600 hover:bg-gray-100">
+                      class="px-4 py-2 rounded-lg bg-white border text-gray-600 hover:bg-gray-100 cursor-pointer">
                   Batal
               </button>
 
-              <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700">
+              <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 cursor-pointer">
                   Simpan Perubahan
               </button>
           </div>
