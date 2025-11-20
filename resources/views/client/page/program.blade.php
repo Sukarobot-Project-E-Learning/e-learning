@@ -97,9 +97,9 @@
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=1"
              class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
+        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
           <span>⭐</span><span class="text-white">4.8</span>
-        </div>
+        </div> -->
       </div>
       <div class="p-4 space-y-2">
         <div class="flex items-center justify-between">
@@ -130,9 +130,9 @@
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=2"
              class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
+        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
           <span>⭐</span><span class="text-white">4.5</span>
-        </div>
+        </div> -->
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="absolute inset-0 flex items-center justify-center">
           <span class="bg-black/70 text-white text-sm font-semibold px-3 py-1 rounded-full">Kuota Habis</span>
@@ -165,9 +165,9 @@
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=3"
              class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
+        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
           <span>⭐</span><span class="text-white">4.6</span>
-        </div>
+        </div> -->
       </div>
       <div class="p-4 space-y-2">
         <div class="flex items-center justify-between">
@@ -196,9 +196,9 @@
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=4"
              class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
+        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
           <span>⭐</span><span class="text-white">4.9</span>
-        </div>
+        </div> -->
       </div>
       <div class="p-4 space-y-2">
         <div class="flex items-center justify-between">
@@ -227,9 +227,9 @@
       <div class="relative">
         <img src="https://picsum.photos/400/200?random=5"
              class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
+        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
           <span>⭐</span><span class="text-white">4.9</span>
-        </div>
+        </div> -->
       </div>
       <div class="p-4 space-y-2">
         <div class="flex items-center justify-between">

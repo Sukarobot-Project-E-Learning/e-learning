@@ -191,4 +191,6 @@
   modalClose.addEventListener('click', () => { modalBg.classList.add('hidden'); });
   modalBg.addEventListener('click', e => { if (e.target === modalBg) modalBg.classList.add('hidden'); });
 </script>
+
+@include('client.partials.footer')
 @endsection

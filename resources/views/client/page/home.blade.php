@@ -99,50 +99,7 @@
        data-aos="fade-up"
        data-aos-delay="200"
      >
-       <div class="flex -space-x-3">
-         <img
-           src="https://randomuser.me/api/portraits/men/32.jpg"
-           alt="user1"
-           class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
-         />
-         <img
-           src="https://randomuser.me/api/portraits/women/45.jpg"
-           alt="user2"
-           class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
-         />
-         <img
-           src="https://randomuser.me/api/portraits/men/14.jpg"
-           alt="user3"
-           class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
-         />
-         <img
-           src="https://randomuser.me/api/portraits/women/25.jpg"
-           alt="user4"
-           class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
-         />
-         <img
-           src="https://randomuser.me/api/portraits/men/6.jpg"
-           alt="user5"
-           class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-md"
-         />
-       </div>
-
-       <p class="text-sm text-gray-700 leading-snug mt-3 sm:mt-0">
-         <span class="font-bold">180.000+ peserta</span> sudah membuktikan
-         perjalanan mereka bersama Sukarobot.<br />
-         <span class="text-blue-600 font-semibold"
-           >Saatnya giliranmu!</span
-         >
-       </p>
      </div>
-
-     <a
-       href="#alumni"
-       data-aos="fade-up"
-       data-aos-delay="250"
-       class="mt-4 inline-block text-orange-600 font-semibold hover:underline"
-       >Lihat Cerita Mereka →</a
-     >
    </div>
    <div
    data-aos="zoom-in-up"
@@ -836,6 +793,8 @@ class="py-20 bg-gradient-to-r from-orange-50 via-white to-blue-50 relative overf
 </section>
 
 <script src="{{ asset('assets/elearning/client/js/home.js') }}"></script>
+
+@include('client.partials.footer')
 @endsection
 
 

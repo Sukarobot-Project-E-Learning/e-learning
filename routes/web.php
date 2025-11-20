@@ -190,9 +190,9 @@ Route::name('client.')->group(function () {
         return view('client.page.instruktur');
     })->name('instruktur');
 
-    Route::get('/pembayaran', function () {
-        return view('client.page.pembayaran');
-    })->name('pembayaran');
+    // Route::get('/pembayaran', function () {
+    //     return view('client.page.pembayaran');
+    // })->name('pembayaran');
 
     // Authentication Pages (Login sudah didefinisikan di atas, tidak perlu duplikat)
     Route::get('/register', function () {
@@ -204,12 +204,14 @@ Route::name('client.')->group(function () {
     })->name('reset-password');
 
     // Protected Client/User Routes
-    // Route::middleware(['auth'])->group(function () {
-    //     Route::get('/dashboard', function () {
-    //         return view('client.layout.page.dashboard');
-    //     })->name('dashboard');
-    // });
     Route::middleware('auth')->get('/dashboard', [UserDashboardController::class, 'profile'])->name('dashboard');
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/pembayaran', function () {
+            return view('client.page.pembayaran');
+        })->name('pembayaran');
+    });
+
 });
 
 // Instructor Routes (Protected)

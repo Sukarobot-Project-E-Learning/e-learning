@@ -94,4 +94,6 @@
 <!-- Script -->
 <script src="{{ asset('assets/elearning/client/js/artikel.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/artikel.css') }}">
+
+@include('client.partials.footer')
 @endsection

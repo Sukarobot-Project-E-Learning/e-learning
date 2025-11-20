@@ -150,7 +150,7 @@ class LoginController extends Controller
             return redirect()->route('client.dashboard');
         }
         
-        return view('client.layout.page.login.login');
+        return view('client.page.login.login');
     }
 
     /**

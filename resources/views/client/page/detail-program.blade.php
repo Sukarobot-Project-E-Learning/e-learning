@@ -141,4 +141,6 @@
   </div>
 
 <script src="{{ asset('assets/elearning/client/js/detail-program.js') }}"></script>
+
+@include('client.partials.footer')
 @endsection

@@ -16,8 +16,6 @@
 <body>
     @include('client.partials.navbar')
     @yield('body')
-    @include('client.partials.footer')
-
 
 <!-- Script Khusus Halaman -->
 @yield('js')

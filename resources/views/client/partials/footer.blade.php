@@ -21,10 +21,10 @@
           <div class="space-y-2 text-center sm:text-left">
             <h4 class="text-lg font-semibold">Tentang</h4>
             <ul class="space-y-1 text-gray-400 text-sm">
-              <li><a href="../page/instruktur.blade.php" class="hover:text-white transition">Instruktur</a></li>
-              <li><a href="../page/tentang.blade.php" class="hover:text-white transition">FAQ</a></li>
-              <li><a href="../page/tentang.blade.php" class="hover:text-white transition">Kebijakan Privasi</a></li>
-              <li><a href="../page/tentang.blade.php" class="hover:text-white transition">Ketentuan Pengguna</a></li>
+              <li><a href="../instruktur" class="hover:text-white transition">Instruktur</a></li>
+              <li><a href="../tentang#FAQ" class="hover:text-white transition">FAQ</a></li>
+              <li><a href="../tentang#kebijakan" class="hover:text-white transition">Kebijakan Privasi</a></li>
+              <li><a href="../tentang#ketentuan" class="hover:text-white transition">Ketentuan Pengguna</a></li>
             </ul>
           </div>
 
