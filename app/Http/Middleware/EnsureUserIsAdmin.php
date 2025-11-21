@@ -20,12 +20,36 @@ class EnsureUserIsAdmin
             return redirect()->route('admin.login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if (Auth::user()->role !== 'admin') {
-            // If user is logged in but not an admin, redirect to admin login
+        $user = Auth::user();
+        
+        // Check if user is active
+        if (!$user->is_active) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect()->route('admin.login')->with('error', 'Anda tidak memiliki akses sebagai admin. Silakan login dengan akun admin.');
+            return redirect()->route('admin.login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+        }
+
+        // STRICT: Only admin role allowed
+        if ($user->role !== 'admin') {
+            // If user is logged in but not an admin, redirect to appropriate login
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            $message = 'Anda tidak memiliki akses sebagai admin.';
+            switch ($user->role) {
+                case 'instructor':
+                    $message .= ' Silakan gunakan halaman login instruktur.';
+                    break;
+                case 'user':
+                    $message .= ' Silakan gunakan halaman login user.';
+                    break;
+                default:
+                    $message .= ' Silakan login dengan akun admin.';
+            }
+            
+            return redirect()->route('admin.login')->with('error', $message);
         }
 
         return $next($request);

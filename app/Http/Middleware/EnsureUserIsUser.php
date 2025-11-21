@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsInstructor
+class EnsureUserIsUser
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class EnsureUserIsInstructor
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect()->route('instructor.login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $user = Auth::user();
@@ -27,32 +27,28 @@ class EnsureUserIsInstructor
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect()->route('instructor.login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+            return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
         }
 
-        // STRICT: Only instructor role allowed
-        if ($user->role !== 'instructor') {
-            // If user is logged in but not an instructor, redirect to appropriate login
+        // Allow user and instructor roles (instructor can access user area too)
+        if (!in_array($user->role, ['user', 'instructor'])) {
+            // If user is logged in but not user or instructor, redirect to appropriate login
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             
-            $message = 'Anda tidak memiliki akses sebagai instruktur.';
+            $message = 'Anda tidak memiliki akses ke area ini.';
             switch ($user->role) {
                 case 'admin':
                     $message .= ' Silakan gunakan halaman login admin.';
                     break;
-                case 'user':
-                    $message .= ' Silakan gunakan halaman login user.';
-                    break;
                 default:
-                    $message .= ' Silakan login dengan akun instruktur.';
+                    $message .= ' Silakan login dengan akun yang sesuai.';
             }
             
-            return redirect()->route('instructor.login')->with('error', $message);
+            return redirect()->route('login')->with('error', $message);
         }
 
         return $next($request);
     }
 }
-

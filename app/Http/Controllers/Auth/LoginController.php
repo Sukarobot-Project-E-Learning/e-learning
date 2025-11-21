@@ -53,29 +53,44 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
 
+        // First, find the user by email to check role before authentication
+        $user = DB::table('users')->where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak ditemukan dalam sistem.'
+            ])->withInput($request->only('email'));
+        }
+
+        // Check if user has admin role
+        if ($user->role !== 'admin') {
+            return back()->withErrors([
+                'email' => 'Anda tidak memiliki akses sebagai admin. Silakan gunakan halaman login yang sesuai untuk role Anda.'
+            ])->withInput($request->only('email'));
+        }
+
+        // Check if user is active
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
+            ])->withInput($request->only('email'));
+        }
+
         // Try to authenticate using Laravel's Auth
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
+            $authenticatedUser = Auth::user();
             
-            // Check if user is admin
-            if ($user->role !== 'admin') {
+            // Double check role after authentication
+            if ($authenticatedUser->role !== 'admin') {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Anda tidak memiliki akses sebagai admin.'
                 ])->withInput($request->only('email'));
             }
-            
-            // Check if user is active
-            if (isset($user->is_active) && !$user->is_active) {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
-                ])->withInput($request->only('email'));
-            }
 
             // Update last login
             DB::table('users')
-                ->where('id', $user->id)
+                ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
             $request->session()->regenerate();
@@ -105,29 +120,56 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
 
+        // First, find the user by email to check role before authentication
+        $user = DB::table('users')->where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak ditemukan dalam sistem.'
+            ])->withInput($request->only('email'));
+        }
+
+        // STRICT: Only allow instructor role, no other roles
+        if ($user->role !== 'instructor') {
+            $roleMessage = '';
+            switch ($user->role) {
+                case 'admin':
+                    $roleMessage = 'Anda adalah admin. Silakan gunakan halaman login admin.';
+                    break;
+                case 'user':
+                    $roleMessage = 'Anda adalah user biasa. Silakan gunakan halaman login user.';
+                    break;
+                default:
+                    $roleMessage = 'Anda tidak memiliki akses sebagai instruktur.';
+            }
+            
+            return back()->withErrors([
+                'email' => $roleMessage
+            ])->withInput($request->only('email'));
+        }
+
+        // Check if user is active
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
+            ])->withInput($request->only('email'));
+        }
+
         // Try to authenticate using Laravel's Auth
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
+            $authenticatedUser = Auth::user();
             
-            // Check if user is instructor
-            if ($user->role !== 'instructor') {
+            // Double check role after authentication
+            if ($authenticatedUser->role !== 'instructor') {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Anda tidak memiliki akses sebagai instruktur.'
                 ])->withInput($request->only('email'));
             }
-            
-            // Check if user is active
-            if (isset($user->is_active) && !$user->is_active) {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
-                ])->withInput($request->only('email'));
-            }
 
             // Update last login
             DB::table('users')
-                ->where('id', $user->id)
+                ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
             $request->session()->regenerate();
@@ -145,8 +187,8 @@ class LoginController extends Controller
      */
     public function showUserLoginForm()
     {
-        // If already logged in as user, redirect to dashboard
-        if (Auth::check() && Auth::user()->role === 'user') {
+        // If already logged in as user or instructor, redirect to dashboard
+        if (Auth::check() && in_array(Auth::user()->role, ['user', 'instructor'])) {
             return redirect()->route('client.dashboard');
         }
         
@@ -170,29 +212,53 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
 
+        // First, find the user by email to check role before authentication
+        $user = DB::table('users')->where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak ditemukan dalam sistem.'
+            ])->withInput($request->only('email'));
+        }
+
+        // Allow user and instructor roles (instructor can login as user too)
+        if (!in_array($user->role, ['user', 'instructor'])) {
+            $roleMessage = '';
+            switch ($user->role) {
+                case 'admin':
+                    $roleMessage = 'Anda adalah admin. Silakan gunakan halaman login admin.';
+                    break;
+                default:
+                    $roleMessage = 'Silakan gunakan halaman login yang sesuai untuk role Anda.';
+            }
+            
+            return back()->withErrors([
+                'email' => $roleMessage
+            ])->withInput($request->only('email'));
+        }
+
+        // Check if user is active
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
+            ])->withInput($request->only('email'));
+        }
+
         // Try to authenticate using Laravel's Auth
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
+            $authenticatedUser = Auth::user();
             
-            // Check if user is regular user (not admin or trainer)
-            if ($user->role !== 'user') {
+            // Allow user and instructor roles
+            if (!in_array($authenticatedUser->role, ['user', 'instructor'])) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Silakan gunakan halaman login yang sesuai untuk role Anda.'
                 ])->withInput($request->only('email'));
             }
-            
-            // Check if user is active
-            if (isset($user->is_active) && !$user->is_active) {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
-                ])->withInput($request->only('email'));
-            }
 
             // Update last login
             DB::table('users')
-                ->where('id', $user->id)
+                ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
             $request->session()->regenerate();
