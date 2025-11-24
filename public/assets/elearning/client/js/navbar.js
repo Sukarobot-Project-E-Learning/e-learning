@@ -1,112 +1,77 @@
 document.addEventListener("DOMContentLoaded", function () {
-    initNavbar(); // langsung aktifkan burger dan dropdown
-    adjustScrollForHash(); // fix posisi scroll saat klik hash link
-    const btn = document.getElementById("userMenuBtn");
-    const menu = document.getElementById("userMenuDropdown");
+    // === Scroll Effect ===
+    const navbar = document.getElementById('main-navbar');
 
-    // dropdown user menu
-    if (btn) {
-        btn.addEventListener("click", () => {
-            menu.classList.toggle("hidden");
-        });
-    }
+    function handleScroll() {
+        const isMobileMenuOpen = !document.getElementById('mobile-menu').classList.contains('hidden');
 
-    // klik di luar untuk tutup dropdown
-    document.addEventListener("click", (e) => {
-        if (!btn.contains(e.target) && !menu.contains(e.target)) {
-            menu.classList.add("hidden");
+        if (window.scrollY > 20 || isMobileMenuOpen) {
+            navbar.classList.add('bg-white', 'shadow-md', 'py-3');
+            navbar.classList.remove('bg-transparent', 'py-5');
+        } else {
+            navbar.classList.add('bg-transparent', 'py-5');
+            navbar.classList.remove('bg-white', 'shadow-md', 'py-3');
         }
-    });
-});
+    }
 
-// === Navbar burger & dropdown logic ===
-function initNavbar() {
-    const burgerBtn = document.querySelector(".custom-burger");
-    const navMenu = document.querySelector(".custom-nav");
+    window.addEventListener('scroll', handleScroll);
 
-    if (burgerBtn && navMenu) {
-        burgerBtn.addEventListener("click", function () {
-            navMenu.classList.toggle("active");
-            burgerBtn.classList.toggle("open");
+    // === Mobile Menu Toggle ===
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
+
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+
+            if (isHidden) {
+                // Open menu
+                mobileMenu.classList.remove('hidden');
+                iconMenu.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                // Close menu
+                mobileMenu.classList.add('hidden');
+                iconMenu.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+            // Update navbar style immediately
+            handleScroll();
         });
     }
 
-    const dropdowns = document.querySelectorAll(".custom-dropdown > a");
-    dropdowns.forEach((drop) => {
-        drop.addEventListener("click", function (e) {
-            if (window.innerWidth < 768) {
-                e.preventDefault();
-                const menu = this.nextElementSibling;
-                document
-                    .querySelectorAll(".custom-dropdown-menu")
-                    .forEach((m) => {
-                        if (m !== menu) m.style.display = "none";
-                    });
-                menu.style.display =
-                    menu.style.display === "block" ? "none" : "block";
+    // === Mobile Dropdowns ===
+    const mobileDropdownBtns = document.querySelectorAll('.mobile-dropdown-btn');
+    mobileDropdownBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('hidden');
+            // Optional: Rotate arrow
+            const arrow = btn.querySelector('span');
+            if (arrow) {
+                arrow.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                arrow.style.transition = 'transform 0.2s';
             }
         });
     });
 
-    document.addEventListener("click", function (e) {
-        if (!e.target.closest(".custom-dropdown")) {
-            document.querySelectorAll(".custom-dropdown-menu").forEach((m) => {
-                if (window.innerWidth < 768) m.style.display = "none";
-            });
-        }
-    });
-}
+    // === Hash Scroll Fix (Preserved) ===
+    adjustScrollForHash();
+});
 
-// === 🧭 Fix hash scrolling offset for sticky navbar ===
 function adjustScrollForHash() {
     const { hash } = window.location;
     if (!hash) return;
     setTimeout(() => {
         const target = document.querySelector(hash);
         if (!target) return;
-        const navbar = document.querySelector("nav, .navbar, header");
-        const offset = navbar ? navbar.offsetHeight + 60 : 0;
+        const navbar = document.querySelector("nav");
+        const offset = navbar ? navbar.offsetHeight + 20 : 0;
         window.scrollTo({
             top: target.offsetTop - offset,
             behavior: "smooth",
         });
     }, 100);
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
-    const submenuToggles = document.querySelectorAll(".submenu-toggle");
-
-    // === MOBILE DROPDOWN UTAMA ===
-    dropdownToggles.forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            if (window.innerWidth < 768) {
-                e.stopPropagation();
-                const menu = btn.nextElementSibling;
-                menu.classList.toggle("hidden");
-            }
-        });
-    });
-
-    // === MOBILE SUBMENU (Kompetisi) ===
-    submenuToggles.forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            if (window.innerWidth < 768) {
-                e.stopPropagation();
-                const submenu = btn.nextElementSibling;
-                submenu.classList.toggle("hidden");
-            }
-        });
-    });
-
-    // === Tutup semua dropdown saat klik di luar ===
-    document.addEventListener("click", (e) => {
-        if (!e.target.closest(".custom-dropdown")) {
-            document
-                .querySelectorAll(".dropdown-menu, .submenu")
-                .forEach((menu) => {
-                    menu.classList.add("hidden");
-                });
-        }
-    });
-});
