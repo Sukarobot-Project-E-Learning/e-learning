@@ -19,6 +19,10 @@
   animation: scroll-left 25s linear infinite;
 }
 
+.partner-track.track-right {
+  animation-name: scroll-right;
+}
+
 .partner-logo {
   height: 42px;
   margin: 0 24px;
@@ -36,13 +40,23 @@
 
 /* Animasi bergerak dua arah */
 @keyframes scroll-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes scroll-right {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* Efek gradasi pinggir */
@@ -56,10 +70,12 @@
   z-index: 5;
   pointer-events: none;
 }
+
 #partner::before {
   left: 0;
   background: linear-gradient(to right, white 0%, transparent 100%);
 }
+
 #partner::after {
   right: 0;
   background: linear-gradient(to left, white 0%, transparent 100%);
@@ -68,20 +84,46 @@
 /* =========================================
    PROGRAM SLIDER LABEL
 ========================================= */
-#program-slider .absolute.top-3.right-3 > span {
+#program-slider .absolute.top-3.right-3>span {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-#program-slider .absolute.top-3.right-3 > span svg {
+#program-slider .absolute.top-3.right-3>span svg {
   width: 1rem;
   height: 1rem;
   flex: 0 0 auto;
 }
 
-#program-slider .absolute.top-3.right-3 > span > * {
+#program-slider .absolute.top-3.right-3>span>* {
   line-height: 1;
+}
+
+/* =========================================
+   SWIPER EQUAL HEIGHT FIX
+========================================= */
+.programSwiper .swiper-wrapper,
+.testimonialSwiper .swiper-wrapper,
+.instructorSwiper .swiper-wrapper,
+.mySwiper .swiper-wrapper {
+  align-items: stretch !important;
+}
+
+.programSwiper .swiper-slide,
+.testimonialSwiper .swiper-slide,
+.instructorSwiper .swiper-slide,
+.mySwiper .swiper-slide {
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.programSwiper .swiper-slide>div,
+.testimonialSwiper .swiper-slide>div,
+.instructorSwiper .swiper-slide>div,
+.mySwiper .swiper-slide>div {
+  height: 100%;
 }
 
 /* =========================================
@@ -92,6 +134,7 @@
     transform: scale(0.85);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -144,8 +187,9 @@
   font-weight: bold;
   font-size: 1.1rem;
   transition: 0.25s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
+
 .close-btn:hover {
   background: rgba(255, 255, 255, 1);
   transform: scale(1.1);
@@ -159,8 +203,14 @@ body.overflow-hidden {
 /* =========================================
    GLOBAL UTILITIES
 ========================================= */
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 .filter-btn.active {
   background-color: #f97316;
@@ -177,14 +227,17 @@ body.overflow-hidden {
   #partner {
     padding: 2rem 0.5rem;
   }
+
   .partner-logo {
     height: 30px;
     margin: 0 16px;
   }
+
   .popup-card {
     width: 85vw;
     max-width: 320px;
   }
+
   .close-btn {
     top: 6px;
     right: 6px;
@@ -199,6 +252,7 @@ body.overflow-hidden {
     height: 34px;
     margin: 0 20px;
   }
+
   #program-slider {
     gap: 0.75rem;
     padding-left: 0.25rem;
@@ -212,6 +266,7 @@ body.overflow-hidden {
     height: 36px;
     margin: 0 24px;
   }
+
   .popup-card {
     width: 80vw;
     max-width: 340px;
@@ -231,6 +286,7 @@ body.overflow-hidden {
   #partner {
     padding: 5rem 0;
   }
+
   .partner-logo {
     height: 60px;
     margin: 0 48px;

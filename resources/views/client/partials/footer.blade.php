@@ -1,6 +1,6 @@
 <!-- Footer Compact -->
 <div>
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-white py-12 flex">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <!-- Grid utama: 2 kolom HP, 4 kolom desktop -->
         <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
@@ -8,8 +8,8 @@
           <!-- Branding -->
           <div class="space-y-2 text-center sm:text-left">
             <h3 class="text-xl font-bold">Sukarobot</h3>
-            <p class="text-gray-400 text-sm italic">Belajar - Berinovasi - Berprestasi</p>
-            <p class="text-gray-400 text-sm italic">
+            <p class="text-gray-400 text-sm">Belajar - Berinovasi - Berprestasi</p>
+            <p class="text-gray-400 text-sm">
               Jl. Contoh Alamat No. 123<br>
               Kota Sukarobot, Indonesia
             </p>

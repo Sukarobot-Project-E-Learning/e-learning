@@ -6,27 +6,53 @@ new Swiper(".mySwiperHero", {
   slidesPerView: 1,
   spaceBetween: 20,
   loop: true,
-  autoplay: { delay: 4000 },
-  pagination: { el: ".swiper-pagination", clickable: true },
   navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
 });
 
-// === SWIPER ALUMNI ===
-const alumniSwiper = new Swiper(".alumniSwiper", {
+// === SWIPER POPULAR PROGRAMS ===
+new Swiper(".programSwiper", {
   slidesPerView: 1,
+  spaceBetween: 24,
   loop: true,
-  spaceBetween: 20,
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  autoplay: {
-    delay: 4500,
-    disableOnInteraction: false,
+  navigation: {
+    nextEl: ".program-next",
+    prevEl: ".program-prev",
   },
   breakpoints: {
-    768: { slidesPerView: 1 },
-    1024: { slidesPerView: 1 },
+    640: { slidesPerView: 2 },
+    1024: { slidesPerView: 3 },
+    1280: { slidesPerView: 4 },
+  },
+});
+
+// === SWIPER TESTIMONIAL (ALUMNI) ===
+const testimonialSwiper = new Swiper(".testimonialSwiper", {
+  slidesPerView: 1,
+  loop: true,
+  spaceBetween: 24,
+  navigation: {
+    nextEl: ".testi-next",
+    prevEl: ".testi-prev",
+  },
+  breakpoints: {
+    768: { slidesPerView: 2 },
+    1024: { slidesPerView: 3 },
+  },
+});
+
+// === SWIPER INSTRUCTOR ===
+new Swiper(".instructorSwiper", {
+  slidesPerView: 1,
+  spaceBetween: 24,
+  loop: true,
+  navigation: {
+    nextEl: ".instr-next",
+    prevEl: ".instr-prev",
+  },
+  breakpoints: {
+    640: { slidesPerView: 2 },
+    1024: { slidesPerView: 3 },
+    1280: { slidesPerView: 4 },
   },
 });
 
@@ -66,14 +92,6 @@ const eventSwiper = new Swiper(".mySwiper", {
   centeredSlides: true,
   loop: true,
   spaceBetween: 30,
-  autoplay: {
-    delay: 3500,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
 });
 
 // === Tombol Navigasi Event ===
