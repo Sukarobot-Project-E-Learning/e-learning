@@ -30,6 +30,30 @@
             </div>
         </div>
 
+        <!-- Alert Messages -->
+        @if(session('success'))
+        <div class="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-400 text-green-700">
+            <p class="font-medium">{{ session('success') }}</p>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700">
+            <p class="font-medium">{{ session('error') }}</p>
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700">
+            <p class="font-medium mb-2">Terdapat kesalahan:</p>
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
             <form id="articleForm" action="{{ route('admin.articles.store') }}" method="POST" enctype="multipart/form-data">
@@ -69,13 +93,14 @@
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Tanggal -->
+                    <!-- Tanggal (Auto) -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="date">
-                            Tanggal <span class="text-red-500">*</span>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Tanggal Publish
                         </label>
-                        <input type="date" name="date" id="date" required
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                        <div class="block w-full px-4 py-3 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600">
+                            Otomatis saat artikel dipublish
+                        </div>
                     </div>
 
                     <!-- Konten -->
@@ -186,6 +211,22 @@
         .catch(error => {
             console.error('CKEditor initialization error:', error);
         });
+
+    // Update CKEditor data to textarea before form submit
+    document.getElementById('articleForm').addEventListener('submit', function(e) {
+        if (editor) {
+            // Get CKEditor content and set to textarea
+            const content = editor.getData();
+            document.querySelector('textarea[name="content"]').value = content;
+            
+            // Validate content not empty
+            if (!content || content.trim() === '') {
+                e.preventDefault();
+                alert('Konten artikel tidak boleh kosong!');
+                return false;
+            }
+        }
+    });
 </script>
 @endpush
 

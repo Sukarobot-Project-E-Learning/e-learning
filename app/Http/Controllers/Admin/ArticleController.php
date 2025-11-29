@@ -55,36 +55,51 @@ class ArticleController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'content' => 'required',
+            'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+        ], [
+            'title.required' => 'Judul artikel harus diisi',
+            'category.required' => 'Kategori artikel harus diisi',
+            'content.required' => 'Konten artikel harus diisi',
+            'status.required' => 'Status artikel harus dipilih',
+            'image.image' => 'File harus berupa gambar',
+            'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG',
+            'image.max' => 'Ukuran gambar maksimal 5MB',
         ]);
 
-        // Handle image upload
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/articles'), $imageName);
-            $imagePath = 'uploads/articles/' . $imageName;
+        try {
+            // Handle image upload
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/articles'), $imageName);
+                $imagePath = 'uploads/articles/' . $imageName;
+            }
+
+            // Create article
+            $article = Article::create([
+                'title' => $validated['title'],
+                'slug' => Str::slug($validated['title']),
+                'content' => $validated['content'],
+                'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                'category' => $validated['category'],
+                'image' => $imagePath,
+                'is_published' => $validated['status'] === 'Publish',
+                'published_at' => $validated['status'] === 'Publish' ? now() : null,
+                'author_id' => Auth::id(),
+                'views' => 0,
+            ]);
+
+            return redirect()->route('admin.articles.index')
+                ->with('success', 'Artikel berhasil ditambahkan');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan artikel: ' . $e->getMessage());
         }
-
-        // Create article
-        $article = Article::create([
-            'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']),
-            'content' => $validated['content'],
-            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
-            'category' => $validated['category'],
-            'image' => $imagePath,
-            'is_published' => $validated['status'] === 'Publish',
-            'published_at' => $validated['status'] === 'Publish' ? now() : null,
-            'author_id' => Auth::id(),
-            'views' => 0,
-        ]);
-
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Artikel berhasil ditambahkan');
     }
 
     /**
@@ -118,41 +133,55 @@ class ArticleController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'content' => 'required',
+            'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+        ], [
+            'title.required' => 'Judul artikel harus diisi',
+            'category.required' => 'Kategori artikel harus diisi',
+            'content.required' => 'Konten artikel harus diisi',
+            'status.required' => 'Status artikel harus dipilih',
+            'image.image' => 'File harus berupa gambar',
+            'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG',
+            'image.max' => 'Ukuran gambar maksimal 5MB',
         ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($article->image && file_exists(public_path($article->image))) {
-                unlink(public_path($article->image));
+        try {
+            // Handle image upload
+            $imagePath = $article->image;
+            if ($request->hasFile('image')) {
+                // Delete old image
+                if ($article->image && file_exists(public_path($article->image))) {
+                    unlink(public_path($article->image));
+                }
+
+                // Upload new image
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/articles'), $imageName);
+                $imagePath = 'uploads/articles/' . $imageName;
             }
 
-            // Upload new image
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/articles'), $imageName);
-            $imagePath = 'uploads/articles/' . $imageName;
-        } else {
-            $imagePath = $article->image;
+            // Update article
+            $article->update([
+                'title' => $validated['title'],
+                'slug' => Str::slug($validated['title']),
+                'content' => $validated['content'],
+                'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                'category' => $validated['category'],
+                'image' => $imagePath,
+                'is_published' => $validated['status'] === 'Publish',
+                'published_at' => $validated['status'] === 'Publish' && !$article->published_at ? now() : $article->published_at,
+            ]);
+
+            return redirect()->route('admin.articles.index')
+                ->with('success', 'Artikel berhasil diperbarui');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal mengupdate artikel: ' . $e->getMessage());
         }
-
-        // Update article
-        $article->update([
-            'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']),
-            'content' => $validated['content'],
-            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
-            'category' => $validated['category'],
-            'image' => $imagePath,
-            'is_published' => $validated['status'] === 'Publish',
-            'published_at' => $validated['status'] === 'Publish' && !$article->published_at ? now() : $article->published_at,
-        ]);
-
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Artikel berhasil diperbarui');
     }
 
     /**
