@@ -74,12 +74,8 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="content">
                             Konten <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="content" rows="10" required
-                                  placeholder="Masukkan konten artikel..."
-                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500"></textarea>
-                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            Note: Rich text editor dapat diintegrasikan di sini (TinyMCE, Quill, dll)
-                        </p>
+                        <textarea name="content" id="editor" rows="10" required
+                                  placeholder="Masukkan konten artikel..."></textarea>
                     </div>
 
                     <!-- Unggah Foto -->
@@ -148,4 +144,39 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<script>
+    let editor;
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                    'blockQuote', 'insertTable', '|',
+                    'imageUpload', 'mediaEmbed', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'id',
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            licenseKey: '',
+        })
+        .then(newEditor => {
+            editor = newEditor;
+            console.log('CKEditor initialized successfully');
+        })
+        .catch(error => {
+            console.error('CKEditor initialization error:', error);
+        });
+</script>
+@endpush
 

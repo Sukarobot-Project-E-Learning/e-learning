@@ -178,10 +178,10 @@ Route::name('client.')->group(function () {
         return view('client.page.detail-kompetisi');
     })->name('kompetisi.detail');
 
-    Route::get('/artikel', function () {
-        return view('client.page.artikel');
-    })->name('artikel');
-
+    Route::get('/artikel', [\App\Http\Controllers\Client\ArticleController::class, 'index'])->name('artikel');
+    Route::get('/artikel/api', [\App\Http\Controllers\Client\ArticleController::class, 'getArticles'])->name('artikel.api');
+    Route::get('/artikel/{slug}', [\App\Http\Controllers\Client\ArticleController::class, 'show'])->name('artikel.detail');
+    
     Route::get('/berita', function () {
         return view('client.page.berita');
     })->name('berita');
