@@ -8,17 +8,7 @@
 
         <!-- Page Header -->
         <div class="my-6">
-            <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah Artikel</h2>
-                <button type="submit" 
-                        form="articleForm"
-                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>Simpan Artikel</span>
-                </button>
-            </div>
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah Artikel</h2>
         </div>
 
         <!-- Form Card -->
@@ -135,6 +125,21 @@
                                        ">
                             </label>
                         </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <a href="{{ route('admin.articles.index') }}" 
+                           class="px-6 py-3 text-sm font-medium text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                            <span>Batal</span>
+                        </a>
+                        <button type="submit" 
+                                class="flex items-center px-6 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Simpan Artikel</span>
+                        </button>
                     </div>
 
                 </div>
