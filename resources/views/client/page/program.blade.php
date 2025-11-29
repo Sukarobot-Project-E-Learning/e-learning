@@ -1,259 +1,225 @@
 @extends('client.main')
 @section('body')
 
-<!-- Main Container with Sidebar -->
-<div class="flex min-h-screen bg-gray-50">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 bg-white shadow-lg fixed h-screen overflow-y-auto transform transition-transform duration-300 ease-in-out z-40">
-    <div class="p-5">
-      <!-- Sort Options -->
-      <div class="mb-6">
-        <h3 class="text-sm font-semibold text-gray-600 mb-3">Urutkan</h3>
-        <div class="space-y-2">
-          <button class="sort-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition flex items-center space-x-2 text-sm active" data-sort="newest">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
-            <span>Terbaru</span>
-          </button>
-          <button class="sort-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition flex items-center space-x-2 text-sm" data-sort="oldest">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4 4m0 0l4-4m-4 4v-12"/></svg>
-            <span>Terlama</span>
-          </button>
-          <button class="sort-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition flex items-center space-x-2 text-sm" data-sort="oldest">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <rect x="4" y="4" width="16" height="16" rx="3" ry="3" stroke-width="2"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
-            </svg>
-            <span>Tersedia</span>
-          </button>
+    <!-- Top Navigation Menu -->
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-30 mt-20">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-center items-center gap-12 overflow-x-auto py-4 scrollbar-hide" id="program-nav">
+                <button class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="all">Semua Kelas</button>
+                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="kursus">Kursus</button>
+                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="pelatihan">Pelatihan</button>
+                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="sertifikasi">Sertifikasi</button>
+                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="outingclass">Outing Class</button>
+                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors" data-filter="outboard">Outboard</button>
+            </div>
         </div>
-      </div>
-
-      <!-- Filter Options -->
-      <div class="mb-6">
-        <h3 class="text-sm font-semibold text-gray-600 mb-3">Kategori</h3>
-        <div class="space-y-2">
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition text-sm" data-filter="all">
-            Semua Program
-          </button>
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="kursus">
-            Kursus
-          </button>
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="pelatihan">
-            Pelatihan
-          </button>
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="sertifikasi">
-            Sertifikasi
-          </button>
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="outingclass">
-            Outing Class
-          </button>
-          <button class="filter-btn w-full text-left px-3 py-2 rounded-lg hover:bg-blue-50 transition text-sm" data-filter="outboard">
-            Outboard
-          </button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="flex-1 ml-64">
-    <!-- Header with search and total count -->
-    <div class="p-6 bg-white shadow-sm mb-5">
-      <div class="flex justify-between items-center gap-4">
-
-        <div class="flex gap-2 items-center">
-          <!-- sidebar toggle -->
-          <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-
-          <!-- overlay -->
-          <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-30 lg:max-w-screen"></div>
-
-          <!-- Nama Kategori -->
-          <h2 class="header text-2xl font-bold text-blue-700">Semua Program</h2>
-        </div>
-        
-        
-        <!-- Search Box -->
-        <div class="relative max-w-md w-full">
-          <input type="text" id="kelas-search" placeholder="Cari program..."
-            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
-          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
-        </div>
-      </div>
     </div>
 
-  <!-- Cards -->
-  <main class="kelas-container grid gap-6 px-6 pb-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
+    <!-- Hero Section -->
+    <div class="bg-white py-16 text-center">
+        <h1 id="hero-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kelas di E-Learning tersedia dari level <br> dasar hingga profesional sesuai kebutuhan <br> industri terkini.</h1>
+        <div class="w-24 h-1 bg-blue-500 mx-auto rounded"></div>
+    </div>
 
-  <!-- Card 1 -->
-  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="kursus">
-    <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
-      <div class="relative">
-        <img src="https://picsum.photos/400/200?random=1"
-             class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
-          <span>⭐</span><span class="text-white">4.8</span>
-        </div> -->
-      </div>
-      <div class="p-4 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white bg-blue-600 px-2 py-1 rounded">Webinar</span>
-          <div class="flex items-center text-[11px] font-medium text-gray-700 bg-yellow-100 px-2 py-1 rounded-full">
-            <svg xmlns='http://www.w3.org/2000/svg' class='inline w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l-1.414-1.414M6.05 6.05L4.636 4.636' /></svg>
-            <span>Sisa 23 Kuota</span>
-          </div>
-        </div>
-        <h2 class="text-lg font-semibold group-hover:text-blue-600">Strategi Digital Marketing</h2>
-        <div class="flex items-center mb-2">
-          <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Aisya Savitri" class="w-9 h-9 rounded-full mr-2 border-2 border-white shadow">
-          <div class="flex-col">
-            <p class="text-sm text-gray-600 font-medium">Aisya Savitri</p>
-            <p class="text-xs text-gray-600">Digital Marketing</p>
-          </div>
-        </div>
-        <div class="mt-auto">
-          <span class="text-orange-600 font-bold">Rp 390.000</span>
-        </div>
-      </div>
-    </article>
-  </a>
+    <!-- Filter & Sort Section -->
+    <div class="container mx-auto px-6 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-200 pb-4">
+            <!-- Left side (could be empty or total count) -->
+            <div class="text-gray-600 font-medium jumlah-kelas">
+                Menampilkan semua program
+            </div>
 
-  <!-- Card 2 -->
-  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="pelatihan">
-    <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
-      <div class="relative">
-        <img src="https://picsum.photos/400/200?random=2"
-             class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
-          <span>⭐</span><span class="text-white">4.5</span>
-        </div> -->
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <span class="bg-black/70 text-white text-sm font-semibold px-3 py-1 rounded-full">Kuota Habis</span>
+            <!-- Right side: Sort Options -->
+            <div class="flex items-center gap-3">
+                <span class="text-gray-600 text-sm font-medium">Urutkan:</span>
+                <select id="sort-select" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white cursor-pointer hover:border-blue-400 transition">
+                    <option value="newest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="available">Tersedia</option>
+                </select>
+            </div>
         </div>
-      </div>
-      <div class="p-4 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white bg-orange-500 px-2 py-1 rounded">Seminar</span>
-          <div class="flex items-center text-[11px] font-medium text-gray-700 bg-yellow-100 px-2 py-1 rounded-full">
-            <svg xmlns='http://www.w3.org/2000/svg' class='inline w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l-1.414-1.414M6.05 6.05L4.636 4.636' /></svg>
-            <span>Sisa 0 Slot</span>
-          </div>
-        </div>
-        <h2 class="text-lg font-semibold group-hover:text-blue-600">Mental Tangguh di Dunia Kerja</h2>
-        <div class="flex items-center mb-2">
-          <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Aisya Savitri" class="w-9 h-9 rounded-full mr-2 border-2 border-white shadow">
-          <div class="flex-col">
-            <p class="text-sm text-gray-600 font-medium">Aisya Savitri</p>
-            <p class="text-xs text-gray-600">Digital Marketing</p>
-          </div>
-        </div>
-        <div class="text-orange-600 font-bold">Gratis</div>
-      </div>
-    </article>
-  </a>
+    </div>
 
-  <!-- Card 3 -->
-  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="sertifikasi">
-    <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
-      <div class="relative">
-        <img src="https://picsum.photos/400/200?random=3"
-             class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
-          <span>⭐</span><span class="text-white">4.6</span>
-        </div> -->
-      </div>
-      <div class="p-4 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white bg-green-600 px-2 py-1 rounded">Offline</span>
-          <div class="flex items-center text-[11px] font-medium text-gray-700 bg-yellow-100 px-2 py-1 rounded-full">
-            <svg xmlns='http://www.w3.org/2000/svg' class='inline w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l-1.414-1.414M6.05 6.05L4.636 4.636' /></svg>
-            <span>Sisa 14 Slot</span>
-          </div>
-        </div>
-        <h2 class="text-lg font-semibold group-hover:text-blue-600">Workshop Branding</h2>
-        <div class="flex items-center mb-2">
-          <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Aisya Savitri" class="w-9 h-9 rounded-full mr-2 border-2 border-white shadow">
-          <div class="flex-col">
-            <p class="text-sm text-gray-600 font-medium">Aisya Savitri</p>
-            <p class="text-xs text-gray-600">Digital Marketing</p>
-          </div>
-        </div>
-        <div class="text-orange-600 font-bold">Rp 75.000</div>
-      </div>
-    </article>
-  </a>
+    <!-- Main Content: Card Grid -->
+    <div class="container mx-auto px-6 pb-16">
+        <div class="kelas-container grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            
+            <!-- Card 1 -->
+            <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="kursus" data-date="2023-10-01" data-slots="23">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/400/250?random=1" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Strategi Digital Marketing</h3>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-yellow-500 text-sm font-bold">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="ml-1">4.8</span>
+                            </div>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">Pemula</span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">70 Jam</span>
+                        </div>
 
-  <!-- Card 4 -->
-  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outingclass">
-    <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
-      <div class="relative">
-        <img src="https://picsum.photos/400/200?random=4"
-             class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
-          <span>⭐</span><span class="text-white">4.9</span>
-        </div> -->
-      </div>
-      <div class="p-4 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white bg-purple-600 px-2 py-1 rounded">Online</span>
-          <div class="flex items-center text-[11px] font-medium text-gray-700 bg-yellow-100 px-2 py-1 rounded-full">
-            <svg xmlns='http://www.w3.org/2000/svg' class='inline w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l-1.414-1.414M6.05 6.05L4.636 4.636' /></svg>
-            <span>Sisa 28 Slot</span>
-          </div>
-        </div>
-        <h2 class="text-lg font-semibold group-hover:text-blue-600">Next Level Digital Skill</h2>
-        <div class="flex items-center mb-2">
-          <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Aisya Savitri" class="w-9 h-9 rounded-full mr-2 border-2 border-white shadow">
-          <div class="flex-col">
-            <p class="text-sm text-gray-600 font-medium">Aisya Savitri</p>
-            <p class="text-xs text-gray-600">Digital Marketing</p>
-          </div>
-        </div>
-        <div class="text-orange-600 font-bold">Gratis</div>
-      </div>
-    </article>
-  </a>
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Instructor">
+                                <div class="text-xs">
+                                    <p class="font-semibold text-gray-900">Aisya Savitri</p>
+                                    <p class="text-gray-500">Mentor</p>
+                                </div>
+                            </div>
+                            <span class="text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1 rounded-full">Rp 390.000</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
 
-  <!-- Card 5 -->
-  <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outboard">
-    <article class="rounded-xl shadow-md hover:shadow-lg transition bg-white cursor-pointer h-full overflow-hidden">
-      <div class="relative">
-        <img src="https://picsum.photos/400/200?random=5"
-             class="w-full h-40 object-cover group-hover:opacity-90 transition" />
-        <!-- <div class="absolute bottom-2 left-2 bg-black/60 text-yellow-400 text-xs px-2 py-0.5 rounded flex items-center space-x-1">
-          <span>⭐</span><span class="text-white">4.9</span>
-        </div> -->
-      </div>
-      <div class="p-4 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white bg-purple-600 px-2 py-1 rounded">Online</span>
-          <div class="flex items-center text-[11px] font-medium text-gray-700 bg-yellow-100 px-2 py-1 rounded-full">
-            <svg xmlns='http://www.w3.org/2000/svg' class='inline w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l-1.414-1.414M6.05 6.05L4.636 4.636' /></svg>
-            <span>Sisa 28 Slot</span>
-          </div>
-        </div>
-        <h2 class="text-lg font-semibold group-hover:text-blue-600">Web Programming</h2>
-        <div class="flex items-center mb-2">
-          <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Aisya Savitri" class="w-9 h-9 rounded-full mr-2 border-2 border-white shadow">
-          <div class="flex-col">
-            <p class="text-sm text-gray-600 font-medium">Aisya Savitri</p>
-            <p class="text-xs text-gray-600">Digital Marketing</p>
-          </div>
-        </div>
-        <div class="text-orange-600 font-bold">Gratis</div>
-      </div>
-    </article>
-  </a>
-</main>
+            <!-- Card 2 (Sold Out) -->
+            <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="pelatihan" data-date="2023-09-15" data-slots="0">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 grayscale hover:grayscale-0">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/400/250?random=2" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <span class="bg-black/80 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Kuota Habis</span>
+                        </div>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Mental Tangguh di Dunia Kerja</h3>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-yellow-500 text-sm font-bold">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="ml-1">4.5</span>
+                            </div>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">Menengah</span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">45 Jam</span>
+                        </div>
 
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Instructor">
+                                <div class="text-xs">
+                                    <p class="font-semibold text-gray-900">Aisya Savitri</p>
+                                    <p class="text-gray-500">Mentor</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">Gratis</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
 
+            <!-- Card 3 -->
+            <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="sertifikasi" data-date="2023-11-20" data-slots="14">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/400/250?random=3" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Workshop Branding</h3>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-yellow-500 text-sm font-bold">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="ml-1">4.9</span>
+                            </div>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">Mahir</span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">120 Jam</span>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Instructor">
+                                <div class="text-xs">
+                                    <p class="font-semibold text-gray-900">Aisya Savitri</p>
+                                    <p class="text-gray-500">Mentor</p>
+                                </div>
+                            </div>
+                            <span class="text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1 rounded-full">Rp 75.000</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+
+            <!-- Card 4 -->
+            <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outingclass" data-date="2023-12-01" data-slots="28">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/400/250?random=4" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Next Level Digital Skill</h3>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-yellow-500 text-sm font-bold">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="ml-1">4.7</span>
+                            </div>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">Pemula</span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">60 Jam</span>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Instructor">
+                                <div class="text-xs">
+                                    <p class="font-semibold text-gray-900">Aisya Savitri</p>
+                                    <p class="text-gray-500">Mentor</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">Gratis</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+
+             <!-- Card 5 -->
+            <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="outboard" data-date="2023-08-10" data-slots="28">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/400/250?random=5" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Web Programming</h3>
+                        
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex items-center text-yellow-500 text-sm font-bold">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span class="ml-1">4.9</span>
+                            </div>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">Mahir</span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-sm">90 Jam</span>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-8 h-8 rounded-full border border-gray-200" alt="Instructor">
+                                <div class="text-xs">
+                                    <p class="font-semibold text-gray-900">Aisya Savitri</p>
+                                    <p class="text-gray-500">Mentor</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">Gratis</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+
+        </div>
+    </div>
 
 @endsection
 

@@ -124,7 +124,7 @@
 <!-- Value Proposition Section -->
 <section class="py-12 bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8" data-aos="fade-up">
             <!-- Item 1 -->
             <div class="flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
                 <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
@@ -183,7 +183,7 @@
             <p class="text-gray-600 mt-2">Pilih kategori yang sesuai dengan kebutuhan belajar Anda</p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" data-aos="fade-up">
             <!-- Category 1 -->
             <a href="{{ url('/program#filter=kursus') }}" class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                 <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">

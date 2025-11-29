@@ -2,221 +2,70 @@
 * {
     box-sizing: border-box;
 }
+
 body {
     margin: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #f7f7f7;
-    color: #000;
+    background: #fff;
+    /* Changed to white to match clean design */
+    color: #111;
     line-height: 1.5;
 }
+
 a {
     text-decoration: none;
     color: inherit;
 }
-ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+
+/* Hero Section */
+/* Tailwind classes handle most of this, but adding specific overrides if needed */
+
+/* Sort Select Customization */
+#sort-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+    padding-right: 2rem;
 }
 
-/* Sidebar Styles */
-#sidebar {
-    z-index: 40;
-    transition: transform 0.3s ease-in-out;
-}
-
-@media (max-width: 1024px) {
-    #sidebar {
-        transform: translateX(-100%);
-    }
-    #sidebar.show {
-        transform: translateX(0);
-    }
-    main {
-        margin-left: 0 !important;
-    }
-}
-
-/* Search Input */
-#kelas-search {
-    font-size: 0.875rem;
-    background-color: #fff;
-}
-
-#kelas-search:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-}
-
-/* Sidebar buttons: make filter buttons look like sort buttons but orange themed */
-#sidebar .sort-btn,
-#sidebar .filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #374151; /* gray-700 */
-    cursor: pointer;
-    transition: all 0.18s ease-in-out;
-    width: 100%;
-    text-align: left;
-}
-
-#sidebar .sort-btn:hover,
-#sidebar .filter-btn:hover {
-    background: #f1f5f9; /* light */
-    color: #0b2442;
-}
-
-#sidebar .sort-btn.active,
-#sidebar .filter-btn.active {
-    background: #eef2ff; /* subtle blue */
-    border-color: rgba(59, 130, 246, 0.15);
-    color: #0b2442;
-    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.06);
-}
-
-/* Make filter buttons pill-like within sidebar */
-#sidebar .filter-btn {
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-}
-
-/* Smaller icon sizes inside sidebar buttons */
-#sidebar .sort-btn svg,
-#sidebar .filter-btn svg {
-    width: 16px;
-    height: 16px;
-}
-
-/* Filter Buttons */
-
-/* Kartu Kelas */
+/* Card Transitions */
 .kelas-card {
-    display: flex;
-    flex-direction: column;
-    border-radius: 16px;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
-    background: white;
-    overflow: hidden;
-    cursor: pointer;
-    transition: box-shadow 0.3s;
-    position: relative;
-    height: 100%;
-}
-.kelas-card:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-/* gambar kartu */
-.kelas-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    background: #eee;
-    box-shadow: inset 0 0 6px rgb(0 0 0 / 0.1);
+    transition: all 0.3s ease;
 }
 
-.kelas-desc {
-    flex-grow: 1;
-    padding: 1rem 1.25rem 1.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.kelas-kategori {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    width: max-content;
-    margin-bottom: 0.4rem;
-    color: white;
-    user-select: none;
-    letter-spacing: 0.03em;
-}
-.kategori-webinar {
-    background-color: #0b2242; /* navy blue */
-}
-.kategori-seminar {
-    background-color: #ff6f00; /* orange */
-}
-.kategori-offline {
-    background-color: #07305a; /* gelap navy */
-}
-.kategori-online {
-    background-color: #1454a8; /* biru navy sedikit cerah */
-}
-.kategori-sertifikasi {
-    background-color: #333;
-}
-.kelas-judul {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-    color: #222;
-    line-height: 1.3;
-    flex-grow: 1;
-}
-.kelas-detail {
-    font-size: 0.85rem;
-    color: #555;
-    margin-bottom: 1rem;
-    flex-grow: 0;
-}
-.kelas-harga {
-    font-weight: 700;
-    font-size: 1rem;
-    color: #0b2242; /* navy blue */
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.kelas-harga::before {
-    content: "Rp";
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Animasi Fade */
+/* Fade Animation for Filtering */
 .kelas-card.fade-out {
     opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
     transform: scale(0.95);
+    pointer-events: none;
+    position: absolute;
+    /* Remove from flow */
+    visibility: hidden;
 }
+
 .kelas-card.fade-in {
     opacity: 1;
-    transition: opacity 0.3s ease;
-    pointer-events: auto;
     transform: scale(1);
+    pointer-events: auto;
+    position: relative;
+    visibility: visible;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    header {
-        padding: 0.8rem 1rem;
-    }
-    nav ul {
-        gap: 1rem;
-    }
-    .filters {
-        margin: 1rem;
-    }
-    .kelas-container {
-        grid-template-columns: 1fr;
-        padding: 0 1rem 1rem 1rem;
-    }
+/* Line Clamp for titles */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
+/* Hide Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
+
 .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
