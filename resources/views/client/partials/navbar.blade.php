@@ -14,7 +14,7 @@
                 <a href="{{ url('/') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Home</a>
 
                 <!-- Program Dropdown -->
-                <div class="relative group">
+                <!-- <div class="relative group">
                     <button href="{{ url('/program') }}" class="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors focus:outline-none cursor-pointer">
                         Program <span href="{{ url('/program') }}" class="ml-1"></span>
                     </button>
@@ -25,7 +25,8 @@
                         <a href="{{ url('/program#filter=outingclass') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">Outing Class</a>
                         <a href="{{ url('/program#filter=outboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">Outboard</a>
                     </div>
-                </div>
+                </div> -->
+                <a href="{{ url('/program') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Program</a>
 
                 <!-- Kompetisi Dropdown -->
                 <div class="relative group">

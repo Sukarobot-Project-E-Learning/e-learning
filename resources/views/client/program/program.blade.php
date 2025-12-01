@@ -3,15 +3,29 @@
 
     <!-- Top Navigation Menu -->
     <div class="bg-white border-t border-gray-200 sticky top-0 z-30 mt-25">
-        <div class="container mx-auto px-6">
-            <div class="flex justify-center items-center gap-12 overflow-x-auto py-4 scrollbar-hide" id="program-nav">
-                <button class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="all">Semua Kelas</button>
-                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="kursus">Kursus</button>
-                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="pelatihan">Pelatihan</button>
-                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="sertifikasi">Sertifikasi</button>
-                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="outingclass">Outing Class</button>
-                <button class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors" data-filter="outboard">Outboard</button>
+        <div class="container mx-auto px-6 relative group">
+            <!-- Left Arrow -->
+            <button id="nav-scroll-left" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 p-2 rounded-full shadow-md hover:bg-white text-gray-600 hover:text-blue-600 transition-all hidden border border-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <div class="flex justify-start md:justify-center items-center gap-8 md:gap-12 overflow-x-auto py-4 scrollbar-hide scroll-smooth px-8" id="program-nav">
+                <a href="{{ url('/program') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Semua Kelas</a>
+                <a href="{{ url('/program/kursus') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Kursus</a>
+                <a href="{{ url('/program/pelatihan') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Pelatihan</a>
+                <a href="{{ url('/program/sertifikasi') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Sertifikasi</a>
+                <a href="{{ url('/program/outing-class') }}" class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Outing Class</a>
+                <a href="{{ url('/program/outboard') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Outboard</a>
             </div>
+
+            <!-- Right Arrow -->
+            <button id="nav-scroll-right" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 p-2 rounded-full shadow-md hover:bg-white text-gray-600 hover:text-blue-600 transition-all hidden border border-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -225,3 +239,6 @@
 
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program.css') }}">
 <script src="{{ asset('assets/elearning/client/js/program.js') }}"></script>
+<script>
+    window.activeCategory = "all";
+</script>

@@ -162,13 +162,40 @@ Route::name('client.')->group(function () {
         return view('client.page.tentang');
     })->name('tentang');
 
-    Route::get('/program', function () {
-        return view('client.page.program');
-    })->name('program');
+    // Program Routes
+    Route::prefix('program')->name('program')->group(function () {
+        Route::get('/', function () {
+            return view('client.program.program');
+        });
+        
+        Route::get('/semua-kelas', function () {
+            return view('client.program.program');
+        })->name('.semua-kelas');
 
-    Route::get('/program/{id}', function () {
-        return view('client.page.detail-program');
-    })->name('program.detail');
+        Route::get('/kursus', function () {
+            return view('client.program.kursus');
+        })->name('.kursus');
+
+        Route::get('/pelatihan', function () {
+            return view('client.program.pelatihan');
+        })->name('.pelatihan');
+
+        Route::get('/sertifikasi', function () {
+            return view('client.program.sertifikasi');
+        })->name('.sertifikasi');
+
+        Route::get('/outing-class', function () {
+            return view('client.program.outingclass');
+        })->name('.outing-class');
+
+        Route::get('/outboard', function () {
+            return view('client.program.outboard');
+        })->name('.outboard');
+        
+        Route::get('/detail-program', function () {
+            return view('client.program.detail-program');
+        })->name('.detail');
+    });
 
     Route::get('/kompetisi', function () {
         return view('client.page.kompetisi');
@@ -190,11 +217,7 @@ Route::name('client.')->group(function () {
         return view('client.page.instruktur');
     })->name('instruktur');
 
-    // Route::get('/pembayaran', function () {
-    //     return view('client.page.pembayaran');
-    // })->name('pembayaran');
-
-    // Authentication Pages (Login sudah didefinisikan di atas, tidak perlu duplikat)
+    // Authentication Pages
     Route::get('/register', function () {
         return view('client.page.login.register');
     })->name('register');
@@ -208,7 +231,7 @@ Route::name('client.')->group(function () {
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran', function () {
-            return view('client.page.pembayaran');
+            return view('client.program.pembayaran');
         })->name('pembayaran');
     });
 

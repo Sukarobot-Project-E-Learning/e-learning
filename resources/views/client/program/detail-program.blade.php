@@ -6,7 +6,7 @@
 
 @section('body')
 
-<div class="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8 mt-15">
 
     <!-- KONTEN KIRI -->
     <div class="lg:col-span-2 space-y-6">
@@ -142,5 +142,4 @@
 
 <script src="{{ asset('assets/elearning/client/js/detail-program.js') }}"></script>
 
-@include('client.partials.footer')
 @endsection

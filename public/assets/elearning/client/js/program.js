@@ -107,4 +107,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initial apply
     applySortAndFilter();
+
+    // Navigation Scroll Logic
+    const navContainer = document.getElementById("program-nav");
+    const btnLeft = document.getElementById("nav-scroll-left");
+    const btnRight = document.getElementById("nav-scroll-right");
+
+    if (navContainer && btnLeft && btnRight) {
+        const checkScroll = () => {
+            // Show/Hide Left Button
+            if (navContainer.scrollLeft > 0) {
+                btnLeft.classList.remove("hidden");
+            } else {
+                btnLeft.classList.add("hidden");
+            }
+
+            // Show/Hide Right Button
+            // Tolerance of 1px for float calculation differences
+            if (navContainer.scrollLeft + navContainer.clientWidth < navContainer.scrollWidth - 1) {
+                btnRight.classList.remove("hidden");
+            } else {
+                btnRight.classList.add("hidden");
+            }
+        };
+
+        btnLeft.addEventListener("click", () => {
+            navContainer.scrollBy({ left: -200, behavior: "smooth" });
+        });
+
+        btnRight.addEventListener("click", () => {
+            navContainer.scrollBy({ left: 200, behavior: "smooth" });
+        });
+
+        navContainer.addEventListener("scroll", checkScroll);
+        window.addEventListener("resize", checkScroll);
+
+        // Initial check
+        checkScroll();
+    }
 });
