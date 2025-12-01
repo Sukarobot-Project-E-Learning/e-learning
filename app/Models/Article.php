@@ -126,7 +126,8 @@ class Article extends Model
         if ($this->image && file_exists(public_path($this->image))) {
             return asset($this->image);
         }
-        return asset('assets/elearning/client/img/default-article.jpg');
+        return asset('assets/elearning/client/img/blogilustrator.jpeg');
     }
 }
+
 

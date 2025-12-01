@@ -109,20 +109,28 @@ document.addEventListener('DOMContentLoaded', function () {
     list.forEach(a => {
       const node = tpl.content.cloneNode(true);
       const img = node.querySelector('img');
-      img.src = a.image || '/assets/elearning/client/img/default-article.jpg';
-      img.alt = a.title;
-      img.onerror = function () {
-        this.src = '/assets/elearning/client/img/default-article.jpg';
-      };
+      if (img) {
+        img.src = a.image || '/assets/elearning/client/img/blogilustrator.jpeg';
+        img.alt = a.title || 'Article image';
+        img.onerror = function () {
+          this.src = '/assets/elearning/client/img/blogilustrator.jpeg';
+        };
+      }
 
-      node.querySelector('[data-cat]').textContent = a.category ? a.category.toUpperCase() : 'UMUM';
-      node.querySelector('[data-title]').textContent = a.title;
-      // node.querySelector('[data-excerpt]').textContent = a.excerpt;
-      node.querySelector('[data-date]').textContent = a.published_at;
+      const catEl = node.querySelector('[data-cat]');
+      if (catEl) catEl.textContent = a.category ? a.category.toUpperCase() : 'UMUM';
+
+      const titleEl = node.querySelector('[data-title]');
+      if (titleEl) titleEl.textContent = a.title || 'Untitled';
+
+      const dateEl = node.querySelector('[data-date]');
+      if (dateEl) dateEl.textContent = a.published_at || '-';
 
       // Link ke detail artikel menggunakan slug
       const linkEl = node.querySelector('[data-link]');
-      linkEl.href = `/artikel/${a.slug}`;
+      if (linkEl && a.slug) {
+        linkEl.href = `/artikel/${a.slug}`;
+      }
 
       grid.appendChild(node);
     });
