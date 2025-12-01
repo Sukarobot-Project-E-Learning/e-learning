@@ -229,8 +229,9 @@ Route::name('client.')->group(function () {
         return view('client.page.login.reset');
     })->name('reset-password');
 
-    // Protected Client/User Routes
-    Route::middleware('auth')->get('/dashboard', [UserDashboardController::class, 'profile'])->name('dashboard');
+    // Protected Client/User Routes  
+    // Note: Admins cannot access user dashboard, only regular users and instructors
+    Route::middleware([\App\Http\Middleware\EnsureUserIsRegularUser::class])->get('/dashboard', [UserDashboardController::class, 'profile'])->name('dashboard');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran', function () {
