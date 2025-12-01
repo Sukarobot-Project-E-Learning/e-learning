@@ -8,8 +8,22 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentCategory = 'all';
   let currentSort = 'newest';
   const perPage = 12;
+  
+  // Get DOM elements with validation
   const grid = document.getElementById('articlesGrid');
   const tpl = document.getElementById('cardTpl');
+  
+  // Validate required elements exist
+  if (!grid) {
+    console.error('Element #articlesGrid not found');
+    return;
+  }
+  
+  if (!tpl) {
+    console.error('Element #cardTpl not found');
+    grid.innerHTML = '<div class="col-span-full text-center text-red-500 py-12">Template tidak ditemukan. Silakan refresh halaman.</div>';
+    return;
+  }
 
 
   // Fetch articles from API
@@ -23,13 +37,29 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       const response = await fetch(`/artikel/api?${params}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
-      articles = data.data;
+      
+      // Validate response data
+      if (!data || !data.data) {
+        throw new Error('Invalid response format from API');
+      }
+      
+      // Ensure data.data is an array
+      articles = Array.isArray(data.data) ? data.data : [];
       filtered = [...articles];
+      
+      console.log(`Loaded ${articles.length} articles successfully`);
       render();
     } catch (error) {
       console.error('Error fetching articles:', error);
-      grid.innerHTML = '<div class="col-span-full text-center text-red-500">Gagal memuat artikel</div>';
+      if (grid) {
+        grid.innerHTML = '<div class="col-span-full text-center text-red-500 py-12">Gagal memuat artikel. Silakan refresh halaman.</div>';
+      }
     } finally {
       hideLoading();
     }
@@ -55,91 +85,129 @@ document.addEventListener('DOMContentLoaded', function () {
   const selected = document.getElementById('selectedCategory');
   const icon = document.getElementById('dropdownIcon');
 
-  // Toggle dropdown
-  trigger.addEventListener('click', function () {
-    const isOpen = !menu.classList.contains('invisible');
-    if (isOpen) {
-      closeDropdown();
-    } else {
-      openDropdown();
-    }
-  });
-
-  // Close on option click + Trigger filter
-  menu.querySelectorAll('button').forEach(option => {
-    option.addEventListener('click', function () {
-      const value = this.dataset.value;
-      selected.textContent = this.textContent;
-      currentCategory = value;
-      currentPage = 1;
-      fetchArticles();
-      closeDropdown();
+  // Toggle dropdown (with validation)
+  if (trigger && menu) {
+    trigger.addEventListener('click', function () {
+      const isOpen = !menu.classList.contains('invisible');
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
     });
-  });
 
-  // Close on outside click
-  document.addEventListener('click', function (event) {
-    if (!trigger.contains(event.target)) {
-      closeDropdown();
+    // Close on option click + Trigger filter
+    if (menu) {
+      menu.querySelectorAll('button').forEach(option => {
+        option.addEventListener('click', function () {
+          const value = this.dataset.value;
+          if (selected) selected.textContent = this.textContent;
+          currentCategory = value;
+          currentPage = 1;
+          fetchArticles();
+          closeDropdown();
+        });
+      });
     }
-  });
+
+    // Close on outside click
+    document.addEventListener('click', function (event) {
+      if (trigger && !trigger.contains(event.target)) {
+        closeDropdown();
+      }
+    });
+  }
 
   function openDropdown() {
-    menu.classList.remove('opacity-0', 'invisible', 'scale-95', 'translate-y-1');
-    menu.classList.add('opacity-100', 'visible', 'scale-100', 'translate-y-0');
-    icon.style.transform = 'rotate(180deg)';
+    if (menu && icon) {
+      menu.classList.remove('opacity-0', 'invisible', 'scale-95', 'translate-y-1');
+      menu.classList.add('opacity-100', 'visible', 'scale-100', 'translate-y-0');
+      icon.style.transform = 'rotate(180deg)';
+    }
   }
 
   function closeDropdown() {
-    menu.classList.remove('opacity-100', 'visible', 'scale-100', 'translate-y-0');
-    menu.classList.add('opacity-0', 'invisible', 'scale-95', 'translate-y-1');
-    icon.style.transform = 'rotate(0deg)';
+    if (menu && icon) {
+      menu.classList.remove('opacity-100', 'visible', 'scale-100', 'translate-y-0');
+      menu.classList.add('opacity-0', 'invisible', 'scale-95', 'translate-y-1');
+      icon.style.transform = 'rotate(0deg)';
+    }
   }
 
   function render() {
-    grid.innerHTML = '';
-    const list = filtered.slice(0, currentPage * perPage);
+    try {
+      grid.innerHTML = '';
+      const list = filtered.slice(0, currentPage * perPage);
 
-    if (list.length === 0) {
-      grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">Tidak ada artikel ditemukan</div>';
-      document.getElementById('loadMore').style.display = 'none';
-      return;
-    }
-
-    list.forEach(a => {
-      const node = tpl.content.cloneNode(true);
-      const img = node.querySelector('img');
-      if (img) {
-        img.src = a.image || '/assets/elearning/client/img/blogilustrator.jpeg';
-        img.alt = a.title || 'Article image';
-        img.onerror = function () {
-          this.src = '/assets/elearning/client/img/blogilustrator.jpeg';
-        };
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">Tidak ada artikel ditemukan</div>';
+        const loadMoreBtn = document.getElementById('loadMore');
+        if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+        return;
       }
 
-      const catEl = node.querySelector('[data-cat]');
-      if (catEl) catEl.textContent = a.category ? a.category.toUpperCase() : 'UMUM';
+      list.forEach((a, index) => {
+        try {
+          // Validate template exists
+          if (!tpl || !tpl.content) {
+            console.error('Template element not found');
+            return;
+          }
 
-      const titleEl = node.querySelector('[data-title]');
-      if (titleEl) titleEl.textContent = a.title || 'Untitled';
+          const node = tpl.content.cloneNode(true);
+          
+          // Set image
+          const img = node.querySelector('img');
+          if (img) {
+            img.src = a.image || '/assets/elearning/client/img/blogilustrator.jpeg';
+            img.alt = a.title || 'Article image';
+            img.onerror = function () {
+              this.src = '/assets/elearning/client/img/blogilustrator.jpeg';
+            };
+          }
 
-      const dateEl = node.querySelector('[data-date]');
-      if (dateEl) dateEl.textContent = a.published_at || '-';
+          // Set category
+          const catEl = node.querySelector('[data-cat]');
+          if (catEl) {
+            catEl.textContent = a.category ? a.category.toUpperCase() : 'UMUM';
+          }
 
-      // Link ke detail artikel menggunakan slug
-      const linkEl = node.querySelector('[data-link]');
-      if (linkEl && a.slug) {
-        linkEl.href = `/artikel/${a.slug}`;
+          // Set title
+          const titleEl = node.querySelector('[data-title]');
+          if (titleEl) {
+            titleEl.textContent = a.title || 'Untitled';
+          }
+
+          // Set date
+          const dateEl = node.querySelector('[data-date]');
+          if (dateEl) {
+            dateEl.textContent = a.published_at || '-';
+          }
+
+          // Set link
+          const linkEl = node.querySelector('[data-link]');
+          if (linkEl && a.slug) {
+            linkEl.href = `/artikel/${a.slug}`;
+          }
+
+          grid.appendChild(node);
+        } catch (err) {
+          console.error(`Error rendering article at index ${index}:`, err, a);
+        }
+      });
+
+      // Handle load more button
+      const loadMoreBtn = document.getElementById('loadMore');
+      if (loadMoreBtn) {
+        if (filtered.length > list.length) {
+          loadMoreBtn.style.display = 'inline-block';
+        } else {
+          loadMoreBtn.style.display = 'none';
+        }
       }
-
-      grid.appendChild(node);
-    });
-
-    const loadMoreBtn = document.getElementById('loadMore');
-    if (filtered.length > list.length) {
-      loadMoreBtn.style.display = 'inline-block';
-    } else {
-      loadMoreBtn.style.display = 'none';
+    } catch (error) {
+      console.error('Error in render function:', error);
+      grid.innerHTML = '<div class="col-span-full text-center text-red-500 py-12">Terjadi kesalahan saat menampilkan artikel</div>';
     }
   }
 
@@ -147,10 +215,13 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchArticles();
 
   // Event listeners
-  document.getElementById('loadMore').addEventListener('click', () => {
-    currentPage++;
-    render();
-  });
+  const loadMoreBtn = document.getElementById('loadMore');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      currentPage++;
+      render();
+    });
+  }
 
   // Search input (jika ada elemen #search)
   const searchEl = document.getElementById('search');
@@ -172,18 +243,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Sort button
   const sortBtn = document.getElementById('sortBtn');
-  sortBtn.addEventListener('click', (e) => {
-    const b = e.currentTarget;
-    if (currentSort === 'newest') {
-      currentSort = 'oldest';
-      b.textContent = 'Terlama';
-    } else {
-      currentSort = 'newest';
-      b.textContent = 'Terbaru';
-    }
-    currentPage = 1;
-    fetchArticles();
-  });
+  if (sortBtn) {
+    sortBtn.addEventListener('click', (e) => {
+      const b = e.currentTarget;
+      if (currentSort === 'newest') {
+        currentSort = 'oldest';
+        b.textContent = 'Terlama';
+      } else {
+        currentSort = 'newest';
+        b.textContent = 'Terbaru';
+      }
+      currentPage = 1;
+      fetchArticles();
+    });
+  }
 
   // Mobile button (jika ada)
   const mobileBtn = document.getElementById('mobileBtn');
