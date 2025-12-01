@@ -114,7 +114,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="content">
                             Konten <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="editor" rows="10" required>{{ $article['content'] }}</textarea>
+                        <textarea name="content" id="editor" rows="10">{{ $article['content'] }}</textarea>
                     </div>
 
                     <!-- Unggah Foto -->
