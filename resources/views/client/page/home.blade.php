@@ -52,13 +52,13 @@
         <!-- Left Content -->
         <div data-aos="fade-right" data-aos-duration="1000">
             <div class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-6">
-                🚀 Platform Belajar Elektronik No.1 di Indonesia
+                🚀 Platform Belajar Skill Masa Depan No.1 di Indonesia
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
                 Belajar Skill <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Masa Depan</span> dengan Mudah
             </h1>
             <p class="text-lg text-gray-600 mb-8 leading-relaxed max-w-xl">
-                Ratusan program untuk pelajar, mahasiswa, guru, dan umum. Tingkatkan kompetensi Anda di berbagai bidang bersama para ahli.
+                Ratusan program untuk pelajar, mahasiswa, guru, dan umum. Tingkatkan kompetensi Anda di berbagai bidang bersama para ahli. Dapatkan Sertifikat Resmi dari Lembaga Terakreditasi dan BNSP.
             </p>
             <div class="flex flex-wrap gap-4">
                 <a href="#category" class="px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition-all duration-300">
@@ -131,7 +131,7 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <h3 class="font-bold text-gray-900 mb-1">Sertifikat Resmi</h3>
-                <p class="text-xs text-gray-500">Diakui industri & universitas</p>
+                <p class="text-xs text-gray-500">Dari Lembaga Terakreditasi & BNSP</p>
             </div>
 
             <!-- Item 2 -->
@@ -219,7 +219,7 @@
                     <h3 class="font-bold text-lg text-gray-900 group-hover:text-purple-600 transition-colors">Sertifikasi</h3>
                 </div>
                 <div class="category-desc absolute bottom-0 left-0 w-full p-4 bg-white/95 backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <p class="text-sm text-gray-600">Dapatkan pengakuan resmi kompetensi.</p>
+                    <p class="text-sm text-gray-600">Dapatkan sertifikasi resmi dari BNSP.</p>
                 </div>
             </a>
 

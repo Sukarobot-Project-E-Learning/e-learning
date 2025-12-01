@@ -6,9 +6,9 @@
 
 <div class="flex min-h-screen bg-gray-50 pt-24">
   <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 pt-2 pr-1 bg-white border-r border-gray-200 fixed h-screen lg:flex flex-1 flex-col justify-between shadow-md z-40">
+  <aside id="sidebar" class="w-64 pt-2 pr-1 bg-transparent border-r border-gray-200 fixed h-full lg:flex flex-1 flex-col justify-between shadow-md z-40 rounded-xl">
     <div>
-      <nav class="mt-4">
+      <nav>
         <ul class="space-y-1 text-gray-700">
           <li><button class="nav-item active rounded-lg" data-section="profile"><i class="fa-regular fa-user mr-2"></i>Profil</button></li>
           <li><button class="nav-item rounded-lg" data-section="program"><i class="fa-solid fa-book mr-2"></i>Program</button></li>
@@ -21,7 +21,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="ml-64 flex-2 p-8 transition-all duration-300">
+  <main class="ml-64 flex-2 pt-2 pr-8 pb-8 pl-8 transition-all duration-300">
     <!-- sidebar toggle -->
     <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
