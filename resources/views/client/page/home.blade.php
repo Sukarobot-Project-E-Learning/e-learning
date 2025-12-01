@@ -710,5 +710,4 @@
 
 <script src="{{ asset('assets/elearning/client/js/home.js') }}"></script>
 
-@include('client.partials.footer')
 @endsection

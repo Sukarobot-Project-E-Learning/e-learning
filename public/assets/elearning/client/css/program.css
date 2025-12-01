@@ -1,22 +1,3 @@
-/* Reset & Base */
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #fff;
-    /* Changed to white to match clean design */
-    color: #111;
-    line-height: 1.5;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
 /* Hero Section */
 /* Tailwind classes handle most of this, but adding specific overrides if needed */
 
