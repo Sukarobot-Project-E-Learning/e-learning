@@ -1,6 +1,6 @@
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Variables
   let articles = [];
   let filtered = [];
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sort: currentSort,
         per_page: 100 // Fetch more for client-side pagination
       });
-      
+
       const response = await fetch(`/artikel/api?${params}`);
       const data = await response.json();
       articles = data.data;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const icon = document.getElementById('dropdownIcon');
 
   // Toggle dropdown
-  trigger.addEventListener('click', function() {
+  trigger.addEventListener('click', function () {
     const isOpen = !menu.classList.contains('invisible');
     if (isOpen) {
       closeDropdown();
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Close on option click + Trigger filter
   menu.querySelectorAll('button').forEach(option => {
-    option.addEventListener('click', function() {
+    option.addEventListener('click', function () {
       const value = this.dataset.value;
       selected.textContent = this.textContent;
       currentCategory = value;
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Close on outside click
-  document.addEventListener('click', function(event) {
+  document.addEventListener('click', function (event) {
     if (!trigger.contains(event.target)) {
       closeDropdown();
     }
@@ -99,34 +99,34 @@ document.addEventListener('DOMContentLoaded', function() {
   function render() {
     grid.innerHTML = '';
     const list = filtered.slice(0, currentPage * perPage);
-    
+
     if (list.length === 0) {
       grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">Tidak ada artikel ditemukan</div>';
       document.getElementById('loadMore').style.display = 'none';
       return;
     }
-    
+
     list.forEach(a => {
       const node = tpl.content.cloneNode(true);
       const img = node.querySelector('img');
       img.src = a.image || '/assets/elearning/client/img/default-article.jpg';
       img.alt = a.title;
-      img.onerror = function() {
+      img.onerror = function () {
         this.src = '/assets/elearning/client/img/default-article.jpg';
       };
-      
+
       node.querySelector('[data-cat]').textContent = a.category ? a.category.toUpperCase() : 'UMUM';
       node.querySelector('[data-title]').textContent = a.title;
-      node.querySelector('[data-excerpt]').textContent = a.excerpt;
+      // node.querySelector('[data-excerpt]').textContent = a.excerpt;
       node.querySelector('[data-date]').textContent = a.published_at;
 
       // Link ke detail artikel menggunakan slug
       const linkEl = node.querySelector('[data-link]');
       linkEl.href = `/artikel/${a.slug}`;
-      
+
       grid.appendChild(node);
     });
-    
+
     const loadMoreBtn = document.getElementById('loadMore');
     if (filtered.length > list.length) {
       loadMoreBtn.style.display = 'inline-block';
@@ -139,9 +139,9 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchArticles();
 
   // Event listeners
-  document.getElementById('loadMore').addEventListener('click', () => { 
-    currentPage++; 
-    render(); 
+  document.getElementById('loadMore').addEventListener('click', () => {
+    currentPage++;
+    render();
   });
 
   // Search input (jika ada elemen #search)
@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Mobile button (jika ada)
   const mobileBtn = document.getElementById('mobileBtn');
   if (mobileBtn) {
-    mobileBtn.addEventListener('click', () => { 
-      document.getElementById('mobileNav').classList.toggle('hidden'); 
+    mobileBtn.addEventListener('click', () => {
+      document.getElementById('mobileNav').classList.toggle('hidden');
     });
   }
 

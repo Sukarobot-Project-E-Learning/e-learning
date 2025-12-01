@@ -89,8 +89,34 @@ class ArticleController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Increment views
-        $article->incrementViews();
+        // Track view in database (unique per user or IP)
+        $userId = auth()->id(); // NULL for guests
+        $ipAddress = request()->ip();
+        
+        // Check if this user/IP already viewed this article
+        $alreadyViewed = \App\Models\ArticleView::where('article_id', $article->id)
+            ->where(function($query) use ($userId, $ipAddress) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                } else {
+                    $query->where('ip_address', $ipAddress)
+                          ->whereNull('user_id');
+                }
+            })
+            ->exists();
+
+        // If not viewed yet, record the view
+        if (!$alreadyViewed) {
+            \App\Models\ArticleView::create([
+                'article_id' => $article->id,
+                'user_id' => $userId,
+                'ip_address' => $ipAddress,
+                'user_agent' => request()->userAgent(),
+            ]);
+            
+            // Increment the views counter
+            $article->incrementViews();
+        }
 
         // Get related articles from same category
         $relatedArticles = Article::published()

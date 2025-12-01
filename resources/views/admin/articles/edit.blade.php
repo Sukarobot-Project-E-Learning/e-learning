@@ -190,9 +190,52 @@
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
 <script>
+    // Custom upload adapter for CKEditor
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    const data = new FormData();
+                    data.append('upload', file);
+                    data.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+                    fetch('{{ route("admin.articles.upload-image") }}', {
+                        method: 'POST',
+                        body: data
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.url) {
+                            resolve({ default: result.url });
+                        } else {
+                            reject(result.error || 'Upload failed');
+                        }
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+                }));
+        }
+
+        abort() {
+            // Reject promise when upload is aborted
+        }
+    }
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
     let editor;
     ClassicEditor
         .create(document.querySelector('#editor'), {
+            extraPlugins: [MyCustomUploadAdapterPlugin],
             toolbar: {
                 items: [
                     'heading', '|',
@@ -214,7 +257,7 @@
         })
         .then(newEditor => {
             editor = newEditor;
-            console.log('CKEditor initialized successfully');
+            console.log('CKEditor initialized successfully with image upload support');
         })
         .catch(error => {
             console.error('CKEditor initialization error:', error);

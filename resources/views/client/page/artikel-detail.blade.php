@@ -60,14 +60,14 @@
         {{ $article->title }}
       </h1>
 
-      <!-- Excerpt -->
-      @if($article->excerpt)
+      {{-- Excerpt --}}
+      {{-- @if($article->excerpt)
       <div class="mb-8 p-6 bg-gray-50 border-l-4 border-orange-500 rounded-r-lg">
         <p class="text-lg text-gray-700 italic">
           {{ $article->excerpt }}
         </p>
       </div>
-      @endif
+      @endif --}}
 
       <!-- Content -->
       <div class="prose prose-lg max-w-none">
@@ -124,7 +124,7 @@
         <div class="p-4">
           <span class="text-xs font-semibold text-orange-600">{{ $related->category }}</span>
           <h3 class="text-lg font-bold text-gray-900 mt-1">{{ $related->title }}</h3>
-          <p class="text-sm text-gray-600 mt-1">{{ Str::limit($related->excerpt, 80) }}</p>
+          {{-- <p class="text-sm text-gray-600 mt-1">{{ Str::limit($related->excerpt, 80) }}</p> --}}
           <p class="text-xs text-gray-400 mt-2">{{ $related->formatted_published_date }}</p>
         </div>
       </a>

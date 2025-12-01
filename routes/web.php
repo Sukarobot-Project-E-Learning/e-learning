@@ -127,6 +127,9 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 
     // Article Management
     Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class);
+    
+    // CKEditor Image Upload
+    Route::post('articles/upload-image', [\App\Http\Controllers\Admin\ArticleController::class, 'uploadImage'])->name('articles.upload-image');
 
     // Broadcast Management
     Route::resource('broadcasts', \App\Http\Controllers\Admin\BroadcastController::class);

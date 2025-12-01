@@ -84,7 +84,7 @@
       <div class="p-4">
         <span data-cat class="text-xs font-semibold text-orange-600"></span>
         <h3 data-title class="text-lg font-bold text-gray-900 mt-1"></h3>
-        <p data-excerpt class="text-sm text-gray-600 mt-1"></p>
+        {{-- <p data-excerpt class="text-sm text-gray-600 mt-1"></p> --}}
         <p data-date class="text-xs text-gray-400 mt-2"></p>
       </div>
     </a>

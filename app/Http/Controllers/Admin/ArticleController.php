@@ -83,7 +83,7 @@ class ArticleController extends Controller
                 'title' => $validated['title'],
                 'slug' => Str::slug($validated['title']),
                 'content' => $validated['content'],
-                'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                // 'excerpt' => Str::limit(strip_tags($validated['content']), 150),
                 'category' => $validated['category'],
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
@@ -167,7 +167,7 @@ class ArticleController extends Controller
                 'title' => $validated['title'],
                 'slug' => Str::slug($validated['title']),
                 'content' => $validated['content'],
-                'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                // 'excerpt' => Str::limit(strip_tags($validated['content']), 150),
                 'category' => $validated['category'],
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
@@ -203,6 +203,42 @@ class ArticleController extends Controller
             return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus artikel: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Handle CKEditor image upload
+     */
+    public function uploadImage(Request $request)
+    {
+        try {
+            if ($request->hasFile('upload')) {
+                $image = $request->file('upload');
+                
+                // Validate image
+                $request->validate([
+                    'upload' => 'required|image|mimes:jpeg,jpg,png,gif|max:5120'
+                ]);
+                
+                // Generate filename
+                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                
+                // Save to public/uploads/articles/content
+                $image->move(public_path('uploads/articles/content'), $filename);
+                
+                // Generate URL
+                $url = asset('uploads/articles/content/' . $filename);
+                
+                // Return success response for CKEditor
+                return response()->json([
+                    'url' => $url
+                ]);
+            }
+            
+            return response()->json(['error' => 'No file uploaded'], 400);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
