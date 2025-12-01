@@ -2,7 +2,7 @@
 @section('body')
 
     <!-- Top Navigation Menu -->
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-30 mt-20">
+    <div class="bg-white border-t border-gray-200 sticky top-0 z-30 mt-25">
         <div class="container mx-auto px-6">
             <div class="flex justify-center items-center gap-12 overflow-x-auto py-4 scrollbar-hide" id="program-nav">
                 <button class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer" data-filter="all">Semua Kelas</button>
