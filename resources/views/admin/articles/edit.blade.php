@@ -145,7 +145,10 @@
                                         <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk JPG, JPEG, PNG.
+                                        Format: JPG, JPEG, PNG · Maks 5MB
+                                    </p>
+                                    <p class="text-xs text-purple-600 dark:text-purple-400 font-semibold mt-1">
+                                        📐 Rekomendasi: 800 x 600 pixel atau 1200 x 675 pixel
                                     </p>
                                 </div>
                                 <div x-show="imagePreview" class="relative w-full h-full p-4">
