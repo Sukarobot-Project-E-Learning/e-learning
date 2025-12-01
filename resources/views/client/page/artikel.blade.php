@@ -55,9 +55,9 @@
           <!-- Dropdown Menu -->
           <ul id="categoryMenu" class="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible transform scale-95 translate-y-1 transition-all duration-300 ease-out z-10 overflow-hidden">
             <li><button data-value="all" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Semua Kategori</button></li>
-            <li><button data-value="research" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Riset & AI</button></li>
-            <li><button data-value="product" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Produk</button></li>
-            <li><button data-value="event" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Event</button></li>
+            <li><button data-value="Riset & AI" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Riset & AI</button></li>
+            <li><button data-value="Produk" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Produk</button></li>
+            <li><button data-value="Event" class="block w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Event</button></li>
           </ul>
         </div>
 

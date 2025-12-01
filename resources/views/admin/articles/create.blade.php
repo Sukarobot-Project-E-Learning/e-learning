@@ -88,9 +88,13 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="category">
                             Kategori <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="category" id="category" required
-                               placeholder="Produk"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
+                        <select name="category" id="category" required
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                            <option value="">Pilih Kategori</option>
+                            <option value="Riset & AI">Riset & AI</option>
+                            <option value="Produk">Produk</option>
+                            <option value="Event">Event</option>
+                        </select>
                     </div>
 
                     <!-- Tanggal (Auto) -->
