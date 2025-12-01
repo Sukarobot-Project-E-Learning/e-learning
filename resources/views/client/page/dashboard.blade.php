@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/dashboard.css') }}">
 <script defer src="{{ asset('assets/elearning/client/js/dashboard.js') }}"></script>
 
-<div class="flex min-h-screen bg-gray-50">
+<div class="flex min-h-screen bg-gray-50 pt-24">
   <!-- Sidebar -->
   <aside id="sidebar" class="w-64 pt-2 pr-1 bg-white border-r border-gray-200 fixed h-screen lg:flex flex-1 flex-col justify-between shadow-md z-40">
     <div>

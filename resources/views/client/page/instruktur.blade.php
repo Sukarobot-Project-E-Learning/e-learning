@@ -6,7 +6,7 @@
 
 @section('body')
 <!-- HERO SECTION -->
-<section class="relative rounded-b-xl py-12 bg-gradient-to-br from-indigo-100 via-sky-100 to-blue-50 overflow-visible">
+<section class="relative rounded-b-xl py-12 bg-gradient-to-br from-indigo-100 via-sky-100 to-blue-50 overflow-visible pt-24">
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
     <svg class="absolute top-0 left-0 w-full h-full opacity-60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
       <defs>

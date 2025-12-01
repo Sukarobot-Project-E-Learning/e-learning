@@ -22,7 +22,7 @@
   </div>
 
   <!-- KONTEN UTAMA -->
-  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-8">
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-8 pt-24">
 
     <!-- SIDEBAR (desktop) -->
     <aside class="hidden md:block w-64 h-fit top-24 bg-blue-700 text-white shadow-lg rounded-lg p-4 self-start">

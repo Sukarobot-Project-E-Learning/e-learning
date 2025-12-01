@@ -13,10 +13,10 @@
 
             <div class="flex justify-start md:justify-center items-center gap-8 md:gap-12 overflow-x-auto py-4 scrollbar-hide scroll-smooth px-8" id="program-nav">
                 <a href="{{ url('/program') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Semua Kelas</a>
-                <a href="{{ url('/program/kursus') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Kursus</a>
+                <a href="{{ url('/program/kursus') }}" class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Kursus</a>
                 <a href="{{ url('/program/pelatihan') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Pelatihan</a>
                 <a href="{{ url('/program/sertifikasi') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Sertifikasi</a>
-                <a href="{{ url('/program/outing-class') }}" class="nav-item text-sm font-semibold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Outing Class</a>
+                <a href="{{ url('/program/outing-class') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Outing Class</a>
                 <a href="{{ url('/program/outboard') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-xl flex-shrink-0">Outboard</a>
             </div>
 
@@ -30,8 +30,8 @@
     </div>
 
     <!-- Hero Section -->
-    <div class="bg-white py-16 text-center">
-        <h1 id="hero-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kelas di E-Learning tersedia dari level <br> dasar hingga profesional sesuai kebutuhan <br> industri terkini.</h1>
+    <div class="bg-white py-10 text-center">
+        <h1 id="hero-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tingkatkan keahlianmu dengan berbagai <br> kursus intensif yang dirancang oleh ahli.</h1>
         <div class="w-24 h-1 bg-blue-500 mx-auto rounded"></div>
     </div>
 

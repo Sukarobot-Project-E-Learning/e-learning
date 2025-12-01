@@ -30,8 +30,8 @@
     </div>
 
     <!-- Hero Section -->
-    <div class="bg-white py-16 text-center">
-        <h1 id="hero-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kelas di E-Learning tersedia dari level <br> dasar hingga profesional sesuai kebutuhan <br> industri terkini.</h1>
+    <div class="bg-white py-10 text-center">
+        <h1 id="hero-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Belajar di luar kelas dengan <br> pengalaman langsung yang menyenangkan.</h1>
         <div class="w-24 h-1 bg-blue-500 mx-auto rounded"></div>
     </div>
 
