@@ -28,7 +28,7 @@ class ArticleController extends Controller
                 'title' => $article->title ?? 'N/A',
                 'category' => $article->category ?? '-',
                 'date' => $article->formatted_created_date,
-                'image' => $article->image,
+                'image' => $article->image_url,
                 'status' => $article->is_published ? 'Aktif' : 'Draft',
                 'views' => $article->views ?? 0,
                 'author' => $article->author->name ?? 'Admin'
