@@ -91,9 +91,11 @@
     <div id="mobile-menu" class="hidden lg:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t max-h-[80vh] overflow-y-auto">
         <div class="px-4 py-6 space-y-4 flex flex-col">
             <a href="{{ url('/') }}" class="text-base font-medium text-gray-700 hover:text-blue-600">Home</a>
+
+            <a href="{{ url('/program') }}" class="text-base font-medium text-gray-700 hover:text-blue-600">Program</a>
             
             <!-- Mobile Dropdowns -->
-            <div>
+            <!-- <div>
                 <button class="w-full flex justify-between items-center text-base font-medium text-gray-700 hover:text-blue-600 mobile-dropdown-btn">
                     Program <span>▾</span>
                 </button>
@@ -104,7 +106,7 @@
                     <a href="{{ url('/program#filter=outingclass') }}" class="block text-sm font-medium text-gray-600 hover:text-blue-600">Outing Class</a>
                     <a href="{{ url('/program#filter=outboard') }}" class="block text-sm font-medium text-gray-600 hover:text-blue-600">Outboard</a>
                 </div>
-            </div>
+            </div> -->
 
             <div>
                 <button class="w-full flex justify-between items-center text-base font-medium text-gray-700 hover:text-blue-600 mobile-dropdown-btn">
