@@ -152,4 +152,3 @@
 </nav>
 
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/navbar.css') }}">
-<script src="{{ asset('assets/elearning/client/js/navbar.js') }}"></script>

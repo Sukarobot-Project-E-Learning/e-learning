@@ -2,7 +2,7 @@
 @section('body')
 
     <!-- Top Navigation Menu -->
-    <div class="bg-white border-t border-gray-200 sticky top-0 z-30 mt-25">
+    <div class="bg-white border-t border-gray-200 sticky top-0 z-30 mt-24">
         <div class="container mx-auto px-6 relative group">
             <!-- Left Arrow -->
             <button id="nav-scroll-left" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 p-2 rounded-full shadow-md hover:bg-white text-gray-600 hover:text-blue-600 transition-all hidden border border-gray-100">
