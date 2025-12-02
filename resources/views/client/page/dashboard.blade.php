@@ -1,12 +1,23 @@
 @extends('client.main')
 
-@section('body')
+@section('css')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/dashboard.css') }}">
+<style>
+    @media (min-width: 1024px) {
+        footer {
+            margin-left: 16rem; /* w-64 is 16rem */
+            width: auto;
+        }
+    }
+</style>
+@endsection
+
+@section('body')
 <script defer src="{{ asset('assets/elearning/client/js/dashboard.js') }}"></script>
 
-<div class="flex min-h-screen bg-gray-50 pt-24">
+<div class="flex min-h-screen bg-gray-50 pt-24 bg-white">
   <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 pt-2 pr-1 bg-transparent border-r border-gray-200 fixed h-full lg:flex flex-1 flex-col justify-between shadow-md z-40 rounded-xl">
+  <aside id="sidebar" class="w-64 pt-2 pr-1 bg-white border-r border-gray-200 fixed h-full lg:flex flex-1 flex-col justify-between shadow-md rounded-xl">
     <div>
       <nav>
         <ul class="space-y-1 text-gray-700">
@@ -320,8 +331,6 @@
       </div>
 
   </div>
-
-
 </div>
 @endsection
 
