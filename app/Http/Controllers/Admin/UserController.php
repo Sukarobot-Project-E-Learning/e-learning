@@ -148,6 +148,12 @@ class UserController extends Controller
 
             // Upload photo jika ada (opsional)
             if ($request->hasFile('photo')) {
+                // Delete old photo first
+                $oldUser = DB::table('users')->where('id', $id)->first();
+                if ($oldUser && $oldUser->avatar && file_exists(public_path($oldUser->avatar))) {
+                    unlink(public_path($oldUser->avatar));
+                }
+                
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
                 $uploadPath = public_path('uploads/users');
@@ -172,6 +178,12 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
+            // Delete photo file if exists
+            $user = DB::table('users')->where('id', $id)->first();
+            if ($user && $user->avatar && file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+            
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['success' => true, 'message' => 'User berhasil dihapus']);
         } catch (\Exception $e) {
@@ -294,6 +306,12 @@ class UserController extends Controller
 
             // Upload photo jika ada (opsional)
             if ($request->hasFile('photo')) {
+                // Delete old photo first
+                $oldAdmin = DB::table('users')->where('id', $id)->first();
+                if ($oldAdmin && $oldAdmin->avatar && file_exists(public_path($oldAdmin->avatar))) {
+                    unlink(public_path($oldAdmin->avatar));
+                }
+                
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
                 $uploadPath = public_path('uploads/admins');
@@ -318,6 +336,12 @@ class UserController extends Controller
     public function destroyAdmin($id)
     {
         try {
+            // Delete photo file if exists
+            $admin = DB::table('users')->where('id', $id)->first();
+            if ($admin && $admin->avatar && file_exists(public_path($admin->avatar))) {
+                unlink(public_path($admin->avatar));
+            }
+            
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['success' => true, 'message' => 'Admin berhasil dihapus']);
         } catch (\Exception $e) {
@@ -350,9 +374,10 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone' => 'nullable|string|max:20',
                 'password' => 'required|string|min:8',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
-            DB::table('users')->insert([
+            $data = [
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
@@ -361,7 +386,21 @@ class UserController extends Controller
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
+            ];
+
+            // Upload photo jika ada
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/instructors');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $data['avatar'] = 'uploads/instructors/' . $photoName;
+            }
+
+            DB::table('users')->insert($data);
 
             return response()->json(['success' => true, 'message' => 'Instructor berhasil ditambahkan']);
         } catch (\Exception $e) {
@@ -380,6 +419,7 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:20',
                 'password' => 'nullable|string|min:8',
+                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
             $updateData = [
@@ -391,6 +431,24 @@ class UserController extends Controller
 
             if (!empty($validated['password'])) {
                 $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            // Upload photo jika ada
+            if ($request->hasFile('photo')) {
+                // Delete old photo first
+                $oldInstructor = DB::table('users')->where('id', $id)->first();
+                if ($oldInstructor && $oldInstructor->avatar && file_exists(public_path($oldInstructor->avatar))) {
+                    unlink(public_path($oldInstructor->avatar));
+                }
+                
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . $photo->getClientOriginalName();
+                $uploadPath = public_path('uploads/instructors');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                $photo->move($uploadPath, $photoName);
+                $updateData['avatar'] = 'uploads/instructors/' . $photoName;
             }
 
             DB::table('users')->where('id', $id)->update($updateData);
@@ -407,6 +465,12 @@ class UserController extends Controller
     public function destroyInstructor($id)
     {
         try {
+            // Delete photo file if exists
+            $instructor = DB::table('users')->where('id', $id)->first();
+            if ($instructor && $instructor->avatar && file_exists(public_path($instructor->avatar))) {
+                unlink(public_path($instructor->avatar));
+            }
+            
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['success' => true, 'message' => 'Instructor berhasil dihapus']);
         } catch (\Exception $e) {

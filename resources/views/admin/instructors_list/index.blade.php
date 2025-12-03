@@ -47,14 +47,15 @@
                             <td class="px-4 py-3 text-sm">{{ $user->phone ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 @if($user->avatar)
-                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
-                                        </svg>
-                                    </div>
+                                    <img src="{{ asset($user->avatar) }}" 
+                                         alt="Avatar" 
+                                         class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
+                                         onclick="window.open('{{ asset($user->avatar) }}', '_blank')">
                                 @else
-                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                        <span class="text-gray-600 dark:text-gray-300 text-xs">0</span>
+                                    <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
+                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                        </svg>
                                     </div>
                                 @endif
                             </td>
@@ -95,7 +96,8 @@
             name: '',
             email: '',
             phone: '',
-            password: ''
+            password: '',
+            photo: null
         },
         init() {
             this.$watch('open', value => {
@@ -105,7 +107,7 @@
             });
         },
         resetForm() {
-            this.formData = { name: '', email: '', phone: '', password: '' };
+            this.formData = { name: '', email: '', phone: '', password: '', photo: null };
             this.userId = null;
         }
     }"
@@ -156,6 +158,12 @@
                         <input type="password" x-model="formData.password" :required="type === 'create'"
                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto <span class="text-xs text-gray-500">(Opsional)</span></label>
+                        <input type="file" @change="formData.photo = $event.target.files[0]" accept="image/jpeg,image/jpg,image/png"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <p class="mt-1 text-xs text-gray-500">Format: JPG, JPEG, PNG. Max 2MB</p>
+                    </div>
                 </div>
 
                 <div class="flex gap-3 mt-6">
@@ -174,17 +182,30 @@
 
     <script>
         function submitForm() {
-            const data = this.formData;
+            const formData = new FormData();
+            formData.append('name', this.formData.name);
+            formData.append('email', this.formData.email);
+            formData.append('phone', this.formData.phone || '');
+            if (this.formData.password) {
+                formData.append('password', this.formData.password);
+            }
+           if (this.formData.photo) {
+                formData.append('photo', this.formData.photo);
+            }
+            
             const url = this.type === 'create' ? '{{ route('admin.instructors-list.store') }}' : `{{ url('admin/instructors-list') }}/${this.userId}`;
-            const method = this.type === 'create' ? 'POST' : 'PUT';
+            const method = this.type === 'create' ? 'POST' : 'POST';
+            
+            if (this.type === 'edit') {
+                formData.append('_method', 'PUT');
+            }
 
             fetch(url, {
                 method: method,
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify(data)
+                body: formData
             })
             .then(response => response.json())
             .then(result => {

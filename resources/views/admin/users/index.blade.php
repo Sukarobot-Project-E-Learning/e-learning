@@ -46,14 +46,15 @@
                             <td class="px-4 py-3 text-sm">{{ $user->phone ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 @if($user->avatar)
-                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"></path>
-                                        </svg>
-                                    </div>
+                                    <img src="{{ asset($user->avatar) }}" 
+                                         alt="Avatar" 
+                                         class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
+                                         onclick="window.open('{{ asset($user->avatar) }}', '_blank')">
                                 @else
-                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                        <span class="text-gray-600 dark:text-gray-300 text-xs">0</span>
+                                    <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
+                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                        </svg>
                                     </div>
                                 @endif
                             </td>
