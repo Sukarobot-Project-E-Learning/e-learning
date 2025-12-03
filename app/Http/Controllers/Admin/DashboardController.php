@@ -64,11 +64,42 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get chart data for multiple years (2021-2024)
+     * Get chart data - automatically detect years with actual data
      */
     private function getChartData()
     {
-        $years = [2024, 2023, 2022, 2021];
+        // Get the earliest and latest year from actual data
+        $earliestUserDate = DB::table('users')
+            ->whereNotNull('created_at')
+            ->min('created_at');
+        
+        $earliestProgramDate = DB::table('data_programs')
+            ->whereNotNull('created_at')
+            ->min('created_at');
+        
+        $latestUserDate = DB::table('users')
+            ->whereNotNull('created_at')
+            ->max('created_at');
+        
+        $latestProgramDate = DB::table('data_programs')
+            ->whereNotNull('created_at')
+            ->max('created_at');
+        
+        // Determine year range based on actual data
+        $minYear = min(
+            $earliestUserDate ? Carbon::parse($earliestUserDate)->year : now()->year,
+            $earliestProgramDate ? Carbon::parse($earliestProgramDate)->year : now()->year
+        );
+        
+        $maxYear = max(
+            $latestUserDate ? Carbon::parse($latestUserDate)->year : now()->year,
+            $latestProgramDate ? Carbon::parse($latestProgramDate)->year : now()->year,
+            now()->year // Always include current year
+        );
+        
+        // Generate years array from min to max
+        $years = range($maxYear, $minYear); // Descending order (newest first)
+        
         $chartDataByYear = [];
 
         foreach ($years as $year) {
