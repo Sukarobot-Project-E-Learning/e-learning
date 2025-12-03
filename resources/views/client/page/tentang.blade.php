@@ -2,31 +2,12 @@
 @section('css')
 <link rel="stylesheet" href="{{ 'client/css/about.css' }}">
 @section('body')
-      <!-- MOBILE MENU -->
-  <div class="md:hidden bg-blue-700 text-white shadow-md sticky top-0 z-50">
-    <div class="flex items-center justify-between px-4 py-3">
-      <h1 class="text-lg font-semibold">Menu</h1>
-      <button id="menu-toggle" class="focus:outline-none">
-        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </div>
-
-    <div id="mobile-menu" class="hidden flex-col bg-blue-800 border-t border-blue-600">
-      <button class="mobile-link text-left px-5 py-3 hover:bg-blue-600" data-target="tentang-kami">Tentang Kami</button>
-      <button class="mobile-link text-left px-5 py-3 hover:bg-blue-600" data-target="kebijakan">Kebijakan & Privasi</button>
-      <button class="mobile-link text-left px-5 py-3 hover:bg-blue-600" data-target="ketentuan">Ketentuan Pengguna</button>
-      <button class="mobile-link text-left px-5 py-3 hover:bg-blue-600" data-target="FAQ">FAQ</button>
-    </div>
-  </div>
-
   <!-- KONTEN UTAMA -->
-  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-8 pt-24">
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-8 pt-24 display-flex">
 
     <!-- SIDEBAR (desktop) -->
-    <aside class="hidden md:block w-64 h-fit top-24 bg-blue-700 text-white shadow-lg rounded-lg p-4 self-start">
-      <nav class="space-y-2 text-sm">
+    <aside class="w-full md:w-64 h-fit top-24 bg-blue-700 text-white shadow-lg rounded-lg p-4 self-start">
+      <nav class="space-y-2 text-sm flex flex-col md:block">
         <a href="#" class="sidebar-link block px-3 py-2 rounded hover:bg-blue-800 active" data-target="tentang-kami">Tentang Kami</a>
         <a href="#" class="sidebar-link block px-3 py-2 rounded hover:bg-blue-800" data-target="kebijakan">Kebijakan & Privasi</a>
         <a href="#" class="sidebar-link block px-3 py-2 rounded hover:bg-blue-800" data-target="ketentuan">Ketentuan Pengguna</a>
@@ -161,55 +142,8 @@
   </div>
 </div>
 
-<!-- Script FAQ Toggle -->
-<script>
-  document.querySelectorAll('.faq-toggle').forEach(button => {
-    button.addEventListener('click', () => {
-      const content = button.nextElementSibling;
-      content.classList.toggle('hidden');
-      button.querySelector('svg').classList.toggle('rotate-180');
-    });
-  });
-</script>
+</section>
+</main>
 
-    </section>
-  </main>
-
-    <script>
-    // === MOBILE MENU TOGGLE ===
-    const menuToggle = document.getElementById('menu-toggle');
-    const menu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-
-    menuToggle.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-      menuIcon.classList.toggle('rotate-90');
-    });
-
-    // === PILIH MENU HP ===
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-    const sections = document.querySelectorAll('.content-section');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        sections.forEach(sec => sec.classList.add('hidden'));
-        document.getElementById(link.dataset.target).classList.remove('hidden');
-        menu.classList.add('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
-
-    // === SIDEBAR (DESKTOP) ===
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    sidebarLinks.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const target = link.getAttribute('data-target');
-        sections.forEach(sec => sec.classList.add('hidden'));
-        document.getElementById(target).classList.remove('hidden');
-        sidebarLinks.forEach(a => a.classList.remove('active', 'bg-blue-800', 'font-semibold'));
-        link.classList.add('active', 'bg-blue-800', 'font-semibold');
-      });
-    });
-  </script>
-
+<script src="{{ asset('assets/elearning/client/js/tentang.js') }}"></script>
 @endsection
