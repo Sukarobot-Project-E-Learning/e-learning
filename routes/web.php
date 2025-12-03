@@ -231,7 +231,13 @@ Route::name('client.')->group(function () {
 
     // Protected Client/User Routes  
     // Note: Admins cannot access user dashboard, only regular users and instructors
-    Route::middleware([\App\Http\Middleware\EnsureUserIsRegularUser::class])->get('/dashboard', [UserDashboardController::class, 'profile'])->name('dashboard');
+    Route::middleware([\App\Http\Middleware\EnsureUserIsRegularUser::class])->prefix('dashboard')->group(function () {
+        Route::get('/', [UserDashboardController::class, 'profile'])->name('dashboard');
+        Route::get('/program', [UserDashboardController::class, 'program'])->name('dashboard.program');
+        Route::get('/sertifikat', [UserDashboardController::class, 'certificate'])->name('dashboard.certificate');
+        Route::get('/transaksi', [UserDashboardController::class, 'transaction'])->name('dashboard.transaction');
+        Route::get('/voucher', [UserDashboardController::class, 'voucher'])->name('dashboard.voucher');
+    });
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran', function () {
