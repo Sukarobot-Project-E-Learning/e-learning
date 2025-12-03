@@ -27,6 +27,7 @@
                             <th class="px-4 py-3">Nama</th>
                             <th class="px-4 py-3">Email</th>
                             <th class="px-4 py-3">Telepon</th>
+                            <th class="px-4 py-3">Foto</th>
                             <th class="px-4 py-3">Keahlian</th>
                             <th class="px-4 py-3">Status</th>
                             <th class="px-4 py-3">Action</th>
@@ -44,6 +45,20 @@
                             </td>
                             <td class="px-4 py-3 text-sm">{{ $instructor['email'] ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm">{{ $instructor['phone'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                @if(isset($instructor['avatar']) && $instructor['avatar'])
+                                    <img src="{{ asset($instructor['avatar']) }}" 
+                                         alt="Avatar" 
+                                         class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
+                                         onclick="window.open('{{ asset($instructor['avatar']) }}', '_blank')">
+                                @else
+                                    <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
+                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-sm">{{ $instructor['expertise'] ?? '-' }}</td>
                             <td class="px-4 py-3 text-xs">
                                 @if($instructor['status'] == 'Aktif')
