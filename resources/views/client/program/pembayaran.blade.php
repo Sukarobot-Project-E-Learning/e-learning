@@ -5,7 +5,7 @@
 @section('body')
 <!-- Konten Utama -->
 <main>
-  <div class="pt-8 pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div class="pt-24 pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
 
     <!-- Kiri -->
     <div>

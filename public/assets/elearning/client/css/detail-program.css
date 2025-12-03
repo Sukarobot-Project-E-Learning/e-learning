@@ -1,26 +1,28 @@
 /* Animasi tools */
-.tool-hidden {
-  opacity: 0;
-  transform: translateY(10px);
+.tool-item {
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .tool-show {
   opacity: 1;
   transform: translateY(0);
-  transition: all 0.5s ease;
 }
 
 /* Accordion */
 .accordion-content {
   max-height: 0;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
   opacity: 0;
 }
 
 .accordion.open .accordion-content {
-  max-height: 1000px;
+  max-height: 500px;
+  /* Adjusted max-height */
   opacity: 1;
+  transition: max-height 0.4s ease-in, opacity 0.4s ease-in;
 }
 
 /* Badge Slot */

@@ -56,24 +56,12 @@
             <div class="accordion-content mt-3 text-sm text-gray-600 space-y-3">
               <p class="text-gray-500">Durasi: 3 Jam</p>
               <p>Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.</p>
-              <div class="flex flex-col gap-4 pt-3">
-                <div class="flex items-center gap-3">
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-8">
-                  <p class="text-sm font-medium text-gray-700">Pembukaan</p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" class="w-8">
-                  <p class="text-sm font-medium text-gray-700">Presentasi</p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <img src="https://cdn-icons-png.flaticon.com/512/3063/3063822.png" class="w-8">
-                  <p class="text-sm font-medium text-gray-700">Praktik</p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" class="w-8">
-                  <p class="text-sm font-medium text-gray-700">Evaluasi</p>
-                </div>
-              </div>
+              <ul class="list-disc list-inside space-y-2 pt-2 pl-2">
+                <li>Pembukaan & Pengenalan Materi</li>
+                <li>Presentasi Strategi Digital</li>
+                <li>Praktik Pembuatan Kampanye</li>
+                <li>Evaluasi & Tanya Jawab</li>
+              </ul>
             </div>
           </div>
 
@@ -86,6 +74,11 @@
             <div class="accordion-content mt-3 text-sm text-gray-600 space-y-3">
               <p class="text-gray-500">Durasi: 2.5 Jam</p>
               <p>Membuat segmentasi pasar dan memilih target audiens yang tepat.</p>
+              <ul class="list-disc list-inside space-y-2 pt-2 pl-2">
+                <li>Konsep Dasar Segmentasi</li>
+                <li>Menentukan Target Audience</li>
+                <li>Studi Kasus Targeting</li>
+              </ul>
             </div>
           </div>
 
@@ -98,6 +91,11 @@
             <div class="accordion-content mt-3 text-sm text-gray-600 space-y-3">
               <p class="text-gray-500">Durasi: 3 Jam</p>
               <p>Melakukan optimasi iklan digital dan evaluasi hasil kampanye.</p>
+              <ul class="list-disc list-inside space-y-2 pt-2 pl-2">
+                <li>Teknik Optimasi Iklan</li>
+                <li>Membaca Data & Analitik</li>
+                <li>Reporting & Evaluasi Akhir</li>
+              </ul>
             </div>
           </div>
 
@@ -117,8 +115,8 @@
 
         <!-- Tombol -->
         <div class="flex flex-col gap-2">
-          <a href="{{ url('pembayaran') }}"><button class="w-full bg-gradient-to-r from-orange-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">Beli Kelas</button></a>
-          <button class="w-full border border-blue-400 text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition">Tukar Voucher Kelas</button>
+          <a href="{{ url('pembayaran') }}"><button class="w-full bg-gradient-to-r from-orange-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition cursor-pointer">Beli Kelas</button></a>
+          <button class="w-full border border-blue-400 text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition cursor-pointer">Tukar Voucher Kelas</button>
         </div>
 
         <!-- Benefit -->
@@ -133,8 +131,39 @@
 
         <!-- Tools -->
         <div>
-          <h3 class="font-semibold mb-3 text-blue-700">Tools yang Dipelajari</h3>
-          <div id="toolsList" class="flex flex-col gap-3"></div>
+          <h3 class="font-semibold mb-3 text-blue-700">Tools yang Digunakan</h3>
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-3 tool-item">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">VS Code</span>
+            </div>
+            <div class="flex items-center gap-3 tool-item">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">Adobe Illustrator</span>
+            </div>
+            <div class="flex items-center gap-3 tool-item">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">Google Ads</span>
+            </div>
+            <div class="flex items-center gap-3 tool-item">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">PowerPoint</span>
+            </div>
+            <div class="flex items-center gap-3 tool-item">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm font-medium text-gray-700">Canva</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

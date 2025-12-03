@@ -68,15 +68,20 @@
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Strategi Digital Marketing</h3>
                         
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Pelajari strategi pemasaran digital terbaru untuk meningkatkan penjualan bisnis Anda secara efektif.</p>
+                        
                         <div class="flex items-center gap-2 mb-4">
                             <div class="flex items-center text-yellow-500 text-sm font-bold">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span class="ml-1">4.8</span>
                             </div>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">Pemula</span>
+                            <span class="text-gray-600 text-sm">Online</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">70 Jam</span>
+                            <div class="flex items-center gap-1 text-gray-600 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <span>23 Slot</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
@@ -95,7 +100,7 @@
 
             <!-- Card 2 (Sold Out) -->
             <a href="{{ url('program/detail-program') }}" class="block group kelas-card" data-category="pelatihan" data-date="2023-09-15" data-slots="0">
-                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 grayscale hover:grayscale-0">
+                <article class="h-full flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 grayscale">
                     <div class="relative overflow-hidden">
                         <img src="https://picsum.photos/400/250?random=2" class="w-full h-48 object-cover transform group-hover:scale-105 transition duration-500" alt="Course Image">
                         <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -105,15 +110,20 @@
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Mental Tangguh di Dunia Kerja</h3>
                         
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Bangun mentalitas juara dan ketahanan diri untuk menghadapi tantangan di dunia profesional.</p>
+
                         <div class="flex items-center gap-2 mb-4">
                             <div class="flex items-center text-yellow-500 text-sm font-bold">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span class="ml-1">4.5</span>
                             </div>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">Menengah</span>
+                            <span class="text-gray-600 text-sm">Offline</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">45 Jam</span>
+                            <div class="flex items-center gap-1 text-gray-600 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <span>0 Slot</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
@@ -139,15 +149,20 @@
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Workshop Branding</h3>
                         
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Kuasai teknik branding yang kuat untuk membangun identitas produk yang tak terlupakan.</p>
+
                         <div class="flex items-center gap-2 mb-4">
                             <div class="flex items-center text-yellow-500 text-sm font-bold">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span class="ml-1">4.9</span>
                             </div>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">Mahir</span>
+                            <span class="text-gray-600 text-sm">Video</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">120 Jam</span>
+                            <div class="flex items-center gap-1 text-gray-600 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <span>14 Slot</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
@@ -173,15 +188,20 @@
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Next Level Digital Skill</h3>
                         
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Tingkatkan keahlian digital Anda ke level berikutnya dengan materi praktik langsung.</p>
+
                         <div class="flex items-center gap-2 mb-4">
                             <div class="flex items-center text-yellow-500 text-sm font-bold">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span class="ml-1">4.7</span>
                             </div>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">Pemula</span>
+                            <span class="text-gray-600 text-sm">Online</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">60 Jam</span>
+                            <div class="flex items-center gap-1 text-gray-600 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <span>28 Slot</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
@@ -207,15 +227,20 @@
                     <div class="p-5 flex flex-col flex-grow">
                         <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition">Web Programming</h3>
                         
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Pelajari dasar hingga mahir pemrograman web dengan kurikulum standar industri.</p>
+
                         <div class="flex items-center gap-2 mb-4">
                             <div class="flex items-center text-yellow-500 text-sm font-bold">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span class="ml-1">4.9</span>
                             </div>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">Mahir</span>
+                            <span class="text-gray-600 text-sm">Video</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-600 text-sm">90 Jam</span>
+                            <div class="flex items-center gap-1 text-gray-600 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <span>28 Slot</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
