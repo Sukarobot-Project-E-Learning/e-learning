@@ -25,7 +25,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         }
         return redirect()->route('admin.login');
     });
-    
+
     Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'adminLogin']);
 });
@@ -39,7 +39,7 @@ Route::prefix('instructor')->name('instructor.')->group(function () {
         }
         return redirect()->route('instructor.login');
     });
-    
+
     Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showInstructorLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'instructorLogin']);
 });
@@ -92,7 +92,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
-    
+
     // Program Approval Management (Pengajuan Program dari Instruktur)
     Route::get('program-approvals', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'index'])->name('program-approvals.index');
     Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');
@@ -127,7 +127,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 
     // Article Management
     Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class);
-    
+
     // CKEditor Image Upload
     Route::post('articles/upload-image', [\App\Http\Controllers\Admin\ArticleController::class, 'uploadImage'])->name('articles.upload-image');
 
@@ -143,7 +143,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
     Route::get('transactions/export', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('transactions.export');
     Route::delete('transactions/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'destroy'])->name('transactions.destroy');
-    
+
     // Quiz/Tugas Management (Admin juga bisa buat)
     Route::get('quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'index'])->name('quizzes.index');
     Route::get('quizzes/create', [\App\Http\Controllers\Admin\QuizController::class, 'create'])->name('quizzes.create');
@@ -157,9 +157,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 // Client/User Routes
 Route::name('client.')->group(function () {
     // Home & Public Pages
-    Route::get('/', function () {
-        return view('client.page.home');
-    })->name('home');
+    Route::get('/', [\App\Http\Controllers\Client\HomeController::class, 'index'])->name('home');
 
     Route::get('/tentang', function () {
         return view('client.page.tentang');
@@ -167,37 +165,21 @@ Route::name('client.')->group(function () {
 
     // Program Routes
     Route::prefix('program')->name('program')->group(function () {
-        Route::get('/', function () {
-            return view('client.program.program');
-        });
-        
-        Route::get('/semua-kelas', function () {
-            return view('client.program.program');
-        })->name('.semua-kelas');
+        Route::get('/', [\App\Http\Controllers\Client\ProgramController::class, 'index']);
 
-        Route::get('/kursus', function () {
-            return view('client.program.kursus');
-        })->name('.kursus');
+        Route::get('/semua-kelas', [\App\Http\Controllers\Client\ProgramController::class, 'index'])->name('.semua-kelas');
 
-        Route::get('/pelatihan', function () {
-            return view('client.program.pelatihan');
-        })->name('.pelatihan');
+        Route::get('/kursus', [\App\Http\Controllers\Client\ProgramController::class, 'kursus'])->name('.kursus');
 
-        Route::get('/sertifikasi', function () {
-            return view('client.program.sertifikasi');
-        })->name('.sertifikasi');
+        Route::get('/pelatihan', [\App\Http\Controllers\Client\ProgramController::class, 'pelatihan'])->name('.pelatihan');
 
-        Route::get('/outing-class', function () {
-            return view('client.program.outingclass');
-        })->name('.outing-class');
+        Route::get('/sertifikasi', [\App\Http\Controllers\Client\ProgramController::class, 'sertifikasi'])->name('.sertifikasi');
 
-        Route::get('/outboard', function () {
-            return view('client.program.outboard');
-        })->name('.outboard');
-        
-        Route::get('/detail-program', function () {
-            return view('client.program.detail-program');
-        })->name('.detail');
+        Route::get('/outing-class', [\App\Http\Controllers\Client\ProgramController::class, 'outingClass'])->name('.outing-class');
+
+        Route::get('/outboard', [\App\Http\Controllers\Client\ProgramController::class, 'outboard'])->name('.outboard');
+
+        Route::get('/{slug}', [\App\Http\Controllers\Client\ProgramController::class, 'show'])->name('.detail');
     });
 
     Route::get('/kompetisi', function () {
@@ -211,7 +193,7 @@ Route::name('client.')->group(function () {
     Route::get('/artikel', [\App\Http\Controllers\Client\ArticleController::class, 'index'])->name('artikel');
     Route::get('/artikel/api', [\App\Http\Controllers\Client\ArticleController::class, 'getArticles'])->name('artikel.api');
     Route::get('/artikel/{slug}', [\App\Http\Controllers\Client\ArticleController::class, 'show'])->name('artikel.detail');
-    
+
     Route::get('/berita', function () {
         return view('client.page.berita');
     })->name('berita');
@@ -251,14 +233,14 @@ Route::name('client.')->group(function () {
 // Note: Using only 'instructor' middleware because it already checks auth
 Route::prefix('instructor')->name('instructor.')->middleware([\App\Http\Middleware\EnsureUserIsInstructor::class])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Profile Management
     Route::get('/profile', [\App\Http\Controllers\Instructor\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [\App\Http\Controllers\Instructor\ProfileController::class, 'update'])->name('profile.update');
-    
+
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Instructor\ProgramController::class);
-    
+
     // Quiz/Tugas Management
     Route::get('quizzes', [\App\Http\Controllers\Instructor\QuizController::class, 'index'])->name('quizzes.index');
     Route::get('quizzes/create', [\App\Http\Controllers\Instructor\QuizController::class, 'create'])->name('quizzes.create');
