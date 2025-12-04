@@ -6,7 +6,7 @@
 @section('body')
 
 <!-- Reset Flow -->
-<main class="flex items-center justify-center min-h-screen bg-white">
+<main class="flex items-center justify-center min-h-screen bg-white pt-24 pb-24">
     <div id="auth-card"
          class="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade mx-4">
 

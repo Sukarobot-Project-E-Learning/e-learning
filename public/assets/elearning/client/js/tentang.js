@@ -27,8 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = link.getAttribute('data-target');
       sections.forEach(sec => sec.classList.add('hidden'));
       document.getElementById(target).classList.remove('hidden');
-      sidebarLinks.forEach(a => a.classList.remove('active', 'bg-blue-800', 'font-semibold'));
-      link.classList.add('active', 'bg-blue-800', 'font-semibold');
+
+      // Reset all links
+      sidebarLinks.forEach(a => {
+        a.classList.remove('active', 'bg-blue-50', 'text-blue-600');
+        a.classList.add('text-gray-600');
+      });
+
+      // Set active link
+      link.classList.add('active', 'bg-blue-50', 'text-blue-600');
+      link.classList.remove('text-gray-600');
     });
   });
 });

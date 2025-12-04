@@ -6,59 +6,50 @@
 
 @section('body')
 <!-- HERO SECTION -->
-<section class="relative rounded-b-xl py-12 bg-gradient-to-br from-indigo-100 via-sky-100 to-blue-50 overflow-visible pt-24">
-  <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <svg class="absolute top-0 left-0 w-full h-full opacity-60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="softWave" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.3" />
-          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1" />
-        </linearGradient>
-        <pattern id="tinyDots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.2" fill="rgba(37,99,235,0.1)" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#softWave)" />
-      <rect width="100%" height="100%" fill="url(#tinyDots)" />
-      <path fill="rgba(59,130,246,0.15)" d="M0,160 C480,280 960,40 1440,200 L1440,320 L0,320 Z"></path>
-    </svg>
-  </div>
+<section class="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-visible text-center pt-34">
+    <!-- Background Elements -->
+    <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-orange-200/20 rounded-full blur-[80px] animate-pulse pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-200/20 rounded-full blur-[80px] animate-pulse pointer-events-none"></div>
 
-  <div class="container mx-auto px-6 max-w-5xl relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
-    <h1 class="text-3xl md:text-4xl font-bold text-blue-900 mb-3 relative inline-block">
-      <span>Instruktur Kami</span>
-    </h1>
-    <p class="text-gray-700 mb-6 text-sm md:text-base max-w-md">
-      Kenali para instruktur yang siap membimbingmu di Sukarobot!
-    </p>
-
-    <!-- Custom dropdown -->
-    <div class="relative w-full max-w-full sm:w-2/3 md:w-1/3 z-20">
-      <button id="dropdownBtn" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 bg-white/90 text-sm flex justify-between items-center">
-        Semua Keahlian
-        <svg id="dropdownIcon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </button>
-      <ul id="dropdownMenu" class="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg hidden max-h-60 overflow-auto z-50">
-        <li class="px-3 py-2 hover:bg-blue-100 cursor-pointer" data-value="all">Semua Keahlian</li>
-      </ul>
+    <div class="relative z-10 max-w-4xl mx-auto px-6">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            Instruktur <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Profesional & Berpengalaman</span>
+        </h1>
+        <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            Belajar langsung dari para ahli yang siap membimbingmu mencapai potensi terbaik.
+        </p>
+        
+        <!-- Custom dropdown -->
+        <div class="relative w-full max-w-xs mx-auto z-20">
+            <button id="dropdownBtn" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 bg-white shadow-sm flex justify-between items-center hover:border-blue-400 transition font-medium">
+                <span>Semua Keahlian</span>
+                <svg id="dropdownIcon" class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+            <ul id="dropdownMenu" class="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl hidden overflow-auto z-[9999] py-2">
+                <li class="px-4 py-2.5 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors text-sm font-medium text-gray-600" data-value="all">Semua Keahlian</li>
+            </ul>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- GRID INSTRUKTUR + PAGINATION -->
-<div class="container mx-auto px-6 py-10 max-w-5xl">
-  <div id="instructorGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  <div id="pagination" class="flex justify-center mt-6 space-x-2 flex-wrap"></div>
+<div class="container mx-auto px-6 py-16 max-w-7xl">
+  <div id="instructorGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+  <div id="pagination" class="flex justify-center mt-12 space-x-2 flex-wrap"></div>
 </div>
 
 <!-- MODAL SCROLLABLE -->
-<div class="fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden z-[9999]" id="modalBg">
-  <div class="bg-white rounded-lg max-w-md w-full relative flex flex-col shadow-lg">
-    <button class="absolute top-2 right-3 text-gray-500 hover:text-gray-700 font-bold text-xl" id="modalClose">&times;</button>
-    <img id="modalImage" class="w-full h-48 object-cover rounded-t-lg" src="" alt="Instruktur">
-    <div id="modalBody" class="p-4 overflow-y-auto max-h-64"></div>
+<div class="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden z-[9999]" id="modalBg">
+  <div class="bg-white rounded-2xl max-w-md w-full relative flex flex-col shadow-2xl overflow-hidden transform transition-all scale-100">
+    <button class="absolute top-3 right-3 bg-white/80 p-1 rounded-full text-gray-500 hover:text-red-500 transition-colors z-10" id="modalClose">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+    <img id="modalImage" class="w-full h-56 object-cover" src="" alt="Instruktur">
+    <div id="modalBody" class="p-6 overflow-y-auto max-h-[60vh]"></div>
   </div>
 </div>
 
@@ -75,7 +66,7 @@
     { foto: 'https://images.unsplash.com/photo-1552374196-mno345?auto=format&fit=crop&w=500&q=60', nama: 'Fajar Pratama', jabatan: 'Trainer IT', pengalaman: '7 Tahun', keahlian: 'IT Training', deskripsi: 'Fajar Pratama spesialis IT Training dan Cloud Computing.' }
   ];
 
-  let instructorsPerPage = 4;
+  let instructorsPerPage = 8;
   let currentPage = 1;
   let selectedKeahlian = 'all';
 
@@ -90,18 +81,28 @@
 
     pageInstructors.forEach(inst => {
       const card = document.createElement('div');
-      card.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1 flex flex-col';
+      card.className = 'group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col';
       card.innerHTML = `
-        <img class="w-full h-44 object-cover transition-transform duration-500 hover:scale-105" src="${inst.foto}" alt="${inst.nama}">
-        <div class="p-5 flex flex-col flex-1 space-y-1 sm:space-y-2">
-          <h2 class="text-base font-semibold text-blue-900">${inst.nama}</h2>
-          <p class="text-gray-600 text-sm">${inst.jabatan}</p>
-          <div class="flex justify-between mt-1 sm:mt-2 text-xs text-gray-500">
-            <span>${inst.pengalaman}</span>
-            <span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">${inst.keahlian}</span>
+        <div class="relative overflow-hidden">
+            <img class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" src="${inst.foto}" alt="${inst.nama}">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="mb-3">
+            <span class="inline-block bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full mb-2 border border-blue-100">${inst.keahlian}</span>
+            <h2 class="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">${inst.nama}</h2>
+            <p class="text-gray-500 text-sm font-medium">${inst.jabatan}</p>
           </div>
-          <p class="text-gray-700 line-clamp-2">${inst.deskripsi}</p>
-          <button class="mt-auto px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 transition viewProfileBtn">Lihat Profil Lengkap</button>
+          
+          <p class="text-gray-600 text-sm line-clamp-2 mb-4 leading-relaxed">${inst.deskripsi}</p>
+          
+          <div class="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
+             <span class="text-xs font-semibold text-gray-400 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                ${inst.pengalaman}
+             </span>
+             <button class="text-blue-600 font-bold text-sm hover:underline viewProfileBtn">Lihat Profil</button>
+          </div>
         </div>`;
       grid.appendChild(card);
 
@@ -115,9 +116,9 @@
     pagination.innerHTML = '';
     for (let i = 1; i <= totalPages(); i++) {
       const btn = document.createElement('button');
-      btn.className = `px-3 py-1 rounded text-sm ${i === currentPage
-        ? 'bg-blue-500 text-white shadow'
-        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 transition'
+      btn.className = `w-10 h-10 rounded-xl text-sm font-bold transition-all flex items-center justify-center ${i === currentPage
+        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+        : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-400 hover:text-blue-600'
         }`;
       btn.innerText = i;
       btn.onclick = () => { currentPage = i; renderPage(i); };
@@ -132,14 +133,14 @@
   // Tambahkan daftar keahlian unik ke dropdown
   new Set(instructors.map(i => i.keahlian)).forEach(k => {
     const li = document.createElement('li');
-    li.className = 'px-3 py-2 hover:bg-blue-100 cursor-pointer';
+    li.className = 'px-4 py-2.5 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors text-sm font-medium text-gray-600';
     li.innerText = k;
     li.dataset.value = k;
     li.addEventListener('click', e => {
       selectedKeahlian = e.target.dataset.value;
       currentPage = 1;
       renderPage(1);
-      dropdownBtn.childNodes[0].textContent = e.target.innerText;
+      dropdownBtn.querySelector('span').textContent = e.target.innerText;
       dropdownMenu.classList.add('hidden');
       dropdownIcon.classList.remove('rotate-180');
     });
@@ -150,7 +151,7 @@
     selectedKeahlian = 'all';
     currentPage = 1;
     renderPage(1);
-    dropdownBtn.childNodes[0].textContent = e.target.innerText;
+    dropdownBtn.querySelector('span').textContent = e.target.innerText;
     dropdownMenu.classList.add('hidden');
     dropdownIcon.classList.remove('rotate-180');
   });
@@ -179,17 +180,32 @@
   function showModal(inst) {
     modalImage.src = inst.foto;
     modalBody.innerHTML = `
-      <h2 class="text-lg font-bold mb-1">${inst.nama}</h2>
-      <p class="text-gray-600 mb-1">${inst.jabatan}</p>
-      <p class="text-gray-500 mb-1">Pengalaman: ${inst.pengalaman}</p>
-      <p class="text-gray-500 mb-1">Keahlian: ${inst.keahlian}</p>
-      <p class="text-gray-700 mt-2">${inst.deskripsi}</p>
+      <div class="mb-4">
+          <span class="inline-block bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full mb-2 border border-blue-100">${inst.keahlian}</span>
+          <h2 class="text-2xl font-bold text-gray-900">${inst.nama}</h2>
+          <p class="text-blue-600 font-medium">${inst.jabatan}</p>
+      </div>
+      
+      <div class="flex items-center gap-2 text-sm text-gray-500 mb-4 bg-gray-50 p-3 rounded-xl">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <span class="font-semibold">Pengalaman: ${inst.pengalaman}</span>
+      </div>
+
+      <p class="text-gray-700 leading-relaxed">${inst.deskripsi}</p>
     `;
     modalBg.classList.remove('hidden');
+    setTimeout(() => {
+        modalBg.children[0].classList.remove('scale-95', 'opacity-0');
+        modalBg.children[0].classList.add('scale-100', 'opacity-100');
+    }, 10);
   }
 
-  modalClose.addEventListener('click', () => { modalBg.classList.add('hidden'); });
-  modalBg.addEventListener('click', e => { if (e.target === modalBg) modalBg.classList.add('hidden'); });
+  modalClose.addEventListener('click', closeModal);
+  modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+
+  function closeModal() {
+      modalBg.classList.add('hidden');
+  }
 </script>
 
 @endsection

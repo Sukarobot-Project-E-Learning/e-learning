@@ -17,7 +17,9 @@ class ProgramController extends Controller
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name'
+                'users.name as instructor_name',
+                'users.avatar as instructor_avatar',
+                'users.job as instructor_job'
             )
             ->where('data_programs.status', 'published');
 
@@ -107,7 +109,9 @@ class ProgramController extends Controller
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name'
+                'users.name as instructor_name',
+                'users.avatar as instructor_avatar',
+                'users.job as instructor_job'
             )
             ->where('data_programs.category', $category)
             ->where('data_programs.status', 'published')
@@ -136,7 +140,9 @@ class ProgramController extends Controller
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name'
+                'users.name as instructor_name',
+                'users.avatar as instructor_avatar',
+                'users.job as instructor_job'
             )
             ->where('data_programs.status', 'published')
             ->orderBy('data_programs.rating', 'desc')

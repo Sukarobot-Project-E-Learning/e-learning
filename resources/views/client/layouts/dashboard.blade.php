@@ -2,54 +2,32 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/dashboard.css') }}">
-<style>
-    @media (min-width: 1024px) {
-        footer {
-            margin-left: 16rem; /* w-64 is 16rem */
-            width: auto;
-        }
-    }
-</style>
 @yield('dashboard-css')
 @endsection
 
 @section('body')
 <script defer src="{{ asset('assets/elearning/client/js/dashboard.js') }}"></script>
 
-<div class="flex min-h-screen bg-gray-50 pt-24 bg-white pb-24 lg:pb-0">
+<div class="flex-1 max-w-7xl mx-auto w-full px-6 py-12 flex flex-col lg:flex-row gap-10 pt-34">
   <!-- Sidebar (Desktop Only) -->
-  <aside id="sidebar" class="hidden lg:flex w-64 pt-2 pr-1 bg-white border-r border-gray-200 fixed h-full flex-col justify-between shadow-md rounded-xl z-40">
-    <div>
-      <nav>
-        <ul class="space-y-1 text-gray-700">
-          <li>
-            <a href="{{ route('client.dashboard') }}" class="nav-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
-                <i class="fa-regular fa-user mr-2 w-5 text-center"></i>Profil
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('client.dashboard.program') }}" class="nav-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 {{ request()->routeIs('client.dashboard.program') ? 'active' : '' }}">
-                <i class="fa-solid fa-book mr-2 w-5 text-center"></i>Program
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('client.dashboard.certificate') }}" class="nav-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 {{ request()->routeIs('client.dashboard.certificate') ? 'active' : '' }}">
-                <i class="fa-solid fa-award mr-2 w-5 text-center"></i>Sertifikat
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('client.dashboard.transaction') }}" class="nav-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 {{ request()->routeIs('client.dashboard.transaction') ? 'active' : '' }}">
-                <i class="fa-solid fa-clock-rotate-left mr-2 w-5 text-center"></i>Riwayat Transaksi
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('client.dashboard.voucher') }}" class="nav-item flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 {{ request()->routeIs('client.dashboard.voucher') ? 'active' : '' }}">
-                <i class="fa-solid fa-ticket mr-2 w-5 text-center"></i>Voucher
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+  <aside class="w-full lg:w-72 h-fit lg:sticky lg:top-32 bg-white border border-gray-100 shadow-lg rounded-2xl p-6 self-start hidden">
+    <nav class="space-y-1">
+        <a href="{{ route('client.dashboard') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 active text-blue-600 bg-blue-50" data-target="tentang-kami">
+            Profil
+        </a>
+        <a href="{{ route('client.dashboard.program') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600" data-target="kebijakan">
+            Program
+        </a>
+        <a href="{{ route('client.dashboard.certificate') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600" data-target="ketentuan">
+            Sertifikat
+        </a>
+        <a href="{{ route('client.dashboard.transaction') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600" data-target="FAQ">
+            Riwayat Transaksi
+        </a>
+        <a href="{{ route('client.dashboard.voucher') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600" data-target="FAQ">
+            Voucher
+        </a>
+    </nav>
   </aside>
 
   <!-- Bottom Navigation (Mobile/Tablet Only) -->
