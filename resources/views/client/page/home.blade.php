@@ -14,13 +14,14 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- Popup Overlay -->
-    <div id="popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="relative bg-white rounded-2xl shadow-xl overflow-hidden
-                 w-[85%] max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]
-                 transform transition-all duration-300 scale-90">
+    <div id="popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 cursor-pointer"
+        onclick="document.getElementById('popup').classList.add('hidden'); document.body.classList.remove('overflow-hidden');">
+        <div class="relative bg-white rounded-2xl shadow-xl overflow-hidden cursor-default
+                         w-[85%] max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]
+                         transform transition-all duration-300 scale-90" onclick="event.stopPropagation();">
             <!-- Tombol X -->
             <button id="closePopup"
-                class="absolute top-2 right-2 p-1.5 sm:p-2 rounded-full z-1 text-gray-700 font-bold text-lg leading-none hover:bg-gray-200">
+                class="absolute top-2 right-2 p-1.5 sm:p-2 rounded-full z-10 bg-white/80 backdrop-blur-sm text-gray-700 font-bold text-lg leading-none hover:bg-red-500 hover:text-white transition-all shadow-sm">
                 ✕
             </button>
 
