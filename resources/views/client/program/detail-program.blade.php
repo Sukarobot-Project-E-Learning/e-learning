@@ -139,8 +139,7 @@
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
               <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.7-3.7a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-3.7 3.7Zm5.7-5.7a3 3 0 0 0-4.2 0L6.3 10.5a3 3 0 0 0 0 4.2l1.6 1.6a3 3 0 0 0 4.2 0l9.9-9.9a3 3 0 0 0 0-4.2l-1.6-1.6Z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                   </svg>
               </div>
               <span class="text-sm font-bold text-gray-700">{{ $tool }}</span>
