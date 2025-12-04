@@ -10,7 +10,7 @@
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Program</h2>
                 <a href="{{ route('admin.programs.create') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -24,42 +24,66 @@
             <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
-                        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                        <tr
+                            class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                             <th class="px-4 py-3">Judul</th>
                             <th class="px-4 py-3">Kategori</th>
                             <th class="px-4 py-3">Tanggal Mulai</th>
                             <th class="px-4 py-3">Jenis</th>
                             <th class="px-4 py-3">Harga</th>
+                            <th class="px-4 py-3">Gambar</th>
                             <th class="px-4 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                         @forelse($programs ?? [] as $program)
-                        <tr class="text-gray-700 dark:text-gray-400">
-                            <td class="px-4 py-3">
-                                <div class="flex items-center text-sm">
-                                    <div>
-                                        <p class="font-semibold">{{ $program['title'] ?? 'N/A' }}</p>
+                            <tr class="text-gray-700 dark:text-gray-400">
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center text-sm">
+                                        <div>
+                                            <p class="font-semibold">{{ $program['title'] ?? 'N/A' }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">{{ $program['category'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $program['start_date'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $program['type'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $program['price'] ?? '-' }}</td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center space-x-4 text-sm">
-                                    <a href="{{ route('admin.programs.edit', $program['id']) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
-                                    <button @click="deleteProgram({{ $program['id'] }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="px-4 py-3 text-sm">{{ $program['category'] ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $program['start_date'] ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $program['type'] ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $program['price'] ?? '-' }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center text-sm">
+                                        @if(!empty($program['image']))
+                                            <img src="{{ asset($program['image']) }}" alt="{{ $program['title'] }}"
+                                                class="w-16 h-12 object-cover rounded">
+                                        @else
+                                            <div
+                                                class="w-16 h-12 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center space-x-4 text-sm">
+                                        <a href="{{ route('admin.programs.edit', $program['id']) }}"
+                                            class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
+                                        <button @click="deleteProgram({{ $program['id'] }})"
+                                            class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
+                                    </div>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Tidak ada data program. <a href="{{ route('admin.programs.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah program pertama</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="7" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                    Tidak ada data program. <a href="{{ route('admin.programs.create') }}"
+                                        class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah program
+                                        pertama</a>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -80,19 +104,18 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + (result.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus data');
-            });
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + (result.message || 'Terjadi kesalahan'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghapus data');
+                });
         }
     </script>
 @endsection
-

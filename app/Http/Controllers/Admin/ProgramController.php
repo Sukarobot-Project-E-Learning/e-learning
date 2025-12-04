@@ -31,6 +31,7 @@ class ProgramController extends Controller
             return [
                 'id' => $program->id,
                 'title' => $program->program,
+                'image' => $program->image,
                 'category' => ucfirst($program->category ?? '-'),
                 'start_date' => $program->start_date ? date('d F Y', strtotime($program->start_date)) : '-',
                 'type' => ucfirst($program->type ?? '-'),
@@ -67,7 +68,7 @@ class ProgramController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'instructor_id' => 'nullable|exists:users,id',
-            'duration_hours' => 'required|integer|min:1',
+
             'quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'start_time' => 'required',
@@ -135,7 +136,7 @@ class ProgramController extends Controller
             'type' => $validated['type'],
             'price' => $validated['price'],
             'instructor_id' => $validated['instructor_id'] ?? null,
-            'duration_hours' => $validated['duration_hours'],
+
             'quota' => $validated['quota'],
             'enrolled_count' => 0,
             'rating' => 0.0,
@@ -213,7 +214,7 @@ class ProgramController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'instructor_id' => 'nullable|exists:users,id',
-            'duration_hours' => 'required|integer|min:1',
+
             'quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'start_time' => 'required',
@@ -287,7 +288,7 @@ class ProgramController extends Controller
             'type' => $validated['type'],
             'price' => $validated['price'],
             'instructor_id' => $validated['instructor_id'] ?? null,
-            'duration_hours' => $validated['duration_hours'],
+
             'quota' => $validated['quota'],
             'start_date' => $validated['start_date'],
             'start_time' => $validated['start_time'],

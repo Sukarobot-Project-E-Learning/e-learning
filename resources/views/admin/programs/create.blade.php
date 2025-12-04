@@ -130,15 +130,6 @@
                                 </select>
                             </div>
 
-                            <!-- Durasi -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Durasi (Jam) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" name="duration_hours" required min="1" placeholder="Contoh: 8"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('duration_hours') }}">
-                            </div>
 
                             <!-- Kuota -->
                             <div>
@@ -204,50 +195,58 @@
                             <button type="button" @click="addMaterial()"
                                 class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
                                 </svg>
                                 Tambah Hari
                             </button>
                         </div>
                         <div class="space-y-6">
                             <template x-for="(material, index) in materials" :key="index">
-                                <div class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                                <div
+                                    class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                                     <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-semibold text-purple-600 dark:text-purple-400" x-text="'Hari ' + (index + 1)"></span>
+                                        <span class="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                                            x-text="'Hari ' + (index + 1)"></span>
                                         <button type="button" @click="removeMaterial(index)"
                                             class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
                                         </button>
                                     </div>
                                     <div class="space-y-3">
                                         <!-- Judul -->
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Materi</label>
-                                            <input type="text" :name="'materials[' + index + '][title]'" x-model="materials[index].title"
-                                                placeholder="Contoh: Hari 1: Analisis SWOT"
+                                            <label
+                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul
+                                                Materi</label>
+                                            <input type="text" :name="'materials[' + index + '][title]'"
+                                                x-model="materials[index].title" placeholder="Contoh: Hari 1: Analisis SWOT"
                                                 class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                         </div>
                                         <!-- Durasi -->
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi</label>
-                                            <input type="text" :name="'materials[' + index + '][duration]'" x-model="materials[index].duration"
-                                                placeholder="Contoh: 3 Jam"
+                                            <label
+                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi</label>
+                                            <input type="text" :name="'materials[' + index + '][duration]'"
+                                                x-model="materials[index].duration" placeholder="Contoh: 3 Jam"
                                                 class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                         </div>
                                         <!-- Deskripsi -->
                                         <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Detail Aktivitas</label>
-                                            <textarea :name="'materials[' + index + '][description]'" x-model="materials[index].description" rows="4"
-                                                placeholder="Contoh:
-Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
+                                            <label
+                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Detail
+                                                Aktivitas</label>
+                                            <textarea :name="'materials[' + index + '][description]'"
+                                                x-model="materials[index].description" rows="4" placeholder="Contoh:
+                Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 
-• Pembukaan & Pengenalan Materi
-• Presentasi Strategi Digital
-• Praktik Pembuatan Kampanye
-• Evaluasi & Tanya Jawab"
-                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
+                • Pembukaan & Pengenalan Materi
+                • Presentasi Strategi Digital
+                • Praktik Pembuatan Kampanye
+                • Evaluasi & Tanya Jawab" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -302,7 +301,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Provinsi <span x-show="type === 'offline'" class="text-red-500">*</span>
                                 </label>
-                                <select name="province" :required="type === 'offline'" id="province"
+                                <input type="hidden" name="province" id="province_text" :required="type === 'offline'">
+                                <select id="province" :required="type === 'offline'"
+                                    onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Provinsi</option>
                                 </select>
@@ -312,7 +313,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Kabupaten/Kota <span x-show="type === 'offline'" class="text-red-500">*</span>
                                 </label>
-                                <select name="city" :required="type === 'offline'" id="city"
+                                <input type="hidden" name="city" id="city_text" :required="type === 'offline'">
+                                <select id="city" :required="type === 'offline'"
+                                    onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kabupaten/Kota</option>
                                 </select>
@@ -322,7 +325,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Kecamatan <span x-show="type === 'offline'" class="text-red-500">*</span>
                                 </label>
-                                <select name="district" :required="type === 'offline'" id="district"
+                                <input type="hidden" name="district" id="district_text" :required="type === 'offline'">
+                                <select id="district" :required="type === 'offline'"
+                                    onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kecamatan</option>
                                 </select>
@@ -332,7 +337,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Kelurahan/Desa <span x-show="type === 'offline'" class="text-red-500">*</span>
                                 </label>
-                                <select name="village" :required="type === 'offline'" id="village"
+                                <input type="hidden" name="village" id="village_text" :required="type === 'offline'">
+                                <select id="village" :required="type === 'offline'"
+                                    onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kelurahan/Desa</option>
                                 </select>
@@ -436,7 +443,51 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
     </div>
 
     @push('scripts')
-        <script src="{{ asset('assets/elearning/region-selector.js') }}"></script>
+        <script>
+            // Intercept form submit to convert region IDs to text names
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        // Get all region selects
+                        const provinceSelect = document.getElementById('province');
+                        const citySelect = document.getElementById('city');
+                        const districtSelect = document.getElementById('district');
+                        const villageSelect = document.getElementById('village');
+
+                        // Convert selected IDs to text names
+                        if (provinceSelect && provinceSelect.value) {
+                            const selectedOption = provinceSelect.options[provinceSelect.selectedIndex];
+                            if (selectedOption && selectedOption.textContent.trim()) {
+                                provinceSelect.value = selectedOption.textContent.trim();
+                            }
+                        }
+
+                        if (citySelect && citySelect.value) {
+                            const selectedOption = citySelect.options[citySelect.selectedIndex];
+                            if (selectedOption && selectedOption.textContent.trim()) {
+                                citySelect.value = selectedOption.textContent.trim();
+                            }
+                        }
+
+                        if (districtSelect && districtSelect.value) {
+                            const selectedOption = districtSelect.options[districtSelect.selectedIndex];
+                            if (selectedOption && selectedOption.textContent.trim()) {
+                                districtSelect.value = selectedOption.textContent.trim();
+                            }
+                        }
+
+                        if (villageSelect && villageSelect.value) {
+                            const selectedOption = villageSelect.options[villageSelect.selectedIndex];
+                            if (selectedOption && selectedOption.textContent.trim()) {
+                                villageSelect.value = selectedOption.textContent.trim();
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+        <script src="{{ asset('assets/elearning/region-selector.js') }}?v={{ time() }}"></script>
         <script>
             function programForm() {
                 return {

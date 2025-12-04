@@ -10,7 +10,7 @@ class RegionSelector {
         this.districtSelect = document.getElementById(options.districtId || 'district');
         this.villageSelect = document.getElementById(options.villageId || 'village');
         this.apiBaseUrl = options.apiBaseUrl || '/api/regions';
-        
+
         this.init();
     }
 
@@ -27,11 +27,11 @@ class RegionSelector {
         if (this.provinceSelect) {
             this.provinceSelect.addEventListener('change', () => this.onProvinceChange());
         }
-        
+
         if (this.citySelect) {
             this.citySelect.addEventListener('change', () => this.onCityChange());
         }
-        
+
         if (this.districtSelect) {
             this.districtSelect.addEventListener('change', () => this.onDistrictChange());
         }
@@ -60,7 +60,7 @@ class RegionSelector {
 
     async onProvinceChange() {
         const provinceId = this.provinceSelect.value;
-        
+
         // Reset dependent selects
         this.resetSelect(this.citySelect);
         this.resetSelect(this.districtSelect);
@@ -79,7 +79,7 @@ class RegionSelector {
 
         try {
             this.setLoading(this.citySelect, true);
-            
+
             const response = await fetch(`${this.apiBaseUrl}/kabupaten-kota/${provinceId}`);
             const kabupatenKota = await response.json();
 
@@ -107,7 +107,7 @@ class RegionSelector {
 
     async onCityChange() {
         const kabupatenId = this.citySelect.value;
-        
+
         // Reset dependent selects
         this.resetSelect(this.districtSelect);
         this.resetSelect(this.villageSelect);
@@ -125,7 +125,7 @@ class RegionSelector {
 
         try {
             this.setLoading(this.districtSelect, true);
-            
+
             const response = await fetch(`${this.apiBaseUrl}/kecamatan/${kabupatenId}`);
             const kecamatan = await response.json();
 
@@ -153,7 +153,7 @@ class RegionSelector {
 
     async onDistrictChange() {
         const kecamatanId = this.districtSelect.value;
-        
+
         // Reset dependent select
         this.resetSelect(this.villageSelect);
 
@@ -170,7 +170,7 @@ class RegionSelector {
 
         try {
             this.setLoading(this.villageSelect, true);
-            
+
             const response = await fetch(`${this.apiBaseUrl}/kelurahan/${kecamatanId}`);
             const kelurahan = await response.json();
 
@@ -204,7 +204,7 @@ class RegionSelector {
 
     setLoading(select, isLoading) {
         if (!select) return;
-        
+
         if (isLoading) {
             select.disabled = true;
             select.innerHTML = '<option value="">Memuat...</option>';
@@ -249,7 +249,7 @@ class RegionSelector {
 }
 
 // Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Check if region selectors exist on the page
     if (document.getElementById('province')) {
         window.regionSelector = new RegionSelector({

@@ -33,8 +33,17 @@
               </path>
             </svg>
             <span class="font-medium text-gray-700">
-              @if(!empty($program->city) && !empty($program->province))
-                {{ $program->city }}, {{ $program->province }}
+              @php
+                $locationParts = array_filter([
+                  $program->village ?? null,
+                  $program->district ?? null,
+                  $program->city ?? null,
+                  $program->province ?? null
+                ]);
+              @endphp
+
+              @if(!empty($locationParts))
+                {{ implode(', ', $locationParts) }}
               @else
                 Lokasi Offline
               @endif
@@ -101,7 +110,8 @@
               class="accordion border border-gray-200 rounded-xl p-5 cursor-pointer hover:bg-gray-50 transition-colors duration-300 group">
               <div class="flex justify-between items-center">
                 <h4 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
-                  {{ $material['title'] ?? 'Hari ' . ($index + 1) }}</h4>
+                  {{ $material['title'] ?? 'Hari ' . ($index + 1) }}
+                </h4>
                 <span class="toggle text-xl text-gray-400 group-hover:text-blue-600 transition-colors">+</span>
               </div>
               <div class="accordion-content mt-4 text-gray-600 space-y-4">
