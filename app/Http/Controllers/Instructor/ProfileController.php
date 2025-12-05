@@ -12,10 +12,12 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        // TODO: Get current instructor data
-        // $instructor = auth()->user();
-        
-        return view('instructor.profile.edit');
+        $user = auth()->user();
+        $trainer = \DB::table('data_trainers')
+            ->where('email', $user->email)
+            ->first();
+
+        return view('instructor.profile.edit', compact('trainer'));
     }
 
     /**
@@ -23,20 +25,37 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        // TODO: Add validation and update logic here
-        // $validated = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|unique:users,email,' . auth()->id(),
-        //     'phone' => 'nullable|string|max:20',
-        //     'job' => 'nullable|string|max:255',
-        //     'experience' => 'nullable|string|max:255',
-        //     'expertise' => 'nullable|string|max:255',
-        //     'photo' => 'nullable|image|max:2048',
-        // ]);
-        
-        // Update logic here
-        
-        return redirect()->route('instructor.profile.edit')->with('success', 'Profile berhasil diupdate');
+        $user = auth()->user();
+
+        // Validation sesuai dengan kolom di data_trainers
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'no_hp' => 'nullable|string|max:20',
+            'pekerjaan' => 'nullable|string|max:255',
+            'pengalaman' => 'nullable|string',
+            'keahlian' => 'nullable|string',
+            'foto' => 'nullable|image|max:2048',
+        ]);
+
+        // Update trainer data
+        $trainer = \DB::table('data_trainers')
+            ->where('email', $user->email)
+            ->first();
+
+        if ($trainer) {
+            // Handle photo upload if provided
+            if ($request->hasFile('foto')) {
+                $path = $request->file('foto')->store('trainer-photos', 'public');
+                $validated['foto'] = $path;
+            }
+
+            \DB::table('data_trainers')
+                ->where('id', $trainer->id)
+                ->update($validated);
+        }
+
+        return redirect()->route('instructor.profile.edit')
+            ->with('success', 'Profile berhasil diupdate');
     }
 }
-
