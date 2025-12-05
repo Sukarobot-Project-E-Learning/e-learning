@@ -14,6 +14,34 @@
         'outing-class' => 'Outing Class',
         'outboard' => 'Outboard'
     ];
+
+    // Hero Content Data
+    $heroContent = [
+        'all' => [
+            'title' => 'Kelas di E-Learning tersedia dari level <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>',
+            'description' => 'Tingkatkan kompetensi Anda sesuai kebutuhan industri terkini dengan kurikulum yang terstruktur dan mentor berpengalaman.'
+        ],
+        'kursus' => [
+            'title' => 'Tingkatkan keahlianmu dengan berbagai <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Kursus Intensif</span>',
+            'description' => 'Materi dirancang oleh ahli untuk pemula hingga profesional.'
+        ],
+        'pelatihan' => [
+            'title' => 'Ikuti pelatihan praktis untuk <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Mengasah Keterampilan</span>',
+            'description' => 'Tingkatkan soft skill dan hard skill Anda untuk dunia kerja.'
+        ],
+        'sertifikasi' => [
+            'title' => 'Dapatkan pengakuan profesional melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Sertifikasi</span>',
+            'description' => 'Validasi keahlian Anda dengan sertifikat berstandar industri nasional dan internasional.'
+        ],
+        'outing-class' => [
+            'title' => 'Belajar di luar kelas dengan <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Pengalaman Langsung</span>',
+            'description' => 'Kegiatan edukatif yang menyenangkan dan interaktif untuk semua usia.'
+        ],
+        'outboard' => [
+            'title' => 'Bangun karakter dan kerjasama tim melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Outboard</span>',
+            'description' => 'Kegiatan luar ruangan yang menantang untuk meningkatkan kepemimpinan dan soliditas tim.'
+        ]
+    ];
     @endphp
 
     <!-- Top Navigation Menu -->
@@ -74,10 +102,10 @@
 
         <div class="relative z-10 max-w-4xl mx-auto px-6">
             <h1 id="hero-title" class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-                Kelas di E-Learning tersedia dari level <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>
+                {!! $heroContent[$currentCategory]['title'] ?? $heroContent['all']['title'] !!}
             </h1>
-            <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
-                Tingkatkan kompetensi Anda sesuai kebutuhan industri terkini dengan kurikulum yang terstruktur dan mentor berpengalaman.
+            <p id="hero-description" class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+                {{ $heroContent[$currentCategory]['description'] ?? $heroContent['all']['description'] }}
             </p>
             <div class="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-orange-500 mx-auto rounded-full"></div>
         </div>

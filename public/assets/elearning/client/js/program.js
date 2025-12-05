@@ -33,6 +33,34 @@ document.addEventListener("DOMContentLoaded", () => {
         'outboard': 'program outboard'
     };
 
+    // Hero Content Data
+    const heroContent = {
+        'all': {
+            title: 'Kelas di E-Learning tersedia dari level <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>',
+            description: 'Tingkatkan kompetensi Anda sesuai kebutuhan industri terkini dengan kurikulum yang terstruktur dan mentor berpengalaman.'
+        },
+        'kursus': {
+            title: 'Tingkatkan keahlianmu dengan berbagai <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Kursus Intensif</span>',
+            description: 'Materi dirancang oleh ahli untuk pemula hingga profesional.'
+        },
+        'pelatihan': {
+            title: 'Ikuti pelatihan praktis untuk <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Mengasah Keterampilan</span>',
+            description: 'Tingkatkan soft skill dan hard skill Anda untuk dunia kerja.'
+        },
+        'sertifikasi': {
+            title: 'Dapatkan pengakuan profesional melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Sertifikasi</span>',
+            description: 'Validasi keahlian Anda dengan sertifikat berstandar industri nasional dan internasional.'
+        },
+        'outing-class': {
+            title: 'Belajar di luar kelas dengan <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Pengalaman Langsung</span>',
+            description: 'Kegiatan edukatif yang menyenangkan dan interaktif untuk semua usia.'
+        },
+        'outboard': {
+            title: 'Bangun karakter dan kerjasama tim melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Outboard</span>',
+            description: 'Kegiatan luar ruangan yang menantang untuk meningkatkan kepemimpinan dan soliditas tim.'
+        }
+    };
+
     // Store original index for sorting
     cards.forEach((c, i) => (c.dataset.origIndex = i));
 
@@ -41,6 +69,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const categoryText = categoryNames[activeCategory] || 'program';
             jumlahKelas.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full inline-block"></span> Menampilkan ${count} ${categoryText}`;
         }
+    };
+
+    const updateHero = (category) => {
+        const titleEl = document.getElementById('hero-title');
+        const descEl = document.getElementById('hero-description');
+        const content = heroContent[category] || heroContent['all'];
+
+        if (titleEl) titleEl.innerHTML = content.title;
+        if (descEl) descEl.textContent = content.description;
     };
 
     function getSlots(card) {
@@ -120,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Apply filter instantly
             applySortAndFilter();
+            updateHero(activeCategory);
         });
     });
 
@@ -148,10 +186,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         applySortAndFilter();
+        updateHero(activeCategory);
     });
 
     // Initial apply
     applySortAndFilter();
+    updateHero(activeCategory);
 
     // Navigation Scroll Logic
     const navContainer = document.getElementById("program-nav");
