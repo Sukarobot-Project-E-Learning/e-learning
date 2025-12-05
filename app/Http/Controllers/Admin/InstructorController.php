@@ -24,8 +24,8 @@ class InstructorController extends Controller
 
         // Transform data after pagination
         $instructors->getCollection()->transform(function($user) {
-            // Check if instructor has data in data_trainers table
-            $trainer = DB::table('data_trainers')
+            // Check if instructor has data in instructors table
+            $trainer = DB::table('data_instructors')
                 ->where('email', $user->email)
                 ->first();
 
@@ -103,9 +103,9 @@ class InstructorController extends Controller
             // Insert ke tabel users
             $userId = DB::table('users')->insertGetId($data);
 
-            // Insert ke tabel data_trainers jika ada data tambahan (hanya kolom yang ada di tabel)
+            // Insert ke tabel data_instructors jika ada data tambahan (hanya kolom yang ada di tabel)
             if (!empty($validated['expertise'])) {
-                DB::table('data_trainers')->insert([
+                DB::table('data_instructors')->insert([
                     'nama' => $validated['name'],
                     'email' => $validated['email'],
                     'telephone' => $validated['phone'] ?? null,
@@ -134,7 +134,7 @@ class InstructorController extends Controller
         }
 
         // Get trainer data if exists
-        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+        $trainer = DB::table('data_instructors')->where('email', $user->email)->first();
 
         $instructorData = [
             'id' => $user->id,
@@ -215,8 +215,8 @@ class InstructorController extends Controller
             // Update users table
             DB::table('users')->where('id', $id)->update($data);
 
-            // Update or insert data_trainers (only columns that exist in the table)
-            $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+            // Update or insert data_instructors (only columns that exist in the table)
+            $trainer = DB::table('data_instructors')->where('email', $user->email)->first();
             $trainerData = [
                 'nama' => $validated['name'],
                 'email' => $validated['email'],
@@ -227,10 +227,10 @@ class InstructorController extends Controller
             ];
 
             if ($trainer) {
-                DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
+                DB::table('data_instructors')->where('email', $user->email)->update($trainerData);
             } else {
                 $trainerData['created_at'] = now();
-                DB::table('data_trainers')->insert($trainerData);
+                DB::table('data_instructors')->insert($trainerData);
             }
 
             return redirect()->route('admin.instructors.index')->with('success', 'Instruktur berhasil diupdate');
@@ -271,10 +271,10 @@ class InstructorController extends Controller
                 'updated_at' => now(),
             ]);
 
-        // Update status di data_trainers jika ada
-        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+        // Update status di data_instructors jika ada
+        $trainer = DB::table('data_instructors')->where('email', $user->email)->first();
         if ($trainer) {
-            DB::table('data_trainers')
+            DB::table('data_instructors')
                 ->where('email', $user->email)
                 ->update([
                     'status_trainer' => 'Aktif',
@@ -304,10 +304,10 @@ class InstructorController extends Controller
                 'updated_at' => now(),
             ]);
 
-        // Update status di data_trainers jika ada
-        $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
+        // Update status di data_instructors jika ada
+        $trainer = DB::table('data_instructors')->where('email', $user->email)->first();
         if ($trainer) {
-            DB::table('data_trainers')
+            DB::table('data_instructors')
                 ->where('email', $user->email)
                 ->update([
                     'status_trainer' => 'Tidak Aktif',
