@@ -222,10 +222,18 @@ Route::name('client.')->group(function () {
     });
 
     Route::middleware(['auth'])->group(function () {
-        Route::get('/pembayaran', function () {
-            return view('client.program.pembayaran');
-        })->name('pembayaran');
+        // Payment routes
+        Route::get('/pembayaran/{programSlug}', [\App\Http\Controllers\Client\PaymentController::class, 'showPaymentPage'])
+            ->name('pembayaran');
+        Route::post('/payment/create', [\App\Http\Controllers\Client\PaymentController::class, 'createTransaction'])
+            ->name('payment.create');
+        Route::get('/payment/finish', [\App\Http\Controllers\Client\PaymentController::class, 'finish'])
+            ->name('payment.finish');
     });
+
+    // Midtrans callback (no auth required)
+    Route::post('/payment/callback', [\App\Http\Controllers\Client\PaymentController::class, 'callback'])
+        ->name('payment.callback');
 
 });
 

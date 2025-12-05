@@ -158,7 +158,7 @@
 
         <!-- Tombol -->
         <div class="flex flex-col gap-3 mb-8">
-          <a href="{{ url('pembayaran') }}"
+          <a href="{{ route('client.pembayaran', ['programSlug' => $program->slug]) }}"
             class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30 text-center">
             Beli Kelas Sekarang
           </a>
