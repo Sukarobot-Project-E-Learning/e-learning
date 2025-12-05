@@ -25,7 +25,7 @@ class ArticleController extends Controller
         // Get articles
         $articles = $query->get();
 
-        return view('client.page.artikel', compact('articles'));
+        return view('client.artikel.index', compact('articles'));
     }
 
     /**
@@ -126,7 +126,7 @@ class ArticleController extends Controller
             ->limit(3)
             ->get();
 
-        return view('client.page.artikel-detail', compact('article', 'relatedArticles'));
+        return view('client.artikel.detail', compact('article', 'relatedArticles'));
     }
 
     /**
@@ -146,7 +146,7 @@ class ArticleController extends Controller
             ->orderBy('published_at', 'desc')
             ->paginate(12);
 
-        return view('client.page.artikel-search', compact('articles', 'keyword'));
+        return view('client.artikel.search', compact('articles', 'keyword'));
     }
 }
 

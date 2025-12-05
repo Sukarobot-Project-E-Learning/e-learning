@@ -160,7 +160,7 @@ Route::name('client.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Client\HomeController::class, 'index'])->name('home');
 
     Route::get('/tentang', function () {
-        return view('client.page.tentang');
+        return view('client.about.tentang');
     })->name('tentang');
 
     // Program Routes
@@ -183,11 +183,11 @@ Route::name('client.')->group(function () {
     });
 
     Route::get('/kompetisi', function () {
-        return view('client.page.kompetisi');
+        return view('client.kompetisi');
     })->name('kompetisi');
 
     Route::get('/kompetisi/{id}', function () {
-        return view('client.page.detail-kompetisi');
+        return view('client.detail-kompetisi');
     })->name('kompetisi.detail');
 
     Route::get('/artikel', [\App\Http\Controllers\Client\ArticleController::class, 'index'])->name('artikel');
@@ -195,20 +195,20 @@ Route::name('client.')->group(function () {
     Route::get('/artikel/{slug}', [\App\Http\Controllers\Client\ArticleController::class, 'show'])->name('artikel.detail');
 
     Route::get('/berita', function () {
-        return view('client.page.berita');
+        return view('client.berita');
     })->name('berita');
 
     Route::get('/instruktur', function () {
-        return view('client.page.instruktur');
+        return view('client.about.instruktur');
     })->name('instruktur');
 
     // Authentication Pages
     Route::get('/register', function () {
-        return view('client.page.login.register');
+        return view('client.login.register');
     })->name('register');
 
     Route::get('/reset-password', function () {
-        return view('client.page.login.reset');
+        return view('client.login.reset');
     })->name('reset-password');
 
     // Protected Client/User Routes  

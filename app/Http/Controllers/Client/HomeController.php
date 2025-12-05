@@ -34,6 +34,6 @@ class HomeController extends Controller
             return $program;
         });
 
-        return view('client.page.home', compact('popularPrograms'));
+        return view('client.home', compact('popularPrograms'));
     }
 }
