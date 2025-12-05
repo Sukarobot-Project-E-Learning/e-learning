@@ -1,6 +1,21 @@
 @extends('client.main')
 @section('body')
 
+    @php
+    // Get current active category
+    $currentCategory = $activeCategory ?? 'all';
+    
+    // Category display names
+    $categoryNames = [
+        'all' => 'Semua Kelas',
+        'kursus' => 'Kursus',
+        'pelatihan' => 'Pelatihan',
+        'sertifikasi' => 'Sertifikasi',
+        'outing-class' => 'Outing Class',
+        'outboard' => 'Outboard'
+    ];
+    @endphp
+
     <!-- Top Navigation Menu -->
     <div class="bg-white border-t border-gray-200 sticky top-0 z-30 mt-24">
         <div class="container mx-auto px-6 relative group">
@@ -14,12 +29,30 @@
             </button>
 
             <div class="flex justify-start md:justify-center items-center gap-8 md:gap-12 overflow-x-auto py-4 scrollbar-hide scroll-smooth px-8" id="program-nav">
-                <a href="{{ url('/program') }}" class="nav-item text-sm font-bold text-blue-600 border-b-2 border-blue-600 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Semua Kelas</a>
-                <a href="{{ url('/program/kursus') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Kursus</a>
-                <a href="{{ url('/program/pelatihan') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Pelatihan</a>
-                <a href="{{ url('/program/sertifikasi') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Sertifikasi</a>
-                <a href="{{ url('/program/outing-class') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Outing Class</a>
-                <a href="{{ url('/program/outboard') }}" class="nav-item text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">Outboard</a>
+                <button type="button" data-filter="all" 
+                   class="nav-item text-sm {{ $currentCategory === 'all' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Semua Kelas
+                </button>
+                <button type="button" data-filter="kursus" 
+                   class="nav-item text-sm {{ $currentCategory === 'kursus' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Kursus
+                </button>
+                <button type="button" data-filter="pelatihan" 
+                   class="nav-item text-sm {{ $currentCategory === 'pelatihan' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Pelatihan
+                </button>
+                <button type="button" data-filter="sertifikasi" 
+                   class="nav-item text-sm {{ $currentCategory === 'sertifikasi' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Sertifikasi
+                </button>
+                <button type="button" data-filter="outing-class" 
+                   class="nav-item text-sm {{ $currentCategory === 'outing-class' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Outing Class
+                </button>
+                <button type="button" data-filter="outboard" 
+                   class="nav-item text-sm {{ $currentCategory === 'outboard' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'font-medium text-gray-500 hover:text-gray-900' }} pb-1 whitespace-nowrap transition-colors cursor-pointer text-lg flex-shrink-0">
+                    Outboard
+                </button>
             </div>
 
             <!-- Right Arrow -->
@@ -56,7 +89,7 @@
             <!-- Left side -->
             <div class="text-gray-600 font-medium jumlah-kelas flex items-center gap-2">
                 <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
-                Menampilkan semua program
+                Menampilkan {{ $currentCategory === 'all' ? 'semua program' : 'program ' . strtolower($categoryNames[$currentCategory] ?? $currentCategory) }}
             </div>
 
             <!-- Right side: Sort Options -->
@@ -153,6 +186,3 @@
 
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program.css') }}">
 <script src="{{ asset('assets/elearning/client/js/program.js') }}"></script>
-<script>
-    window.activeCategory = "all";
-</script>

@@ -3,28 +3,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".kelas-container");
     const jumlahKelas = document.querySelector(".jumlah-kelas");
     const navItems = document.querySelectorAll(".nav-item");
-    const heroTitle = document.getElementById("hero-title");
 
     if (!container) return;
 
     let cards = Array.from(container.querySelectorAll(".kelas-card"));
     let activeCategory = "all";
 
-    // Hero Descriptions
-    const heroDescriptions = {
-        all: "Kelas di E-Learning tersedia dari level <br> dasar hingga profesional sesuai kebutuhan <br> industri terkini.",
-        kursus: "Tingkatkan keahlianmu dengan berbagai <br> kursus intensif yang dirancang oleh ahli.",
-        pelatihan: "Ikuti pelatihan praktis untuk <br> mengasah keterampilan teknis dan soft skill.",
-        sertifikasi: "Dapatkan pengakuan profesional <br> melalui program sertifikasi berstandar industri.",
-        outingclass: "Belajar di luar kelas dengan <br> pengalaman langsung yang menyenangkan.",
-        outboard: "Program outboard untuk <br> pengembangan karakter dan kerja sama tim."
+    // Get initial category from URL or button state
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCategory = urlParams.get('category');
+    if (urlCategory) {
+        activeCategory = urlCategory;
+    } else {
+        // Check which button has active class
+        navItems.forEach(btn => {
+            if (btn.classList.contains('text-blue-600')) {
+                activeCategory = btn.dataset.filter || 'all';
+            }
+        });
+    }
+
+    // Category display names
+    const categoryNames = {
+        'all': 'semua program',
+        'kursus': 'program kursus',
+        'pelatihan': 'program pelatihan',
+        'sertifikasi': 'program sertifikasi',
+        'outing-class': 'program outing class',
+        'outboard': 'program outboard'
     };
 
-    // Store original index for "default" sort if needed, though we usually sort by date
+    // Store original index for sorting
     cards.forEach((c, i) => (c.dataset.origIndex = i));
 
     const updateJumlahKelas = (count) => {
-        if (jumlahKelas) jumlahKelas.textContent = `Menampilkan ${count} program`;
+        if (jumlahKelas) {
+            const categoryText = categoryNames[activeCategory] || 'program';
+            jumlahKelas.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full inline-block"></span> Menampilkan ${count} ${categoryText}`;
+        }
     };
 
     function getSlots(card) {
@@ -38,14 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function matchesCategory(card) {
         if (!activeCategory || activeCategory === "all") return true;
-        const raw = card.dataset.category || "";
-        const cats = raw.split(",").map((c) => normalize(c));
-        return cats.includes(normalize(activeCategory));
+        const cardCategory = normalize(card.dataset.category || "");
+        return cardCategory === normalize(activeCategory);
     }
 
     function applySortAndFilter() {
         const sortValue = sortSelect ? sortSelect.value : "newest";
 
+        // Filter by category and availability
         let visibleCards = cards.filter(c => {
             if (!matchesCategory(c)) return false;
 
@@ -63,12 +79,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (sortValue === 'oldest') {
                 return da - db;
             } else {
-                // Newest or Available (sorted by newest)
                 return db - da;
             }
         });
 
-        // Update DOM
+        // Update DOM - hide all first
+        cards.forEach(c => c.classList.add("hidden"));
+
+        // Show visible cards
         container.innerHTML = "";
         visibleCards.forEach(c => {
             container.appendChild(c);
@@ -78,32 +96,59 @@ document.addEventListener("DOMContentLoaded", () => {
         updateJumlahKelas(visibleCards.length);
     }
 
-    // Nav Click Handlers
+    // Tab Click Handlers
     navItems.forEach(btn => {
-        btn.addEventListener("click", () => {
-            // Update UI
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // Update active category
+            activeCategory = btn.dataset.filter;
+
+            // Update URL without reload
+            const newUrl = activeCategory === 'all'
+                ? window.location.pathname
+                : `${window.location.pathname}?category=${activeCategory}`;
+            window.history.pushState({ category: activeCategory }, '', newUrl);
+
+            // Update UI - tab highlighting
             navItems.forEach(b => {
-                b.classList.remove("text-blue-600", "border-b-2", "border-blue-600", "font-semibold");
+                b.classList.remove("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
                 b.classList.add("text-gray-500", "font-medium");
             });
             btn.classList.remove("text-gray-500", "font-medium");
-            btn.classList.add("text-blue-600", "border-b-2", "border-blue-600", "font-semibold");
+            btn.classList.add("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
 
-            // Update Filter
-            activeCategory = btn.dataset.filter;
-
-            // Update Hero Text
-            if (heroTitle && heroDescriptions[activeCategory]) {
-                heroTitle.innerHTML = heroDescriptions[activeCategory];
-            }
-
+            // Apply filter instantly
             applySortAndFilter();
         });
     });
 
+    // Sort change handler
     if (sortSelect) {
         sortSelect.addEventListener("change", applySortAndFilter);
     }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.category) {
+            activeCategory = e.state.category;
+        } else {
+            activeCategory = 'all';
+        }
+
+        // Update tab highlighting
+        navItems.forEach(btn => {
+            if (btn.dataset.filter === activeCategory) {
+                btn.classList.add("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
+                btn.classList.remove("text-gray-500", "font-medium");
+            } else {
+                btn.classList.remove("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
+                btn.classList.add("text-gray-500", "font-medium");
+            }
+        });
+
+        applySortAndFilter();
+    });
 
     // Initial apply
     applySortAndFilter();

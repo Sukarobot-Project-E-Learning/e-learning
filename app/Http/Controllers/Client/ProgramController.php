@@ -23,15 +23,16 @@ class ProgramController extends Controller
             )
             ->where('data_programs.status', 'published');
 
-        // Filter by category if provided
-        if ($request->has('category')) {
-            $query->where('data_programs.category', $request->category);
-        }
+        // Get active category from query parameter (for URL state and tab highlighting)
+        $activeCategory = $request->get('category', 'all');
 
-        $programs = $query->orderBy('data_programs.created_at', 'desc')->paginate(12);
+        // Load ALL programs for client-side filtering (no server-side filter)
+        // This enables instant filtering without page reload
+
+        $programs = $query->orderBy('data_programs.created_at', 'desc')->get();
 
         //Transform programs data
-        $programs->getCollection()->transform(function ($program) {
+        $programs->transform(function ($program) {
             $program->tools = json_decode($program->tools, true) ?? [];
             $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
             $program->benefits = json_decode($program->benefits, true) ?? [];
@@ -39,7 +40,7 @@ class ProgramController extends Controller
             return $program;
         });
 
-        return view('client.program.program', compact('programs'));
+        return view('client.program.program', compact('programs', 'activeCategory'));
     }
 
     /**
@@ -73,62 +74,31 @@ class ProgramController extends Controller
     }
 
     /**
-     * Display programs by category
+     * Display programs by category (redirect to index with filter)
      */
     public function kursus()
     {
-        return $this->programsByCategory('kursus');
+        return redirect()->route('client.program', ['category' => 'kursus']);
     }
 
     public function pelatihan()
     {
-        return $this->programsByCategory('pelatihan');
+        return redirect()->route('client.program', ['category' => 'pelatihan']);
     }
 
     public function sertifikasi()
     {
-        return $this->programsByCategory('sertifikasi');
+        return redirect()->route('client.program', ['category' => 'sertifikasi']);
     }
 
     public function outingClass()
     {
-        return $this->programsByCategory('outing-class');
+        return redirect()->route('client.program', ['category' => 'outing-class']);
     }
 
     public function outboard()
     {
-        return $this->programsByCategory('outboard');
-    }
-
-    /**
-     * Helper method to get programs by category
-     */
-    private function programsByCategory($category)
-    {
-        $programs = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
-            ->select(
-                'data_programs.*',
-                'users.name as instructor_name',
-                'users.avatar as instructor_avatar',
-                'users.job as instructor_job'
-            )
-            ->where('data_programs.category', $category)
-            ->where('data_programs.status', 'published')
-            ->orderBy('data_programs.created_at', 'desc')
-            ->paginate(12);
-
-        $programs->getCollection()->transform(function ($program) {
-            $program->tools = json_decode($program->tools, true) ?? [];
-            $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
-            $program->benefits = json_decode($program->benefits, true) ?? [];
-            $program->available_slots = $program->quota - $program->enrolled_count;
-            return $program;
-        });
-
-        $categoryName = ucwords(str_replace('-', ' ', $category));
-
-        return view('client.program.' . str_replace('-', '', $category), compact('programs', 'categoryName'));
+        return redirect()->route('client.program', ['category' => 'outboard']);
     }
 
     /**
