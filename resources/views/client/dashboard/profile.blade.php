@@ -4,37 +4,35 @@
     <!-- Profil -->
     <section id="profile" class="section">
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Profil Pengguna</h2>
-      <!-- Profile Content Card -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-        <!-- ProfileHeader -->
-        <div class="p-6 border-b border-gray-200">
-          <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
-            <div class="flex gap-4 items-center">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }})"></div>
-              <div class="flex flex-col justify-center">
-                <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">{{ $user->name }}</p>
-                <p class="text-[#616f89] text-base font-normal leading-normal">{{ $user->email }}</p>
-              </div>
+      <!-- ProfileHeader -->
+      <div class="py-6 border-b border-gray-200">
+        <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
+          <div class="flex gap-4 items-center">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }})"></div>
+            <div class="flex flex-col justify-center">
+              <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">{{ $user->name }}</p>
+              <p class="text-[#616f89] text-base font-normal leading-normal">{{ $user->email }}</p>
             </div>
-            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto" id="photo-change-btn">
-            <span class="truncate">Ganti Foto</span>
-            </button>
           </div>
+          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto" id="photo-change-btn">
+            <span class="truncate">Ganti Foto</span>
+          </button>
         </div>
-        <!-- Form Section -->
-        <form class="p-6 space-y-8">
-          <!-- Personal Information Section -->
-          <div>
-            <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Informasi Pribadi</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- TextField: Nama Lengkap -->
-              <div class="flex flex-col">
-                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
-                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
-              </div>
-              <!-- TextField: Email -->
-              <div class="flex flex-col">
-                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
+      </div>
+      <!-- Form Section -->
+      <form class="py-6 space-y-8">
+        <!-- Personal Information Section -->
+        <div>
+          <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Informasi Pribadi</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- TextField: Nama Lengkap -->
+            <div class="flex flex-col">
+              <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
+              <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
+            </div>
+            <!-- TextField: Email -->
+            <div class="flex flex-col">
+              <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
                 <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="{{ $user->email }}"/>
               </div>
               <!-- TextField: Phone -->
@@ -54,33 +52,32 @@
               </div>
             </div>
           </div>
-            <!-- Security Section -->
-            <div>
-              <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Ubah Kata Sandi</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- TextField: Kata Sandi Lama -->
-                <div class="flex flex-col">
-                  <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
-                  <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
-                </div>
-                <!-- TextField: Kata Sandi Baru -->
-                <div class="flex flex-col">
-                  <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
-                  <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
-                </div>
+          <!-- Security Section -->
+          <div>
+            <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Ubah Kata Sandi</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- TextField: Kata Sandi Lama -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
               </div>
+              <!-- TextField: Kata Sandi Baru -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
+                <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
+              </div>
+            </div>
           </div>
-          <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
-            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
-            <span class="truncate">Batal</span>
-            </button>
-            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-orange-500 text-white text-base font-bold leading-normal tracking-[0.015em]" type="submit">
-            <span class="truncate">Simpan Perubahan</span>
-            </button>
-          </div>
-        </form>
-      </div>
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
+          <span class="truncate">Batal</span>
+          </button>
+          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-orange-500 text-white text-base font-bold leading-normal tracking-[0.015em]" type="submit">
+          <span class="truncate">Simpan Perubahan</span>
+          </button>
+        </div>
+      </form>
     </section>
 
     <!-- Ubah foto Modal -->
