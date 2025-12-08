@@ -690,39 +690,39 @@
                 <div class="swiper testimonialSwiper pb-12 px-4">
                     <div class="swiper-wrapper">
                         @for ($i = 1; $i <= 5; $i++)
-                                            <!-- Testimonial {{ $i }} -->
-                                            <div class="swiper-slide h-auto">
-                                                <div
-                                                    class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col items-center text-center hover:shadow-lg transition-all duration-300">
-                                                    <div class="relative w-24 h-24 mb-6">
-                                                        <div class="absolute inset-0 bg-blue-100 rounded-full scale-110 animate-pulse"></div>
-                                                        <img src="https://randomuser.me/api/portraits/{{ $i % 2 == 0 ? 'men' : 'women' }}/{{ rand(10, 90) }}.jpg"
+                            <!-- Testimonial {{ $i }} -->
+                            <div class="swiper-slide h-auto">
+                                <div
+                                    class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col items-center text-center hover:shadow-lg transition-all duration-300">
+                                    <div class="relative w-24 h-24 mb-6">
+                                        <div class="absolute inset-0 bg-blue-100 rounded-full scale-110 animate-pulse"></div>
+                                        <img src="https://randomuser.me/api/portraits/{{ $i % 2 == 0 ? 'men' : 'women' }}/{{ rand(10, 90) }}.jpg"
                                                             alt="User"
                                                             class="relative w-full h-full rounded-full object-cover ring-4 ring-white shadow-md">
-                                                    </div>
-                                                    <h4 class="font-bold text-xl text-gray-900 mb-1">
-                                                        {{ ['Dewi Sartika', 'Rizky Pratama', 'Sinta Nurhaliza', 'Budi Santoso', 'Ayu Lestari'][$i - 1] }}
-                                                    </h4>
-                                                    <p class="text-sm text-blue-600 font-semibold mb-6">
-                                                        {{ ['Software Engineer', 'Mahasiswa Teknik', 'Guru SD', 'Freelancer', 'UI/UX Designer'][$i - 1] }}
-                                                    </p>
+                                    </div>
+                                    <h4 class="font-bold text-xl text-gray-900 mb-1">
+                                        {{ ['Dewi Sartika', 'Rizky Pratama', 'Sinta Nurhaliza', 'Budi Santoso', 'Ayu Lestari'][$i - 1] }}
+                                    </h4>
+                                    <p class="text-sm text-blue-600 font-semibold mb-6">
+                                        {{ ['Software Engineer', 'Mahasiswa Teknik', 'Guru SD', 'Freelancer', 'UI/UX Designer'][$i - 1] }}
+                                    </p>
 
-                                                    <p class="text-gray-600 italic leading-relaxed flex-grow mb-6">
-                                                        "{{ [
+                                    <p class="text-gray-600 italic leading-relaxed flex-grow mb-6">
+                                        "{{ [
                                 'Belajar di Sukarobot benar-benar membuka wawasan saya tentang dunia IoT. Materinya sangat terstruktur.',
                                 'Sertifikasi dari Sukarobot sangat membantu saya saat melamar magang. Kurikulumnya relevan.',
                                 'Panduan yang sangat jelas dan mudah diikuti untuk pemula seperti saya.',
                                 'Instrukturnya sangat berpengalaman dan ramah dalam menjawab pertanyaan.',
                                 'Platform belajar robotik terbaik yang pernah saya coba. Sangat recommended!'
                             ][$i - 1] }}"
-                                                    </p>
+                                    </p>
 
-                                                    <div class="flex text-yellow-400 gap-1">
-                                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                                            <path
-                                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                                    <div class="flex text-yellow-400 gap-1">
+                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
                                                             <path
                                                                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                         </svg>
@@ -743,7 +743,7 @@
                                             </div>
                         @endfor
                     </div>
-                </div>
+                </div>`
 
                 <!-- Navigation Buttons -->
                 <button
@@ -775,43 +775,32 @@
             <div class="relative">
                 <div class="swiper instructorSwiper pb-12 px-4">
                     <div class="swiper-wrapper">
-                        @for ($i = 1; $i <= 10; $i++)
-                                            <!-- Instructor {{ $i }} -->
-                                            <div class="swiper-slide h-auto">
-                                                <div
-                                                    class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center h-full flex flex-col">
-                                                    <div class="relative w-32 h-32 mx-auto mb-6">
-                                                        <div
-                                                            class="absolute inset-0 bg-{{ ['blue', 'orange', 'purple', 'green', 'pink'][($i % 5)] }}-100 rounded-full scale-110 group-hover:scale-125 transition-transform duration-300">
-                                                        </div>
-                                                        <img src="https://randomuser.me/api/portraits/{{ $i % 2 == 0 ? 'women' : 'men' }}/{{ rand(10, 90) }}.jpg"
-                                                            alt="Instructor"
-                                                            class="relative w-full h-full rounded-full object-cover border-4 border-white shadow-md">
-                                                    </div>
-                                                    <h3 class="text-xl font-bold text-gray-900 mb-1">
-                                                        {{ ['Budi Santoso', 'Siti Ramadhani', 'Rizal Akbar', 'Dewi Anggraini', 'Ahmad Dani', 'Rina Wati', 'Joko Susilo', 'Maya Putri', 'Doni Kurniawan', 'Lina Marlina'][$i - 1] }}
-                                                    </h3>
-                                                    <p
-                                                        class="text-{{ ['blue', 'orange', 'purple', 'green', 'pink'][($i % 5)] }}-600 font-medium text-sm mb-3">
-                                                        {{ ['Ahli Robotika', 'AI Specialist', 'IoT Engineer', 'Product Designer', 'Fullstack Dev', 'Data Scientist', 'Embedded System', 'UI/UX Designer', 'Cloud Architect', 'Cyber Security'][$i - 1] }}
-                                                    </p>
-                                                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">
-                                                        {{ [
-                                '8+ tahun pengalaman dalam pengembangan sistem robot pintar.',
-                                'Peneliti kecerdasan buatan dengan fokus computer vision.',
-                                'Praktisi IoT yang telah membangun puluhan sistem smart home.',
-                                'Desainer produk teknologi yang berpengalaman dalam prototyping.',
-                                'Expert dalam pengembangan aplikasi web dan mobile.',
-                                'Spesialis analisis data dan machine learning.',
-                                'Pengembang sistem embedded untuk industri otomotif.',
-                                'Desainer antarmuka pengguna dengan portofolio internasional.',
-                                'Arsitek infrastruktur cloud bersertifikasi AWS.',
-                                'Pakar keamanan siber dan ethical hacking.'
-                            ][$i - 1] }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                        @endfor
+                        @foreach ($instructors as $instructor)
+                            <!-- Instructor {{ $instructor->nama }} -->
+                            <div class="swiper-slide h-auto">
+                                <div
+                                    class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center h-full flex flex-col">
+                                    <div class="relative w-32 h-32 mx-auto mb-6">
+                                        <div
+                                            class="absolute inset-0 bg-blue-100 rounded-full scale-110 group-hover:scale-125 transition-transform duration-300">
+                                        </div>
+                                        <img src="{{ $instructor->foto }}"
+                                            alt="{{ $instructor->nama }}"
+                                            class="relative w-full h-full rounded-full object-cover border-4 border-white shadow-md">
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-1">
+                                        {{ $instructor->nama }}
+                                    </h3>
+                                    <p
+                                        class="text-blue-600 font-medium text-sm mb-3">
+                                        {{ $instructor->jabatan }}
+                                    </p>
+                                    <p class="text-gray-500 text-sm leading-relaxed flex-grow line-clamp-3">
+                                        {{ $instructor->deskripsi }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
