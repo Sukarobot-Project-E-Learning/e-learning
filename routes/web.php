@@ -198,9 +198,7 @@ Route::name('client.')->group(function () {
         return view('client.berita');
     })->name('berita');
 
-    Route::get('/instruktur', function () {
-        return view('client.about.instruktur');
-    })->name('instruktur');
+    Route::get('/instruktur', [\App\Http\Controllers\Client\InstructorController::class, 'index'])->name('instruktur');
 
     // Authentication Pages
     Route::get('/register', function () {

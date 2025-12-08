@@ -34,7 +34,7 @@ class InstructorController extends Controller
                 'name' => $user->name,
                 'email' => $user->email ?? '-',
                 'phone' => $user->phone ?? '-',
-                'expertise' => $trainer->lulusan ?? '-',
+                'expertise' => $trainer->keahlian ?? '-',
                 'status' => $user->is_active ? 'Aktif' : 'Tidak Aktif',
                 'created_at' => $user->created_at ? date('Y-m-d', strtotime($user->created_at)) : '-',
                 'has_trainer_data' => $trainer ? true : false
@@ -109,7 +109,7 @@ class InstructorController extends Controller
                     'nama' => $validated['name'],
                     'email' => $validated['email'],
                     'telephone' => $validated['phone'] ?? null,
-                    'lulusan' => $validated['expertise'] ?? null,
+                    'keahlian' => $validated['expertise'] ?? null,
                     'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -142,9 +142,10 @@ class InstructorController extends Controller
             'email' => $user->email,
             'phone' => $user->phone ?? '',
             'status' => $user->is_active ? 'Approved' : 'Pending',
-            'expertise' => $trainer->lulusan ?? '',
+            'expertise' => $trainer->keahlian ?? '',
             'job' => $user->job ?? '',
-            'experience' => '', // Field tidak tersedia di database
+            'experience' => $trainer->pengalaman ?? '', // Ambil dari tabel data_trainers kolom pengalaman
+            'bio' => $trainer->bio ?? '',
             'photo' => $user->avatar ?? null,
         ];
 
@@ -169,9 +170,10 @@ class InstructorController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'password' => 'nullable|string|min:8|confirmed',
                 'status' => 'nullable|string|in:Approved,Pending,Rejected',
-                'expertise' => 'nullable|string|max:255',
-                'job' => 'nullable|string|max:255',
-                'experience' => 'nullable|string|max:255',
+                'expertise' => 'nullable|string|max:255', // data_trainers.keahlian
+                'job' => 'nullable|string|max:255', // users.job
+                'experience' => 'nullable|string|max:255', // data_trainers.pengalaman
+                'bio' => 'nullable|string', // data_trainers.bio
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
@@ -194,7 +196,11 @@ class InstructorController extends Controller
             if ($request->hasFile('photo')) {
                 // Delete old photo if exists
                 if ($user->avatar && file_exists(public_path($user->avatar))) {
-                    unlink(public_path($user->avatar));
+                    try {
+                        unlink(public_path($user->avatar));
+                    } catch (\Exception $e) {
+                        // Ignore error if file not found
+                    }
                 }
                 
                 $photo = $request->file('photo');
@@ -215,18 +221,22 @@ class InstructorController extends Controller
             // Update users table
             DB::table('users')->where('id', $id)->update($data);
 
-            // Update or insert data_trainers (only columns that exist in the table)
+            // Update or insert data_trainers
             $trainer = DB::table('data_trainers')->where('email', $user->email)->first();
             $trainerData = [
                 'nama' => $validated['name'],
                 'email' => $validated['email'],
                 'telephone' => $validated['phone'] ?? null,
-                'lulusan' => $validated['expertise'] ?? null,
+                'keahlian' => $validated['expertise'] ?? null,
+                'pengalaman' => $validated['experience'] ?? null,
+                'bio' => $validated['bio'] ?? null,
                 'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
                 'updated_at' => now(),
             ];
 
             if ($trainer) {
+                // Jika email berubah update juga email di data_trainers (perlu hati-hati jika trigger logic lain, tapi ini standar)
+                // Namun karena where('email', $user->email) memakai email LAMA, kita update record tersebut.
                 DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
             } else {
                 $trainerData['created_at'] = now();

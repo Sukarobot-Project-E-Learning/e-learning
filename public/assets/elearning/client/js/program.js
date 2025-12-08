@@ -36,27 +36,27 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hero Content Data
     const heroContent = {
         'all': {
-            title: 'Kelas di E-Learning tersedia dari level <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>',
+            title: 'Kelas di E-Learning tersedia dari level <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>',
             description: 'Tingkatkan kompetensi Anda sesuai kebutuhan industri terkini dengan kurikulum yang terstruktur dan mentor berpengalaman.'
         },
         'kursus': {
-            title: 'Tingkatkan keahlianmu dengan berbagai <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Kursus Intensif</span>',
+            title: 'Tingkatkan keahlianmu dengan berbagai <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Kursus Intensif</span>',
             description: 'Materi dirancang oleh ahli untuk pemula hingga profesional.'
         },
         'pelatihan': {
-            title: 'Ikuti pelatihan praktis untuk <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Mengasah Keterampilan</span>',
+            title: 'Ikuti pelatihan praktis untuk <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Mengasah Keterampilan</span>',
             description: 'Tingkatkan soft skill dan hard skill Anda untuk dunia kerja.'
         },
         'sertifikasi': {
-            title: 'Dapatkan pengakuan profesional melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Sertifikasi</span>',
+            title: 'Dapatkan pengakuan profesional melalui <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Sertifikasi</span>',
             description: 'Validasi keahlian Anda dengan sertifikat berstandar industri nasional dan internasional.'
         },
         'outing-class': {
-            title: 'Belajar di luar kelas dengan <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Pengalaman Langsung</span>',
+            title: 'Belajar di luar kelas dengan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Pengalaman Langsung</span>',
             description: 'Kegiatan edukatif yang menyenangkan dan interaktif untuk semua usia.'
         },
         'outboard': {
-            title: 'Bangun karakter dan kerjasama tim melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Outboard</span>',
+            title: 'Bangun karakter dan kerjasama tim melalui <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Outboard</span>',
             description: 'Kegiatan luar ruangan yang menantang untuk meningkatkan kepemimpinan dan soliditas tim.'
         }
     };

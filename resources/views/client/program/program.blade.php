@@ -101,7 +101,7 @@
         <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-200/20 rounded-full blur-[80px] animate-pulse pointer-events-none"></div>
 
         <div class="relative z-10 max-w-4xl mx-auto px-6">
-            <h1 id="hero-title" class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            <h1 id="hero-title" class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
                 {!! $heroContent[$currentCategory]['title'] ?? $heroContent['all']['title'] !!}
             </h1>
             <p id="hero-description" class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
