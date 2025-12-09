@@ -182,7 +182,7 @@
             const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
             if (hours > 0) {
-              timer.textContent = hours + ' jam ' + minutes + ' menit';
+              timer.textContent = hours + ' jam ' + minutes + ' menit ' + seconds + ' detik';
             } else if (minutes > 0) {
               timer.textContent = minutes + ' menit ' + seconds + ' detik';
             } else {
