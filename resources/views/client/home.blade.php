@@ -782,7 +782,7 @@
                                     class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center h-full flex flex-col">
                                     <div class="relative w-32 h-32 mx-auto mb-6">
                                         <div
-                                            class="absolute inset-0 bg-blue-100 rounded-full scale-110 group-hover:scale-125 transition-transform duration-300">
+                                            class="absolute inset-0 bg-blue-100 rounded-full scale-110 group-hover:scale-125 transition-transform  duration-300">
                                         </div>
                                         <img src="{{ $instructor->foto }}"
                                             alt="{{ $instructor->nama }}"

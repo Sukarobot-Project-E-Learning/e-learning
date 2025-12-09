@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @extends('client.layouts.dashboard')
 
 @section('dashboard-content')
@@ -6,12 +8,12 @@
       <h2 class="text-2xl font-bold text-blue-700 mb-4">Program Saya</h2>
       <div class="relative group mb-6">
           <!-- Left Arrow -->
-          <button id="scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full p-1.5 text-gray-600 hover:text-blue-600 hidden md:hidden lg:hidden transition-opacity duration-300 opacity-0 pointer-events-none align-items-center" aria-label="Scroll Left">
+          <button id="scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full p-1.5 text-gray-600 hover:text-blue-600 hidden md:hidden lg:hidden transition-opacity duration-300 opacity-0 pointer-events-none flex items-center justify-center" aria-label="Scroll Left">
               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
           </button>
 
           <!-- Scrollable Container -->
-          <div id="program-nav" class="flex overflow-x-auto gap-2 pb-2 scrollbar-hide snap-x">
+          <div id="program-nav" class="flex overflow-x-auto gap-2 scrollbar-hide snap-x">
               <button class="px-4 py-2 text-sm font-medium rounded-full bg-blue-500 text-white whitespace-nowrap snap-start shrink-0">Semua Program</button>
               <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Kursus</button>
               <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Pelatihan</button>
@@ -21,7 +23,7 @@
           </div>
 
           <!-- Right Arrow -->
-          <button id="scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full p-1.5 text-gray-600 hover:text-blue-600 lg:hidden align-items-center" aria-label="Scroll Right">
+          <button id="scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full p-1.5 text-gray-600 hover:text-blue-600 lg:hidden flex items-center justify-center" aria-label="Scroll Right">
               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
           </button>
       </div>

@@ -217,6 +217,8 @@ Route::name('client.')->group(function () {
         Route::get('/sertifikat', [UserDashboardController::class, 'certificate'])->name('dashboard.certificate');
         Route::get('/transaksi', [UserDashboardController::class, 'transaction'])->name('dashboard.transaction');
         Route::get('/voucher', [UserDashboardController::class, 'voucher'])->name('dashboard.voucher');
+
+        Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard');
     });
 
     Route::middleware(['auth'])->group(function () {
