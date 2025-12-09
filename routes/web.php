@@ -231,9 +231,15 @@ Route::name('client.')->group(function () {
             ->name('payment.finish');
     });
 
+    // Resume payment API (requires auth)
+    Route::post('/api/payment/resume/{transactionId}', [\App\Http\Controllers\Client\PaymentController::class, 'resumePayment'])
+        ->middleware('auth')
+        ->name('payment.resume');
+
     // Midtrans callback (no auth required)
     Route::post('/payment/callback', [\App\Http\Controllers\Client\PaymentController::class, 'callback'])
         ->name('payment.callback');
+
 
 });
 

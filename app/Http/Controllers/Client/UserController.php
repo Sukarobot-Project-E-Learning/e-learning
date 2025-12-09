@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -21,7 +23,28 @@ class UserController extends Controller
 
     public function program()
     {
-        return view('client.dashboard.program');
+        $user = Auth::user();
+        
+        // Get enrolled programs for the user
+        $enrollments = DB::table('enrollments')
+            ->join('data_programs', 'enrollments.program_id', '=', 'data_programs.id')
+            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->select(
+                'enrollments.*',
+                'data_programs.program as program_name',
+                'data_programs.slug',
+                'data_programs.image',
+                'data_programs.category',
+                'data_programs.type',
+                'data_programs.start_date',
+                'data_programs.end_date',
+                'users.name as instructor_name'
+            )
+            ->where('enrollments.student_id', $user->id)
+            ->orderBy('enrollments.created_at', 'desc')
+            ->get();
+
+        return view('client.dashboard.program', compact('enrollments'));
     }
 
     public function certificate()
@@ -31,7 +54,33 @@ class UserController extends Controller
 
     public function transaction()
     {
-        return view('client.dashboard.transaction');
+        $user = Auth::user();
+
+        // Get all transactions for the user with program details
+        $transactions = Transaction::where('student_id', $user->id)
+            ->with(['program' => function($query) {
+                $query->select('id', 'program', 'slug', 'image', 'price');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Mark expired pending transactions
+        foreach ($transactions as $transaction) {
+            if ($transaction->status === 'pending' && $transaction->isExpired()) {
+                $transaction->status = 'expired';
+                $transaction->save();
+            }
+        }
+
+        // Reload to get updated statuses
+        $transactions = Transaction::where('student_id', $user->id)
+            ->with(['program' => function($query) {
+                $query->select('id', 'program', 'slug', 'image', 'price');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('client.dashboard.transaction', compact('transactions'));
     }
 
     public function voucher()
