@@ -1,6 +1,6 @@
 @extends('client.main')
 @section('css')
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/reset.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/login/reset.css') }}">
 @endsection
 
 @section('body')
@@ -144,5 +144,5 @@
   </div>
 </main>
 
-<script src="{{ asset('assets/elearning/client/js/reset.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/login/reset.js') }}"></script>
 @endsection

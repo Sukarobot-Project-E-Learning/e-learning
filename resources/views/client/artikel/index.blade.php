@@ -108,6 +108,6 @@
 </main>
 
 <!-- Script -->
-<script src="{{ asset('assets/elearning/client/js/artikel.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/artikel/artikel.js') }}"></script>
 
 @endsection

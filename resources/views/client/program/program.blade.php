@@ -212,5 +212,5 @@
 
 @endsection
 
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program.css') }}">
-<script src="{{ asset('assets/elearning/client/js/program.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program/program.css') }}">
+<script src="{{ asset('assets/elearning/client/js/program/program.js') }}"></script>

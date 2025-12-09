@@ -153,4 +153,4 @@
     </div>
 </nav>
 
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/navbar.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/partials/navbar.css') }}">

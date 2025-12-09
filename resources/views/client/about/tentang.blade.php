@@ -1,6 +1,6 @@
 @extends('client.main')
 @section('css')
-<link rel="stylesheet" href="{{ 'client/css/about.css' }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/about/about.css') }}">
 @endsection
 
 @section('body')
@@ -142,5 +142,5 @@
     </section>
   </main>
 
-  <script src="{{ asset('assets/elearning/client/js/tentang.js') }}"></script>
+  <script src="{{ asset('assets/elearning/client/js/about/tentang.js') }}"></script>
 @endsection

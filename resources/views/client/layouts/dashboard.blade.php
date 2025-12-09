@@ -1,12 +1,12 @@
 @extends('client.main')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/layouts/dashboard.css') }}">
 @yield('dashboard-css')
 @endsection
 
 @section('body')
-<script defer src="{{ asset('assets/elearning/client/js/dashboard.js') }}"></script>
+<script defer src="{{ asset('assets/elearning/client/js/layouts/dashboard.js') }}"></script>
 
 <div class="flex-1 max-w-7xl mx-auto w-full px-6 py-12 flex flex-col lg:flex-row gap-10 pt-24">
   <!-- Sidebar (Desktop Only) -->

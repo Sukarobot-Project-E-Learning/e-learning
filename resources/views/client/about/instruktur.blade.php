@@ -1,7 +1,7 @@
 @extends('client.main')
 
 @section('css')
-<link rel="stylesheet" href="{{ 'client/css/instruktur.css' }}">
+<link rel="stylesheet" href="{{ asset('assets/elearning/client/css/about/instruktur.css') }}">
 @endsection
 
 @section('body')
@@ -57,6 +57,6 @@
   // Inject data from Controller
   const instructors = {!! json_encode($instructors) !!};
 </script>
-<script src="{{ asset('assets/elearning/client/js/instruktur.js') }}"></script>
+<script src="{{ asset('assets/elearning/client/js/about/instruktur.js') }}"></script>
 
 @endsection
