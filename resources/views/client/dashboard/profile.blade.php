@@ -30,22 +30,22 @@
             <!-- TextField: Nama Lengkap -->
             <div class="flex flex-col">
               <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
-              <input name="name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
+              <input name="name" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
             </div>
             <!-- TextField: Email -->
             <div class="flex flex-col">
               <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
-                <input name="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="{{ $user->email }}"/>
+                <input name="email" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="{{ $user->email }}"/>
               </div>
               <!-- TextField: Phone -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="phone">Nomor Telepon</label>
-                <input name="phone" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" type="number" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
+                <input name="phone" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" type="number" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
               </div>
               <!-- Job -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="job">Pekerjaan</label>
-                <input name="job" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="job" type="text" placeholder="Tambah pekerjaan Anda..." value="{{ $user->job }}"/>
+                <input name="job" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="job" type="text" placeholder="Tambah pekerjaan Anda..." value="{{ $user->job }}"/>
               </div>
               <!-- TextField: Address -->
               <div class="flex flex-col md:col-span-2">
@@ -61,18 +61,34 @@
               <!-- TextField: Kata Sandi Lama -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
-                <input name="current_password" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
+                <input name="current_password" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('current_password') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
+                @error('current_password')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
               </div>
               <!-- TextField: Kata Sandi Baru -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
-                <input name="new_password" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
+                <input name="new_password" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('new_password') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
+                @error('new_password')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+              </div>
+              <!-- ruang kosong -->
+              <div class="flex flex-col"></div>
+              <!-- TextField: Konfirmasi Kata Sandi Baru -->
+              <div class="flex flex-col">
+                <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPasswordConfirmation">Konfirmasi Kata Sandi Baru</label>
+                <input name="new_password_confirmation" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('new_password_confirmation') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPasswordConfirmation" placeholder="Ulangi kata sandi baru" type="password"/>
+                @error('new_password_confirmation')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
               </div>
             </div>
           </div>
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
-          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
+          <button id="cancelEditProfile" data-route="{{ route('client.dashboard') }}" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
           <span class="truncate">Batal</span>
           </button>
           <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-orange-500 text-white text-base font-bold leading-normal tracking-[0.015em]" type="submit">
@@ -138,19 +154,28 @@
           </div>
 
       </div>
-      @if (session('success'))
-      <div id="toast-success" 
-          class="fixed top-5 right-5 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg animate-slide-in fade-out">
-          {{ session('success') }}
-      </div>
-      @endif
-
-      @if (session('error'))
-      <div id="toast-error"
-          class="fixed top-5 right-5 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg animate-slide-in fade-out">
-          {{ session('error') }}
-      </div>
-      @endif
-
   </div>
+
+  @if (session('success'))
+  <script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '{{ session('success') }}',
+        timer: 1500
+    });
+  </script>
+  @endif
+
+  @if (session('error'))
+  <script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Batal',
+        text: '{{ session('error') }}',
+        timer: 1500
+    });
+  </script>
+  @endif
+  <script src="{{ asset('assets/elearning/client/js/dashboard/profile.js') }}"></script>
 @endsection
