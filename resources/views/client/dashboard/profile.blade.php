@@ -162,6 +162,7 @@
         icon: 'success',
         title: 'Berhasil',
         text: '{{ session('success') }}',
+        showConfirmButton: false,
         timer: 1500
     });
   </script>
@@ -173,6 +174,7 @@
         icon: 'error',
         title: 'Batal',
         text: '{{ session('error') }}',
+        showConfirmButton: false,
         timer: 1500
     });
   </script>
