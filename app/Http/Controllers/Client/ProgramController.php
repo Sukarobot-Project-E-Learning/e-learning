@@ -70,7 +70,17 @@ class ProgramController extends Controller
         $program->benefits = json_decode($program->benefits, true) ?? [];
         $program->available_slots = $program->quota - $program->enrolled_count;
 
-        return view('client.program.detail-program', compact('program'));
+        // Check if user has purchased the program
+        $isPurchased = false;
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $isPurchased = DB::table('enrollments')
+                ->where('student_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('program_id', $program->id)
+                ->where('status', 'active')
+                ->exists();
+        }
+
+        return view('client.program.detail-program', compact('program', 'isPurchased'));
     }
 
     /**
