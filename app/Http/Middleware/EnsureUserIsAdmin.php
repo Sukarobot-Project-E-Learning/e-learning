@@ -11,48 +11,31 @@ class EnsureUserIsAdmin
 {
     /**
      * Handle an incoming request.
+     * Uses 'admin' guard for separate session from user/instructor.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        // Check if logged in with admin guard
+        if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         
         // Check if user is active
         if (!$user->is_active) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard('admin')->logout();
             return redirect()->route('admin.login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
         }
 
         // STRICT: Only admin role allowed
         if ($user->role !== 'admin') {
-            // If user is logged in but not an admin, redirect to appropriate login
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            
-            $message = 'Anda tidak memiliki akses sebagai admin.';
-            switch ($user->role) {
-                case 'instructor':
-                    $message .= ' Silakan gunakan halaman login instruktur.';
-                    break;
-                case 'user':
-                    $message .= ' Silakan gunakan halaman login user.';
-                    break;
-                default:
-                    $message .= ' Silakan login dengan akun admin.';
-            }
-            
-            return redirect()->route('admin.login')->with('error', $message);
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')->with('error', 'Anda tidak memiliki akses sebagai admin.');
         }
 
         return $next($request);
     }
 }
-

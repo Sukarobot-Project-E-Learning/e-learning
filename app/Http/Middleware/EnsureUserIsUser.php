@@ -11,6 +11,7 @@ class EnsureUserIsUser
 {
     /**
      * Handle an incoming request.
+     * Uses default 'web' guard (shares session with instructor).
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
@@ -32,18 +33,9 @@ class EnsureUserIsUser
 
         // Allow user and instructor roles (instructor can access user area too)
         if (!in_array($user->role, ['user', 'instructor'])) {
-            // If user is logged in but not user or instructor, redirect to appropriate login
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            
             $message = 'Anda tidak memiliki akses ke area ini.';
-            switch ($user->role) {
-                case 'admin':
-                    $message .= ' Silakan gunakan halaman login admin.';
-                    break;
-                default:
-                    $message .= ' Silakan login dengan akun yang sesuai.';
+            if ($user->role === 'admin') {
+                $message .= ' Silakan gunakan halaman login admin.';
             }
             
             return redirect()->route('login')->with('error', $message);

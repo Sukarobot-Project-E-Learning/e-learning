@@ -20,7 +20,7 @@ use App\Http\Controllers\Client\AuthController as ClientAuthController;
 Route::prefix('admin')->name('admin.')->group(function () {
     // Redirect /admin to /admin/login (if not logged in) or /admin/dashboard (if logged in as admin)
     Route::get('/', function () {
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth('admin')->check() && auth('admin')->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
         return redirect()->route('admin.login');

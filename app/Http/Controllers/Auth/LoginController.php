@@ -15,8 +15,8 @@ class LoginController extends Controller
      */
     public function showAdminLoginForm()
     {
-        // If already logged in as admin, redirect to dashboard
-        if (Auth::check() && Auth::user()->role === 'admin') {
+        // If already logged in as admin (with admin guard), redirect to dashboard
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
         
@@ -28,7 +28,7 @@ class LoginController extends Controller
      */
     public function showInstructorLoginForm()
     {
-        // If already logged in as instructor, redirect to dashboard
+        // If already logged in as instructor (with web guard), redirect to dashboard
         if (Auth::check() && Auth::user()->role === 'instructor') {
             return redirect()->route('instructor.dashboard');
         }
@@ -38,6 +38,7 @@ class LoginController extends Controller
 
     /**
      * Handle admin login request
+     * Uses 'admin' guard for separate session
      */
     public function adminLogin(Request $request)
     {
@@ -76,13 +77,13 @@ class LoginController extends Controller
             ])->withInput($request->only('email'));
         }
 
-        // Try to authenticate using Laravel's Auth
-        if (Auth::attempt($credentials, $remember)) {
-            $authenticatedUser = Auth::user();
+        // Try to authenticate using admin guard
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $authenticatedUser = Auth::guard('admin')->user();
             
             // Double check role after authentication
             if ($authenticatedUser->role !== 'admin') {
-                Auth::logout();
+                Auth::guard('admin')->logout();
                 return back()->withErrors([
                     'email' => 'Anda tidak memiliki akses sebagai admin.'
                 ])->withInput($request->only('email'));
@@ -93,8 +94,7 @@ class LoginController extends Controller
                 ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
-            $request->session()->regenerate();
-
+            // Don't regenerate session to preserve other guard sessions
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -105,6 +105,7 @@ class LoginController extends Controller
 
     /**
      * Handle instructor login request
+     * Uses default 'web' guard (shares session with user)
      */
     public function instructorLogin(Request $request)
     {
@@ -155,7 +156,7 @@ class LoginController extends Controller
             ])->withInput($request->only('email'));
         }
 
-        // Try to authenticate using Laravel's Auth
+        // Try to authenticate using default web guard
         if (Auth::attempt($credentials, $remember)) {
             $authenticatedUser = Auth::user();
             
@@ -172,8 +173,7 @@ class LoginController extends Controller
                 ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
-            $request->session()->regenerate();
-
+            // Don't regenerate session to preserve other guard sessions
             return redirect()->intended(route('instructor.dashboard'));
         }
 
@@ -187,7 +187,7 @@ class LoginController extends Controller
      */
     public function showUserLoginForm()
     {
-        // If already logged in as user or instructor, redirect to dashboard
+        // If already logged in as user or instructor (with web guard), redirect to dashboard
         if (Auth::check() && in_array(Auth::user()->role, ['user', 'instructor'])) {
             return redirect()->route('client.dashboard');
         }
@@ -197,6 +197,7 @@ class LoginController extends Controller
 
     /**
      * Handle user login request
+     * Uses default 'web' guard (shares session with instructor)
      */
     public function userLogin(Request $request)
     {
@@ -244,7 +245,7 @@ class LoginController extends Controller
             ])->withInput($request->only('email'));
         }
 
-        // Try to authenticate using Laravel's Auth
+        // Try to authenticate using default web guard
         if (Auth::attempt($credentials, $remember)) {
             $authenticatedUser = Auth::user();
             
@@ -261,8 +262,7 @@ class LoginController extends Controller
                 ->where('id', $authenticatedUser->id)
                 ->update(['last_login_at' => now()]);
 
-            $request->session()->regenerate();
-
+            // Don't regenerate session to preserve other guard sessions
             return redirect()->intended(route('client.dashboard'));
         }
 
@@ -273,23 +273,45 @@ class LoginController extends Controller
 
     /**
      * Handle logout request
+     * Determines which guard to logout based on the referrer URL
+     * IMPORTANT: Only regenerate token when ALL guards are logged out
      */
     public function logout(Request $request)
     {
+        $previousUrl = url()->previous();
+        
+        // If coming from admin area, logout admin guard only
+        if (str_contains($previousUrl, '/admin')) {
+            Auth::guard('admin')->logout();
+            
+            // Only regenerate token if web guard is also logged out
+            if (!Auth::check()) {
+                $request->session()->regenerateToken();
+            }
+            
+            return redirect()->route('admin.login')->with('success', 'Anda telah berhasil logout dari admin.');
+        }
+        
+        // If coming from instructor area, logout web guard only
+        if (str_contains($previousUrl, '/instructor')) {
+            Auth::logout();
+            
+            // Only regenerate token if admin guard is also logged out
+            if (!Auth::guard('admin')->check()) {
+                $request->session()->regenerateToken();
+            }
+            
+            return redirect()->route('instructor.login')->with('success', 'Anda telah berhasil logout.');
+        }
+        
+        // Default: logout web guard (user/instructor) only
         Auth::logout();
         
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        // Redirect based on previous role
-        $previousUrl = url()->previous();
-        if (str_contains($previousUrl, '/admin')) {
-            return redirect()->route('admin.login')->with('success', 'Anda telah berhasil logout.');
-        } elseif (str_contains($previousUrl, '/instructor')) {
-            return redirect()->route('instructor.login')->with('success', 'Anda telah berhasil logout.');
+        // Only regenerate token if admin guard is also logged out
+        if (!Auth::guard('admin')->check()) {
+            $request->session()->regenerateToken();
         }
         
         return redirect()->route('login')->with('success', 'Anda telah berhasil logout.');
     }
 }
-

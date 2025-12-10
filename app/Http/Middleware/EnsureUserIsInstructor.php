@@ -11,6 +11,7 @@ class EnsureUserIsInstructor
 {
     /**
      * Handle an incoming request.
+     * Uses default 'web' guard (shares session with user).
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
@@ -32,21 +33,11 @@ class EnsureUserIsInstructor
 
         // STRICT: Only instructor role allowed
         if ($user->role !== 'instructor') {
-            // If user is logged in but not an instructor, redirect to appropriate login
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            
             $message = 'Anda tidak memiliki akses sebagai instruktur.';
-            switch ($user->role) {
-                case 'admin':
-                    $message .= ' Silakan gunakan halaman login admin.';
-                    break;
-                case 'user':
-                    $message .= ' Silakan gunakan halaman login user.';
-                    break;
-                default:
-                    $message .= ' Silakan login dengan akun instruktur.';
+            if ($user->role === 'admin') {
+                $message .= ' Silakan gunakan halaman login admin.';
+            } elseif ($user->role === 'user') {
+                $message .= ' Silakan gunakan halaman login user.';
             }
             
             return redirect()->route('instructor.login')->with('error', $message);
@@ -55,4 +46,3 @@ class EnsureUserIsInstructor
         return $next($request);
     }
 }
-
