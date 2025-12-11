@@ -1,4 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/elearning/client/js/dashboard/program.js') }}"></script>
 
 @extends('client.layouts.dashboard')
 
@@ -14,12 +15,12 @@
 
           <!-- Scrollable Container -->
           <div id="program-nav" class="flex overflow-x-auto gap-2 scrollbar-hide snap-x">
-              <button class="px-4 py-2 text-sm font-medium rounded-full bg-blue-500 text-white whitespace-nowrap snap-start shrink-0">Semua Program</button>
-              <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Kursus</button>
-              <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Pelatihan</button>
-              <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Sertifikasi</button>
-              <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Outing Class</button>
-              <button class="px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0">Outboard</button>
+              <button data-filter="Semua Program" class="filter-btn px-4 py-2 text-sm font-medium rounded-full bg-blue-500 text-white whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Semua Program</button>
+              <button data-filter="Kursus" class="filter-btn px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Kursus</button>
+              <button data-filter="Pelatihan" class="filter-btn px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Pelatihan</button>
+              <button data-filter="Sertifikasi" class="filter-btn px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Sertifikasi</button>
+              <button data-filter="Outing Class" class="filter-btn px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Outing Class</button>
+              <button data-filter="Outboard" class="filter-btn px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 whitespace-nowrap snap-start shrink-0 transition-colors duration-200 cursor-pointer">Outboard</button>
           </div>
 
           <!-- Right Arrow -->
@@ -37,67 +38,15 @@
               scrollbar-width: none;
           }
       </style>
-
-      <script>
-          document.addEventListener('DOMContentLoaded', () => {
-              const scrollContainer = document.getElementById('program-nav');
-              const leftBtn = document.getElementById('scroll-left');
-              const rightBtn = document.getElementById('scroll-right');
-
-              if(scrollContainer && leftBtn && rightBtn) {
-                  const checkScroll = () => {
-                      // Show/hide left button
-                      if (scrollContainer.scrollLeft > 0) {
-                          leftBtn.classList.remove('opacity-0', 'pointer-events-none');
-                          leftBtn.classList.remove('hidden'); // ensure it's visible if we removed hidden class manually
-                      } else {
-                          leftBtn.classList.add('opacity-0', 'pointer-events-none');
-                      }
-
-                      // Show/hide right button
-                      if (scrollContainer.scrollLeft < (scrollContainer.scrollWidth - scrollContainer.clientWidth - 10)) {
-                          rightBtn.classList.remove('opacity-0', 'pointer-events-none');
-                      } else {
-                          rightBtn.classList.add('opacity-0', 'pointer-events-none');
-                      }
-                  };
-
-                  leftBtn.addEventListener('click', () => {
-                      scrollContainer.scrollBy({ left: -200, behavior: 'smooth' });
-                  });
-
-                  rightBtn.addEventListener('click', () => {
-                      scrollContainer.scrollBy({ left: 200, behavior: 'smooth' });
-                  });
-
-                  scrollContainer.addEventListener('scroll', checkScroll);
-                  
-                  // Initial check
-                  checkScroll();
-                  // Also check on resize
-                  window.addEventListener('resize', checkScroll);
-              }
-          });
-      </script>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        @forelse($enrollments as $enrollment)
-          @php
-              $categoryColors = [
-                  'Kursus' => 'bg-yellow-400/20 text-yellow-800',
-                  'Pelatihan' => 'bg-purple-400/20 text-purple-800',
-                  'Sertifikasi' => 'bg-green-400/20 text-green-800',
-                  'Outing Class' => 'bg-blue-400/20 text-blue-800',
-                  'Outboard' => 'bg-red-400/20 text-red-800',
-              ];
-              $categoryColor = $categoryColors[$enrollment->category] ?? 'bg-gray-400/20 text-gray-800';
-          @endphp
-          <div class="flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+        @foreach($enrollments as $enrollment)
+          <div class="program-card flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-category="{{ $enrollment->category }}">
             <div class="relative">
               <div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" 
                    data-alt="{{ $enrollment->program_name }}" 
                    style='background-image: url("{{ asset($enrollment->image) }}");'>
               </div>
-              <span class="absolute top-3 left-3 {{ $categoryColor }} text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 z-20">
                   {{ $enrollment->category }}
               </span>
             </div>
@@ -110,20 +59,20 @@
               </a>
             </div>
           </div>
-        @empty
-          <div class="col-span-1 lg:col-span-2 bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-            <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada program</h3>
-            <p class="text-gray-500 mb-8 max-w-sm mx-auto">Anda belum terdaftar di program apapun. Mulai belajar dengan membeli program kelas.</p>
-            <a href="{{ route('client.program.semua-kelas') }}" class="inline-flex items-center justify-center bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
-              Jelajahi Program
-            </a>
+        @endforeach
+        
+        <div id="no-program-message" class="col-span-1 lg:col-span-2 bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100 {{ $enrollments->isEmpty() ? '' : 'hidden' }}">
+          <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
           </div>
-        @endforelse
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada program</h3>
+          <p class="text-gray-500 mb-8 max-w-sm mx-auto">Anda belum terdaftar di program apapun untuk kategori ini.</p>
+          <a href="{{ route('client.program.semua-kelas') }}" class="inline-flex items-center justify-center bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+            Jelajahi Program
+          </a>
+        </div>
       </div>
       <!-- <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 mt-10 pt-6">
           <div class="-mt-px flex w-0 flex-1">
