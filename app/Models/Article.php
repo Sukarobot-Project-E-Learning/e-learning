@@ -20,6 +20,9 @@ class Article extends Model
         'published_at',
         'author_id',
         'views',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [

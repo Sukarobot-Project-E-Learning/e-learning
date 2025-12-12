@@ -1,6 +1,14 @@
 @extends('client.main')
 @section('body')
 
+@push('meta')
+    <meta name="description" content="{{ $article->meta_description ?? $article->excerpt ?? Str::limit(strip_tags($article->content), 160) }}">
+    <meta name="keywords" content="{{ $article->meta_keywords ?? $article->category }}">
+    @if($article->meta_title)
+        <title>{{ $article->meta_title }} - Sukarobot</title>
+    @endif
+@endpush
+
 <!-- Article Detail -->
 <main class="max-w-5xl mx-auto px-6 pt-32 pb-20">
 
@@ -55,9 +63,25 @@
       
       <!-- Content -->
       <div class="prose prose-lg max-w-none prose-blue prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-700 prose-img:rounded-2xl prose-img:shadow-lg">
+        @if($article->excerpt)
+            <div class="text-xl text-gray-500 font-medium italic mb-8 border-l-4 border-blue-500 pl-4 bg-blue-50 py-4 pr-4 rounded-r-lg">
+                {{ $article->excerpt }}
+            </div>
+        @endif
+
         <div class="article-content text-gray-700 leading-relaxed">
           {!! $article->content !!}
         </div>
+
+        @if($article->meta_keywords)
+        <div class="mt-8 flex flex-wrap gap-2">
+            @foreach(explode(',', $article->meta_keywords) as $keyword)
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors cursor-default">
+                    #{{ trim($keyword) }}
+                </span>
+            @endforeach
+        </div>
+        @endif
       </div>
 
       <!-- Share Buttons -->

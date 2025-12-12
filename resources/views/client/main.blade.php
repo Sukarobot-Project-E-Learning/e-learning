@@ -7,8 +7,11 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="{{  asset('assets/elearning/client/css/partials/navbar.css') }}">
+    
+    <!-- Meta Tags -->
+    @stack('meta')
 
-      <!-- CSS Khusus Halaman -->
+    <!-- CSS Khusus Halaman -->
       @yield('css')
     <script></script>
 </head>

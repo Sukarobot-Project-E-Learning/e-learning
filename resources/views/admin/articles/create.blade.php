@@ -107,6 +107,53 @@
                         </div>
                     </div>
 
+                    <!-- Excerpt -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="excerpt">
+                            Excerpt
+                        </label>
+                        <textarea name="excerpt" id="excerpt" rows="3"
+                                  placeholder="Ringkasan singkat artikel..."
+                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500"></textarea>
+                    </div>
+
+                    <!-- Meta SEO -->
+                    <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700/50 dark:border-gray-600">
+                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">Konfigurasi SEO</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Meta Title -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1" for="meta_title">
+                                    Meta Title
+                                </label>
+                                <input type="text" name="meta_title" id="meta_title"
+                                       placeholder="Judul untuk mesin pencari (opsional)"
+                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                            </div>
+
+                            <!-- Meta Description -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1" for="meta_description">
+                                    Meta Description
+                                </label>
+                                <textarea name="meta_description" id="meta_description" rows="2"
+                                          placeholder="Deskripsi untuk mesin pencari (opsional)"
+                                          class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300"></textarea>
+                            </div>
+
+                            <!-- Meta Keywords -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1" for="meta_keywords">
+                                    Meta Keywords
+                                </label>
+                                <input type="text" name="meta_keywords" id="meta_keywords"
+                                       placeholder="keyword1, keyword2, keyword3 (pisahkan dengan koma)"
+                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Konten -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="content">

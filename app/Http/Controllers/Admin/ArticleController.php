@@ -58,6 +58,10 @@ class ArticleController extends Controller
             'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+            'excerpt' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
         ], [
             'title.required' => 'Judul artikel harus diisi',
             'category.required' => 'Kategori artikel harus diisi',
@@ -83,11 +87,14 @@ class ArticleController extends Controller
                 'title' => $validated['title'],
                 'slug' => Str::slug($validated['title']),
                 'content' => $validated['content'],
-                // 'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                'excerpt' => $validated['excerpt'] ?? Str::limit(strip_tags($validated['content']), 150),
                 'category' => $validated['category'],
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
                 'published_at' => $validated['status'] === 'Publish' ? now() : null,
+                'meta_title' => $validated['meta_title'],
+                'meta_description' => $validated['meta_description'],
+                'meta_keywords' => $validated['meta_keywords'],
                 'author_id' => Auth::id(),
                 'views' => 0,
             ]);
@@ -116,6 +123,10 @@ class ArticleController extends Controller
             'category' => $articleModel->category,
             'date' => $articleModel->created_at ? $articleModel->created_at->format('Y-m-d') : now()->format('Y-m-d'),
             'content' => $articleModel->content,
+            'excerpt' => $articleModel->excerpt,
+            'meta_title' => $articleModel->meta_title,
+            'meta_description' => $articleModel->meta_description,
+            'meta_keywords' => $articleModel->meta_keywords,
             'image' => $articleModel->image ? asset($articleModel->image) : null
         ];
 
@@ -136,6 +147,10 @@ class ArticleController extends Controller
             'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+            'excerpt' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
         ], [
             'title.required' => 'Judul artikel harus diisi',
             'category.required' => 'Kategori artikel harus diisi',
@@ -167,11 +182,14 @@ class ArticleController extends Controller
                 'title' => $validated['title'],
                 'slug' => Str::slug($validated['title']),
                 'content' => $validated['content'],
-                // 'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                'excerpt' => $validated['excerpt'] ?? Str::limit(strip_tags($validated['content']), 150),
                 'category' => $validated['category'],
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
                 'published_at' => $validated['status'] === 'Publish' && !$article->published_at ? now() : $article->published_at,
+                'meta_title' => $validated['meta_title'],
+                'meta_description' => $validated['meta_description'],
+                'meta_keywords' => $validated['meta_keywords'],
             ]);
 
             return redirect()->route('admin.articles.index')
