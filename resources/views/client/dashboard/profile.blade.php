@@ -20,7 +20,7 @@
         </div>
       </div>
       <!-- Form Section -->
-      <form action="{{ route('client.dashboard') }}" method="POST" enctype="multipart/form-data" class="py-6 space-y-8">
+      <form action="{{ route('client.dashboard.update') }}" method="POST" enctype="multipart/form-data" class="py-6 space-y-8">
         @csrf
         @method('PUT')
         <!-- Personal Information Section -->

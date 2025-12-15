@@ -218,7 +218,7 @@ Route::name('client.')->group(function () {
         Route::get('/transaksi', [UserDashboardController::class, 'transaction'])->name('dashboard.transaction');
         Route::get('/voucher', [UserDashboardController::class, 'voucher'])->name('dashboard.voucher');
 
-        Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard');
+        Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard.update');
     });
 
     Route::middleware(['auth'])->group(function () {
