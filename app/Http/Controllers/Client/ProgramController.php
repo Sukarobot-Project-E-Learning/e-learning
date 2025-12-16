@@ -50,11 +50,15 @@ class ProgramController extends Controller
     {
         $program = DB::table('data_programs')
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('data_trainers', function($join) {
+                $join->on('users.email', '=', DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
+            })
             ->select(
                 'data_programs.*',
                 'users.name as instructor_name',
                 'users.avatar as instructor_avatar',
-                'users.job as instructor_job'
+                'users.job as instructor_job',
+                'data_trainers.bio as instructor_description'
             )
             ->where('data_programs.slug', $slug)
             ->where('data_programs.status', 'published')
