@@ -54,9 +54,15 @@
               <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">{{ $enrollment->program_name }}</h2>
               <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: {{ \Carbon\Carbon::parse($enrollment->created_at)->translatedFormat('d M Y') }}</p>
               
-              <a href="{{ route('client.program.detail', $enrollment->slug) }}" class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-500 text-white text-sm font-medium leading-normal hover:bg-gray-600 focus:ring-4 focus:ring-primary/30">
-                <span class="truncate">Lihat Detail</span>
-              </a>
+              @if($enrollment->proof_id)
+                  <a href="{{ route('client.program.detail', $enrollment->slug) }}" class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-500 text-white text-sm font-medium leading-normal hover:bg-gray-600 focus:ring-4 focus:ring-primary/30">
+                    <span class="truncate">Lihat Detail</span>
+                  </a>
+              @else
+                  <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
+                    <span class="truncate">Kirim Bukti Program</span>
+                  </a>
+              @endif
             </div>
           </div>
         @endforeach

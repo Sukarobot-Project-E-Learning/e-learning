@@ -34,6 +34,10 @@ class UserController extends Controller
         $enrollments = DB::table('enrollments')
             ->join('data_programs', 'enrollments.program_id', '=', 'data_programs.id')
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('program_proofs', function($join) use ($user) {
+                $join->on('enrollments.student_id', '=', 'program_proofs.student_id')
+                     ->on('enrollments.program_id', '=', 'program_proofs.program_id');
+            })
             ->select(
                 'enrollments.*',
                 'data_programs.program as program_name',
@@ -43,7 +47,9 @@ class UserController extends Controller
                 'data_programs.type',
                 'data_programs.start_date',
                 'data_programs.end_date',
-                'users.name as instructor_name'
+                'users.name as instructor_name',
+                'program_proofs.status as proof_status',
+                'program_proofs.id as proof_id'
             )
             ->where('enrollments.student_id', $user->id)
             ->orderBy('enrollments.created_at', 'desc')
