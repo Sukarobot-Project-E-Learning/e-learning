@@ -1,6 +1,7 @@
 @extends('client.main')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/login/login.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endsection
 
 @section('body')
@@ -55,8 +56,13 @@
           </div>
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" id="password" name="password" required placeholder="Masukkan password"
-                   class="w-full mt-1 px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 hover:shadow-md active:scale-95">
+            <div class="relative mt-1">
+                <input type="password" id="password" name="password" required placeholder="Masukkan password"
+                       class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 hover:shadow-md active:scale-95 pr-10">
+                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </div>
           </div>
 
           <button type="submit" id="submit-btn"
@@ -75,7 +81,7 @@
         </div>
 
         <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">
-          <a href="{{ url('/reset') }}" class="hover:text-blue-600 transition">Lupa Password?</a>
+          <a href="{{ route('client.reset-password') }}" class="hover:text-blue-600 transition">Lupa Password?</a>
           <a href="{{ url('/register') }}" class="hover:text-orange-500 transition">Buat Akun Baru</a>
         </div>
       </div>

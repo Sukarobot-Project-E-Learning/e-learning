@@ -7,16 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // animasi card muncul
     setTimeout(() => {
-      card.classList.remove("opacity-0", "scale-90");
-      card.classList.add("opacity-100", "scale-100");
+        card.classList.remove("opacity-0", "scale-90");
+        card.classList.add("opacity-100", "scale-100");
     }, 300);
 
     // animasi teks muncul bertahap
     const fadeElements = document.querySelectorAll(".animate-fade");
     fadeElements.forEach((el, i) => {
-      setTimeout(() => {
-        el.style.animation = "fadeUp 0.6s ease forwards";
-      }, 600 + i * 300);
+        setTimeout(() => {
+            el.style.animation = "fadeUp 0.6s ease forwards";
+        }, 600 + i * 300);
     });
 
     // Handle login form submit
@@ -56,6 +56,25 @@ document.addEventListener("DOMContentLoaded", () => {
             if (googleLoginBtn.tagName === 'BUTTON') {
                 e.preventDefault();
                 window.location.href = '/auth/google';
+            }
+        });
+    }
+
+    // seek password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const icon = document.querySelector('i');
+
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function (e) {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         });
     }

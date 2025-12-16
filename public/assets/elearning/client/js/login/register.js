@@ -87,4 +87,40 @@ document.addEventListener("DOMContentLoaded", () => {
         errorMessages.classList.remove("hidden");
         errorMessages.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+
+    // seek password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('password_confirmation');
+    const iconPassword = document.getElementById('icon_password');
+    const iconConfirmPassword = document.getElementById('icon_password_confirmation');
+
+
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function (e) {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                iconPassword.classList.remove('fa-eye');
+                iconPassword.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                iconPassword.classList.remove('fa-eye-slash');
+                iconPassword.classList.add('fa-eye');
+            }
+        });
+    }
+
+    if (toggleConfirmPassword) {
+        toggleConfirmPassword.addEventListener('click', function (e) {
+            if (confirmPasswordInput.type === 'password') {
+                confirmPasswordInput.type = 'text';
+                iconConfirmPassword.classList.remove('fa-eye');
+                iconConfirmPassword.classList.add('fa-eye-slash');
+            } else {
+                confirmPasswordInput.type = 'password';
+                iconConfirmPassword.classList.remove('fa-eye-slash');
+                iconConfirmPassword.classList.add('fa-eye');
+            }
+        });
+    }
 });
