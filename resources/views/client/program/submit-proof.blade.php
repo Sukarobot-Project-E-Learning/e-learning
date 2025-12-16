@@ -48,7 +48,7 @@
             <div class="flex-1 z-10">
                 <span class="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full mb-3">PROGRAM AKTIF</span>
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $program->program }}</h2>
-                <p class="text-gray-500 text-sm mb-4">{{ $program->start_date == $program->end_date ? $program->start_date : $program->start_date . ' - ' . $program->end_date }}</p>
+                <p class="text-gray-500 text-sm mb-4">{{ $program->start_date == $program->end_date ? \Carbon\Carbon::parse($program->start_date)->format('d F Y') : \Carbon\Carbon::parse($program->start_date)->format('d F Y') . ' - ' . \Carbon\Carbon::parse($program->end_date)->format('d F Y') }}</p>
                 
                 <a href="{{ route('client.program.detail', $program->slug) }}" class="inline-flex items-center text-green-600 font-bold text-sm hover:underline">
                     Lihat Detail <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
