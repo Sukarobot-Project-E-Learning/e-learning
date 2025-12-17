@@ -1,6 +1,7 @@
 @extends('client.main')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/login/reset.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 
 @section('body')
@@ -132,19 +133,7 @@
     </form>
   </div>
 
-  <!-- Popup Success -->
-  <div id="popup-success" class="fixed inset-0 bg-black/40 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center text-center w-72">
-      <!-- Loading Spinner -->
-      <div id="popup-loading" class="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-      <!-- Icon Centang -->
-      <svg id="popup-check" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-green-500 hidden mt-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-      </svg>
-      <!-- Pesan -->
-      <p id="popup-text" class="mt-4 text-gray-700 font-medium text-base">Memproses...</p>
-    </div>
-  </div>
+
 </main>
 
 <script src="{{ asset('assets/elearning/client/js/login/reset.js') }}"></script>

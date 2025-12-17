@@ -159,16 +159,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("reset-email").value;
     const token = Array.from(document.querySelectorAll(".otp-input")).map(i => i.value).join("");
 
-    // Show popup
-    const popup = document.getElementById("popup-success");
-    const popupLoading = document.getElementById("popup-loading");
-    const popupCheck = document.getElementById("popup-check");
-    const popupText = document.getElementById("popup-text");
-
-    popup.classList.remove("hidden");
-    popupLoading.classList.remove("hidden");
-    popupCheck.classList.add("hidden");
-    popupText.textContent = "Memproses...";
+    // Show loading with SweetAlert2
+    Swal.fire({
+      title: 'Memproses...',
+      text: 'Mohon tunggu sebentar',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
     try {
       const response = await fetch('/password/reset', {
@@ -189,29 +190,43 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (data.success) {
-        // Success
-        popupLoading.classList.add("hidden");
-        popupCheck.classList.remove("hidden");
-        popupText.textContent = "Password berhasil diganti!";
-
-        // Redirect after delay
-        setTimeout(() => {
-          popup.classList.add("hidden");
-          window.location.href = "/login";
-        }, 2000);
+        // Success with SweetAlert2
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Password berhasil diganti!',
+          confirmButtonText: 'Login Sekarang',
+          confirmButtonColor: '#f97316',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/login";
+          }
+        });
       } else {
-        // Error
-        popup.classList.add("hidden");
-        passwordError.textContent = data.message || 'Gagal mengubah password';
-        passwordError.classList.remove("hidden");
+        // Error with SweetAlert2
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: data.message || 'Gagal mengubah password',
+          confirmButtonText: 'Coba Lagi',
+          confirmButtonColor: '#ef4444'
+        });
       }
     } catch (error) {
       console.error('Error:', error);
-      popup.classList.add("hidden");
-      passwordError.textContent = 'Gagal menghubungi server';
-      passwordError.classList.remove("hidden");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Gagal menghubungi server. Silakan coba lagi.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ef4444'
+      });
     }
   });
+
+
+
 
 
   // ========================
