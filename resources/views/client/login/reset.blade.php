@@ -25,12 +25,15 @@
           <p class="text-gray-600 mb-6 text-sm text-center md:text-left">Masukkan email.</p>
 
           <form id="form-step-1" class="space-y-4">
-            <input type="text" id="identity" name="identity" required
+            <input type="hidden" id="reset-email" value="">
+            <input type="email" id="identity" name="identity" required
                    placeholder="Email"
                    class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition duration-300 hover:shadow-md active:scale-95">
-            <button type="submit"
-                    class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
-              Cari
+            <p id="error-step-1" class="hidden text-red-500 text-sm"></p>
+            <button type="submit" id="btn-step-1"
+                    class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span id="btn-text-1">Cari</span>
+              <span id="btn-loading-1" class="hidden">Mengirim...</span>
             </button>
           </form>
         </div>

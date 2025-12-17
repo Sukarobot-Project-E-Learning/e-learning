@@ -55,6 +55,11 @@ Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthContro
 // Logout Route (support both GET and POST)
 Route::match(['get', 'post'], '/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+// Password Reset Routes (Public)
+Route::post('/password/send-otp', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendOtp'])->name('password.send-otp');
+Route::post('/password/verify-otp', [\App\Http\Controllers\Auth\PasswordResetController::class, 'verifyOtp'])->name('password.verify-otp');
+Route::post('/password/reset', [\App\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword'])->name('password.reset');
+
 // Region API Routes (Public)
 Route::prefix('api/regions')->name('api.regions.')->group(function () {
     Route::get('/provinces', [\App\Http\Controllers\RegionController::class, 'getProvinces'])->name('provinces');
