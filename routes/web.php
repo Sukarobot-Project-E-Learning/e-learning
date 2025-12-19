@@ -157,6 +157,12 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::get('quizzes/{id}/edit', [\App\Http\Controllers\Admin\QuizController::class, 'edit'])->name('quizzes.edit');
     Route::put('quizzes/{id}', [\App\Http\Controllers\Admin\QuizController::class, 'update'])->name('quizzes.update');
     Route::delete('quizzes/{id}', [\App\Http\Controllers\Admin\QuizController::class, 'destroy'])->name('quizzes.destroy');
+    // Certificate Templates
+    Route::post('certificates/templates/preview', [\App\Http\Controllers\Admin\CertificateTemplateController::class, 'preview'])->name('admin.certificates.templates.preview');
+    Route::resource('certificates/templates', \App\Http\Controllers\Admin\CertificateTemplateController::class, [
+        'as' => 'admin.certificates'
+    ]);
+
 });
 
 // Client/User Routes
