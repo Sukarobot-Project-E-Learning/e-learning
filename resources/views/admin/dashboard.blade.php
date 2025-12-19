@@ -14,8 +14,8 @@
     </div>
 
     <!-- Statistic Cards Grid - 5 Cards -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <!-- Card 1: Pengguna (Blue style) -->
+    <div class="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+        <!-- Card 1: Total Pengguna (Blue style) -->
         <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
             <div class="p-3 mr-4 text-blue-500 bg-blue-100 dark:text-blue-100 dark:bg-blue-600 rounded-full">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Pengguna
+                    Total Pengguna
                 </p>
                 <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {{ number_format($totalUsers ?? 0) }}
@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <!-- Card 2: Instruktur (Red/Pink style) -->
+        <!-- Card 2: Total Instruktur (Red/Pink style) -->
         <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
             <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -41,7 +41,7 @@
             </div>
             <div>
                 <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Instruktur
+                    Total Instruktur
                 </p>
                 <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {{ number_format($totalInstructors ?? 0) }}
@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <!-- Card 4: Program Tersedia (Green style) -->
+        <!-- Card 4: Program Aktif (Green style) -->
         <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
             <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -75,7 +75,7 @@
             </div>
             <div>
                 <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Program Tersedia
+                    Program Aktif
                 </p>
                 <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {{ number_format($programsAvailable ?? 0) }}
@@ -83,9 +83,9 @@
             </div>
         </div>
 
-        <!-- Card 5: Program Tidak Tersedia (Gray/Purple style) -->
+        <!-- Card 5: Program Non-Aktif (Purple style) -->
         <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-purple-500 bg-purple-100 rounded-full dark:text-purple-100 dark:bg-purple-600">
+            <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                 </svg>
