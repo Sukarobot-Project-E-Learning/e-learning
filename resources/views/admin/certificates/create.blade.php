@@ -1,126 +1,302 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah Sertifikat')
+@section('title', 'Tambah Template Sertifikat')
 
 @section('content')
+
+    {{-- Load fonts for preview --}}
+    <style>
+        @font-face {
+            font-family: 'Lobster';
+            src: url('{{ asset("fonts/Lobster-Regular.ttf") }}') format('truetype');
+        }
+        @font-face {
+            font-family: 'Lato';
+            src: url('{{ asset("fonts/Lato-Regular.ttf") }}') format('truetype');
+        }
+        .font-lobster { font-family: 'Lobster', cursive; }
+        .font-lato { font-family: 'Lato', sans-serif; }
+    </style>
 
     <div class="container px-6 mx-auto">
 
         <!-- Page Header -->
         <div class="my-6">
             <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah Sertifikat</h2>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah Template Sertifikat</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Buat template dan atur posisi & ukuran text.</p>
+                </div>
                 <div class="flex flex-col items-end" style="gap: 16px;">
                     <a href="{{ route('admin.certificates.index') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                       class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
                         Kembali
                     </a>
-                    <button type="submit" 
-                            form="certificateForm"
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    <button type="submit" form="templateForm"
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>Tambah Sertifikat</span>
+                        Simpan Template
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Form Card -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="certificateForm" action="{{ route('admin.certificates.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="px-6 py-6 space-y-6">
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-                    <!-- Nama -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="name">
-                            Nama <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="name" id="name" required
-                               placeholder="Nama user"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
-                    </div>
-
-                    <!-- Judul -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="title">
-                            Judul <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="title" id="title" required
-                               placeholder="Workshop Branding"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
-                    </div>
-
-                    <!-- Blanko -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Blanko <span class="text-red-500">*</span>
-                        </label>
-                        <div class="flex items-center justify-center w-full">
-                            <label for="blanko" 
-                                   class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ imagePreview: null }"
-                                   @dragover.prevent
-                                   @drop.prevent="
-                                       let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           let reader = new FileReader();
-                                           reader.onload = (e) => { imagePreview = e.target.result };
-                                           reader.readAsDataURL(file);
-                                           $refs.blankoInput.files = $event.dataTransfer.files;
-                                       }
-                                   ">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!imagePreview">
-                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk JPG, JPEG, PNG.
-                                    </p>
+        <form id="templateForm" action="{{ route('admin.certificates.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Left Column: Form Fields -->
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Informasi Template</h3>
+                        
+                        <!-- Program -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Program <span class="text-red-500">*</span></label>
+                            @if($programs->isEmpty())
+                                <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-700">
+                                    Semua program sudah memiliki template.
                                 </div>
-                                <div x-show="imagePreview" class="relative w-full h-full p-4">
-                                    <img :src="imagePreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
-                                    <button type="button" 
-                                            @click.stop.prevent="imagePreview = null; $refs.blankoInput.value = ''"
-                                            class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <input id="blanko" 
-                                       name="blanko" 
-                                       type="file" 
-                                       class="hidden" 
-                                       accept="image/jpeg,image/jpg,image/png"
-                                       x-ref="blankoInput"
-                                       required
-                                       @change="
-                                           let file = $event.target.files[0];
-                                           if (file) {
-                                               let reader = new FileReader();
-                                               reader.onload = (e) => { imagePreview = e.target.result };
-                                               reader.readAsDataURL(file);
-                                           }
-                                       ">
-                            </label>
+                            @else
+                                <select name="program_id" required class="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-purple-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                                    <option value="">Pilih program</option>
+                                    @foreach($programs as $program)
+                                        <option value="{{ $program->id }}">{{ $program->program }}</option>
+                                    @endforeach
+                                </select>
+                            @endif
+                        </div>
+
+                        <!-- Prefix -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prefix Nomor <span class="text-red-500">*</span></label>
+                            <input type="text" name="number_prefix" value="{{ old('number_prefix', 'B-1/PT.STG') }}" required
+                                   class="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deskripsi</label>
+                            <textarea name="description" rows="2" id="descriptionInput"
+                                      class="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                      oninput="updatePreview()">{{ old('description') }}</textarea>
+                        </div>
+
+                        <!-- Blanko Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Blanko <span class="text-red-500">*</span></label>
+                            <input type="file" name="blanko" id="blankoInput" accept="image/*" required
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-50 file:text-purple-700"
+                                   onchange="handleImageUpload(this)">
                         </div>
                     </div>
 
-                </div>
-            </form>
-        </div>
+                    <!-- Position & Font Size Controls -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📍 Posisi & Ukuran Font</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Name -->
+                            <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200">
+                                <label class="block text-sm font-medium text-yellow-800 mb-2">🟡 Nama (Lobster)</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="text-xs text-gray-600">X (%)</label>
+                                        <input type="number" name="name_x" id="name_x" value="{{ $defaults['name_x'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Y (%)</label>
+                                        <input type="number" name="name_y" id="name_y" value="{{ $defaults['name_y'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Size (pt)</label>
+                                        <input type="number" name="name_font_size" id="name_font_size" value="{{ $defaults['name_font_size'] }}" min="8" max="100"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Number -->
+                            <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200">
+                                <label class="block text-sm font-medium text-green-800 mb-2">🟢 Nomor Sertifikat (Lato)</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="text-xs text-gray-600">X (%)</label>
+                                        <input type="number" name="number_x" id="number_x" value="{{ $defaults['number_x'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Y (%)</label>
+                                        <input type="number" name="number_y" id="number_y" value="{{ $defaults['number_y'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Size (pt)</label>
+                                        <input type="number" name="number_font_size" id="number_font_size" value="{{ $defaults['number_font_size'] }}" min="8" max="100"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200">
+                                <label class="block text-sm font-medium text-blue-800 mb-2">🔵 Deskripsi (Lato)</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="text-xs text-gray-600">X (%)</label>
+                                        <input type="number" name="desc_x" id="desc_x" value="{{ $defaults['desc_x'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Y (%)</label>
+                                        <input type="number" name="desc_y" id="desc_y" value="{{ $defaults['desc_y'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Size (pt)</label>
+                                        <input type="number" name="desc_font_size" id="desc_font_size" value="{{ $defaults['desc_font_size'] }}" min="8" max="100"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date -->
+                            <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200">
+                                <label class="block text-sm font-medium text-purple-800 mb-2">🟣 Tanggal (Lato)</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="text-xs text-gray-600">X (%)</label>
+                                        <input type="number" name="date_x" id="date_x" value="{{ $defaults['date_x'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Y (%)</label>
+                                        <input type="number" name="date_y" id="date_y" value="{{ $defaults['date_y'] }}" min="0" max="100" step="0.5"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-600">Size (pt)</label>
+                                        <input type="number" name="date_font_size" id="date_font_size" value="{{ $defaults['date_font_size'] }}" min="8" max="100"
+                                               class="block w-full px-2 py-1 text-sm border rounded" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Preview -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">👁️ Live Preview</h3>
+                    
+                    <div id="previewPlaceholder" class="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300">
+                        <div class="text-center text-gray-500">
+                            <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p>Upload blanko untuk melihat preview</p>
+                        </div>
+                    </div>
+
+                    <div id="previewContainer" class="hidden relative">
+                        <img id="previewImage" src="" alt="Preview" class="w-full h-auto rounded-lg border border-gray-300">
+                        
+                        <!-- Overlay markers with real fonts -->
+                        <div id="markerName" class="absolute font-lobster text-gray-800 whitespace-nowrap" style="transform: translate(-50%, -50%);">
+                            Nama Penerima
+                        </div>
+                        <div id="markerNumber" class="absolute font-lato text-gray-800 whitespace-nowrap" style="transform: translate(-50%, -50%);">
+                            No: 001/B-1/PT.STG/{{ $currentMonth }}/{{ $currentYear }}
+                        </div>
+                        <div id="markerDesc" class="absolute font-lato text-gray-800 whitespace-nowrap max-w-[80%] truncate" style="transform: translate(-50%, -50%);">
+                            Deskripsi
+                        </div>
+                        <div id="markerDate" class="absolute font-lato text-gray-800 whitespace-nowrap" style="transform: translate(-50%, -50%);">
+                            {{ now()->format('d') }} {{ ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][now()->month - 1] }} {{ now()->year }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-xs text-gray-500">
+                        <p><strong>Tips:</strong> Ubah nilai untuk mengatur posisi dan ukuran font.</p>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-@endsection
+    <script>
+        function handleImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewPlaceholder').classList.add('hidden');
+                    document.getElementById('previewContainer').classList.remove('hidden');
+                    document.getElementById('previewImage').src = e.target.result;
+                    updatePreview();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
+        function updatePreview() {
+            const container = document.getElementById('previewContainer');
+            if (container.classList.contains('hidden')) return;
+
+            // Get values
+            const nameX = document.getElementById('name_x').value;
+            const nameY = document.getElementById('name_y').value;
+            const nameFontSize = document.getElementById('name_font_size').value;
+            const numberX = document.getElementById('number_x').value;
+            const numberY = document.getElementById('number_y').value;
+            const numberFontSize = document.getElementById('number_font_size').value;
+            const descX = document.getElementById('desc_x').value;
+            const descY = document.getElementById('desc_y').value;
+            const descFontSize = document.getElementById('desc_font_size').value;
+            const dateX = document.getElementById('date_x').value;
+            const dateY = document.getElementById('date_y').value;
+            const dateFontSize = document.getElementById('date_font_size').value;
+            const description = document.getElementById('descriptionInput').value || 'Deskripsi';
+
+            // Update markers - position and font size
+            const markerName = document.getElementById('markerName');
+            markerName.style.left = nameX + '%';
+            markerName.style.top = nameY + '%';
+            markerName.style.fontSize = (nameFontSize * 0.5) + 'px'; // Scale for preview
+
+            const markerNumber = document.getElementById('markerNumber');
+            markerNumber.style.left = numberX + '%';
+            markerNumber.style.top = numberY + '%';
+            markerNumber.style.fontSize = (numberFontSize * 0.5) + 'px';
+
+            const markerDesc = document.getElementById('markerDesc');
+            markerDesc.style.left = descX + '%';
+            markerDesc.style.top = descY + '%';
+            markerDesc.style.fontSize = (descFontSize * 0.5) + 'px';
+            markerDesc.textContent = description.substring(0, 50) + (description.length > 50 ? '...' : '');
+
+            const markerDate = document.getElementById('markerDate');
+            markerDate.style.left = dateX + '%';
+            markerDate.style.top = dateY + '%';
+            markerDate.style.fontSize = (dateFontSize * 0.5) + 'px';
+        }
+    </script>
+
+@endsection
