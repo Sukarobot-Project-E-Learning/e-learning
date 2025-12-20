@@ -16,9 +16,16 @@ class UserController extends Controller
     {
         $users = DB::table('users')
             ->where('role', 'user')
+            ->when(request('search'), function ($query) {
+                $query->where('name', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('status'), function ($query) {
+                $query->where('is_active', request('status') === 'active' ? 1 : 0);
+            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.users.index', compact('users'));
     }
@@ -198,9 +205,16 @@ class UserController extends Controller
     {
         $users = DB::table('users')
             ->where('role', 'admin')
+            ->when(request('search'), function ($query) {
+                $query->where('name', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('status'), function ($query) {
+                $query->where('is_active', request('status') === 'active' ? 1 : 0);
+            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.admins.index', compact('users'));
     }

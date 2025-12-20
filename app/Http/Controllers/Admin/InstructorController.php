@@ -18,9 +18,21 @@ class InstructorController extends Controller
         // Get instructors from users table with role='instructor'
         $instructors = DB::table('users')
             ->where('role', 'instructor')
+            ->when(request('search'), function ($query) {
+                $query->where('name', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('status'), function ($query) {
+                $status = request('status');
+                if ($status === 'active') { // "Aktif" displayed as Active
+                     $query->where('is_active', 1);
+                } elseif ($status === 'inactive') { // "Tidak Aktif"
+                     $query->where('is_active', 0);
+                }
+            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at', 'last_login_at')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         // Transform data after pagination
         $instructors->getCollection()->transform(function($user) {
