@@ -14,93 +14,72 @@
     </div>
 
     <!-- Statistic Cards Grid - 5 Cards -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
-        <!-- Card 1: Total Pengguna (Blue style) -->
-        <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-blue-500 bg-blue-100 dark:text-blue-100 dark:bg-blue-600 rounded-full">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Card 1: Total User -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-start space-x-4 rounded-lg">
+            <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
             </div>
             <div>
-                <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Total Pengguna
-                </p>
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {{ number_format($totalUsers ?? 0) }}
-                </p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total User</p>
+                <h4 class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalUsers }}</h4>
             </div>
         </div>
 
-        <!-- Card 2: Total Instruktur (Red/Pink style) -->
-        <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+        <!-- Card 2: Total Instructor -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-start space-x-4 rounded-lg">
+            <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
             </div>
             <div>
-                <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Total Instruktur
-                </p>
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {{ number_format($totalInstructors ?? 0) }}
-                </p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Instructor</p>
+                <h4 class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalInstructors }}</h4>
             </div>
         </div>
 
-        <!-- Card 3: Total Program (Orange/Yellow style) -->
-        <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-600">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+        <!-- Card 3: Total Program -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-start space-x-4 rounded-lg">
+            <div class="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
             <div>
-                <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Total Program
-                </p>
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {{ number_format($totalPrograms ?? 0) }}
-                </p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Program</p>
+                <h4 class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalPrograms }}</h4>
             </div>
         </div>
 
-        <!-- Card 4: Program Aktif (Green style) -->
-        <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-600">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        <!-- Card 4: Program Aktif -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-start space-x-4 rounded-lg">
+            <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
             <div>
-                <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Program Aktif
-                </p>
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {{ number_format($programsAvailable ?? 0) }}
-                </p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Program Aktif</p>
+                <h4 class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ $programsAvailable }}</h4>
             </div>
         </div>
 
-        <!-- Card 5: Program Non-Aktif (Purple style) -->
-        <div class="flex items-center p-4 bg-white border border-gray-100 shadow-sm dark:bg-gray-800 dark:border-gray-700 rounded-lg">
-            <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        <!-- Card 5: Program Non Aktif -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-start space-x-4 rounded-lg">
+            <div class="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
             <div>
-                <p class="mb-1 text-sm font-bold text-gray-400 dark:text-gray-400">
-                    Program Non-Aktif
-                </p>
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {{ number_format($programsUnavailable ?? 0) }}
-                </p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Program Non Aktif</p>
+                <h4 class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ $programsUnavailable }}</h4>
             </div>
         </div>
     </div>
-
     <!-- Chart Section -->
     <div class="bg-white rounded-lg shadow-md dark:bg-gray-800 p-6 mb-8">
         <div class="flex justify-between items-center mb-4">
