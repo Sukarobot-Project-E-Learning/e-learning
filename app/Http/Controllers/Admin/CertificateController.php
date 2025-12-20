@@ -64,10 +64,10 @@ class CertificateController extends Controller
 
         // Default positions and font sizes
         $defaults = [
-            'name_x' => 50, 'name_y' => 28, 'name_font_size' => 38,
-            'desc_x' => 50, 'desc_y' => 48, 'desc_font_size' => 16,
-            'number_x' => 50, 'number_y' => 18, 'number_font_size' => 12,
-            'date_x' => 50, 'date_y' => 88, 'date_font_size' => 14,
+            'name_x' => 54, 'name_y' => 41, 'name_font_size' => 70,
+            'desc_x' => 51.9, 'desc_y' => 56, 'desc_font_size' => 37,
+            'number_x' => 53.9, 'number_y' => 30.7, 'number_font_size' => 30,
+            'date_x' => 54, 'date_y' => 68, 'date_font_size' => 30,
         ];
 
         return view('admin.certificates.create', compact(
@@ -326,18 +326,18 @@ class CertificateController extends Controller
 
         // Get position and font size settings from template
         $settings = [
-            'name_x' => $template->name_x ?? 50,
-            'name_y' => $template->name_y ?? 28,
-            'desc_x' => $template->desc_x ?? 50,
-            'desc_y' => $template->desc_y ?? 48,
-            'number_x' => $template->number_x ?? 50,
-            'number_y' => $template->number_y ?? 18,
-            'date_x' => $template->date_x ?? 50,
-            'date_y' => $template->date_y ?? 88,
-            'name_font_size' => $template->name_font_size ?? 38,
-            'desc_font_size' => $template->desc_font_size ?? 16,
-            'number_font_size' => $template->number_font_size ?? 12,
-            'date_font_size' => $template->date_font_size ?? 14,
+            'name_x' => $template->name_x ?? 54,
+            'name_y' => $template->name_y ?? 41,
+            'desc_x' => $template->desc_x ?? 51.9,
+            'desc_y' => $template->desc_y ?? 56,
+            'number_x' => $template->number_x ?? 53.9,
+            'number_y' => $template->number_y ?? 30.7,
+            'date_x' => $template->date_x ?? 54,
+            'date_y' => $template->date_y ?? 68,
+            'name_font_size' => $template->name_font_size ?? 70,
+            'desc_font_size' => $template->desc_font_size ?? 37,
+            'number_font_size' => $template->number_font_size ?? 30,
+            'date_font_size' => $template->date_font_size ?? 30,
         ];
 
         // Generate certificate image with custom positions and font sizes
@@ -477,10 +477,10 @@ class CertificateController extends Controller
         $useLobster = file_exists($lobsterFont);
 
         // Font sizes from template settings
-        $sizeNumber = $settings['number_font_size'] ?? 12;
-        $sizeName = $settings['name_font_size'] ?? 38;
-        $sizeDescription = $settings['desc_font_size'] ?? 16;
-        $sizeDate = $settings['date_font_size'] ?? 14;
+        $sizeNumber = $settings['number_font_size'] ?? 30;
+        $sizeName = $settings['name_font_size'] ?? 70;
+        $sizeDescription = $settings['desc_font_size'] ?? 37;
+        $sizeDate = $settings['date_font_size'] ?? 30;
 
         /**
          * Draw text at specified X,Y position (percentage based)

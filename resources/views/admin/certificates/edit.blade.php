@@ -208,8 +208,8 @@
                         <div id="markerNumber" class="absolute font-lato text-gray-800 whitespace-nowrap" style="transform: translate(-50%, -50%);">
                             No: 001/{{ $template->number_prefix }}/XII/2025
                         </div>
-                        <div id="markerDesc" class="absolute font-lato text-gray-800 whitespace-nowrap max-w-[80%] truncate" style="transform: translate(-50%, -50%);">
-                            {{ $template->description ?: 'Deskripsi' }}
+                        <div id="markerDesc" class="absolute font-lato text-gray-800 text-center" style="transform: translate(-50%, 0); min-width: 60%; max-width: 85%; line-height: 1.4;">
+                            <div id="markerDescLines">{{ $template->description ?: 'Deskripsi' }}</div>
                         </div>
                         <div id="markerDate" class="absolute font-lato text-gray-800 whitespace-nowrap" style="transform: translate(-50%, -50%);">
                             {{ now()->format('d') }} {{ ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][now()->month - 1] }} {{ now()->year }}
@@ -267,7 +267,29 @@
             markerDesc.style.left = descX + '%';
             markerDesc.style.top = descY + '%';
             markerDesc.style.fontSize = (descFontSize * 0.5) + 'px';
-            markerDesc.textContent = description.substring(0, 50) + (description.length > 50 ? '...' : '');
+            
+            // Word wrap description into multiple lines (matching PHP wordwrap)
+            const linesContainer = document.getElementById('markerDescLines');
+            if (description.length > 50) {
+                const words = description.split(' ');
+                let lines = [];
+                let currentLine = '';
+                const maxChars = 60; // match PHP wordwrap(60) for longer lines
+                
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length <= maxChars) {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    } else {
+                        if (currentLine) lines.push(currentLine);
+                        currentLine = word;
+                    }
+                });
+                if (currentLine) lines.push(currentLine);
+                
+                linesContainer.innerHTML = lines.map(line => `<div style="margin-bottom: 2px;">${line}</div>`).join('');
+            } else {
+                linesContainer.textContent = description;
+            }
 
             const markerDate = document.getElementById('markerDate');
             markerDate.style.left = dateX + '%';
