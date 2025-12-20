@@ -62,11 +62,11 @@ class CertificateController extends Controller
         $currentMonth = $this->romanMonth(Carbon::now()->month);
         $currentYear = Carbon::now()->year;
 
-        // Default positions and font sizes
+        // Default positions and font sizes (must be 100% zoom scale)
         $defaults = [
-            'name_x' => 54, 'name_y' => 41, 'name_font_size' => 70,
-            'desc_x' => 51.9, 'desc_y' => 56, 'desc_font_size' => 37,
-            'number_x' => 53.9, 'number_y' => 30.7, 'number_font_size' => 30,
+            'name_x' => 54, 'name_y' => 41, 'name_font_size' => 85,
+            'desc_x' => 54, 'desc_y' => 54, 'desc_font_size' => 31,
+            'number_x' => 54, 'number_y' => 30.5, 'number_font_size' => 30,
             'date_x' => 54, 'date_y' => 68, 'date_font_size' => 30,
         ];
 
