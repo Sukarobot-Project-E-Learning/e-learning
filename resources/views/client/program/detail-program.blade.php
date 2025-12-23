@@ -120,7 +120,16 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Durasi: {{ $material['duration'] }} Jam
+                    @php
+                      $durationParts = explode(':', $material['duration']);
+                      $hours = intval($durationParts[0] ?? 0);
+                      $minutes = intval($durationParts[1] ?? 0);
+                      $durationText = '';
+                      if ($hours > 0) $durationText .= $hours . ' Jam';
+                      if ($minutes > 0) $durationText .= ($hours > 0 ? ' ' : '') . $minutes . ' Menit';
+                      if (empty($durationText)) $durationText = '0 Menit';
+                    @endphp
+                    Durasi: {{ $durationText }}
                   </div>
                 @endif
                 @if(!empty($material['description']))

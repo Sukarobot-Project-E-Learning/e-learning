@@ -374,11 +374,17 @@
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi <span class="text-gray-400">(otomatis terisi)</span></label>
                                             <div class="flex items-center gap-2">
-                                                <input type="number" :name="'materials[' + index + '][duration]'"
-                                                    x-model="materials[index].duration" min="1"
-                                                    class="block w-24 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                                    placeholder="3">
+                                                <input type="number" x-model="materials[index].duration_hours" min="0" max="23"
+                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                                    placeholder="0">
                                                 <span class="text-sm text-gray-600 dark:text-gray-400">Jam</span>
+                                                <input type="number" x-model="materials[index].duration_minutes" min="0" max="59"
+                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                                    placeholder="0">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Menit</span>
+                                                <!-- Hidden input to store combined duration -->
+                                                <input type="hidden" :name="'materials[' + index + '][duration]'" 
+                                                    :value="(materials[index].duration_hours || 0) + ':' + (materials[index].duration_minutes || 0)">
                                             </div>
                                         </div>
                                         <!-- Deskripsi -->
@@ -509,7 +515,12 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                     addMaterial() {
                         // Auto-fill duration from Jadwal Pelaksanaan
                         const duration = this.getCalculatedDuration();
-                        this.materials.push({ title: '', duration: duration, description: '' });
+                        this.materials.push({ 
+                            title: '', 
+                            duration_hours: duration.hours, 
+                            duration_minutes: duration.minutes, 
+                            description: '' 
+                        });
                     },
                     removeMaterial(index) {
                         this.materials.splice(index, 1);
@@ -529,15 +540,19 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                             let diffMinutes = endMinutes - startMinutes;
                             if (diffMinutes < 0) diffMinutes += 24 * 60;
                             
-                            return Math.floor(diffMinutes / 60);
+                            return {
+                                hours: Math.floor(diffMinutes / 60),
+                                minutes: diffMinutes % 60
+                            };
                         }
-                        return '';
+                        return { hours: '', minutes: '' };
                     },
 
                     updateAllMaterialDurations() {
                         const duration = this.getCalculatedDuration();
                         this.materials.forEach((material) => {
-                            material.duration = duration;
+                            material.duration_hours = duration.hours;
+                            material.duration_minutes = duration.minutes;
                         });
                     },
 
