@@ -36,7 +36,7 @@
                         Kembali
                     </a>
                     <button type="submit" form="templateForm"
-                            class="flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
@@ -93,7 +93,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ganti Blanko (opsional)</label>
                             <input type="file" name="blanko" id="blankoInput" accept="image/*"
-                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-50 file:text-purple-700"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-50 file:text-orange-700"
                                    onchange="handleImageUpload(this)">
                         </div>
                     </div>
@@ -170,8 +170,8 @@
                             </div>
 
                             <!-- Date -->
-                            <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200">
-                                <label class="block text-sm font-medium text-purple-800 mb-2">🟣 Tanggal (Lato)</label>
+                            <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200">
+                                <label class="block text-sm font-medium text-orange-800 mb-2">🟣 Tanggal (Lato)</label>
                                 <div class="grid grid-cols-3 gap-2">
                                     <div>
                                         <label class="text-xs text-gray-600">X (%)</label>

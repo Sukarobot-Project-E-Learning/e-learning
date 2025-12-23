@@ -32,7 +32,7 @@
                             <th class="px-4 py-3">
                                 <input type="checkbox" 
                                        id="select-all"
-                                       class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                                       class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
                                        onchange="toggleAllCheckboxes(this)">
                             </th>
                             <th class="px-4 py-3">Nama</th>
@@ -49,12 +49,12 @@
                                 <input type="checkbox" 
                                        name="selected_proofs[]" 
                                        value="{{ $proof['id'] }}"
-                                       class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                                       class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center text-sm">
                                     <div>
-                                        <a href="{{ route('admin.program-proofs.show', $proof['id']) }}" class="font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400">
+                                        <a href="{{ route('admin.program-proofs.show', $proof['id']) }}" class="font-semibold text-orange-600 hover:text-orange-800 dark:text-orange-400">
                                             {{ $proof['name'] }}
                                         </a>
                                     </div>

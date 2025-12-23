@@ -10,7 +10,7 @@
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Instructor</h2>
                 <button type="button"
                         @click="$dispatch('open-modal', { type: 'create' })"
-                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -74,7 +74,7 @@
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada instructor. <button @click="$dispatch('open-modal', { type: 'create' })" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah instructor pertama</button>
+                                Belum ada instructor. <button @click="$dispatch('open-modal', { type: 'create' })" class="text-orange-600 hover:text-orange-800 dark:text-orange-400">Tambah instructor pertama</button>
                             </td>
                         </tr>
                         @endforelse
@@ -141,27 +141,27 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
                         <input type="text" x-model="formData.name" required
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
                         <input type="email" x-model="formData.email" required
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telepon</label>
                         <input type="text" x-model="formData.phone"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password <span x-show="type === 'edit'" class="text-xs text-gray-500">(Kosongkan jika tidak ingin mengubah)</span></label>
                         <input type="password" x-model="formData.password" :required="type === 'create'"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto <span class="text-xs text-gray-500">(Opsional)</span></label>
                         <input type="file" @change="formData.photo = $event.target.files[0]" accept="image/jpeg,image/jpg,image/png"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         <p class="mt-1 text-xs text-gray-500">Format: JPG, JPEG, PNG. Max 2MB</p>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                         Batal
                     </button>
                     <button type="submit"
-                        class="flex-1 px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                        class="flex-1 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700">
                         <span x-text="type === 'create' ? 'Tambah' : 'Update'"></span>
                     </button>
                 </div>

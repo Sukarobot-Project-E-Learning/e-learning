@@ -9,7 +9,7 @@
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Voucher</h2>
                 <a href="{{ route('admin.vouchers.create') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -66,7 +66,7 @@
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Tidak ada voucher. <a href="{{ route('admin.vouchers.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah voucher pertama</a>
+                                Tidak ada voucher. <a href="{{ route('admin.vouchers.create') }}" class="text-orange-600 hover:text-orange-800 dark:text-orange-400">Tambah voucher pertama</a>
                             </td>
                         </tr>
                         @endforelse

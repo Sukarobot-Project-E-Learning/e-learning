@@ -20,7 +20,7 @@
                     </a>
                     <button type="submit" 
                             form="articleForm"
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
@@ -67,7 +67,7 @@
                             Status <span class="text-red-500">*</span>
                         </label>
                         <select name="status" id="status" required
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             <option value="">Pilih Status</option>
                             <option value="Publish" {{ $article['status'] === 'Publish' ? 'selected' : '' }}>Publish</option>
                             <option value="Draft" {{ $article['status'] === 'Draft' ? 'selected' : '' }}>Draft</option>
@@ -82,7 +82,7 @@
                         <input type="text" name="title" id="title" required
                                value="{{ $article['title'] }}"
                                placeholder="Lengan Robotik Baru untuk Industri Otomotif"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Kategori -->
@@ -91,7 +91,7 @@
                             Kategori <span class="text-red-500">*</span>
                         </label>
                         <select name="category" id="category" required
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             <option value="">Pilih Kategori</option>
                             <option value="Riset & AI" {{ $article['category'] === 'Riset & AI' ? 'selected' : '' }}>Riset & AI</option>
                             <option value="Produk" {{ $article['category'] === 'Produk' ? 'selected' : '' }}>Produk</option>
@@ -116,7 +116,7 @@
                         </label>
                         <textarea name="excerpt" id="excerpt" rows="3"
                                   placeholder="Ringkasan singkat artikel..."
-                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">{{ $article['excerpt'] }}</textarea>
+                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">{{ $article['excerpt'] }}</textarea>
                     </div>
 
                     <!-- Meta SEO -->
@@ -132,7 +132,7 @@
                                 <input type="text" name="meta_title" id="meta_title"
                                        value="{{ $article['meta_title'] }}"
                                        placeholder="Judul untuk mesin pencari (opsional)"
-                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             </div>
 
                             <!-- Meta Description -->
@@ -142,7 +142,7 @@
                                 </label>
                                 <textarea name="meta_description" id="meta_description" rows="2"
                                           placeholder="Deskripsi untuk mesin pencari (opsional)"
-                                          class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">{{ $article['meta_description'] }}</textarea>
+                                          class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">{{ $article['meta_description'] }}</textarea>
                             </div>
 
                             <!-- Meta Keywords -->
@@ -153,7 +153,7 @@
                                 <input type="text" name="meta_keywords" id="meta_keywords"
                                        value="{{ $article['meta_keywords'] }}"
                                        placeholder="keyword1, keyword2, keyword3 (pisahkan dengan koma)"
-                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                       class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             </div>
                         </div>
                     </div>
@@ -191,12 +191,12 @@
                                     </svg>
                                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                         <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
+                                        <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                         Format: JPG, JPEG, PNG · Maks 5MB
                                     </p>
-                                    <p class="text-xs text-purple-600 dark:text-purple-400 font-semibold mt-1">
+                                    <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold mt-1">
                                         📐 Rekomendasi: 800 x 600 pixel atau 1200 x 675 pixel
                                     </p>
                                 </div>

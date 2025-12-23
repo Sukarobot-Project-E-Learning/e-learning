@@ -12,7 +12,7 @@
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Kelola template sertifikat per program. Sertifikat akan otomatis di-generate saat bukti program disetujui.</p>
                 </div>
                 <a href="{{ route('admin.certificates.create') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -116,7 +116,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                     <p class="mb-2">Belum ada template sertifikat.</p>
-                                    <a href="{{ route('admin.certificates.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">
+                                    <a href="{{ route('admin.certificates.create') }}" class="text-orange-600 hover:text-orange-800 dark:text-orange-400">
                                         Tambah template pertama
                                     </a>
                                 </div>

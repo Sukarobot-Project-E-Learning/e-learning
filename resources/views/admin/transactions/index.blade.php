@@ -9,7 +9,7 @@
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Transaksi</h2>
                 <a href="{{ route('admin.transactions.export') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                     Ekspor Excel
                 </a>
             </div>
@@ -24,7 +24,7 @@
                             <th class="px-4 py-3">
                                 <input type="checkbox" 
                                        id="select-all"
-                                       class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                                       class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
                                        onchange="toggleAllCheckboxes(this)">
                             </th>
                             <th class="px-4 py-3">Nama</th>
@@ -42,7 +42,7 @@
                                 <input type="checkbox" 
                                        name="selected_transactions[]" 
                                        value="{{ $transaction['id'] }}"
-                                       class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                                       class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center text-sm">

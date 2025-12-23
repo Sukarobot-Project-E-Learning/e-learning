@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+<html :class="{ 'dark': dark }" x-data="data()" lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,12 +10,14 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/tailwind.css') }}" />
-    
+    <!-- App CSS & JS via Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!-- Alpine.js x-cloak -->
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
     <!-- Alpine.js -->
@@ -31,6 +34,7 @@
 
     @stack('styles')
 </head>
+
 <body>
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
 
@@ -57,4 +61,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

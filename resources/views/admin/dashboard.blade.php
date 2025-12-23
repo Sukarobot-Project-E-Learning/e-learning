@@ -8,7 +8,7 @@
         <h2 class="text-3xl font-bold text-gray-700 dark:text-gray-200">
             Hai Admin,
         </h2>
-        <p class="text-lg text-purple-600 dark:text-purple-400 font-semibold mt-3">
+        <p class="text-lg text-orange-600 dark:text-orange-400 font-semibold mt-3">
             Selamat Datang di Sukarobot Academy Dashboard!
         </p>
     </div>
@@ -94,7 +94,7 @@
                 @endphp
                 
                 <label for="yearSelector" class="text-sm font-medium text-gray-600 dark:text-gray-400">Tahun:</label>
-                <select id="yearSelector" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 px-3 py-2">
+                <select id="yearSelector" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 px-3 py-2">
                     @foreach($availableYears as $year)
                         <option value="{{ $year }}" {{ $year == $latestYear ? 'selected' : '' }}>{{ $year }}</option>
                     @endforeach
@@ -170,7 +170,7 @@
                     speed: 800
                 }
             },
-            colors: ['#F97316', '#3B82F6', '#A855F7'], // Orange, Blue, Purple
+            colors: ['#F97316', '#3B82F6', '#A855F7'], // Orange, Blue, orange
             dataLabels: {
                 enabled: false
             },

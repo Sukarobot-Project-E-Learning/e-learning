@@ -52,7 +52,7 @@
                                     </svg>
                                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                         <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
+                                        <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                         Unggah berkas dalam bentuk JPG, JPEG, PNG.
@@ -112,7 +112,7 @@
                                     </svg>
                                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                         <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
+                                        <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                         Unggah berkas dalam bentuk JPG, JPEG, PNG.

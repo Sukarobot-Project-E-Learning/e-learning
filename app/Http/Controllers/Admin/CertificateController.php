@@ -64,10 +64,10 @@ class CertificateController extends Controller
 
         // Default positions and font sizes (must be 100% zoom scale)
         $defaults = [
-            'name_x' => 54, 'name_y' => 41, 'name_font_size' => 85,
-            'desc_x' => 54, 'desc_y' => 54, 'desc_font_size' => 31,
-            'number_x' => 54, 'number_y' => 30.5, 'number_font_size' => 30,
-            'date_x' => 54, 'date_y' => 68, 'date_font_size' => 30,
+            'name_x' => 55, 'name_y' => 40.5, 'name_font_size' => 35,
+            'desc_x' => 54, 'desc_y' => 54, 'desc_font_size' => 13,
+            'number_x' => 53.5, 'number_y' => 31.5, 'number_font_size' => 11,
+            'date_x' => 54, 'date_y' => 67.5, 'date_font_size' => 13,
         ];
 
         return view('admin.certificates.create', compact(

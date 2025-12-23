@@ -18,7 +18,7 @@
                     </a>
                     <button type="button" 
                             @click="submitForm()"
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
@@ -44,7 +44,7 @@
                                name="title"
                                required
                                placeholder="Masukkan judul tugas/postest"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500">
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
                     </div>
 
                     <!-- Program -->
@@ -56,7 +56,7 @@
                                 id="program_id" 
                                 name="program_id"
                                 required
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             <option value="">Pilih Program</option>
                             <option value="1">Strategi Digital Marketing</option>
                             <option value="2">Workshop Branding</option>
@@ -73,7 +73,7 @@
                                   name="description"
                                   rows="3"
                                   placeholder="Masukkan deskripsi tugas/postest"
-                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300 dark:placeholder-gray-500"></textarea>
+                                  class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500"></textarea>
                     </div>
 
                     <!-- Divider -->
@@ -115,7 +115,7 @@
                                                :name="'questions[' + index + '][text]'"
                                                required
                                                placeholder="Masukkan pertanyaan"
-                                               class="block w-full px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                               class="block w-full px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                     </div>
 
                                     <!-- Question Type -->
@@ -127,7 +127,7 @@
                                                 :name="'questions[' + index + '][type]'"
                                                 @change="question.type === 'multiple_choice' ? (question.options = ['', '']) : (question.options = [])"
                                                 required
-                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                             <option value="multiple_choice">Pilihan Ganda</option>
                                             <option value="essay">Essay</option>
                                             <option value="true_false">Benar/Salah</option>
@@ -146,7 +146,7 @@
                                                        :name="'questions[' + index + '][options][' + optIndex + ']'"
                                                        required
                                                        placeholder="Masukkan pilihan jawaban"
-                                                       class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                                       class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                                 <button type="button"
                                                         @click="removeOption(index, optIndex)"
                                                         x-show="question.options.length > 2"
@@ -159,7 +159,7 @@
                                         </template>
                                         <button type="button"
                                                 @click="addOption(index)"
-                                                class="mt-2 text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400">
+                                                class="mt-2 text-sm text-orange-600 hover:text-orange-800 dark:text-orange-400">
                                             + Tambah Pilihan
                                         </button>
                                     </div>
@@ -172,7 +172,7 @@
                                         <select x-model="question.correct_answer"
                                                 :name="'questions[' + index + '][correct_answer]'"
                                                 required
-                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                             <option value="">Pilih Jawaban Benar</option>
                                             <template x-for="(option, optIndex) in question.options" :key="optIndex">
                                                 <option :value="optIndex" x-text="'Pilihan ' + (optIndex + 1) + ': ' + option"></option>
@@ -188,7 +188,7 @@
                                         <select x-model="question.correct_answer"
                                                 :name="'questions[' + index + '][correct_answer]'"
                                                 required
-                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                             <option value="">Pilih Jawaban</option>
                                             <option value="true">Benar</option>
                                             <option value="false">Salah</option>
@@ -206,7 +206,7 @@
                                                min="1"
                                                value="1"
                                                required
-                                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-purple-300">
+                                               class="block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                                     </div>
                                 </div>
                             </template>
@@ -220,7 +220,7 @@
                             <p class="mb-4">Belum ada pertanyaan. Klik tombol "Tambah Pertanyaan" untuk menambahkan.</p>
                             <button type="button"
                                     @click="addQuestion()"
-                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700">
+                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-transparent rounded-lg hover:bg-orange-700">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>

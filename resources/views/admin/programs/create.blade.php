@@ -20,7 +20,7 @@
                         Kembali
                     </a>
                     <button type="submit" form="programForm"
-                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
@@ -48,7 +48,7 @@
                                     Judul Program <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="program" required placeholder="Masukkan judul program"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('program') }}">
                                 @error('program')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -61,7 +61,7 @@
                                     Kategori <span class="text-red-500">*</span>
                                 </label>
                                 <select name="category" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kategori</option>
                                     <option value="kursus" {{ old('category') == 'kursus' ? 'selected' : '' }}>Kursus</option>
                                     <option value="pelatihan" {{ old('category') == 'pelatihan' ? 'selected' : '' }}>Pelatihan
@@ -81,7 +81,7 @@
                                     Jenis Pelaksanaan <span class="text-red-500">*</span>
                                 </label>
                                 <select name="type" required x-model="type"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Jenis</option>
                                     <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>Online</option>
                                     <option value="offline" {{ old('type') == 'offline' ? 'selected' : '' }}>Offline</option>
@@ -95,7 +95,7 @@
                                 </label>
                                 <input type="url" name="zoom_link" :required="type === 'online'"
                                     placeholder="https://zoom.us/j/..."
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('zoom_link') }}">
                             </div>
 
@@ -105,7 +105,7 @@
                                     Deskripsi <span class="text-red-500">*</span>
                                 </label>
                                 <textarea name="description" rows="4" required placeholder="Masukkan deskripsi program"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('description') }}</textarea>
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('description') }}</textarea>
                             </div>
 
                         </div>
@@ -122,7 +122,7 @@
                                     Instruktur
                                 </label>
                                 <select name="instructor_id"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Instruktur</option>
                                     @foreach(\App\Models\User::where('role', 'instructor')->get() as $instructor)
                                         <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
@@ -137,7 +137,7 @@
                                     Kuota Peserta <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="quota" required min="1" placeholder="Contoh: 50"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('quota') }}">
                             </div>
 
@@ -147,7 +147,7 @@
                                     Harga (Rp) <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="price" required min="0" step="0.01" placeholder="Contoh: 350000"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('price') }}">
                             </div>
 
@@ -159,7 +159,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tools yang Digunakan</h3>
                             <button type="button" @click="addTool()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -172,7 +172,7 @@
                                 <div class="flex gap-2">
                                     <input type="text" :name="'tools[' + index + ']'" x-model="tools[index]"
                                         placeholder="Contoh: VS Code"
-                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeTool(index)"
                                         class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +195,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Kamu Akan Mendapatkan</h3>
                             <button type="button" @click="addBenefit()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -208,7 +208,7 @@
                                 <div class="flex gap-2">
                                     <input type="text" :name="'benefits[' + index + ']'" x-model="benefits[index]"
                                         placeholder="Contoh: Sertifikat"
-                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeBenefit(index)"
                                         class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,7 +237,7 @@
                                 <input type="hidden" name="province" id="province_text" :required="type === 'offline'">
                                 <select id="province" :required="type === 'offline'"
                                     onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Provinsi</option>
                                 </select>
                             </div>
@@ -249,7 +249,7 @@
                                 <input type="hidden" name="city" id="city_text" :required="type === 'offline'">
                                 <select id="city" :required="type === 'offline'"
                                     onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kabupaten/Kota</option>
                                 </select>
                             </div>
@@ -261,7 +261,7 @@
                                 <input type="hidden" name="district" id="district_text" :required="type === 'offline'">
                                 <select id="district" :required="type === 'offline'"
                                     onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kecamatan</option>
                                 </select>
                             </div>
@@ -273,7 +273,7 @@
                                 <input type="hidden" name="village" id="village_text" :required="type === 'offline'">
                                 <select id="village" :required="type === 'offline'"
                                     onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <option value="">Pilih Kelurahan/Desa</option>
                                 </select>
                             </div>
@@ -285,7 +285,7 @@
                             </label>
                             <textarea name="full_address" rows="3" :required="type === 'offline'"
                                 placeholder="Masukkan alamat lengkap"
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('full_address') }}</textarea>
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('full_address') }}</textarea>
                         </div>
                     </div>
 
@@ -299,7 +299,7 @@
                                     Tanggal Mulai <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="start_date" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('start_date') }}">
                             </div>
 
@@ -309,7 +309,7 @@
                                 </label>
                                 <input type="time" name="start_time" required
                                     @change="updateAllMaterialDurations()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('start_time') }}">
                             </div>
 
@@ -318,7 +318,7 @@
                                     Tanggal Berakhir <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="end_date" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('end_date') }}">
                             </div>
 
@@ -328,7 +328,7 @@
                                 </label>
                                 <input type="time" name="end_time" required
                                     @change="updateAllMaterialDurations()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('end_time') }}">
                             </div>
                         </div>
@@ -339,7 +339,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Materi Pembelajaran</h3>
                             <button type="button" @click="addMaterial()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -352,7 +352,7 @@
                                 <div
                                     class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                                     <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                                        <span class="text-sm font-semibold text-orange-600 dark:text-orange-400"
                                             x-text="'Hari ' + (index + 1)"></span>
                                         <button type="button" @click="removeMaterial(index)"
                                             class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
@@ -368,18 +368,18 @@
                                             <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Materi</label>
                                             <input type="text" :name="'materials[' + index + '][title]'"
                                                 x-model="materials[index].title" placeholder="Contoh: Hari 1: Analisis SWOT"
-                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                         </div>
                                         <!-- Durasi (Auto-calculated from Jadwal, but editable) -->
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi <span class="text-gray-400">(otomatis terisi)</span></label>
                                             <div class="flex items-center gap-2">
                                                 <input type="number" x-model="materials[index].duration_hours" min="0" max="23"
-                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                                     placeholder="0">
                                                 <span class="text-sm text-gray-600 dark:text-gray-400">Jam</span>
                                                 <input type="number" x-model="materials[index].duration_minutes" min="0" max="59"
-                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                                     placeholder="0">
                                                 <span class="text-sm text-gray-600 dark:text-gray-400">Menit</span>
                                                 <!-- Hidden input to store combined duration -->
@@ -397,7 +397,7 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 • Pembukaan & Pengenalan Materi
 • Presentasi Strategi Digital
 • Praktik Pembuatan Kampanye
-• Evaluasi & Tanya Jawab" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
+• Evaluasi & Tanya Jawab" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
                                         </div>
                                     </div>
                                 </div>

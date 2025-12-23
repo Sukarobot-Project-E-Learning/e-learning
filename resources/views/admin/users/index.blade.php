@@ -10,7 +10,7 @@
         <div class="my-6 flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">User</h2>
             <a href="{{ route('admin.users.create') }}"
-               class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple whitespace-nowrap">
+               class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange whitespace-nowrap">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -28,11 +28,11 @@
                             <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </span>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama user..." class="w-full py-2 pl-10 pr-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama user..." class="w-full py-2 pl-10 pr-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40">
                 </div>
 
                 <!-- Filter Status -->
-                <select name="status" onchange="this.form.submit()" class="w-full md:w-auto py-2 pl-3 pr-8 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-40">
+                <select name="status" onchange="this.form.submit()" class="w-full md:w-auto py-2 pl-3 pr-8 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40">
                     <option value="">Semua Status</option>
                     <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
                     <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
@@ -95,7 +95,7 @@
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada user. <a href="{{ route('admin.users.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah user pertama</a>
+                                Belum ada user. <a href="{{ route('admin.users.create') }}" class="text-orange-600 hover:text-orange-800 dark:text-orange-400">Tambah user pertama</a>
                             </td>
                         </tr>
                         @endforelse
