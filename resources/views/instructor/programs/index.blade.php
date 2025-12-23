@@ -1,36 +1,44 @@
 @extends('instructor.layouts.app')
 
-@section('title', 'Program Saya')
+@section('title', 'Pengajuan Program')
 
 @section('content')
     <div class="container px-6 mx-auto">
         <!-- Page Header -->
         <div class="my-6">
             <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Program Saya</h2>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengajuan Program</h2>
                 <a href="{{ route('instructor.programs.create') }}"
                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    Tambah Program
+                    Ajukan Program Baru
                 </a>
             </div>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Kelola pengajuan program Anda. Program baru memerlukan persetujuan admin sebelum dipublikasikan.
+            </p>
         </div>
 
-        <!-- Pending Approvals Alert -->
-        @if(isset($pendingApprovals) && $pendingApprovals->count() > 0)
-        <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg dark:bg-yellow-900/20 dark:border-yellow-800">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                </svg>
-                <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                    Anda memiliki <strong>{{ $pendingApprovals->count() }}</strong> program yang menunggu persetujuan admin.
-                </p>
+        <!-- Status Legend -->
+        <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border dark:bg-gray-800 dark:border-gray-700">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keterangan Status:</p>
+            <div class="flex flex-wrap gap-4">
+                <span class="inline-flex items-center gap-1 text-xs">
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">Menunggu</span>
+                    <span class="text-gray-500">Bisa diedit</span>
+                </span>
+                <span class="inline-flex items-center gap-1 text-xs">
+                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full">Disetujui</span>
+                    <span class="text-gray-500">Hanya bisa dilihat</span>
+                </span>
+                <span class="inline-flex items-center gap-1 text-xs">
+                    <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full">Ditolak</span>
+                    <span class="text-gray-500">Bisa diedit & ajukan ulang</span>
+                </span>
             </div>
         </div>
-        @endif
 
         <!-- Programs Table -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
@@ -38,43 +46,99 @@
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                            <th class="px-4 py-3">Judul</th>
+                            <th class="px-4 py-3">Judul Program</th>
                             <th class="px-4 py-3">Kategori</th>
                             <th class="px-4 py-3">Tipe</th>
-                            <th class="px-4 py-3">Harga</th>
+                            <th class="px-4 py-3">Tanggal Pengajuan</th>
                             <th class="px-4 py-3">Status</th>
                             <th class="px-4 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                        @forelse($programs ?? [] as $program)
+                        @forelse($submissions ?? [] as $submission)
                         <tr class="text-gray-700 dark:text-gray-400">
                             <td class="px-4 py-3">
                                 <div class="flex items-center text-sm">
                                     <div>
-                                        <p class="font-semibold">{{ $program['title'] }}</p>
+                                        <p class="font-semibold">{{ $submission->title }}</p>
+                                        @if($submission->rejection_reason)
+                                        <p class="text-xs text-red-500 mt-1">Alasan: {{ $submission->rejection_reason }}</p>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">{{ $program['category'] }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $program['type'] }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $program['price'] }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $submission->category ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm">{{ ucfirst($submission->type ?? '-') }}</td>
+                            <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($submission->created_at)->format('d M Y') }}</td>
                             <td class="px-4 py-3 text-xs">
-                                <span class="px-2 py-1 text-xs font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                                    {{ $program['status'] }}
+                                @if($submission->status === 'pending')
+                                <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-700 dark:text-yellow-100">
+                                    Menunggu
                                 </span>
+                                @elseif($submission->status === 'approved')
+                                <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                    Disetujui
+                                </span>
+                                @elseif($submission->status === 'rejected')
+                                <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+                                    Ditolak
+                                </span>
+                                @else
+                                <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
+                                    {{ $submission->status }}
+                                </span>
+                                @endif
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center space-x-4 text-sm">
-                                    <a href="{{ route('instructor.programs.edit', $program['id']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">Edit</a>
-                                    <a href="#" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</a>
+                                <div class="flex items-center space-x-3 text-sm">
+                                    @if($submission->status === 'approved')
+                                        {{-- Approved: Only View --}}
+                                        <a href="{{ route('instructor.programs.show', $submission->id) }}" 
+                                           class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                            Lihat
+                                        </a>
+                                    @else
+                                        {{-- Pending/Rejected: Can Edit --}}
+                                        <a href="{{ route('instructor.programs.edit', $submission->id) }}" 
+                                           class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 dark:bg-green-900 dark:text-green-300">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </a>
+                                        {{-- Delete for pending/rejected --}}
+                                        <form action="{{ route('instructor.programs.destroy', $submission->id) }}" method="POST" class="inline"
+                                              onsubmit="return confirm('Yakin ingin menghapus pengajuan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900 dark:text-red-300">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada program yang disetujui. <a href="{{ route('instructor.programs.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400">Tambah program pertama</a>
+                                <div class="flex flex-col items-center">
+                                    <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <p class="mb-2">Belum ada pengajuan program.</p>
+                                    <a href="{{ route('instructor.programs.create') }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 font-medium">
+                                        Ajukan program pertama Anda
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @endforelse
@@ -83,8 +147,11 @@
             </div>
             
             <!-- Pagination -->
-            @include('components.pagination', ['items' => $programs ?? null])
+            @if(isset($submissions) && method_exists($submissions, 'links'))
+            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700">
+                {{ $submissions->links() }}
+            </div>
+            @endif
         </div>
     </div>
 @endsection
-

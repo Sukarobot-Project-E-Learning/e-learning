@@ -9,13 +9,10 @@ use Illuminate\Support\Facades\DB;
 class ProgramController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get current instructor/trainer ID
      */
-    public function index()
+    private function getTrainerId()
     {
-        // Get current instructor/trainer ID
-        $trainerId = null;
-        
         if (auth()->check()) {
             $user = auth()->user();
             $trainer = DB::table('data_trainers')
@@ -23,67 +20,32 @@ class ProgramController extends Controller
                 ->first();
             
             if ($trainer) {
-                $trainerId = $trainer->id;
+                return $trainer->id;
             }
         }
-        
-        if (!$trainerId) {
-            $trainer = DB::table('data_trainers')
-                ->where('status_trainer', 'Aktif')
-                ->first();
-            $trainerId = $trainer ? $trainer->id : null;
-        }
+        return null;
+    }
+
+    /**
+     * Display a listing of program submissions.
+     */
+    public function index()
+    {
+        $trainerId = $this->getTrainerId();
 
         if (!$trainerId) {
             return view('instructor.programs.index', [
-                'programs' => collect([]),
-                'pendingApprovals' => collect([])
+                'submissions' => collect([])
             ]);
         }
 
-        // Get approved programs from schedules where this trainer is assigned
-        $programIds = DB::table('schedules')
-            ->where('id_trainer', $trainerId)
-            ->where('ket', 'Aktif')
-            ->distinct()
-            ->pluck('id_program')
-            ->filter()
-            ->toArray();
-
-        // Get program details with pagination (5 per page)
-        $programs = DB::table('data_programs')
-            ->whereIn('id', $programIds)
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
-
-        // Transform data after pagination
-        $programs->getCollection()->transform(function($program) use ($trainerId) {
-            // Get schedule info for this program
-            $schedule = DB::table('schedules')
-                ->where('id_trainer', $trainerId)
-                ->where('id_program', $program->id)
-                ->where('ket', 'Aktif')
-                ->first();
-
-            return [
-                'id' => $program->id,
-                'title' => $program->program,
-                'category' => $program->category ?? '-',
-                'type' => $program->type ?? '-',
-                'price' => $program->price_note ?? '-',
-                'status' => $schedule ? $schedule->ket : 'Tidak Aktif',
-                'created_at' => $program->created_at
-            ];
-        });
-
-        // Get pending program approvals for this instructor
-        $pendingApprovals = DB::table('program_approvals')
+        // Get all program submissions for this instructor
+        $submissions = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
-            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
 
-        return view('instructor.programs.index', compact('programs', 'pendingApprovals'));
+        return view('instructor.programs.index', compact('submissions'));
     }
 
     /**
@@ -104,9 +66,9 @@ class ProgramController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'price_note' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
             'type' => 'required|in:online,offline,video',
-            'course' => 'nullable|string|max:255',
+            'available_slots' => 'nullable|integer|min:1',
             'province' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'district' => 'nullable|string|max:255',
@@ -117,26 +79,12 @@ class ProgramController extends Controller
             'end_date' => 'nullable|date',
             'end_time' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tools' => 'nullable|array',
+            'materials' => 'nullable|array',
+            'benefits' => 'nullable|array',
         ]);
 
-        // Get current instructor/trainer ID
-        $trainerId = null;
-        if (auth()->check()) {
-            $user = auth()->user();
-            $trainer = DB::table('data_trainers')
-                ->where('email', $user->email)
-                ->first();
-            if ($trainer) {
-                $trainerId = $trainer->id;
-            }
-        }
-        
-        if (!$trainerId) {
-            $trainer = DB::table('data_trainers')
-                ->where('status_trainer', 'Aktif')
-                ->first();
-            $trainerId = $trainer ? $trainer->id : null;
-        }
+        $trainerId = $this->getTrainerId();
 
         if (!$trainerId) {
             return redirect()->route('instructor.programs.create')
@@ -153,14 +101,14 @@ class ProgramController extends Controller
         }
 
         // Save to program_approvals table (pending approval)
-        $approvalId = DB::table('program_approvals')->insertGetId([
+        DB::table('program_approvals')->insert([
             'instructor_id' => $trainerId,
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'category' => $validated['category'] ?? null,
             'type' => $validated['type'],
-            'price_note' => $validated['price_note'] ?? null,
-            'course' => $validated['course'] ?? null,
+            'price' => $validated['price'] ?? 0,
+            'available_slots' => $validated['available_slots'] ?? null,
             'province' => $validated['province'] ?? null,
             'city' => $validated['city'] ?? null,
             'district' => $validated['district'] ?? null,
@@ -171,6 +119,9 @@ class ProgramController extends Controller
             'end_date' => $validated['end_date'] ?? null,
             'end_time' => $validated['end_time'] ?? null,
             'image' => $imagePath,
+            'tools' => json_encode($validated['tools'] ?? []),
+            'materials' => json_encode($validated['materials'] ?? []),
+            'benefits' => json_encode($validated['benefits'] ?? []),
             'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
@@ -181,12 +132,59 @@ class ProgramController extends Controller
     }
 
     /**
+     * Display the specified resource (view only for approved).
+     */
+    public function show($id)
+    {
+        $trainerId = $this->getTrainerId();
+        
+        $submission = DB::table('program_approvals')
+            ->where('id', $id)
+            ->where('instructor_id', $trainerId)
+            ->first();
+
+        if (!$submission) {
+            return redirect()->route('instructor.programs.index')
+                ->with('error', 'Program tidak ditemukan.');
+        }
+
+        // Decode JSON fields
+        $submission->tools = json_decode($submission->tools ?? '[]', true);
+        $submission->materials = json_decode($submission->materials ?? '[]', true);
+        $submission->benefits = json_decode($submission->benefits ?? '[]', true);
+
+        return view('instructor.programs.show', compact('submission'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
-        // Get program by id
-        return view('instructor.programs.edit');
+        $trainerId = $this->getTrainerId();
+        
+        $submission = DB::table('program_approvals')
+            ->where('id', $id)
+            ->where('instructor_id', $trainerId)
+            ->first();
+
+        if (!$submission) {
+            return redirect()->route('instructor.programs.index')
+                ->with('error', 'Program tidak ditemukan.');
+        }
+
+        // Check if already approved - redirect to show instead
+        if ($submission->status === 'approved') {
+            return redirect()->route('instructor.programs.show', $id)
+                ->with('info', 'Program yang sudah disetujui tidak dapat diedit.');
+        }
+
+        // Decode JSON fields
+        $submission->tools = json_decode($submission->tools ?? '[]', true);
+        $submission->materials = json_decode($submission->materials ?? '[]', true);
+        $submission->benefits = json_decode($submission->benefits ?? '[]', true);
+
+        return view('instructor.programs.edit', compact('submission'));
     }
 
     /**
@@ -194,9 +192,86 @@ class ProgramController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // TODO: Add validation and update logic here
-        // Update logic here
-        return redirect()->route('instructor.programs.index')->with('success', 'Program berhasil diupdate');
+        $trainerId = $this->getTrainerId();
+        
+        $submission = DB::table('program_approvals')
+            ->where('id', $id)
+            ->where('instructor_id', $trainerId)
+            ->first();
+
+        if (!$submission) {
+            return redirect()->route('instructor.programs.index')
+                ->with('error', 'Program tidak ditemukan.');
+        }
+
+        // Check if already approved - cannot edit
+        if ($submission->status === 'approved') {
+            return redirect()->route('instructor.programs.show', $id)
+                ->with('error', 'Program yang sudah disetujui tidak dapat diedit.');
+        }
+
+        // Validation
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'type' => 'required|in:online,offline,video',
+            'available_slots' => 'nullable|integer|min:1',
+            'province' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'village' => 'nullable|string|max:255',
+            'full_address' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'start_time' => 'nullable',
+            'end_date' => 'nullable|date',
+            'end_time' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tools' => 'nullable|array',
+            'materials' => 'nullable|array',
+            'benefits' => 'nullable|array',
+        ]);
+
+        // Handle image upload
+        $imagePath = $submission->image;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/programs'), $imageName);
+            $imagePath = 'uploads/programs/' . $imageName;
+        }
+
+        // Update program_approvals
+        DB::table('program_approvals')
+            ->where('id', $id)
+            ->update([
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
+                'category' => $validated['category'] ?? null,
+                'type' => $validated['type'],
+                'price' => $validated['price'] ?? 0,
+                'available_slots' => $validated['available_slots'] ?? null,
+                'province' => $validated['province'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'district' => $validated['district'] ?? null,
+                'village' => $validated['village'] ?? null,
+                'full_address' => $validated['full_address'] ?? null,
+                'start_date' => $validated['start_date'] ?? null,
+                'start_time' => $validated['start_time'] ?? null,
+                'end_date' => $validated['end_date'] ?? null,
+                'end_time' => $validated['end_time'] ?? null,
+                'image' => $imagePath,
+                'tools' => json_encode($validated['tools'] ?? []),
+                'materials' => json_encode($validated['materials'] ?? []),
+                'benefits' => json_encode($validated['benefits'] ?? []),
+                'status' => 'pending', // Reset to pending after edit
+                'rejection_reason' => null, // Clear rejection reason
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->route('instructor.programs.index')
+            ->with('success', 'Program berhasil diperbarui dan menunggu persetujuan ulang.');
     }
 
     /**
@@ -204,9 +279,28 @@ class ProgramController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Add delete logic here
-        // Delete logic here
-        return redirect()->route('instructor.programs.index')->with('success', 'Program berhasil dihapus');
+        $trainerId = $this->getTrainerId();
+        
+        $submission = DB::table('program_approvals')
+            ->where('id', $id)
+            ->where('instructor_id', $trainerId)
+            ->first();
+
+        if (!$submission) {
+            return redirect()->route('instructor.programs.index')
+                ->with('error', 'Program tidak ditemukan.');
+        }
+
+        // Cannot delete approved programs
+        if ($submission->status === 'approved') {
+            return redirect()->route('instructor.programs.index')
+                ->with('error', 'Program yang sudah disetujui tidak dapat dihapus.');
+        }
+
+        // Delete
+        DB::table('program_approvals')->where('id', $id)->delete();
+
+        return redirect()->route('instructor.programs.index')
+            ->with('success', 'Pengajuan program berhasil dihapus.');
     }
 }
-
