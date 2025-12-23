@@ -361,6 +361,65 @@
         height: 3px;
         box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
     }
+
+
+    /* SIDEBAR */
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #fdba74;
+        border-radius: 20px;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+        background: #f97316;
+    }
+
+    .nav-glow {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+    }
+
+    .gradient-border {
+        background: linear-gradient(180deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%);
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
+        }
+
+        50% {
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.8);
+        }
+    }
+
+    .active-pulse {
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    .shimmer-divider {
+        background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.3), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
 <script>
