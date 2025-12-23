@@ -35,6 +35,20 @@ jobs:
         echo "deployment_type=$DEPLOY_TYPE" >> $GITHUB_OUTPUT
         echo "🚀 Deployment mode: $DEPLOY_TYPE"
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install NPM Dependencies
+      run: npm ci
+
+    - name: Build Vite Assets
+      run: |
+        npm run build
+        echo "✅ Vite build completed - assets ready in public/build/"
+
     - name: Smart Laravel E-Learning Sync
       id: sync_deploy
       uses: nick-fields/retry@v2
