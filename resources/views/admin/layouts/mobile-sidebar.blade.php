@@ -376,56 +376,6 @@
 
 
 </aside>
-
-<style>
-    @keyframes pulse-glow {
-
-        0%,
-        100% {
-            box-shadow: 0 0 5px rgba(249, 115, 22, 0.3);
-        }
-
-        50% {
-            box-shadow: 0 0 20px rgba(249, 115, 22, 0.6);
-        }
-    }
-
-    .animate-pulse-glow {
-        animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    @supports not (backdrop-filter: blur(12px)) {
-        .backdrop-blur-md {
-            background-color: rgba(255, 255, 255, 0.95);
-        }
-
-        .dark .backdrop-blur-md {
-            background-color: rgba(31, 41, 55, 0.95);
-        }
-    }
-
-    ul::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    ul::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    ul::-webkit-scrollbar-thumb {
-        background: rgba(249, 115, 22, 0.3);
-        border-radius: 2px;
-    }
-
-    ul::-webkit-scrollbar-thumb:hover {
-        background: rgba(249, 115, 22, 0.5);
-    }
-
-    /* Hide elements with x-cloak until Alpine initializes */
-    [x-cloak] {
-        display: none !important;
-    }
-</style>
 <script>
     tailwind.config = {
         darkMode: 'class',
