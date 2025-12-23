@@ -188,74 +188,7 @@
                         </div>
                     </div>
 
-                    <!-- Materi Pembelajaran (Dynamic) -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Materi Pembelajaran</h3>
-                            <button type="button" @click="addMaterial()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah Hari
-                            </button>
-                        </div>
-                        <div class="space-y-6">
-                            <template x-for="(material, index) in materials" :key="index">
-                                <div
-                                    class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-semibold text-purple-600 dark:text-purple-400"
-                                            x-text="'Hari ' + (index + 1)"></span>
-                                        <button type="button" @click="removeMaterial(index)"
-                                            class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="space-y-3">
-                                        <!-- Judul -->
-                                        <div>
-                                            <label
-                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul
-                                                Materi</label>
-                                            <input type="text" :name="'materials[' + index + '][title]'"
-                                                x-model="materials[index].title" placeholder="Contoh: Hari 1: Analisis SWOT"
-                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                        </div>
-                                        <!-- Durasi -->
-                                        <div>
-                                            <label
-                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi</label>
-                                            <input type="text" :name="'materials[' + index + '][duration]'"
-                                                x-model="materials[index].duration" placeholder="Contoh: 3 Jam"
-                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                        </div>
-                                        <!-- Deskripsi -->
-                                        <div>
-                                            <label
-                                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Detail
-                                                Aktivitas</label>
-                                            <textarea :name="'materials[' + index + '][description]'"
-                                                x-model="materials[index].description" rows="4" placeholder="Contoh:
-                Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 
-                • Pembukaan & Pengenalan Materi
-                • Presentasi Strategi Digital
-                • Praktik Pembuatan Kampanye
-                • Evaluasi & Tanya Jawab" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                            <div x-show="materials.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada materi. Klik "Tambah Hari" untuk menambahkan.
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Kamu Akan Mendapatkan (Dynamic) -->
                     <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -375,6 +308,7 @@
                                     Waktu Mulai <span class="text-red-500">*</span>
                                 </label>
                                 <input type="time" name="start_time" required
+                                    @change="updateAllMaterialDurations()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('start_time') }}">
                             </div>
@@ -393,8 +327,77 @@
                                     Waktu Berakhir <span class="text-red-500">*</span>
                                 </label>
                                 <input type="time" name="end_time" required
+                                    @change="updateAllMaterialDurations()"
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                     value="{{ old('end_time') }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Materi Pembelajaran (Dynamic) - Below Jadwal -->
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Materi Pembelajaran</h3>
+                            <button type="button" @click="addMaterial()"
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Tambah Hari
+                            </button>
+                        </div>
+                        <div class="space-y-6">
+                            <template x-for="(material, index) in materials" :key="index">
+                                <div
+                                    class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                                            x-text="'Hari ' + (index + 1)"></span>
+                                        <button type="button" @click="removeMaterial(index)"
+                                            class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <!-- Judul -->
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Materi</label>
+                                            <input type="text" :name="'materials[' + index + '][title]'"
+                                                x-model="materials[index].title" placeholder="Contoh: Hari 1: Analisis SWOT"
+                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                        </div>
+                                        <!-- Durasi (Auto-calculated from Jadwal, but editable) -->
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi <span class="text-gray-400">(otomatis terisi)</span></label>
+                                            <div class="flex items-center gap-2">
+                                                <input type="number" :name="'materials[' + index + '][duration]'"
+                                                    x-model="materials[index].duration" min="1"
+                                                    class="block w-24 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                                    placeholder="3">
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">Jam</span>
+                                            </div>
+                                        </div>
+                                        <!-- Deskripsi -->
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Detail Aktivitas</label>
+                                            <textarea :name="'materials[' + index + '][description]'"
+                                                x-model="materials[index].description" rows="4" placeholder="Contoh:
+Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
+
+• Pembukaan & Pengenalan Materi
+• Presentasi Strategi Digital
+• Praktik Pembuatan Kampanye
+• Evaluasi & Tanya Jawab" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-purple-400 focus:outline-none focus:ring focus:ring-purple-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <div x-show="materials.length === 0" class="text-sm text-gray-500 italic">
+                                Belum ada materi. Klik "Tambah Hari" untuk menambahkan.
                             </div>
                         </div>
                     </div>
@@ -504,10 +507,38 @@
                     },
 
                     addMaterial() {
-                        this.materials.push({ title: '', duration: '', description: '' });
+                        // Auto-fill duration from Jadwal Pelaksanaan
+                        const duration = this.getCalculatedDuration();
+                        this.materials.push({ title: '', duration: duration, description: '' });
                     },
                     removeMaterial(index) {
                         this.materials.splice(index, 1);
+                    },
+
+                    getCalculatedDuration() {
+                        const startTime = document.querySelector('input[name="start_time"]')?.value;
+                        const endTime = document.querySelector('input[name="end_time"]')?.value;
+                        
+                        if (startTime && endTime) {
+                            const start = startTime.split(':');
+                            const end = endTime.split(':');
+                            
+                            const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1]);
+                            const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1]);
+                            
+                            let diffMinutes = endMinutes - startMinutes;
+                            if (diffMinutes < 0) diffMinutes += 24 * 60;
+                            
+                            return Math.floor(diffMinutes / 60);
+                        }
+                        return '';
+                    },
+
+                    updateAllMaterialDurations() {
+                        const duration = this.getCalculatedDuration();
+                        this.materials.forEach((material) => {
+                            material.duration = duration;
+                        });
                     },
 
                     addBenefit() {
