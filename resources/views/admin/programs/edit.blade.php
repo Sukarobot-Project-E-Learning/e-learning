@@ -31,20 +31,20 @@
         </div>
 
         <!-- Form Card -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
+        <div class="w-full mb-8 p-6 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
             <form id="programForm" action="{{ route('admin.programs.update', $program->id) }}" method="POST"
                 enctype="multipart/form-data" x-data="programForm()">
                 @csrf
                 @method('PUT')
-                <div class="px-6 py-6 space-y-6">
+                <div class="space-y-6">
 
                     <!-- Informasi Dasar -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Informasi Dasar</h3>
-                        <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6">Informasi Dasar</h3>
+                        <div class="space-y-6">
 
                             <!-- Judul Program -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Judul Program <span class="text-red-500">*</span>
                                 </label>
@@ -57,7 +57,7 @@
                             </div>
 
                             <!-- Kategori -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Kategori <span class="text-red-500">*</span>
                                 </label>
@@ -77,7 +77,7 @@
                             </div>
 
                             <!-- Jenis Pelaksanaan -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Jenis Pelaksanaan <span class="text-red-500">*</span>
                                 </label>
@@ -101,7 +101,7 @@
                             </div>
 
                             <!-- Deskripsi -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Deskripsi <span class="text-red-500">*</span>
                                 </label>
@@ -113,12 +113,12 @@
                     </div>
 
                     <!-- Detail Program -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Detail Program</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6">Detail Program</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <!-- Instructor -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Instruktur
                                 </label>
@@ -133,7 +133,7 @@
 
 
                             <!-- Kuota -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Kuota Peserta <span class="text-red-500">*</span>
                                 </label>
@@ -143,7 +143,7 @@
                             </div>
 
                             <!-- Harga -->
-                            <div>
+                            <div class="mb-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Harga (Rp) <span class="text-red-500">*</span>
                                 </label>
@@ -168,24 +168,42 @@
                                 Tambah Tool
                             </button>
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <template x-for="(tool, index) in tools" :key="index">
                                 <div class="flex gap-2">
                                     <input type="text" :name="'tools[' + index + ']'" x-model="tools[index]"
                                         placeholder="Contoh: VS Code"
                                         class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeTool(index)"
-                                        class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors"
+                                        title="Hapus Tool">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
                                 </div>
                             </template>
-                            <div x-show="tools.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada tools. Klik "Tambah Tool" untuk menambahkan.
+                            
+                            <div x-show="tools.length === 0" 
+                                class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                                <svg class="w-12 h-12 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Belum ada tools yang ditambahkan.</p>
+                                <button type="button" @click="addTool()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                    + Tambah Tool Pertama
+                                </button>
                             </div>
+                            
+                            <button type="button" x-show="tools.length > 0" @click="addTool()" 
+                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Tambah Tool Lainnya
+                            </button>
                         </div>
                     </div>
 
@@ -204,33 +222,50 @@
                                 Tambah
                             </button>
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <template x-for="(benefit, index) in benefits" :key="index">
                                 <div class="flex gap-2">
                                     <input type="text" :name="'benefits[' + index + ']'" x-model="benefits[index]"
                                         placeholder="Contoh: Sertifikat"
                                         class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeBenefit(index)"
-                                        class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors"
+                                        title="Hapus Benefit">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
                                 </div>
                             </template>
-                            <div x-show="benefits.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada benefit. Klik "Tambah" untuk menambahkan.
+                            
+                            <div x-show="benefits.length === 0" 
+                                class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                                <svg class="w-12 h-12 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                                </svg>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Belum ada benefit yang ditambahkan.</p>
+                                <button type="button" @click="addBenefit()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                    + Tambah Benefit Pertama
+                                </button>
                             </div>
+                            
+                            <button type="button" x-show="benefits.length > 0" @click="addBenefit()" 
+                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Tambah Benefit Lainnya
+                            </button>
                         </div>
                     </div>
 
                     <!-- Lokasi (Offline Only) -->
                     <div x-show="type === 'offline'" x-transition
-                        class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Lokasi Pelaksanaan</h3>
+                        class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6">Lokasi Pelaksanaan</h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Provinsi <span x-show="type === 'offline'" class="text-red-500">*</span>
@@ -295,10 +330,10 @@
                     </div>
 
                     <!-- Jadwal Pelaksanaan -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Jadwal Pelaksanaan</h3>
+                    <div class="pt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6">Jadwal Pelaksanaan</h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Tanggal Mulai <span class="text-red-500">*</span>
@@ -415,7 +450,7 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 
 
                     <!-- Gambar Program -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="pt-6">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Gambar Program</h3>
 
                         <!-- Current Image (if exists) -->
@@ -460,6 +495,18 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                             </label>
                         </div>
 
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-row justify-end items-end mt-6 gap-4">
+                        <a href="{{ route('admin.programs.index') }}"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                            Kembali
+                        </a>
+                        <button type="submit"
+                            class="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Simpan Perubahan
+                        </button>
                     </div>
 
                 </div>
