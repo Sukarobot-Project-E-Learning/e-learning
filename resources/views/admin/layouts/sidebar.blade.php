@@ -1,3 +1,9 @@
+@php
+    $admin = auth('admin')->user();
+    $adminRoleLabel = $admin?->role === 'admin' ? 'Administrator' : ucfirst($admin?->role ?? 'Administrator');
+    $adminAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($admin?->name ?? 'Admin') . '&background=f97316&color=fff';
+@endphp
+
 <aside class="z-20 hidden w-72 overflow-y-auto sidebar-scroll bg-gradient-to-b from-white via-orange-50/30 to-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 md:block flex-shrink-0 border-r border-orange-100 dark:border-orange-900/30 shadow-xl shadow-orange-100/50 dark:shadow-orange-900/20">
     <div class="py-6 text-gray-600 dark:text-gray-300">
 
@@ -310,14 +316,15 @@
             <div class="h-px shimmer-divider mb-6"></div>
             <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-gray-800 border border-orange-200/50 dark:border-orange-800/30">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                    <div class="relative">
+                        <img class="w-10 h-10 rounded-full ring-2 ring-orange-300 dark:ring-orange-600 object-cover shadow-lg shadow-orange-500/30"
+                            src="{{ $adminAvatar }}"
+                            alt="{{ $admin?->name ?? 'Admin' }}">
+                        <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">Admin</p>
-                        <p class="text-xs text-orange-500 dark:text-orange-400">Administrator</p>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{{ $admin?->name ?? 'Admin' }}</p>
+                        <p class="text-xs text-orange-500 dark:text-orange-400">{{ $adminRoleLabel }}</p>
                     </div>
                 </div>
             </div>

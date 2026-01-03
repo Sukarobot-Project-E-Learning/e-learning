@@ -21,6 +21,12 @@
     x-transition:leave-end="opacity-0 transform -translate-x-20"
     x-cloak>
 
+    @php
+        $admin = auth('admin')->user();
+        $adminRoleLabel = $admin?->role === 'admin' ? 'Administrator' : ucfirst($admin?->role ?? 'Administrator');
+        $adminAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($admin?->name ?? 'Admin') . '&background=f97316&color=fff';
+    @endphp
+
     <!-- Scrollable Content -->
     <div class="h-full overflow-y-auto mobile-scroll pb-24">
         <div class="py-6 text-gray-600 dark:text-gray-300">
@@ -328,22 +334,23 @@
         <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-gray-800 border border-orange-200/50 dark:border-orange-800/30 shadow-lg">
             <div class="flex items-center space-x-3">
                 <div class="relative">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                    </div>
+                    <img class="w-12 h-12 rounded-xl ring-2 ring-orange-300 dark:ring-orange-600 shadow-lg shadow-orange-500/30 object-cover"
+                        src="{{ $adminAvatar }}"
+                        alt="{{ $admin?->name ?? 'Admin' }}">
                     <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">Admin</p>
-                    <p class="text-xs text-orange-500 dark:text-orange-400">Administrator</p>
+                    <p class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">{{ $admin?->name ?? 'Admin' }}</p>
+                    <p class="text-xs text-orange-500 dark:text-orange-400">{{ $adminRoleLabel }}</p>
                 </div>
-                <button class="p-2 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/40 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                </button>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="p-2 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/40 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

@@ -1,4 +1,9 @@
 <header class="z-40 py-4 bg-white/80 backdrop-blur-md shadow-lg dark:bg-gray-800/90 border-b border-orange-100 dark:border-orange-900/30">
+    @php
+        $admin = auth('admin')->user();
+        $adminRoleLabel = $admin?->role === 'admin' ? 'Administrator' : ucfirst($admin?->role ?? 'Administrator');
+        $adminAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($admin?->name ?? 'Admin') . '&background=f97316&color=fff';
+    @endphp
     <div class="container flex items-center justify-between h-full px-6 mx-auto text-orange-600 dark:text-orange-300">
 
         <!-- Mobile hamburger -->
@@ -142,15 +147,15 @@
                     aria-haspopup="true">
                     <div class="relative">
                         <img class="object-cover w-9 h-9 rounded-xl ring-2 ring-orange-300 dark:ring-orange-600 transition-all duration-300 group-hover:ring-4 group-hover:ring-orange-400 dark:group-hover:ring-orange-500 shadow-md"
-                            src="https://ui-avatars.com/api/?name=Admin&background=f97316&color=fff"
-                            alt="Admin"
+                            src="{{ $adminAvatar }}"
+                            alt="{{ $admin?->name ?? 'Admin' }}"
                             aria-hidden="true" />
                         <!-- Online indicator -->
                         <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></span>
                     </div>
                     <div class="hidden md:block ml-3 text-left">
-                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">Admin</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
+                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{{ $admin?->name ?? 'Admin' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $adminRoleLabel }}</p>
                     </div>
                     <svg class="hidden md:block w-4 h-4 ml-2 text-gray-500 dark:text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': isProfileMenuOpen }" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -173,11 +178,11 @@
                         <li class="px-3 py-3 mb-2 bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl">
                             <div class="flex items-center">
                                 <img class="w-12 h-12 rounded-xl ring-2 ring-orange-300 dark:ring-orange-600 shadow-md"
-                                    src="https://ui-avatars.com/api/?name=Admin&background=f97316&color=fff"
-                                    alt="Admin" />
+                                    src="{{ $adminAvatar }}"
+                                    alt="{{ $admin?->name ?? 'Admin' }}" />
                                 <div class="ml-3">
-                                    <p class="text-sm font-bold text-gray-800 dark:text-gray-100">Admin User</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">admin@example.com</p>
+                                    <p class="text-sm font-bold text-gray-800 dark:text-gray-100">{{ $admin?->name ?? 'Admin' }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $admin?->email ?? 'admin@example.com' }}</p>
                                 </div>
                             </div>
                         </li>
