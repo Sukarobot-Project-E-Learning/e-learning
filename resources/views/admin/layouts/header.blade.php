@@ -7,7 +7,7 @@
     <div class="container flex items-center justify-between h-full px-6 mx-auto text-orange-600 dark:text-orange-300">
 
         <!-- Mobile hamburger -->
-        <button class="p-1 mr-5 -ml-1 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300"
+        <button class="p-1 mr-5 -ml-1 rounded-lg md:hidden focus:outline-none hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300"
             @click="toggleSideMenu"
             aria-label="Menu">
             <svg class="w-6 h-6 transition-transform duration-300 hover:scale-110" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
@@ -26,7 +26,7 @@
         <ul class="flex items-center flex-shrink-0 space-x-6">
             <!-- Theme toggler - unified with global `dark` state -->
             <li class="flex">
-                <button class="relative p-2 rounded-xl text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
+                <button class="relative p-2 rounded-xl text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 focus:outline-none hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
                     @click="toggleTheme"
                     aria-label="Toggle color mode">
                     <!-- Sun icon (visible when dark mode is active) -->
@@ -44,7 +44,7 @@
 
             <!-- Notifications menu -->
             <li class="relative" x-data="{ isNotificationsMenuOpen: false }">
-                <button class="relative p-2 rounded-xl text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 align-middle focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
+                <button class="relative p-2 rounded-xl text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 align-middle focus:outline-none hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
                     @click="isNotificationsMenuOpen = !isNotificationsMenuOpen"
                     @keydown.escape="isNotificationsMenuOpen = false"
                     aria-label="Notifications"
@@ -140,7 +140,7 @@
 
             <!-- Profile menu -->
             <li class="relative" x-data="{ isProfileMenuOpen: false }">
-                <button class="relative flex items-center p-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
+                <button class="relative flex items-center p-1 rounded-xl focus:outline-none hover:bg-gradient-to-br hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-900/30 dark:hover:to-amber-900/30 transition-all duration-300 group"
                     @click="isProfileMenuOpen = !isProfileMenuOpen"
                     @keydown.escape="isProfileMenuOpen = false"
                     aria-label="Account"
