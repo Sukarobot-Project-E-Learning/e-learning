@@ -3,16 +3,10 @@
 
         <!-- Logo Section with Decorative Border -->
         <div class="relative px-6 pb-6">
-            <div class="flex justify-center p-4 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-gray-700 dark:to-gray-800 border border-orange-200/50 dark:border-orange-800/30 shadow-lg shadow-orange-100 dark:shadow-orange-900/20">
+            <div class="flex justify-center p-4 rounded-2xl">
                 <img src="{{ asset('assets/elearning/client/img/logo.png') }}"
                     class="inline w-auto h-12 md:h-10 lg:h-10 align-middle items-center object-contain transition-all duration-300 ease-in-out hover:scale-105 drop-shadow-md"
                     alt="main_logo" />
-            </div>
-            <!-- Decorative dots -->
-            <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-orange-300"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-orange-200"></span>
             </div>
         </div>
 
