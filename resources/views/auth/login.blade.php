@@ -27,7 +27,6 @@
         function data() {
             return {
                 dark: false,
-                showPassword: false,
             }
         }
     </script>
@@ -128,7 +127,7 @@
 
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     <span>Password</span>
-                                    <div class="relative mt-2">
+                                    <div class="relative mt-2" x-data="{ showPassword: false }">
                                         <input
                                             :type="showPassword ? 'text' : 'password'"
                                             name="password"
@@ -142,11 +141,11 @@
                                             @click="showPassword = !showPassword"
                                             :aria-label="showPassword ? 'Hide password' : 'Show password'"
                                         >
-                                            <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <svg x-show="!showPassword" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
                                                 <circle cx="12" cy="12" r="3" fill="currentColor" />
                                             </svg>
-                                            <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <svg x-show="showPassword" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3l18 18m-3.35-3.35C15.69 18.49 13.9 19 12 19c-4.477 0-8.268-2.943-9.542-7a13.227 13.227 0 0 1 4.258-6.036m4.147-1.753a9.74 9.74 0 0 1 1.137-.211C13.322 4.005 13.66 4 14 4c4.477 0 8.268 2.943 9.542 7-.355 1.132-.9 2.182-1.606 3.113M9.88 9.88A3 3 0 0 0 12 15a2.98 2.98 0 0 0 1.697-.526" />
                                             </svg>
                                         </button>
