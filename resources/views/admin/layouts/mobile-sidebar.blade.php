@@ -7,7 +7,8 @@
     x-transition:leave="transition ease-in-out duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-10 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center md:hidden"
+    class="fixed inset-0 z-10 flex items-end bg-black/30 backdrop-blur-sm sm:items-center sm:justify-center md:hidden"
+    @click="isSideMenuOpen = false"
     x-cloak>
 </div>
 
