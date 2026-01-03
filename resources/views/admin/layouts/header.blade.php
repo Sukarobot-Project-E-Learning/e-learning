@@ -189,7 +189,8 @@
 
                         <!-- Menu items -->
                         <li>
-                            <a class="flex items-center px-4 py-3 text-sm font-medium rounded-xl hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-50 dark:hover:from-orange-900/20 dark:hover:to-amber-900/20 transition-all duration-300 group" href="#">
+                            <a class="flex items-center px-4 py-3 text-sm font-medium rounded-xl hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-50 dark:hover:from-orange-900/20 dark:hover:to-amber-900/20 transition-all duration-300 group"
+                                href="{{ $admin?->id ? route('admin.admins.edit', $admin->id) : route('admin.login') }}">
                                 <div class="p-2 mr-3 rounded-lg bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/40 dark:to-amber-900/40 group-hover:from-orange-200 group-hover:to-amber-200 dark:group-hover:from-orange-800/40 dark:group-hover:to-amber-800/40 transition-all">
                                     <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                                         <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
