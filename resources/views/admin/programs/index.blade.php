@@ -6,17 +6,41 @@
     <div class="container px-6 mx-auto">
 
         <!-- Page Header -->
-        <div class="my-6">
-            <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Program</h2>
-                <a href="{{ route('admin.programs.create') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Tambah Program
-                </a>
-            </div>
+        <!-- Page Header -->
+        <div class="my-6 flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Program</h2>
+            <a href="{{ route('admin.programs.create') }}"
+               class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Program
+            </a>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="mb-6">
+            <form action="{{ route('admin.programs.index') }}" method="GET" class="flex flex-col md:flex-row gap-6">
+                <!-- Search -->
+                <div class="relative w-full md:flex-1">
+                    <span class="absolute inset-y-0 left-0 flex items-center ml-3">
+                        <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+                    <input type="text" name="search" value="{{ request('search') }}" 
+                           class="w-full py-2 pl-10 pr-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40"
+                           placeholder="Cari program...">
+                </div>
+
+                <!-- Sort -->
+                <select name="sort" onchange="this.form.submit()"
+                        class="w-full md:w-auto py-2 pl-3 pr-8 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40">
+                    <option value="">Urutkan</option>
+                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Tanggal Mulai - Terbaru</option>
+                    <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Tanggal Mulai - Terlama</option>
+                </select>
+            </form>
         </div>
 
         <!-- Programs Table -->

@@ -12,11 +12,30 @@ class ProgramController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $programs = DB::table('data_programs')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = DB::table('data_programs');
+
+        // Search
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('program', 'like', '%' . $search . '%');
+        }
+
+        // Sort
+        if ($request->has('sort') && $request->sort != '') {
+            if ($request->sort == 'newest') {
+                $query->orderBy('start_date', 'desc');
+            } elseif ($request->sort == 'oldest') {
+                $query->orderBy('start_date', 'asc');
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $programs = $query->paginate(10)->appends($request->all());
 
         $programs->getCollection()->transform(function ($program) {
             $levelCount = DB::table('data_levels')
