@@ -168,5 +168,4 @@
 .article-content img { border-radius: 1rem; margin: 2em auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
 </style>
 
-@include('client.partials.footer')
 @endsection
