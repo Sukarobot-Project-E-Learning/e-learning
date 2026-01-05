@@ -110,6 +110,8 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::post('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'store'])->name('instructors.store');
     Route::get('instructors/{id}/edit', [\App\Http\Controllers\Admin\InstructorController::class, 'edit'])->name('instructors.edit');
     Route::put('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'update'])->name('instructors.update');
+    Route::post('instructors/application/{id}/approve', [\App\Http\Controllers\Admin\InstructorController::class, 'approveApplication'])->name('instructors.approve-application');
+    Route::post('instructors/application/{id}/reject', [\App\Http\Controllers\Admin\InstructorController::class, 'rejectApplication'])->name('instructors.reject-application');
     Route::post('instructors/{id}/approve', [\App\Http\Controllers\Admin\InstructorController::class, 'approve'])->name('instructors.approve');
     Route::post('instructors/{id}/reject', [\App\Http\Controllers\Admin\InstructorController::class, 'reject'])->name('instructors.reject');
     Route::delete('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'destroy'])->name('instructors.destroy');
@@ -226,6 +228,12 @@ Route::name('client.')->group(function () {
         Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard.update');
         Route::get('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'create'])->name('program.proof');
         Route::post('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'store'])->name('program.proof.store');
+    });
+
+    // Become Instructor Routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'create'])->name('become-instructor.create');
+        Route::post('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'store'])->name('become-instructor.store');
     });
 
     Route::middleware(['auth'])->group(function () {

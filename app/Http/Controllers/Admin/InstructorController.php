@@ -15,6 +15,14 @@ class InstructorController extends Controller
      */
     public function index()
     {
+        // Get pending applications
+        $pendingApplications = DB::table('instructor_applications')
+            ->join('users', 'instructor_applications.user_id', '=', 'users.id')
+            ->where('instructor_applications.status', 'pending')
+            ->select('instructor_applications.*', 'users.name', 'users.email', 'users.avatar')
+            ->orderBy('instructor_applications.created_at', 'asc')
+            ->get();
+
         // Get instructors from users table with role='instructor'
         $instructors = DB::table('users')
             ->where('role', 'instructor')
@@ -53,7 +61,64 @@ class InstructorController extends Controller
             ];
         });
 
-        return view('admin.instructors.index', compact('instructors'));
+        return view('admin.instructors.index', compact('instructors', 'pendingApplications'));
+    }
+
+    public function approveApplication($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $application = DB::table('instructor_applications')->where('id', $id)->first();
+            if (!$application) {
+                return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
+            }
+
+            // Update application status
+            DB::table('instructor_applications')->where('id', $id)->update(['status' => 'approved', 'updated_at' => now()]);
+
+            // Update user role and status
+            DB::table('users')->where('id', $application->user_id)->update([
+                'role' => 'instructor',
+                'is_active' => 1,
+                'updated_at' => now()
+            ]);
+
+            // Get user data
+            $user = DB::table('users')->where('id', $application->user_id)->first();
+
+            // Create/Update data_trainers
+            $trainerData = [
+                'nama' => $user->name,
+                'email' => $user->email,
+                'telephone' => $user->phone,
+                'keahlian' => $application->skills,
+                'bio' => $application->bio,
+                'status_trainer' => 'Aktif',
+                'updated_at' => now(),
+            ];
+
+            $exists = DB::table('data_trainers')->where('email', $user->email)->exists();
+            if ($exists) {
+                DB::table('data_trainers')->where('email', $user->email)->update($trainerData);
+            } else {
+                $trainerData['created_at'] = now();
+                DB::table('data_trainers')->insert($trainerData);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.instructors.index')->with('success', 'Pengajuan instruktur disetujui');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function rejectApplication($id)
+    {
+        DB::table('instructor_applications')->where('id', $id)->update(['status' => 'rejected', 'updated_at' => now()]);
+        return redirect()->route('admin.instructors.index')->with('success', 'Pengajuan instruktur ditolak');
     }
 
     /**

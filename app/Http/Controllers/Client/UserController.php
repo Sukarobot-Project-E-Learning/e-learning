@@ -23,7 +23,14 @@ class UserController extends Controller
 
         // Logic to display user profile
         $user = Auth::user(); // ambil data user dari database
-        return view('client.dashboard.profile', compact('user'));
+        
+        // Check for instructor application
+        $instructorApplication = DB::table('instructor_applications')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return view('client.dashboard.profile', compact('user', 'instructorApplication'));
     }
 
     public function program()
