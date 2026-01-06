@@ -41,80 +41,7 @@
         </div>
 
         <!-- Pending Applications Table (Only if exists) -->
-        @if(isset($pendingApplications) && count($pendingApplications) > 0)
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">Pengajuan Menjadi Instruktur</h3>
-            <div class="w-full overflow-hidden rounded-lg shadow-md dark:bg-gray-800 border-l-4 border-yellow-500">
-                <div class="w-full overflow-x-auto">
-                    <table class="w-full whitespace-no-wrap">
-                        <thead>
-                            <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                                <th class="px-4 py-3">Nama User</th>
-                                <th class="px-4 py-3">Keahlian</th>
-                                <th class="px-4 py-3">Dokumen</th>
-                                <th class="px-4 py-3">Tanggal Pengajuan</th>
-                                <th class="px-4 py-3">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                            @foreach($pendingApplications as $application)
-                            <tr class="text-gray-700 dark:text-gray-400">
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center text-sm">
-                                        @if($application->avatar)
-                                            <img class="w-8 h-8 rounded-full mr-3 object-cover" src="{{ asset($application->avatar) }}" alt="Avatar">
-                                        @else
-                                            <div class="w-8 h-8 rounded-full bg-gray-200 mr-3"></div>
-                                        @endif
-                                        <div>
-                                            <p class="font-semibold">{{ $application->name }}</p>
-                                            <p class="text-xs text-gray-600 dark:text-gray-400">{{ $application->email }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <div class="truncate w-48" title="{{ $application->skills }}">
-                                        {{ Str::limit($application->skills, 50) }}
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <div class="flex space-x-2">
-                                        @if($application->cv_path)
-                                            <a href="{{ asset($application->cv_path) }}" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600">CV</a>
-                                        @else
-                                            <span class="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">No CV</span>
-                                        @endif
 
-                                        @if(!empty($application->ktp_path))
-                                            <a href="{{ asset($application->ktp_path) }}" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">KTP</a>
-                                        @else
-                                            <span class="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">No KTP</span>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    {{ date('d M Y H:i', strtotime($application->created_at)) }}
-                                </td>
-                                <td class="px-4 py-3 text-xs">
-                                    <div class="flex items-center space-x-3">
-                                        <form action="{{ route('admin.instructors.approve-application', $application->id) }}" method="POST" class="inline-block m-0" id="approveAppForm{{ $application->id }}">
-                                            @csrf
-                                            <button type="button" onclick="approveApplication({{ $application->id }})" class="px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Setujui</button>
-                                        </form>
-                                        <form action="{{ route('admin.instructors.reject-application', $application->id) }}" method="POST" class="inline-block m-0" id="rejectAppForm{{ $application->id }}">
-                                            @csrf
-                                            <button type="button" onclick="rejectApplication({{ $application->id }})" class="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">Tolak</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        @endif
 
         <!-- Instructors Table -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
@@ -297,39 +224,9 @@
             });
         }
 
-        function approveApplication(id) {
-            Swal.fire({
-                title: "Apakah Anda yakin?",
-                text: "Anda akan menyetujui pengajuan instruktur ini!",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Ya, setujui!",
-                cancelButtonText: "Batal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('approveAppForm' + id).submit();
-                }
-            });
-        }
 
-        function rejectApplication(id) {
-            Swal.fire({
-                title: "Apakah Anda yakin?",
-                text: "Anda akan menolak pengajuan instruktur ini!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Ya, tolak!",
-                cancelButtonText: "Batal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('rejectAppForm' + id).submit();
-                }
-            });
-        }
+
+
 
         // Handle success/error messages from session
         @if(session('success'))

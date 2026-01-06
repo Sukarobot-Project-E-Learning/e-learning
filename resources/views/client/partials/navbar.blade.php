@@ -4,7 +4,7 @@
             <!-- Logo -->
             <div class="flex items-center space-x-2">
                 <a href="{{ url('/') }}" class="flex items-center gap-2">
-                    <img src="{{ asset('assets/elearning/client/img/Sukarobot-logo.png') }}" alt="Logo" class="w-60 h-auto">
+                    <img src="{{ asset('assets/elearning/client/img/logo.png') }}" alt="Logo" class="w-60 h-auto">
                 </a>
             </div>
 

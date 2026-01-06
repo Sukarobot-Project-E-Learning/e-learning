@@ -48,19 +48,19 @@
             </li>
 
             <!-- Akun (Dropdown) -->
-            <li class="relative px-4 py-1" x-data="{ isOpen: {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*')) ? 'true' : 'false' }} }">
+            <li class="relative px-4 py-1" x-data="{ isOpen: {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? 'true' : 'false' }} }">
                 <button class="flex items-center justify-between w-full px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ease-in-out
-                    {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*')) 
+                    {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) 
                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30' 
                         : 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400' }}"
                     @click="isOpen = !isOpen"
                     aria-haspopup="true">
-                    @if(request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*'))
+                    @if(request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*'))
                     <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-orange-400 rounded-r-full active-pulse"></span>
                     @endif
                     <span class="inline-flex items-center">
-                        <div class="p-2 rounded-lg {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*')) ? 'bg-white/20' : 'bg-orange-100 dark:bg-orange-900/30' }} transition-colors duration-300">
-                            <svg class="w-5 h-5 {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*')) ? 'text-white' : 'text-orange-500' }}" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-2 rounded-lg {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? 'bg-white/20' : 'bg-orange-100 dark:bg-orange-900/30' }} transition-colors duration-300">
+                            <svg class="w-5 h-5 {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? 'text-white' : 'text-orange-500' }}" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                                 <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
                         </div>
@@ -98,6 +98,13 @@
                         <span class="flex items-center">
                             <span class="w-2 h-2 rounded-full {{ request()->routeIs('admin.instructors.*') ? 'bg-orange-500' : 'bg-orange-300' }} mr-3"></span>
                             Instruktur
+                        </span>
+                    </a>
+                    <a href="{{ route('admin.instructor-applications.index') }}"
+                        class="block px-4 py-2.5 text-sm rounded-lg transition-all duration-200 {{ request()->routeIs('admin.instructor-applications.*') ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 font-semibold border-l-2 border-orange-500' : 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 hover:translate-x-1' }}">
+                        <span class="flex items-center">
+                            <span class="w-2 h-2 rounded-full {{ request()->routeIs('admin.instructor-applications.*') ? 'bg-orange-500' : 'bg-orange-300' }} mr-3"></span>
+                            Pengajuan Instruktur
                         </span>
                     </a>
                 </div>

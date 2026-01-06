@@ -104,14 +104,20 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::post('program-approvals/{id}/approve', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'approve'])->name('program-approvals.approve');
     Route::post('program-approvals/{id}/reject', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'reject'])->name('program-approvals.reject');
 
+    // Instructor Application Management
+    Route::get('instructor-applications', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'index'])->name('instructor-applications.index');
+    Route::get('instructor-applications/{id}', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'show'])->name('instructor-applications.show');
+    Route::post('instructor-applications/{id}/approve', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'approve'])->name('instructor-applications.approve');
+    Route::post('instructor-applications/{id}/reject', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'reject'])->name('instructor-applications.reject');
+    Route::delete('instructor-applications/{id}', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'destroy'])->name('instructor-applications.destroy');
+
     // Instructor Management (Konfirmasi Akun Instruktur)
     Route::get('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'index'])->name('instructors.index');
     Route::get('instructors/create', [\App\Http\Controllers\Admin\InstructorController::class, 'create'])->name('instructors.create');
     Route::post('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'store'])->name('instructors.store');
     Route::get('instructors/{id}/edit', [\App\Http\Controllers\Admin\InstructorController::class, 'edit'])->name('instructors.edit');
     Route::put('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'update'])->name('instructors.update');
-    Route::post('instructors/application/{id}/approve', [\App\Http\Controllers\Admin\InstructorController::class, 'approveApplication'])->name('instructors.approve-application');
-    Route::post('instructors/application/{id}/reject', [\App\Http\Controllers\Admin\InstructorController::class, 'rejectApplication'])->name('instructors.reject-application');
+
     Route::post('instructors/{id}/approve', [\App\Http\Controllers\Admin\InstructorController::class, 'approve'])->name('instructors.approve');
     Route::post('instructors/{id}/reject', [\App\Http\Controllers\Admin\InstructorController::class, 'reject'])->name('instructors.reject');
     Route::delete('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'destroy'])->name('instructors.destroy');
