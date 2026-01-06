@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $totalInstructors = DB::table('users')->where('role', 'instructor')->count();
         $totalAdmins = DB::table('users')->where('role', 'admin')->count();
         $totalTrainers = DB::table('data_trainers')->where('status_trainer', 'Aktif')->count();
-        $totalStudents = DB::table('data_siswas')->where('status_siswa', 'Aktif')->count();
+        $totalStudents = DB::table('users')->where('role', 'user')->where('is_active', 1)->count();
         $totalPrograms = DB::table('data_programs')->count();
         
         // Program tersedia (status = published)
