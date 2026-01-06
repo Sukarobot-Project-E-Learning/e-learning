@@ -123,7 +123,10 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::post('program-proofs/{id}/reject', [\App\Http\Controllers\Admin\ProgramProofController::class, 'reject'])->name('program-proofs.reject');
     Route::delete('program-proofs/{id}', [\App\Http\Controllers\Admin\ProgramProofController::class, 'destroy'])->name('program-proofs.destroy');
 
-    // Certificate Management
+    // Certificate Management - custom routes MUST come before resource route
+    Route::post('certificates/preview', [\App\Http\Controllers\Admin\CertificateController::class, 'previewCertificate'])->name('certificates.preview');
+    Route::post('certificates/upload-template', [\App\Http\Controllers\Admin\CertificateController::class, 'uploadTemplate'])->name('certificates.upload-template');
+    Route::get('certificates/download-pdf', [\App\Http\Controllers\Admin\CertificateController::class, 'downloadPdf'])->name('certificates.download-pdf');
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
 
     // Promo Management

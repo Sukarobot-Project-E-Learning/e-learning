@@ -50,12 +50,10 @@ class CertificateController extends Controller
      */
     public function create()
     {
-        $existingTemplatePrograms = DB::table('certificate_templates')->pluck('program_id')->toArray();
-        
+        // Get all published programs for dropdown
         $programs = DB::table('data_programs')
             ->select('id', 'program')
             ->where('status', 'published')
-            ->whereNotIn('id', $existingTemplatePrograms)
             ->orderBy('program', 'asc')
             ->get();
 
@@ -119,6 +117,7 @@ class CertificateController extends Controller
             'number_prefix' => $request->input('number_prefix'),
             'description' => $request->input('description'),
             'template_path' => $templateRelativePath,
+            'cloudinary_public_id' => $request->input('cloudinary_public_id'),
             'is_active' => 1,
             'name_x' => $request->input('name_x'),
             'name_y' => $request->input('name_y'),
@@ -135,6 +134,7 @@ class CertificateController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+
 
         return redirect()->route('admin.certificates.index')
             ->with('success', 'Template sertifikat berhasil ditambahkan');
@@ -212,6 +212,12 @@ class CertificateController extends Controller
             'updated_at' => Carbon::now(),
         ];
 
+        // Update cloudinary_public_id if provided
+        if ($request->filled('cloudinary_public_id')) {
+            $updateData['cloudinary_public_id'] = $request->input('cloudinary_public_id');
+        }
+
+
         if ($request->hasFile('blanko')) {
             $blankoFile = $request->file('blanko');
             $blankoName = time() . '_' . Str::random(6) . '.' . $blankoFile->getClientOriginalExtension();
@@ -269,6 +275,183 @@ class CertificateController extends Controller
             return response()->json(['success' => true, 'message' => 'Template sertifikat berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus template'], 500);
+        }
+    }
+
+    /**
+     * Upload template to Cloudinary (AJAX endpoint)
+     */
+    public function uploadTemplate(Request $request)
+    {
+        $request->validate([
+            'blanko' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ]);
+
+        $cloudinary = new \App\Services\CloudinaryService();
+        
+        if (!$cloudinary->isConfigured()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cloudinary belum dikonfigurasi. Periksa file .env'
+            ], 500);
+        }
+
+        $result = $cloudinary->uploadTemplate($request->file('blanko'));
+        
+        if ($result['success']) {
+            return response()->json([
+                'success' => true,
+                'public_id' => $result['public_id'],
+                'url' => $result['secure_url'],
+                'width' => $result['width'],
+                'height' => $result['height'],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $result['message'] ?? 'Upload gagal'
+        ], 500);
+    }
+
+    /**
+     * Generate certificate preview using Cloudinary (AJAX endpoint)
+     */
+    public function previewCertificate(Request $request)
+    {
+        $request->validate([
+            'public_id' => 'required|string',
+            'name_x' => 'required|numeric',
+            'name_y' => 'required|numeric',
+            'name_font_size' => 'required|integer',
+            'number_x' => 'required|numeric',
+            'number_y' => 'required|numeric',
+            'number_font_size' => 'required|integer',
+            'desc_x' => 'required|numeric',
+            'desc_y' => 'required|numeric',
+            'desc_font_size' => 'required|integer',
+            'date_x' => 'required|numeric',
+            'date_y' => 'required|numeric',
+            'date_font_size' => 'required|integer',
+            'description' => 'nullable|string',
+            'number_prefix' => 'nullable|string',
+            'image_width' => 'nullable|integer',
+            'image_height' => 'nullable|integer',
+        ]);
+
+        $cloudinary = new \App\Services\CloudinaryService();
+        
+        if (!$cloudinary->isConfigured()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cloudinary belum dikonfigurasi'
+            ], 500);
+        }
+
+        // Generate sample certificate data
+        $currentMonth = self::getRomanMonth(Carbon::now()->month);
+        $currentYear = Carbon::now()->year;
+        $prefix = $request->input('number_prefix', 'B-1/PT.STG');
+        $sampleNumber = "001/{$prefix}/{$currentMonth}/{$currentYear}";
+
+        $settings = [
+            'name_x' => $request->input('name_x'),
+            'name_y' => $request->input('name_y'),
+            'name_font_size' => $request->input('name_font_size'),
+            'number_x' => $request->input('number_x'),
+            'number_y' => $request->input('number_y'),
+            'number_font_size' => $request->input('number_font_size'),
+            'desc_x' => $request->input('desc_x'),
+            'desc_y' => $request->input('desc_y'),
+            'desc_font_size' => $request->input('desc_font_size'),
+            'date_x' => $request->input('date_x'),
+            'date_y' => $request->input('date_y'),
+            'date_font_size' => $request->input('date_font_size'),
+            'description' => $request->input('description', 'Deskripsi sertifikat'),
+        ];
+
+        // Get image dimensions (default to standard certificate size)
+        $imageWidth = $request->input('image_width', 1920);
+        $imageHeight = $request->input('image_height', 1357);
+
+        $previewUrl = $cloudinary->generateCertificateUrl(
+            $request->input('public_id'),
+            'Nama Penerima',
+            $sampleNumber,
+            $settings['description'],
+            $cloudinary->formatIndonesianDate(Carbon::now()),
+            $settings,
+            $imageWidth,
+            $imageHeight
+        );
+
+        // Generate download URL that points to our server-side PDF endpoint
+        $downloadUrl = route('admin.certificates.download-pdf') . '?' . http_build_query([
+            'image_url' => $previewUrl
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'preview_url' => $previewUrl,
+            'pdf_url' => $downloadUrl,
+        ]);
+    }
+
+
+    /**
+     * Download certificate as PDF using DOMPDF
+     */
+    public function downloadPdf(Request $request)
+    {
+        $imageUrl = $request->query('image_url');
+        
+        if (!$imageUrl) {
+            return response()->json(['error' => 'Image URL is required'], 400);
+        }
+
+        try {
+            // Fetch image content from Cloudinary
+            $imageContent = file_get_contents($imageUrl);
+            
+            if (!$imageContent) {
+                return response()->json(['error' => 'Failed to fetch image'], 500);
+            }
+
+            // Convert image to base64
+            $base64Image = base64_encode($imageContent);
+            
+            // Detect image type
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($imageContent);
+            
+            // Create HTML with full-page image
+            $html = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    @page { margin: 0; }
+                    body { margin: 0; padding: 0; }
+                    img { width: 100%; height: auto; display: block; }
+                </style>
+            </head>
+            <body>
+                <img src="data:' . $mimeType . ';base64,' . $base64Image . '" />
+            </body>
+            </html>';
+
+            // Generate PDF using DOMPDF
+            $pdf = \PDF::loadHTML($html);
+            $pdf->setPaper('a4', 'landscape');
+            
+            // Download the PDF
+            $filename = 'sertifikat_' . date('Y-m-d_His') . '.pdf';
+            
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            \Log::error('PDF generation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'PDF generation failed: ' . $e->getMessage()], 500);
         }
     }
 
