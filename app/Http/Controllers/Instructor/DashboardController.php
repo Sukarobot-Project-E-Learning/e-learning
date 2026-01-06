@@ -66,22 +66,14 @@ class DashboardController extends Controller
             ->whereIn('id', $programIds)
             ->get();
 
-        // Get total students from schedules (unique students in big_data)
-        $scheduleIds = DB::table('schedules')
-            ->where('id_trainer', $trainerId)
-            ->where('ket', 'Aktif')
-            ->pluck('id_bigData')
-            ->filter()
-            ->toArray();
-
+        // Get total students enrolled in instructor's programs
         $totalStudents = 0;
-        if (!empty($scheduleIds)) {
-            $totalStudents = DB::table('big_data')
-                ->whereIn('id_bigData', $scheduleIds)
+        if (!empty($programIds)) {
+            $totalStudents = DB::table('enrollments')
+                ->whereIn('program_id', $programIds)
+                ->where('status', 'active')
                 ->distinct()
-                ->pluck('id_siswa')
-                ->filter()
-                ->count();
+                ->count('student_id');
         }
 
         // Get total quizzes/tugas for this instructor

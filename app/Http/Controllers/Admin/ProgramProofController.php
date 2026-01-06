@@ -16,17 +16,13 @@ class ProgramProofController extends Controller
     {
         // Get program proofs from database with pagination (10 per page)
         $proofs = DB::table('program_proofs')
-            ->leftJoin('data_siswas', 'program_proofs.student_id', '=', 'data_siswas.id')
-            ->leftJoin('users', function($join) {
-                $join->on('program_proofs.student_id', '=', 'users.id')
-                     ->where('users.role', '=', 'user');
-            })
+            ->leftJoin('users', 'program_proofs.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
             ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
             ->leftJoin('certificate_templates', 'program_proofs.program_id', '=', 'certificate_templates.program_id')
             ->select(
                 'program_proofs.*',
-                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as student_name'),
+                'users.name as student_name',
                 'data_programs.program as program_title',
                 DB::raw("CONCAT(DATE_FORMAT(schedules.tanggal_mulai, '%d %M %Y'), IF(schedules.tanggal_selesai IS NOT NULL AND schedules.tanggal_selesai != schedules.tanggal_mulai, CONCAT(' - ', DATE_FORMAT(schedules.tanggal_selesai, '%d %M %Y')), '')) as schedule"),
                 DB::raw('IF(certificate_templates.id IS NOT NULL, 1, 0) as has_certificate_template')
@@ -58,17 +54,13 @@ class ProgramProofController extends Controller
     public function show($id)
     {
         $proof = DB::table('program_proofs')
-            ->leftJoin('data_siswas', 'program_proofs.student_id', '=', 'data_siswas.id')
-            ->leftJoin('users', function($join) {
-                $join->on('program_proofs.student_id', '=', 'users.id')
-                     ->where('users.role', '=', 'user');
-            })
+            ->leftJoin('users', 'program_proofs.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
             ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
             ->leftJoin('certificate_templates', 'program_proofs.program_id', '=', 'certificate_templates.program_id')
             ->select(
                 'program_proofs.*',
-                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as user_name'),
+                'users.name as user_name',
                 'data_programs.program as program_title',
                 'data_programs.type',
                 'schedules.tanggal_mulai as start_date',

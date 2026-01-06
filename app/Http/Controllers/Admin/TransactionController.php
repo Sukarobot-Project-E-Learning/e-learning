@@ -15,15 +15,11 @@ class TransactionController extends Controller
     {
         // Get transactions from database with pagination (5 per page)
         $transactions = DB::table('transactions')
-            ->leftJoin('data_siswas', 'transactions.student_id', '=', 'data_siswas.id')
-            ->leftJoin('users', function($join) {
-                $join->on('transactions.student_id', '=', 'users.id')
-                     ->where('users.role', '=', 'user');
-            })
+            ->leftJoin('users', 'transactions.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'transactions.program_id', '=', 'data_programs.id')
             ->select(
                 'transactions.*',
-                DB::raw('COALESCE(data_siswas.nama_lengkap, users.name) as student_name'),
+                'users.name as student_name',
                 'data_programs.program as program_name'
             )
             ->orderBy('transactions.created_at', 'desc')

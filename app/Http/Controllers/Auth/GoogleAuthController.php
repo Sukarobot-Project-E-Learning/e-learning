@@ -176,18 +176,7 @@ class GoogleAuthController extends Controller
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-                
-                // Also insert to data_siswas if not exists
-                $existingSiswa = DB::table('data_siswas')->where('email', $googleUser->email)->first();
-                if (!$existingSiswa) {
-                    DB::table('data_siswas')->insert([
-                        'nama_lengkap' => $googleUser->name,
-                        'email' => $googleUser->email,
-                        'status_siswa' => 'Aktif',
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+                // User data is now stored only in users table (data_siswas removed)
                 
                 // Login the newly created user
                 Auth::loginUsingId($userId);
