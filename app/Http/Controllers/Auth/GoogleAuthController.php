@@ -97,9 +97,11 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')
                 ->redirectUrl($redirectUri)
                 ->user();
+            // Normalize email to lowercase for consistent matching
+            $normalizedEmail = strtolower(trim($googleUser->email));
             
             // Check if user exists by email
-            $user = DB::table('users')->where('email', $googleUser->email)->first();
+            $user = DB::table('users')->where('email', $normalizedEmail)->first();
             
             if ($user) {
                 // User exists - Login
@@ -164,7 +166,7 @@ class GoogleAuthController extends Controller
                 // Create new user
                 $userId = DB::table('users')->insertGetId([
                     'name' => $googleUser->name,
-                    'email' => $googleUser->email,
+                    'email' => $normalizedEmail, // Use normalized email
                     'username' => $username,
                     'password' => Hash::make(Str::random(32)), // Random password since using Google
                     'provider' => 'google',

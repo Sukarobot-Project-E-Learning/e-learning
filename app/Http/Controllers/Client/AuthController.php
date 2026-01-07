@@ -24,7 +24,7 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255|unique:users,username|alpha_dash',
-                'phone' => 'required|string|max:20|regex:/^[0-9]+$/',
+                'phone' => 'required|string|max:20|regex:/^[0-9]+$/|unique:users,phone',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
             ], [
@@ -34,6 +34,7 @@ class AuthController extends Controller
                 'username.alpha_dash' => 'Username hanya boleh huruf, angka, dash dan underscore',
                 'phone.required' => 'Nomor HP wajib diisi',
                 'phone.regex' => 'Nomor HP hanya boleh angka',
+                'phone.unique' => 'Nomor HP sudah terdaftar',
                 'email.required' => 'Email wajib diisi',
                 'email.email' => 'Format email tidak valid',
                 'email.unique' => 'Email sudah terdaftar',
@@ -50,20 +51,22 @@ class AuthController extends Controller
                 ], 422);
             }
 
+            // Normalize email to lowercase
+            $normalizedEmail = strtolower(trim($request->email));
+
             // Buat user baru
             $user = User::create([
                 'name' => $request->name,
-                'username' => $request->username,
+                'username' => strtolower(trim($request->username)),
                 'phone' => $request->phone,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'email' => $normalizedEmail,
+                'password' => $request->password, // Auto-hashed by model casts
                 'role' => 'user',
-                'provider' => 'local',
                 'is_active' => true,
             ]);
 
-            // Buat token JWT menggunakan Laravel Sanctum
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // Login user dengan session (untuk web-based registration)
+            \Auth::login($user);
 
             return response()->json([
                 'success' => true,
@@ -78,8 +81,7 @@ class AuthController extends Controller
                         'role' => $user->role,
                         'avatar' => $user->avatar,
                     ],
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
+                    'redirect_url' => '/dashboard'
                 ]
             ], 201);
 

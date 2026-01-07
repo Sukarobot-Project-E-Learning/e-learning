@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Call API register
-            const response = await fetch("/api/register", {
+            const response = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -46,15 +46,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // Simpan token ke localStorage
-                localStorage.setItem("auth_token", result.data.access_token);
-                localStorage.setItem("user_data", JSON.stringify(result.data.user));
-
-                // Tampilkan pesan sukses
-                alert(result.message || "Akun berhasil dibuat! 🎉");
-
-                // Redirect ke dashboard atau home
-                window.location.href = "/dashboard";
+                // Tampilkan pesan sukses dengan SweetAlert2
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil! 🎉',
+                    text: result.message || 'Registrasi berhasil! Selamat datang di Sukarobot',
+                    confirmButtonText: 'Lanjut ke Dashboard',
+                    confirmButtonColor: '#10b981',
+                    allowOutsideClick: false
+                }).then(() => {
+                    // Redirect ke dashboard (session sudah dibuat di server)
+                    window.location.href = result.data.redirect_url || "/dashboard";
+                });
             } else {
                 // Tampilkan error
                 showErrors(result.errors || { general: [result.message] });
