@@ -15,19 +15,24 @@ use App\Http\Controllers\Client\AuthController;
 |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('elearning', fn (Request $request) => $request->user())->name('elearning');
-});
-
-// Public Auth Routes
+// Public Auth Routes (no token required)
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/refresh', [AuthController::class, 'refreshToken'])->name('refresh');
 });
 
-// Protected Auth Routes
-Route::middleware(['auth:sanctum'])->prefix('auth')->name('auth.')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Protected Routes (JWT token required)
+Route::middleware(['jwt.auth'])->prefix('v1')->name('api.')->group(function () {
+    // User info
+    Route::get('/user', function (Request $request) {
+        return response()->json([
+            'success' => true,
+            'data' => $request->user()
+        ]);
+    })->name('user');
+    
+    // Profile routes
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-

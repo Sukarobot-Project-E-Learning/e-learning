@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'instructor' => \App\Http\Middleware\EnsureUserIsInstructor::class,
             'user' => \App\Http\Middleware\EnsureUserIsUser::class,
+            'jwt.auth' => \App\Http\Middleware\JWTAuthenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

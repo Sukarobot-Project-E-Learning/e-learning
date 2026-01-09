@@ -142,8 +142,10 @@ class AuthController extends Controller
             // Update last login
             $user->update(['last_login_at' => now()]);
 
-            // Buat token
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // Generate JWT token
+            $jwtService = app(\App\Services\JWTService::class);
+            $accessToken = $jwtService->generateTokenForUser($user);
+            $refreshToken = $jwtService->generateRefreshToken(['sub' => $user->id]);
 
             return response()->json([
                 'success' => true,
@@ -158,8 +160,10 @@ class AuthController extends Controller
                         'role' => $user->role,
                         'avatar' => $user->avatar,
                     ],
-                    'access_token' => $token,
+                    'access_token' => $accessToken,
+                    'refresh_token' => $refreshToken,
                     'token_type' => 'Bearer',
+                    'expires_in' => config('jwt.expires_in', 86400),
                 ]
             ], 200);
 
@@ -173,26 +177,88 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout user
+     * Logout user (for JWT, client should discard token)
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
     {
+        // JWT is stateless, so we just return success
+        // Client should remove token from storage
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout berhasil. Sampai jumpa! 👋'
+        ], 200);
+    }
+
+    /**
+     * Refresh access token using refresh token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refreshToken(Request $request)
+    {
         try {
-            // Revoke token yang sedang digunakan
-            $request->user()->currentAccessToken()->delete();
+            $validator = Validator::make($request->all(), [
+                'refresh_token' => 'required|string',
+            ], [
+                'refresh_token.required' => 'Refresh token wajib diisi',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $jwtService = app(\App\Services\JWTService::class);
+            $decoded = $jwtService->validateRefreshToken($request->refresh_token);
+
+            if (!$decoded) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Refresh token tidak valid atau sudah kadaluarsa'
+                ], 401);
+            }
+
+            // Get user
+            $user = User::find($decoded->sub);
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User tidak ditemukan'
+                ], 401);
+            }
+
+            if (!$user->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun Anda tidak aktif'
+                ], 403);
+            }
+
+            // Generate new access token
+            $accessToken = $jwtService->generateTokenForUser($user);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Logout berhasil. Sampai jumpa! 👋'
+                'message' => 'Token berhasil diperbarui',
+                'data' => [
+                    'access_token' => $accessToken,
+                    'token_type' => 'Bearer',
+                    'expires_in' => config('jwt.expires_in', 86400),
+                ]
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat logout',
+                'message' => 'Terjadi kesalahan saat memperbarui token',
                 'error' => $e->getMessage()
             ], 500);
         }
