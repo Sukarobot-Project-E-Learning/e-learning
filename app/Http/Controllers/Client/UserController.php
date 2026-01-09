@@ -30,6 +30,12 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
+        // Auto-update role if application is approved but role is not yet 'instructor'
+        if ($instructorApplication && $instructorApplication->status == 'approved' && $user->role !== 'instructor') {
+            DB::table('users')->where('id', $user->id)->update(['role' => 'instructor']);
+            $user->role = 'instructor'; // Update instance for view
+        }
+
         return view('client.dashboard.profile', compact('user', 'instructorApplication'));
     }
 

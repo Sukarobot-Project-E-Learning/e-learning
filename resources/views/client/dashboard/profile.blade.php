@@ -54,7 +54,7 @@
                                   Selamat! Anda adalah Instruktur
                               </h3>
                               <div class="mt-2 text-sm leading-5 text-green-700">
-                                  <p>Akun Anda telah disetujui sebagai instruktur. Anda dapat mengakses dashboard instruktur <a href="{{ route('instructor.dashboard') }}" target="_blank" rel="noopener noreferrer" class="font-medium text-green-600 hover:text-green-500 underline transition duration-150 ease-in-out">di sini</a>.</p>  
+                                  <p>Akun Anda telah disetujui sebagai instruktur. Anda dapat mengakses dashboard instruktur <a href="{{ route('instructor.dashboard') }}" class="font-medium text-green-600 hover:text-green-500 underline transition duration-150 ease-in-out">di sini</a>.</p>  
                               </div>
                           </div>
                       </div>

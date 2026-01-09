@@ -138,15 +138,34 @@ class LoginController extends Controller
                     $roleMessage = 'Anda adalah admin. Silakan gunakan halaman login admin.';
                     break;
                 case 'user':
+                    // Check if they have an approved application but role wasn't updated
+                    $approvedApp = DB::table('instructor_applications')
+                        ->where('user_id', $user->id)
+                        ->where('status', 'approved')
+                        ->first();
+                    
+                    if ($approvedApp) {
+                        // Fix the role automatically
+                        DB::table('users')->where('id', $user->id)->update(['role' => 'instructor']);
+                        // Continue to login logic by breaking out of this checking block? 
+                        // Actually, we need to bypass the return error.
+                        // Let's modify the flow.
+                        $user->role = 'instructor'; // Memory update
+                        break; // Break switch, but we are still inside the if ($user->role !== 'instructor') block?
+                    }
+
                     $roleMessage = 'Anda adalah user biasa. Silakan gunakan halaman login user.';
                     break;
                 default:
                     $roleMessage = 'Anda tidak memiliki akses sebagai instruktur.';
             }
             
-            return back()->withErrors([
-                'email' => $roleMessage
-            ])->withInput($request->only('email'));
+            // If we didn't fix the role, return error
+            if ($user->role !== 'instructor') {
+                return back()->withErrors([
+                    'email' => $roleMessage
+                ])->withInput($request->only('email'));
+            }
         }
 
         // Check if user is active
