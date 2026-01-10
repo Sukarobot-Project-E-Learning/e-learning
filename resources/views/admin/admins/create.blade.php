@@ -166,6 +166,51 @@
 
 @push('scripts')
 <script>
+    // Form Validation
+    document.getElementById('adminForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('password_confirmation').value;
+        const photoInput = document.getElementById('photo');
+        
+        // Password Validation
+        if (password && password.length < 8) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal',
+                text: 'Password minimal harus 8 karakter!'
+            });
+            return;
+        }
+
+        // Confirm Password Validation
+        if (password && password !== confirmPassword) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal',
+                text: 'Konfirmasi password tidak cocok!'
+            });
+            return;
+        }
+
+        // Photo Validation
+        if (photoInput.files.length > 0) {
+            const fileSize = photoInput.files[0].size; // in bytes
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (fileSize > maxSize) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: 'Ukuran foto maksimal 2MB!'
+                });
+                return;
+            }
+        }
+    });
+
     // Handle success/error messages from session
     @if(session('success'))
         Swal.fire({

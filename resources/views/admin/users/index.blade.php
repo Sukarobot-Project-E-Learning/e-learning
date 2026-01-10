@@ -40,73 +40,53 @@
             </form>
         </div>
 
-        <!-- Users Table -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
-            <div class="w-full overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                            <th class="px-4 py-3">Nama</th>
-                            <th class="px-4 py-3">Email</th>
-                            <th class="px-4 py-3">Telepon</th>
-                            <th class="px-4 py-3">Foto</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                        @forelse($users as $user)
-                        <tr class="text-gray-700 dark:text-gray-400">
-                            <td class="px-4 py-3">
-                                <div class="flex items-center text-sm">
-                                    <div>
-                                        <p class="font-semibold">{{ $user->name }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">{{ $user->email ?? '-' }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $user->phone ?? '-' }}</td>
-                            <td class="px-4 py-3">
-                                @if($user->avatar)
-                                    <img src="{{ asset($user->avatar) }}" 
-                                         alt="Avatar" 
-                                         class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
-                                         onclick="window.open('{{ asset($user->avatar) }}', '_blank')">
-                                @else
-                                    <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
-                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                                        </svg>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-xs">
-                                <span class="px-2 py-1 font-semibold leading-tight {{ $user->is_active ? 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' : 'text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-100' }} rounded-full">
-                                    {{ $user->is_active ? 'Aktif' : 'Tidak Aktif' }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center space-x-4 text-sm">
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="text-green-600 hover:text-green-800 dark:text-green-400">Edit</a>
-                                    <button @click="deleteUser({{ $user->id }})" class="text-red-600 hover:text-red-800 dark:text-red-400">Hapus</button>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada user. <a href="{{ route('admin.users.create') }}" class="text-orange-600 hover:text-orange-800 dark:text-orange-400">Tambah user pertama</a>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                <!-- Users Table Container -->
+                <div id="users-table" class="w-full mb-8 overflow-hidden rounded-lg shadow-md dark:bg-gray-800">
+                    @include('admin.users.partials.table', ['users' => $users])
+                </div>
             </div>
-
-            <!-- Pagination Section -->
-            @include('components.pagination', ['items' => $users ?? null])
-        </div>
-    </div>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.querySelector('input[name="search"]');
+                const statusSelect = document.querySelector('select[name="status"]');
+                const tableContainer = document.getElementById('users-table');
+    
+                let timeoutId;
+    
+                function fetchUsers() {
+                    const search = searchInput.value;
+                    const status = statusSelect.value;
+                    
+                    // Show loading state (optional, can add a spinner or opacity change)
+                    tableContainer.style.opacity = '0.5';
+    
+                    fetch(`{{ route('admin.users.index') }}?search=${search}&status=${status}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        tableContainer.innerHTML = html;
+                        tableContainer.style.opacity = '1';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        tableContainer.style.opacity = '1';
+                    });
+                }
+    
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(fetchUsers, 300); // Debounce 300ms
+                });
+    
+                statusSelect.addEventListener('change', function() {
+                    fetchUsers();
+                });
+            });
+        </script>
 
     <script>
         function deleteUser(id) {

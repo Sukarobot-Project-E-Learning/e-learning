@@ -55,6 +55,10 @@ class InstructorController extends Controller
             ];
         });
 
+        if (request()->ajax()) {
+            return view('admin.instructors.partials.table', compact('instructors'));
+        }
+
         return view('admin.instructors.index', compact('instructors'));
     }
 

@@ -27,6 +27,10 @@ class UserController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        if (request()->ajax()) {
+            return view('admin.users.partials.table', compact('users'));
+        }
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -216,6 +220,10 @@ class UserController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        if (request()->ajax()) {
+            return view('admin.admins.partials.table', compact('users'));
+        }
+
         return view('admin.admins.index', compact('users'));
     }
 
@@ -362,134 +370,7 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Gagal menghapus admin: ' . $e->getMessage()], 500);
         }
     }
-
-    /**
-     * Display a listing of instructors (role='instructor')
-     */
-    public function indexInstructors()
-    {
-        $users = DB::table('users')
-            ->where('role', 'instructor')
-            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('admin.instructors_list.index', compact('users'));
-    }
-
-    /**
-     * Store a newly created instructor
-     */
-    public function storeInstructor(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'phone' => 'nullable|string|max:20',
-                'password' => 'required|string|min:8',
-                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            ]);
-
-            $data = [
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'] ?? null,
-                'password' => Hash::make($validated['password']),
-                'role' => 'instructor',
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-
-            // Upload photo jika ada
-            if ($request->hasFile('photo')) {
-                $photo = $request->file('photo');
-                $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/instructors');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
-                $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'uploads/instructors/' . $photoName;
-            }
-
-            DB::table('users')->insert($data);
-
-            return response()->json(['success' => true, 'message' => 'Instructor berhasil ditambahkan']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Gagal menambahkan instructor: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Update the specified instructor
-     */
-    public function updateInstructor(Request $request, $id)
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $id,
-                'phone' => 'nullable|string|max:20',
-                'password' => 'nullable|string|min:8',
-                'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            ]);
-
-            $updateData = [
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'] ?? null,
-                'updated_at' => now(),
-            ];
-
-            if (!empty($validated['password'])) {
-                $updateData['password'] = Hash::make($validated['password']);
-            }
-
-            // Upload photo jika ada
-            if ($request->hasFile('photo')) {
-                // Delete old photo first
-                $oldInstructor = DB::table('users')->where('id', $id)->first();
-                if ($oldInstructor && $oldInstructor->avatar && file_exists(public_path($oldInstructor->avatar))) {
-                    unlink(public_path($oldInstructor->avatar));
-                }
-                
-                $photo = $request->file('photo');
-                $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/instructors');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
-                $photo->move($uploadPath, $photoName);
-                $updateData['avatar'] = 'uploads/instructors/' . $photoName;
-            }
-
-            DB::table('users')->where('id', $id)->update($updateData);
-
-            return response()->json(['success' => true, 'message' => 'Instructor berhasil diupdate']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Gagal mengupdate instructor: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Remove the specified instructor
-     */
-    public function destroyInstructor($id)
-    {
-        try {
-            // Delete photo file if exists
-            $instructor = DB::table('users')->where('id', $id)->first();
-            if ($instructor && $instructor->avatar && file_exists(public_path($instructor->avatar))) {
-                unlink(public_path($instructor->avatar));
-            }
-            
-            DB::table('users')->where('id', $id)->delete();
-            return response()->json(['success' => true, 'message' => 'Instructor berhasil dihapus']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Gagal menghapus instructor: ' . $e->getMessage()], 500);
-        }
-    }
 }
+
+
 

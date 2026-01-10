@@ -89,11 +89,6 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::put('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateAdmin'])->name('admins.update');
     Route::delete('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyAdmin'])->name('admins.destroy');
 
-    // Instructors List Management (role='instructor')
-    Route::get('instructors-list', [\App\Http\Controllers\Admin\UserController::class, 'indexInstructors'])->name('instructors-list.index');
-    Route::post('instructors-list', [\App\Http\Controllers\Admin\UserController::class, 'storeInstructor'])->name('instructors-list.store');
-    Route::put('instructors-list/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateInstructor'])->name('instructors-list.update');
-    Route::delete('instructors-list/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyInstructor'])->name('instructors-list.destroy');
 
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
