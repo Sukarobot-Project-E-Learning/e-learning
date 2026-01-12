@@ -415,12 +415,44 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Gambar Program</h3>
                         <div class="flex items-center justify-center w-full">
                             <label for="image"
-                                class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                x-data="{ fileName: null }" @dragover.prevent @drop.prevent="
-                                       let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           fileName = file.name;
-                                           $refs.imageInput.files = $event.dataTransfer.files;
+                                class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800 transition-colors border-gray-300 dark:border-gray-600"
+                                x-data="{ 
+                                    fileName: null,
+                                    validateFile(file) {
+                                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                                        const maxSize = 2 * 1024 * 1024; // 2MB
+
+                                        if (!allowedTypes.includes(file.type)) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Upload Gagal',
+                                                text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.'
+                                            });
+                                            this.fileName = null;
+                                            $refs.imageInput.value = '';
+                                            return false;
+                                        }
+
+                                        if (file.size > maxSize) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Upload Gagal',
+                                                text: 'Ukuran file melebihi 2MB.'
+                                            });
+                                            this.fileName = null;
+                                            $refs.imageInput.value = '';
+                                            return false;
+                                        }
+
+                                        this.fileName = file.name;
+                                        return true;
+                                    }
+                                }" 
+                                @dragover.prevent 
+                                @drop.prevent="
+                                       const file = $event.dataTransfer.files[0];
+                                       if (file && validateFile(file)) {
+                                            $refs.imageInput.files = $event.dataTransfer.files;
                                        }
                                    ">
                                 <div class="flex flex-col items-center justify-center pt-2 pb-3" x-show="!fileName">
@@ -435,7 +467,7 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                         <span class="text-purple-600 hover:text-purple-700 dark:text-purple-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk: JPG, JPEG, PNG
+                                        Unggah berkas dalam bentuk: JPG, JPEG, PNG (Maks. 2MB)
                                     </p>
                                 </div>
                                 <div x-show="fileName" class="flex flex-col items-center justify-center w-full h-full p-4">
@@ -452,11 +484,11 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                         Hapus File
                                     </button>
                                 </div>
-                                <input id="image" name="image" type="file" class="hidden" accept="image/*"
+                                <input id="image" name="image" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg"
                                     x-ref="imageInput" @change="
-                                           let file = $event.target.files[0];
+                                           const file = $event.target.files[0];
                                            if (file) {
-                                               fileName = file.name;
+                                               validateFile(file);
                                            }
                                        ">
                             </label>

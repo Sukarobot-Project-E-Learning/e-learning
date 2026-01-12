@@ -447,8 +447,49 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 
                         <div class="flex items-center justify-center w-full">
                             <label for="image"
-                                class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800 dark:border-gray-600"
-                                x-data="{ imagePreview: null }">
+                                class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800 transition-colors border-gray-300 dark:border-gray-600"
+                                x-data="{ 
+                                    imagePreview: null,
+                                    validateFile(file) {
+                                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                                        const maxSize = 2 * 1024 * 1024; // 2MB
+
+                                        if (!allowedTypes.includes(file.type)) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Upload Gagal',
+                                                text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.'
+                                            });
+                                            this.imagePreview = null;
+                                            $refs.imageInput.value = '';
+                                            return false;
+                                        }
+
+                                        if (file.size > maxSize) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Upload Gagal',
+                                                text: 'Ukuran file melebihi 2MB.'
+                                            });
+                                            this.imagePreview = null;
+                                            $refs.imageInput.value = '';
+                                            return false;
+                                        }
+
+                                        // Create preview
+                                        let reader = new FileReader();
+                                        reader.onload = (e) => { this.imagePreview = e.target.result };
+                                        reader.readAsDataURL(file);
+                                        return true;
+                                    }
+                                }"
+                                @dragover.prevent 
+                                @drop.prevent="
+                                    const file = $event.dataTransfer.files[0];
+                                    if (file && validateFile(file)) {
+                                        $refs.imageInput.files = $event.dataTransfer.files;
+                                    }
+                                ">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!imagePreview">
                                     <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -472,9 +513,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                         </svg>
                                     </button>
                                 </div>
-                                <input id="image" name="image" type="file" class="hidden" accept="image/*"
+                                <input id="image" name="image" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg"
                                     x-ref="imageInput"
-                                    @change="let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
+                                    @change="let file = $event.target.files[0]; if (file) { validateFile(file); }">
                             </label>
                         </div>
 

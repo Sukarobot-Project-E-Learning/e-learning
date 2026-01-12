@@ -16,7 +16,7 @@
 
         <!-- Form Card -->
         <div class="w-full mb-8 p-6 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="userForm" x-data="passwordValidation()" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-6">
                     <!-- Status -->
@@ -109,9 +109,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password">
                             Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" name="password" id="password" required
-                               placeholder="Masukkan password"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                        <input type="password" name="password" id="password" required x-model="password" @input="validate" placeholder="Masukkan password" class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500"> <p x-show="passwordError" x-text="passwordError" class="text-red-500 text-sm mt-1"></p>
                     </div>
 
                     <!-- Confirm Password -->
@@ -119,9 +117,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password_confirmation">
                             Konfirmasi Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" required
-                               placeholder="Konfirmasi password"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                        <input type="password" name="password_confirmation" id="password_confirmation" required x-model="confirmPassword" @input="validate" placeholder="Konfirmasi password" class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500"> <p x-show="confirmError" x-text="confirmError" class="text-red-500 text-sm mt-1"></p>
                     </div>
 
                     <!-- Photo Upload -->
@@ -132,12 +128,42 @@
                         <div class="flex items-center justify-center w-full">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ fileName: null }"
+                                   x-data="{ 
+                                       fileName: null,
+                                       validateFile(file) {
+                                           const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                                           const maxSize = 2 * 1024 * 1024; // 2MB
+
+                                           if (!allowedTypes.includes(file.type)) {
+                                               Swal.fire({
+                                                   icon: 'error',
+                                                   title: 'Upload Gagal',
+                                                   text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.'
+                                               });
+                                               this.fileName = null;
+                                               $refs.photoInput.value = '';
+                                               return false;
+                                           }
+
+                                           if (file.size > maxSize) {
+                                               Swal.fire({
+                                                   icon: 'error',
+                                                   title: 'Upload Gagal',
+                                                   text: 'Ukuran file melebihi 2MB.'
+                                               });
+                                               this.fileName = null;
+                                               $refs.photoInput.value = '';
+                                               return false;
+                                           }
+
+                                           this.fileName = file.name;
+                                           return true;
+                                       }
+                                   }"
                                    @dragover.prevent
                                    @drop.prevent="
                                        let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           fileName = file.name;
+                                       if (file && validateFile(file)) {
                                            $refs.photoInput.files = $event.dataTransfer.files;
                                        }
                                    ">
@@ -173,7 +199,7 @@
                                        @change="
                                            let file = $event.target.files[0];
                                            if (file) {
-                                               fileName = file.name;
+                                               validateFile(file);
                                            }
                                        ">
                             </label>
@@ -200,6 +226,29 @@
 
 @push('scripts')
 <script>
+    // Realtime Password Validation
+    function passwordValidation() {
+    return {
+        password: '',
+        confirmPassword: '',
+        passwordError: '',
+        confirmError: '',
+
+        validate() {
+            this.passwordError = '';
+            this.confirmError = '';
+
+            if (this.password.length > 0 && this.password.length < 8) {
+                this.passwordError = 'Password minimal 8 karakter.';
+            }
+
+            if (this.confirmPassword && this.password !== this.confirmPassword) {
+                this.confirmError = 'Konfirmasi password tidak cocok.';
+            }
+        }
+    }
+}
+
     // Form Validation
     document.getElementById('userForm').addEventListener('submit', function(e) {
         const password = document.getElementById('password').value;
@@ -228,21 +277,7 @@
             return;
         }
 
-        // Photo Validation
-        if (photoInput.files.length > 0) {
-            const fileSize = photoInput.files[0].size; // in bytes
-            const maxSize = 2 * 1024 * 1024; // 2MB
-
-            if (fileSize > maxSize) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Ukuran foto maksimal 2MB!'
-                });
-                return;
-            }
-        }
+        // Photo Validation Removed (Handled by Alpine.js instant validation)
     });
 
     // Handle success/error messages from session

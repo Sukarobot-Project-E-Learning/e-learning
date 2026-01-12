@@ -97,12 +97,42 @@
                         <div class="flex items-center justify-center w-full">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ fileName: null }"
+                                   x-data="{ 
+                                       fileName: null,
+                                       validateFile(file) {
+                                           const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                                           const maxSize = 2 * 1024 * 1024; // 2MB
+
+                                           if (!allowedTypes.includes(file.type)) {
+                                               Swal.fire({
+                                                   icon: 'error',
+                                                   title: 'Upload Gagal',
+                                                   text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.'
+                                               });
+                                               this.fileName = null;
+                                               $refs.photoInput.value = '';
+                                               return false;
+                                           }
+
+                                           if (file.size > maxSize) {
+                                               Swal.fire({
+                                                   icon: 'error',
+                                                   title: 'Upload Gagal',
+                                                   text: 'Ukuran file melebihi 2MB.'
+                                               });
+                                               this.fileName = null;
+                                               $refs.photoInput.value = '';
+                                               return false;
+                                           }
+
+                                           this.fileName = file.name;
+                                           return true;
+                                       }
+                                   }"
                                    @dragover.prevent
                                    @drop.prevent="
                                        let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           fileName = file.name;
+                                       if (file && validateFile(file)) {
                                            $refs.photoInput.files = $event.dataTransfer.files;
                                        }
                                    ">
@@ -138,7 +168,7 @@
                                        @change="
                                            let file = $event.target.files[0];
                                            if (file) {
-                                               fileName = file.name;
+                                               validateFile(file);
                                            }
                                        ">
                             </label>
@@ -194,21 +224,7 @@
             return;
         }
 
-        // Photo Validation
-        if (photoInput.files.length > 0) {
-            const fileSize = photoInput.files[0].size; // in bytes
-            const maxSize = 2 * 1024 * 1024; // 2MB
-
-            if (fileSize > maxSize) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Ukuran foto maksimal 2MB!'
-                });
-                return;
-            }
-        }
+        // Photo Validation Removed (Handled by Alpine.js instant validation)
     });
 
     // Handle success/error messages from session
