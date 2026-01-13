@@ -291,6 +291,12 @@ class InstructorController extends Controller
     public function destroy($id)
     {
         try {
+            $user = DB::table('users')->where('id', $id)->first();
+
+            if ($user && $user->avatar && file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['success' => true, 'message' => 'Instruktur berhasil dihapus']);
         } catch (\Exception $e) {
