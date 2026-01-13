@@ -55,7 +55,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-start gap-3">
                     <template x-if="promo.poster">
-                        <img :src="promo.poster" class="w-16 h-12 rounded object-cover border border-gray-300">
+                        <img :src="promo.poster" class="w-16 h-12 rounded object-cover border border-gray-300 cursor-pointer">
                     </template>
                     <template x-if="!promo.poster">
                         <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center">

@@ -57,7 +57,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
                 <div class="flex items-start gap-3">
                     <template x-if="user.avatar">
-                        <img :src="user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200" @click="window.open(user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar, '_blank')">
+                        <img :src="user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar, '_blank')">
                     </template>
                     <template x-if="!user.avatar">
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">

@@ -164,7 +164,7 @@
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Cloudinary</h3>
                     <div class="flex gap-2">
                         <button type="button" id="refreshPreviewBtn" onclick="generateCloudinaryPreview()"
-                            class="hidden inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors">
+                            class="hidden inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors cursor-pointer">
                             🔄 Refresh Preview
                         </button>
                         <a id="downloadPdfBtn" href="#" target="_blank"
@@ -201,7 +201,7 @@
                     </a>
 
                     <button type="submit" form="templateForm"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700">
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 cursor-pointer">
                         ✓ Simpan Template
                     </button>
                 </div>

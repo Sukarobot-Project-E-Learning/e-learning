@@ -73,7 +73,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
                 <div class="flex items-start gap-3">
                     <template x-if="template.template_path">
-                        <img :src="template.template_path" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200" @click="window.open(template.template_path, '_blank')">
+                        <img :src="template.template_path" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(template.template_path, '_blank')">
                     </template>
                     <template x-if="!template.template_path">
                         <div class="w-16 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">

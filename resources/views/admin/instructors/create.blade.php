@@ -186,7 +186,7 @@
                                     <p class="text-sm font-medium text-gray-700 dark:text-gray-200" x-text="'File terpilih: ' + fileName"></p>
                                     <button type="button" 
                                             @click.stop.prevent="fileName = null; $refs.photoInput.value = ''"
-                                            class="mt-2 text-xs text-red-500 hover:text-red-700 font-medium">
+                                            class="mt-2 text-xs text-red-500 hover:text-red-700 font-medium cursor-pointer">
                                         Hapus File
                                     </button>
                                 </div>
@@ -217,7 +217,7 @@
                 </a>
                 <button type="submit"
                         form="instructorForm"
-                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
+                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange cursor-pointer">
                     Simpan Instruktur
                 </button>
             </div>

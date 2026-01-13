@@ -143,7 +143,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tools yang Digunakan</h3>
                             <button type="button" @click="addTool()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -158,7 +158,7 @@
                                         placeholder="Contoh: VS Code"
                                         class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeTool(index)"
-                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors"
+                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors cursor-pointer"
                                         title="Hapus Tool">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -175,13 +175,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Belum ada tools yang ditambahkan.</p>
-                                <button type="button" @click="addTool()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                <button type="button" @click="addTool()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 cursor-pointer">
                                     + Tambah Tool Pertama
                                 </button>
                             </div>
                             
                             <button type="button" x-show="tools.length > 0" @click="addTool()" 
-                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
@@ -197,7 +197,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Kamu Akan Mendapatkan</h3>
                             <button type="button" @click="addBenefit()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -212,7 +212,7 @@
                                         placeholder="Contoh: Sertifikat"
                                         class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
                                     <button type="button" @click="removeBenefit(index)"
-                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors"
+                                        class="p-3 text-red-500 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/30 transition-colors cursor-pointer"
                                         title="Hapus Benefit">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -228,13 +228,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
                                 </svg>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Belum ada benefit yang ditambahkan.</p>
-                                <button type="button" @click="addBenefit()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                <button type="button" @click="addBenefit()" class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 cursor-pointer">
                                     + Tambah Benefit Pertama
                                 </button>
                             </div>
                             
                             <button type="button" x-show="benefits.length > 0" @click="addBenefit()" 
-                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400">
+                                class="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
@@ -362,7 +362,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Materi Pembelajaran</h3>
                             <button type="button" @click="addMaterial()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300">
+                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 dark:bg-orange-900 dark:text-orange-300 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
@@ -378,7 +378,7 @@
                                         <span class="text-sm font-semibold text-orange-600 dark:text-orange-400"
                                             x-text="'Hari ' + (index + 1)"></span>
                                         <button type="button" @click="removeMaterial(index)"
-                                            class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
+                                            class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900 cursor-pointer">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M6 18L18 6M6 6l12 12"></path>
@@ -524,7 +524,7 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                                     <img :src="imagePreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
                                     <button type="button"
                                         @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''"
-                                        class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                        class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M6 18L18 6M6 6l12 12"></path>
@@ -546,9 +546,9 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                             Kembali
                         </a>
                         <button type="submit"
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange">
-                            Simpan Perubahan
-                        </button>
+                                class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange cursor-pointer">
+                                Simpan Perubahan
+                            </button>
                     </div>
 
                 </div>
