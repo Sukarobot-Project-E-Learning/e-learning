@@ -11,18 +11,40 @@ class ReportController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get reports from database with pagination (10 per page)
-        // Reports are generated from programs with their schedules and certified users
-        $reports = DB::table('data_programs')
+        $search = $request->input('search', '');
+        $perPage = (int) $request->input('per_page', 10);
+        $sortKey = $request->input('sort', 'created_at');
+        $sortDir = $request->input('dir', 'desc');
+
+        // Validate sort direction
+        $sortDir = in_array(strtolower($sortDir), ['asc', 'desc']) ? strtolower($sortDir) : 'desc';
+
+        // Map sortable columns
+        $sortableColumns = [
+            'title' => 'data_programs.program',
+            'created_at' => 'data_programs.created_at',
+        ];
+        $sortColumn = $sortableColumns[$sortKey] ?? 'data_programs.created_at';
+
+        // Build query
+        $query = DB::table('data_programs')
             ->select(
                 'data_programs.id',
                 'data_programs.program as title',
                 'data_programs.created_at'
-            )
-            ->orderBy('data_programs.created_at', 'desc')
-            ->paginate(10);
+            );
+
+        // Apply search filter
+        if ($search) {
+            $query->where('data_programs.program', 'like', "%{$search}%");
+        }
+
+        // Apply sorting and pagination
+        $reports = $query->orderBy($sortColumn, $sortDir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Transform data after pagination
         $reports->getCollection()->transform(function($report) {
@@ -53,6 +75,17 @@ class ReportController extends Controller
                 'total_certified_users' => $totalCertified
             ];
         });
+
+        // Return JSON for AJAX requests
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'data' => $reports->items(),
+                'current_page' => $reports->currentPage(),
+                'last_page' => $reports->lastPage(),
+                'per_page' => $reports->perPage(),
+                'total' => $reports->total(),
+            ]);
+        }
 
         return view('admin.reports.index', compact('reports'));
     }

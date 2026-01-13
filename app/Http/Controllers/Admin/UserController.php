@@ -12,23 +12,39 @@ class UserController extends Controller
     /**
      * Display a listing of users (role='user')
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = DB::table('users')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('users')
             ->where('role', 'user')
-            ->when(request('search'), function ($query) {
-                $query->where('name', 'like', '%' . request('search') . '%');
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('name', 'like', '%' . $s . '%')
+                        ->orWhere('email', 'like', '%' . $s . '%')
+                        ->orWhere('phone', 'like', '%' . $s . '%');
+                });
             })
-            ->when(request('status'), function ($query) {
-                $query->where('is_active', request('status') === 'active' ? 1 : 0);
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('is_active', $request->input('status') === 'active' ? 1 : 0);
             })
-            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at');
+
+        $users = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
             ->withQueryString();
 
-        if (request()->ajax()) {
-            return view('admin.users.partials.table', compact('users'));
+        if ($request->wantsJson()) {
+            return response()->json($users);
         }
 
         return view('admin.users.index', compact('users'));
@@ -205,23 +221,39 @@ class UserController extends Controller
     /**
      * Display a listing of admins (role='admin')
      */
-    public function indexAdmins()
+    public function indexAdmins(Request $request)
     {
-        $users = DB::table('users')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('users')
             ->where('role', 'admin')
-            ->when(request('search'), function ($query) {
-                $query->where('name', 'like', '%' . request('search') . '%');
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('name', 'like', '%' . $s . '%')
+                        ->orWhere('email', 'like', '%' . $s . '%')
+                        ->orWhere('phone', 'like', '%' . $s . '%');
+                });
             })
-            ->when(request('status'), function ($query) {
-                $query->where('is_active', request('status') === 'active' ? 1 : 0);
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('is_active', $request->input('status') === 'active' ? 1 : 0);
             })
-            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at');
+
+        $users = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
             ->withQueryString();
 
-        if (request()->ajax()) {
-            return view('admin.admins.partials.table', compact('users'));
+        if ($request->wantsJson()) {
+            return response()->json($users);
         }
 
         return view('admin.admins.index', compact('users'));

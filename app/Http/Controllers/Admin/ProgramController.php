@@ -14,28 +14,32 @@ class ProgramController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DB::table('data_programs');
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
 
-        // Search
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where('program', 'like', '%' . $search . '%');
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['program', 'category', 'start_date', 'type', 'price', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
         }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
-        // Sort
-        if ($request->has('sort') && $request->sort != '') {
-            if ($request->sort == 'newest') {
-                $query->orderBy('start_date', 'desc');
-            } elseif ($request->sort == 'oldest') {
-                $query->orderBy('start_date', 'asc');
-            } else {
-                $query->orderBy('created_at', 'desc');
-            }
-        } else {
-            $query->orderBy('created_at', 'desc');
-        }
+        $query = DB::table('data_programs')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('program', 'like', '%' . $s . '%')
+                        ->orWhere('category', 'like', '%' . $s . '%')
+                        ->orWhere('type', 'like', '%' . $s . '%');
+                });
+            })
+            ->when($request->filled('category'), function ($query) use ($request) {
+                $query->where('category', $request->input('category'));
+            });
 
-        $programs = $query->paginate(10)->appends($request->all());
+        $programs = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         $programs->getCollection()->transform(function ($program) {
             $levelCount = DB::table('data_levels')
@@ -53,8 +57,10 @@ class ProgramController extends Controller
                 'image' => $program->image,
                 'category' => ucfirst($program->category ?? '-'),
                 'start_date' => $program->start_date ? date('d F Y', strtotime($program->start_date)) : '-',
+                'start_date_raw' => $program->start_date,
                 'type' => ucfirst($program->type ?? '-'),
                 'price' => $program->price ? 'Rp ' . number_format($program->price, 0, ',', '.') : 'Gratis',
+                'price_raw' => $program->price ?? 0,
                 'level_count' => $levelCount,
                 'schedule_count' => $scheduleCount,
                 'quota' => $program->quota,
@@ -62,6 +68,10 @@ class ProgramController extends Controller
                 'rating' => $program->rating,
             ];
         });
+
+        if ($request->wantsJson()) {
+            return response()->json($programs);
+        }
 
         return view('admin.programs.index', compact('programs'));
     }

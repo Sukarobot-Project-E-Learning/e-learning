@@ -13,27 +13,41 @@ class InstructorController extends Controller
      * Display a listing of the resource.
      * Halaman untuk konfirmasi akun instruktur yang mendaftar
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
 
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
         // Get instructors from users table with role='instructor'
-        $instructors = DB::table('users')
+        $query = DB::table('users')
             ->where('role', 'instructor')
-            ->when(request('search'), function ($query) {
-                $query->where('name', 'like', '%' . request('search') . '%');
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('name', 'like', '%' . $s . '%')
+                        ->orWhere('email', 'like', '%' . $s . '%')
+                        ->orWhere('phone', 'like', '%' . $s . '%');
+                });
             })
-            ->when(request('status'), function ($query) {
-                $status = request('status');
-                if ($status === 'active') { // "Aktif" displayed as Active
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $status = $request->input('status');
+                if ($status === 'active') {
                      $query->where('is_active', 1);
-                } elseif ($status === 'inactive') { // "Tidak Aktif"
+                } elseif ($status === 'inactive') {
                      $query->where('is_active', 0);
                 }
             })
-            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at', 'last_login_at')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at', 'last_login_at');
+
+        $instructors = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
             ->withQueryString();
 
         // Transform data after pagination
@@ -51,13 +65,14 @@ class InstructorController extends Controller
                 'avatar' => $user->avatar,
                 'expertise' => $trainer->keahlian ?? '-',
                 'status' => $user->is_active ? 'Aktif' : 'Tidak Aktif',
+                'is_active' => $user->is_active,
                 'created_at' => $user->created_at ? date('Y-m-d', strtotime($user->created_at)) : '-',
                 'has_trainer_data' => $trainer ? true : false
             ];
         });
 
-        if (request()->ajax()) {
-            return view('admin.instructors.partials.table', compact('instructors'));
+        if ($request->wantsJson()) {
+            return response()->json($instructors);
         }
 
         return view('admin.instructors.index', compact('instructors'));

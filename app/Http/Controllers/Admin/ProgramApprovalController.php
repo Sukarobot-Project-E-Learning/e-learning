@@ -12,18 +12,47 @@ class ProgramApprovalController extends Controller
     /**
      * Display a listing of program approvals (pending programs from instructors)
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get all program approvals from database
-        $approvals = DB::table('program_approvals')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['title', 'instructor_name', 'category', 'status', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('program_approvals')
             ->leftJoin('data_trainers', 'program_approvals.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'program_approvals.*',
                 'data_trainers.nama as instructor_name',
                 'data_trainers.email as instructor_email'
             )
-            ->orderBy('program_approvals.created_at', 'desc')
-            ->get();
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('program_approvals.title', 'like', '%' . $s . '%')
+                        ->orWhere('data_trainers.nama', 'like', '%' . $s . '%')
+                        ->orWhere('program_approvals.category', 'like', '%' . $s . '%');
+                });
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('program_approvals.status', $request->input('status'));
+            });
+
+        // Handle sorting for joined column
+        $orderColumn = $sortKey === 'instructor_name' ? 'data_trainers.nama' : 'program_approvals.' . $sortKey;
+        
+        $approvals = $query->orderBy($orderColumn, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
+
+        if ($request->wantsJson()) {
+            return response()->json($approvals);
+        }
 
         return view('admin.program-approvals.index', compact('approvals'));
     }

@@ -11,20 +11,41 @@ class BroadcastController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get broadcasts from database with pagination (10 per page)
-        $broadcasts = DB::table('broadcasts')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['message', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('broadcasts')
+            ->select('id', 'message', 'created_at')
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $s = $request->input('search');
+                $q->where('message', 'like', '%' . $s . '%');
+            });
+
+        $broadcasts = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Transform data after pagination
         $broadcasts->getCollection()->transform(function($broadcast) {
             return [
                 'id' => $broadcast->id,
-                'message' => $broadcast->message ?? 'N/A'
+                'message' => $broadcast->message ?? 'N/A',
+                'created_at' => $broadcast->created_at
             ];
         });
+
+        if ($request->wantsJson()) {
+            return response()->json($broadcasts);
+        }
 
         return view('admin.broadcasts.index', compact('broadcasts'));
     }

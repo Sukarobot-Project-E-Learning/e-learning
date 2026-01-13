@@ -11,14 +11,38 @@ class InstructorApplicationController extends Controller
     /**
      * Display a listing of pending instructor applications.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $applications = DB::table('instructor_applications')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['name', 'email', 'skills', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'asc')) === 'desc' ? 'desc' : 'asc';
+
+        $query = DB::table('instructor_applications')
             ->join('users', 'instructor_applications.user_id', '=', 'users.id')
             ->where('instructor_applications.status', 'pending')
-            ->select('instructor_applications.*', 'users.name', 'users.email', 'users.avatar')
-            ->orderBy('instructor_applications.created_at', 'asc')
-            ->paginate(10);
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('users.name', 'like', '%' . $s . '%')
+                        ->orWhere('users.email', 'like', '%' . $s . '%')
+                        ->orWhere('instructor_applications.skills', 'like', '%' . $s . '%');
+                });
+            })
+            ->select('instructor_applications.*', 'users.name', 'users.email', 'users.avatar');
+
+        $applications = $query->orderBy($sortKey === 'name' || $sortKey === 'email' ? 'users.' . $sortKey : 'instructor_applications.' . $sortKey, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
+
+        if ($request->wantsJson()) {
+            return response()->json($applications);
+        }
 
         return view('admin.instructors.applications', compact('applications'));
     }

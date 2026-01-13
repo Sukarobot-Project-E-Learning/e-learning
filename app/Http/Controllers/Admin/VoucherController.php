@@ -11,17 +11,46 @@ class VoucherController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get vouchers from database with pagination (10 per page)
-        $vouchers = DB::table('vouchers')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['name', 'code', 'discount_value', 'is_active', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('vouchers')
             ->leftJoin('data_programs', 'vouchers.program_id', '=', 'data_programs.id')
             ->select(
-                'vouchers.*',
+                'vouchers.id',
+                'vouchers.name',
+                'vouchers.code',
+                'vouchers.discount_type',
+                'vouchers.discount_value',
+                'vouchers.program_id',
+                'vouchers.is_active',
+                'vouchers.created_at',
                 'data_programs.program as program_name'
             )
-            ->orderBy('vouchers.created_at', 'desc')
-            ->paginate(10);
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $s = $request->input('search');
+                $q->where(function ($query) use ($s) {
+                    $query->where('vouchers.name', 'like', '%' . $s . '%')
+                        ->orWhere('vouchers.code', 'like', '%' . $s . '%')
+                        ->orWhere('data_programs.program', 'like', '%' . $s . '%');
+                });
+            })
+            ->when($request->filled('status'), function ($q) use ($request) {
+                $q->where('vouchers.is_active', $request->input('status') === 'active' ? 1 : 0);
+            });
+
+        $vouchers = $query->orderBy('vouchers.' . $sortKey, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Transform data after pagination
         $vouchers->getCollection()->transform(function($voucher) {
@@ -33,11 +62,17 @@ class VoucherController extends Controller
                 'id' => $voucher->id,
                 'name' => $voucher->name ?? 'N/A',
                 'discount' => $discount,
+                'discount_value' => $voucher->discount_value,
                 'program_event' => $voucher->program_name ?? 'Semua Program',
                 'code' => $voucher->code ?? 'N/A',
+                'is_active' => $voucher->is_active,
                 'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
             ];
         });
+
+        if ($request->wantsJson()) {
+            return response()->json($vouchers);
+        }
 
         return view('admin.vouchers.index', compact('vouchers'));
     }

@@ -11,12 +11,31 @@ class PromoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get promos from database with pagination (10 per page)
-        $promos = DB::table('promos')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['title', 'is_active', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('promos')
+            ->select('id', 'title', 'poster_image', 'carousel_image', 'is_active', 'created_at')
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $s = $request->input('search');
+                $q->where('title', 'like', '%' . $s . '%');
+            })
+            ->when($request->filled('status'), function ($q) use ($request) {
+                $q->where('is_active', $request->input('status') === 'active' ? 1 : 0);
+            });
+
+        $promos = $query->orderBy($sortKey, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Transform data after pagination
         $promos->getCollection()->transform(function($promo) {
@@ -25,9 +44,14 @@ class PromoController extends Controller
                 'title' => $promo->title ?? 'N/A',
                 'poster' => $promo->poster_image,
                 'carousel' => $promo->carousel_image,
+                'is_active' => $promo->is_active,
                 'status' => $promo->is_active ? 'Aktif' : 'Non-Aktif'
             ];
         });
+
+        if ($request->wantsJson()) {
+            return response()->json($promos);
+        }
 
         return view('admin.promos.index', compact('promos'));
     }

@@ -12,10 +12,19 @@ class ProgramProofController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get program proofs from database with pagination (10 per page)
-        $proofs = DB::table('program_proofs')
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
+
+        $sortKey = $request->input('sort', 'created_at');
+        $allowedSorts = ['student_name', 'program_title', 'status', 'created_at'];
+        if (!in_array($sortKey, $allowedSorts)) {
+            $sortKey = 'created_at';
+        }
+        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $query = DB::table('program_proofs')
             ->leftJoin('users', 'program_proofs.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
             ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
@@ -27,8 +36,27 @@ class ProgramProofController extends Controller
                 DB::raw("CONCAT(DATE_FORMAT(schedules.tanggal_mulai, '%d %M %Y'), IF(schedules.tanggal_selesai IS NOT NULL AND schedules.tanggal_selesai != schedules.tanggal_mulai, CONCAT(' - ', DATE_FORMAT(schedules.tanggal_selesai, '%d %M %Y')), '')) as schedule"),
                 DB::raw('IF(certificate_templates.id IS NOT NULL, 1, 0) as has_certificate_template')
             )
-            ->orderBy('program_proofs.created_at', 'desc')
-            ->paginate(10);
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $s = $request->input('search');
+                $query->where(function ($q) use ($s) {
+                    $q->where('users.name', 'like', '%' . $s . '%')
+                        ->orWhere('data_programs.program', 'like', '%' . $s . '%');
+                });
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('program_proofs.status', $request->input('status'));
+            });
+
+        // Handle sorting for joined columns
+        $orderColumn = match($sortKey) {
+            'student_name' => 'users.name',
+            'program_title' => 'data_programs.program',
+            default => 'program_proofs.' . $sortKey
+        };
+
+        $proofs = $query->orderBy($orderColumn, $dir)
+            ->paginate($perPage)
+            ->withQueryString();
 
         // Transform data after pagination
         $proofs->getCollection()->transform(function($proof) {
@@ -41,9 +69,14 @@ class ProgramProofController extends Controller
                 'schedule' => $proof->schedule ?? '-',
                 'documentation' => $proof->documentation,
                 'status' => $proof->status,
+                'created_at' => $proof->created_at,
                 'has_certificate_template' => $proof->has_certificate_template ?? 0
             ];
         });
+
+        if ($request->wantsJson()) {
+            return response()->json($proofs);
+        }
 
         return view('admin.program-proofs.index', compact('proofs'));
     }
