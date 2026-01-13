@@ -436,6 +436,24 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                     <div class="pt-6">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Gambar Program</h3>
 
+                        <!-- Info Box -->
+                        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900/20 dark:border-blue-800">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <h4 class="font-medium text-blue-800 dark:text-blue-300">Spesifikasi Gambar</h4>
+                                    <ol class="mt-2 text-sm text-blue-700 dark:text-blue-400 list-decimal list-inside space-y-1">
+                                        <li>Format: .png, .jpg, .jpeg</li>
+                                        <li>Ukuran: 1920 x 1080</li>
+                                        <li>Ukuran file: Maksimal 2MB</li>
+                                        <li>Fokus Konten di tengah</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <!-- Current Image (if exists) -->
                         @if(!empty($program->image))
                             <div class="mb-4">
