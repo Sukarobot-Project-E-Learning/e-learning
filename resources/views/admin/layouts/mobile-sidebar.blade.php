@@ -49,7 +49,7 @@
             <ul class="space-y-1">
                 <!-- Dashboard -->
                 <li class="relative px-3 py-0.5 menu-item">
-                    <a class="flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 ease-in-out
+                    <a data-turbo="false" class="flex items-center px-4 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 ease-in-out
                             {{ request()->routeIs('admin.dashboard') 
                                 ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30 nav-glow' 
                                 : 'hover:bg-orange-50 dark:hover:bg-orange-900/20 active:bg-orange-100 dark:active:bg-orange-900/40' }}"
@@ -91,12 +91,6 @@
                             </div>
                             <span class="ml-3">Akun</span>
                         </span>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*')) ? 'bg-white/20 text-white' : 'bg-orange-100 text-orange-600' }}">3</span>
-                            <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': isOpen }" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
                     </button>
                     <div x-show="isOpen"
                         x-transition:enter="transition-all ease-out duration-300"
@@ -147,12 +141,6 @@
                             </div>
                             <span class="ml-3">Program</span>
                         </span>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'bg-white/20 text-white' : 'bg-orange-100 text-orange-600' }}">4</span>
-                            <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': isOpen }" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
                     </button>
                     <div x-show="isOpen"
                         x-transition:enter="transition-all ease-out duration-300"
@@ -171,7 +159,6 @@
                             class="flex items-center px-4 py-3 text-sm rounded-xl transition-all duration-200 {{ request()->routeIs('admin.program-approvals.*') ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 font-semibold' : 'hover:bg-orange-50 dark:hover:bg-orange-900/20 active:bg-orange-100' }}">
                             <span class="w-2.5 h-2.5 rounded-full {{ request()->routeIs('admin.program-approvals.*') ? 'bg-orange-500 ring-4 ring-orange-200' : 'bg-orange-300' }} mr-3"></span>
                             <span>Pengajuan Program</span>
-                            <span class="ml-auto px-2 py-0.5 text-xs bg-red-500 text-white rounded-full animate-pulse">5</span>
                         </a>
                         <a href="{{ route('admin.program-proofs.index') }}"
                             class="flex items-center px-4 py-3 text-sm rounded-xl transition-all duration-200 {{ request()->routeIs('admin.program-proofs.*') ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 font-semibold' : 'hover:bg-orange-50 dark:hover:bg-orange-900/20 active:bg-orange-100' }}">
@@ -204,12 +191,6 @@
                             </div>
                             <span class="ml-3">Promosi</span>
                         </span>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ (request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*')) ? 'bg-white/20 text-white' : 'bg-orange-100 text-orange-600' }}">2</span>
-                            <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': isOpen }" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
                     </button>
                     <div x-show="isOpen"
                         x-transition:enter="transition-all ease-out duration-300"
