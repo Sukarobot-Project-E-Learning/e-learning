@@ -98,6 +98,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');
     Route::post('program-approvals/{id}/approve', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'approve'])->name('program-approvals.approve');
     Route::post('program-approvals/{id}/reject', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'reject'])->name('program-approvals.reject');
+    Route::post('program-approvals/bulk-update', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'bulkUpdate'])->name('program-approvals.bulk-update');
 
     // Instructor Application Management
     Route::get('instructor-applications', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'index'])->name('instructor-applications.index');
