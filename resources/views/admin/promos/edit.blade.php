@@ -10,14 +10,7 @@
         <div class="my-6">
             <div class="flex items-start justify-between">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Edit Promo</h2>
-                <button type="submit" 
-                        form="promoForm"
-                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green cursor-pointer">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>Simpan Promo</span>
-                </button>
+                <!-- Button moved to bottom -->
             </div>
         </div>
 
@@ -146,6 +139,24 @@
                         </div>
                     </div>
 
+                    <!-- Buttons -->
+                    <div class="flex flex-row justify-end items-end mt-6" style="gap: 16px;">
+                        <a href="{{ route('admin.promos.index') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Kembali
+                        </a>
+                        <button type="submit" 
+                                form="promoForm"
+                                class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange cursor-pointer">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Simpan Promo</span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
