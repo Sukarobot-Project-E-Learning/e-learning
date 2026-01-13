@@ -29,9 +29,8 @@
                         <div class="relative">
                             <select name="status" id="status" required
                                     class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
-                                <option value="Approved" {{ old('status', $instructor->status) == 'Approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="Pending" {{ old('status', $instructor->status) == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="Rejected" {{ old('status', $instructor->status) == 'Rejected' ? 'selected' : '' }}>Rejected</option>
+                                <option value="Aktif" {{ old('status', $instructor->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="Non-Aktif" {{ old('status', $instructor->status) == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,42 +144,12 @@
                         <div class="flex items-center justify-center w-full">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ 
-                                       fileName: null,
-                                       validateFile(file) {
-                                           const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                                           const maxSize = 2 * 1024 * 1024; // 2MB
-
-                                           if (!allowedTypes.includes(file.type)) {
-                                               Swal.fire({
-                                                   icon: 'error',
-                                                   title: 'Upload Gagal',
-                                                   text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.'
-                                               });
-                                               this.fileName = null;
-                                               $refs.photoInput.value = '';
-                                               return false;
-                                           }
-
-                                           if (file.size > maxSize) {
-                                               Swal.fire({
-                                                   icon: 'error',
-                                                   title: 'Upload Gagal',
-                                                   text: 'Ukuran file melebihi 2MB.'
-                                               });
-                                               this.fileName = null;
-                                               $refs.photoInput.value = '';
-                                               return false;
-                                           }
-
-                                           this.fileName = file.name;
-                                           return true;
-                                       }
-                                   }"
+                                   x-data="{ fileName: null }"
                                    @dragover.prevent
                                    @drop.prevent="
                                        let file = $event.dataTransfer.files[0];
-                                       if (file && validateFile(file)) {
+                                       if (file && file.type.startsWith('image/')) {
+                                           fileName = file.name;
                                            $refs.photoInput.files = $event.dataTransfer.files;
                                        }
                                    ">
@@ -216,7 +185,7 @@
                                        @change="
                                            let file = $event.target.files[0];
                                            if (file) {
-                                               validateFile(file);
+                                               fileName = file.name;
                                            }
                                        ">
                             </label>
@@ -244,38 +213,6 @@
 
 @push('scripts')
 <script>
-    // Form Validation
-    document.getElementById('instructorForm').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password_confirmation').value;
-        const photoInput = document.getElementById('photo');
-        
-        // Password Validation (only if password is being changed)
-        if (password && password.length > 0) {
-            if (password.length < 8) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Password minimal harus 8 karakter!'
-                });
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Konfirmasi password tidak cocok!'
-                });
-                return;
-            }
-        }
-
-        // Photo Validation Removed (Handled by Alpine.js instant validation)
-    });
-
     // Handle success/error messages from session
     @if(session('success'))
         Swal.fire({

@@ -48,6 +48,7 @@ class InstructorController extends Controller
                 'name' => $user->name,
                 'email' => $user->email ?? '-',
                 'phone' => $user->phone ?? '-',
+                'avatar' => $user->avatar,
                 'expertise' => $trainer->keahlian ?? '-',
                 'status' => $user->is_active ? 'Aktif' : 'Tidak Aktif',
                 'created_at' => $user->created_at ? date('Y-m-d', strtotime($user->created_at)) : '-',
@@ -83,14 +84,14 @@ class InstructorController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone' => 'nullable|string|max:20',
                 'password' => 'required|string|min:8|confirmed',
-                'status' => 'nullable|string|in:Approved,Pending,Rejected',
+                'status' => 'nullable|string|in:Aktif,Non-Aktif',
                 'expertise' => 'nullable|string|max:255',
                 'job' => 'nullable|string|max:255',
                 'experience' => 'nullable|string|max:255',
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
-            $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
+            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
             $data = [
                 'name' => $validated['name'],
@@ -161,7 +162,7 @@ class InstructorController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone ?? '',
-            'status' => $user->is_active ? 'Approved' : 'Pending',
+            'status' => $user->is_active ? 'Aktif' : 'Non-Aktif',
             'expertise' => $trainer->keahlian ?? '',
             'job' => $user->job ?? '',
             'experience' => $trainer->pengalaman ?? '', // Ambil dari tabel data_trainers kolom pengalaman
@@ -189,7 +190,7 @@ class InstructorController extends Controller
                 'email' => 'required|email|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:20',
                 'password' => 'nullable|string|min:8|confirmed',
-                'status' => 'nullable|string|in:Approved,Pending,Rejected',
+                'status' => 'nullable|string|in:Aktif,Non-Aktif',
                 'expertise' => 'nullable|string|max:255', // data_trainers.keahlian
                 'job' => 'nullable|string|max:255', // users.job
                 'experience' => 'nullable|string|max:255', // data_trainers.pengalaman
@@ -197,7 +198,7 @@ class InstructorController extends Controller
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
-            $isActive = ($validated['status'] ?? 'Approved') === 'Approved';
+            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
             $data = [
                 'name' => $validated['name'],
