@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-<div class="container px-6 mx-auto" x-data="instructorTable()">
+<div class="container px-6 mx-auto overflow-x-hidden max-w-full" x-data="instructorTable()">
     <div class="my-6 flex items-center justify-between">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Instruktur Management</h2>
         <a href="{{ route('admin.instructors.create') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-all duration-200 transform hover:scale-105">
@@ -106,7 +106,6 @@
                         <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-6 py-4"><div class="font-semibold text-gray-800 dark:text-white" x-html="highlightText(instructor.name)"></div></td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(instructor.email || '-')"></td>
-                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(instructor.phone || '-')"></td>
                             <td class="px-6 py-4">
                                 <template x-if="instructor.avatar"><img :src="instructor.avatar.startsWith('http') ? instructor.avatar : '/' + instructor.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(instructor.avatar.startsWith('http') ? instructor.avatar : '/' + instructor.avatar, '_blank')"></template>
                                 <template x-if="!instructor.avatar"><div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center"><svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg></div></template>
@@ -172,7 +171,6 @@ function instructorTable() {
         columns: [
             { key: 'name', label: 'Nama', sortable: true },
             { key: 'email', label: 'Email', sortable: true },
-            { key: 'phone', label: 'Telepon', sortable: true },
             { key: 'avatar', label: 'Foto', sortable: false },
             { key: 'expertise', label: 'Keahlian', sortable: false },
             { key: 'is_active', label: 'Status', sortable: true },

@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-<div class="container px-6 mx-auto" x-data="applicationTable()">
+<div class="container px-6 mx-auto overflow-x-hidden max-w-full" x-data="applicationTable()">
     <div class="my-6 flex items-center justify-between flex-wrap gap-4">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengajuan Menjadi Instruktur</h2>
         <div class="flex items-center gap-3">
