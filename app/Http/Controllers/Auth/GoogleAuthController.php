@@ -58,6 +58,7 @@ class GoogleAuthController extends Controller
 
             return Socialite::driver('google')
                 ->redirectUrl($redirectUri)
+                ->stateless()
                 ->redirect();
         } catch (\Exception $e) {
             // Log error
@@ -75,9 +76,25 @@ class GoogleAuthController extends Controller
     /**
      * Handle Google OAuth callback
      */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         try {
+            // Check for error from Google
+            if ($request->has('error')) {
+                $errorMessage = $request->get('error_description', $request->get('error', 'Unknown error'));
+                \Log::error('Google OAuth Error from Google', ['error' => $errorMessage]);
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Google OAuth Error: ' . $errorMessage
+                ]);
+            }
+
+            // Check if code is present
+            if (!$request->has('code')) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Authorization code tidak ditemukan dari Google.'
+                ]);
+            }
+
             // Get redirect URI for callback
             $redirectUri = env('GOOGLE_REDIRECT_URI') ?: route('google.callback');
 
@@ -88,15 +105,18 @@ class GoogleAuthController extends Controller
                 'services.google.redirect' => $redirectUri,
             ]);
 
-            // Debug log (remove after fixing)
-            \Log::info('Google OAuth Config', [
+            // Debug log
+            \Log::info('Google OAuth Callback', [
                 'client_id' => config('services.google.client_id'),
                 'redirect' => config('services.google.redirect'),
+                'has_code' => $request->has('code'),
             ]);
 
             $googleUser = Socialite::driver('google')
                 ->redirectUrl($redirectUri)
+                ->stateless() // Add stateless to avoid session issues
                 ->user();
+                
             // Normalize email to lowercase for consistent matching
             $normalizedEmail = strtolower(trim($googleUser->email));
             
