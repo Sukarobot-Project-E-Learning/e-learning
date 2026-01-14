@@ -96,12 +96,12 @@ class UserController extends Controller
             if ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/users');
+                $uploadPath = public_path('images/users');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'uploads/users/' . $photoName;
+                $data['avatar'] = 'images/users/' . $photoName;
             }
 
             DB::table('users')->insert($data);
@@ -183,12 +183,12 @@ class UserController extends Controller
                 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/users');
+                $uploadPath = public_path('images/users');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $updateData['avatar'] = 'uploads/users/' . $photoName;
+                $updateData['avatar'] = 'images/users/' . $photoName;
             }
 
             DB::table('users')->where('id', $id)->update($updateData);
@@ -299,12 +299,12 @@ class UserController extends Controller
             if ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/admins');
+                $uploadPath = public_path('images/admins');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'uploads/admins/' . $photoName;
+                $data['avatar'] = 'images/admins/' . $photoName;
             }
 
             DB::table('users')->insert($data);
@@ -368,12 +368,12 @@ class UserController extends Controller
                 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/admins');
+                $uploadPath = public_path('images/admins');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $updateData['avatar'] = 'uploads/admins/' . $photoName;
+                $updateData['avatar'] = 'images/admins/' . $photoName;
             }
 
             DB::table('users')->where('id', $id)->update($updateData);

@@ -123,12 +123,12 @@ class InstructorController extends Controller
             if ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/instructors');
+                $uploadPath = public_path('images/instructors');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'uploads/instructors/' . $photoName;
+                $data['avatar'] = 'images/instructors/' . $photoName;
             }
 
             // Add job to users data if provided
@@ -241,12 +241,12 @@ class InstructorController extends Controller
                 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('uploads/instructors');
+                $uploadPath = public_path('images/instructors');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'uploads/instructors/' . $photoName;
+                $data['avatar'] = 'images/instructors/' . $photoName;
             }
 
             // Add job to users data if provided

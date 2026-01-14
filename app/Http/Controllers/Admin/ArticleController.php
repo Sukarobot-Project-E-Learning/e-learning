@@ -108,8 +108,8 @@ class ArticleController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/articles'), $imageName);
-                $imagePath = 'uploads/articles/' . $imageName;
+                $image->move(public_path('images/articles'), $imageName);
+                $imagePath = 'images/articles/' . $imageName;
             }
 
             // Create article
@@ -203,8 +203,8 @@ class ArticleController extends Controller
                 // Upload new image
                 $image = $request->file('image');
                 $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/articles'), $imageName);
-                $imagePath = 'uploads/articles/' . $imageName;
+                $image->move(public_path('images/articles'), $imageName);
+                $imagePath = 'images/articles/' . $imageName;
             }
 
             // Update article
@@ -271,11 +271,11 @@ class ArticleController extends Controller
                 // Generate filename
                 $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
                 
-                // Save to public/uploads/articles/content
-                $image->move(public_path('uploads/articles/content'), $filename);
+                // Save to public/images/articles/content
+                $image->move(public_path('images/articles/content'), $filename);
                 
                 // Generate URL
-                $url = asset('uploads/articles/content/' . $filename);
+                $url = asset('images/articles/content/' . $filename);
                 
                 // Return success response for CKEditor
                 return response()->json([
