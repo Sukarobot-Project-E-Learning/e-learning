@@ -16,7 +16,7 @@
 <div class="container px-6 mx-auto overflow-x-hidden max-w-full" x-data="articleTable()">
     <div class="my-6 flex items-center justify-between">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Artikel Management</h2>
-        <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-all duration-200 transform hover:scale-105">
+        <a href="{{ route('admin.articles.create') }}" data-turbo="false" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-all duration-200 transform hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tambah Artikel
         </a>
@@ -74,7 +74,7 @@
                 <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <span class="text-xs text-gray-500" x-text="article.views + ' views'"></span>
                     <div class="flex items-center gap-2">
-                        <a :href="'/admin/articles/' + article.id + '/edit'" class="px-3 py-1.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Edit</a>
+                        <a :href="'/admin/articles/' + article.id + '/edit'" data-turbo="false" class="px-3 py-1.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Edit</a>
                         <button @click="deleteArticle(article.id)" class="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Hapus</button>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
                 <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                 <p class="text-gray-500 dark:text-gray-400">Tidak ada artikel ditemukan</p>
-                <a href="{{ route('admin.articles.create') }}" class="mt-2 inline-block text-orange-600 hover:text-orange-700 font-medium">+ Tambah artikel baru</a>
+                <a href="{{ route('admin.articles.create') }}" data-turbo="false" class="mt-2 inline-block text-orange-600 hover:text-orange-700 font-medium">+ Tambah artikel baru</a>
             </div>
         </template>
     </div>
@@ -120,14 +120,14 @@
                             <td class="px-6 py-4"><span :class="article.status === 'Aktif' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'" class="px-3 py-1 text-xs font-bold rounded-full" x-text="article.status"></span></td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <a :href="'/admin/articles/' + article.id + '/edit'" class="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></a>
+                                    <a :href="'/admin/articles/' + article.id + '/edit'" data-turbo="false" class="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></a>
                                     <button @click="deleteArticle(article.id)" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                                 </div>
                             </td>
                         </tr>
                     </template>
                     <template x-if="articles.length === 0">
-                        <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500"><svg class="w-16 h-16 mx-auto mb-4 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg><p class="text-lg font-medium">Tidak ada artikel ditemukan</p><a href="{{ route('admin.articles.create') }}" class="mt-2 inline-block text-orange-600 hover:text-orange-700 font-medium">+ Tambah artikel baru</a></td></tr>
+                        <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500"><svg class="w-16 h-16 mx-auto mb-4 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg><p class="text-lg font-medium">Tidak ada artikel ditemukan</p><a href="{{ route('admin.articles.create') }}" data-turbo="false" class="mt-2 inline-block text-orange-600 hover:text-orange-700 font-medium">+ Tambah artikel baru</a></td></tr>
                     </template>
                 </tbody>
             </table>

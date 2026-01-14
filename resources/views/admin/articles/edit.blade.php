@@ -243,94 +243,72 @@
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
 <script>
-    // Custom upload adapter for CKEditor
+(function() {
+    // Custom upload adapter
     class MyUploadAdapter {
         constructor(loader) {
             this.loader = loader;
         }
-
         upload() {
-            return this.loader.file
-                .then(file => new Promise((resolve, reject) => {
-                    const data = new FormData();
-                    data.append('upload', file);
-                    data.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-
-                    fetch('{{ route("admin.articles.upload-image") }}', {
-                        method: 'POST',
-                        body: data
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.url) {
-                            resolve({ default: result.url });
-                        } else {
-                            reject(result.error || 'Upload failed');
-                        }
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
-                }));
+            return this.loader.file.then(file => new Promise((resolve, reject) => {
+                const data = new FormData();
+                data.append('upload', file);
+                data.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                fetch('{{ route("admin.articles.upload-image") }}', { method: 'POST', body: data })
+                    .then(r => r.json())
+                    .then(result => result.url ? resolve({ default: result.url }) : reject(result.error))
+                    .catch(reject);
+            }));
         }
-
-        abort() {
-            // Reject promise when upload is aborted
-        }
+        abort() {}
     }
 
-    function MyCustomUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new MyUploadAdapter(loader);
-        };
+    function MyUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = loader => new MyUploadAdapter(loader);
     }
 
-    let editor;
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            extraPlugins: [MyCustomUploadAdapterPlugin],
-            toolbar: {
-                items: [
-                    'heading', '|',
-                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                    'blockQuote', 'insertTable', '|',
-                    'imageUpload', 'mediaEmbed', '|',
-                    'undo', 'redo'
-                ]
-            },
+    function initEditor() {
+        const editorEl = document.querySelector('#editor');
+        if (!editorEl) return;
+        
+        // Skip if already initialized
+        if (editorEl.nextElementSibling && editorEl.nextElementSibling.classList.contains('ck-editor')) {
+            return;
+        }
+
+        ClassicEditor.create(editorEl, {
+            extraPlugins: [MyUploadAdapterPlugin],
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'insertTable', '|', 'imageUpload', 'mediaEmbed', '|', 'undo', 'redo'],
             language: 'id',
-            table: {
-                contentToolbar: [
-                    'tableColumn',
-                    'tableRow',
-                    'mergeTableCells'
-                ]
-            },
-            licenseKey: '',
-        })
-        .then(newEditor => {
-            editor = newEditor;
-            console.log('CKEditor initialized successfully with image upload support');
-        })
-        .catch(error => {
-            console.error('CKEditor initialization error:', error);
-        });
-
-    // Update CKEditor data to textarea before form submit
-    document.getElementById('articleForm').addEventListener('submit', function(e) {
-        if (editor) {
-            // Get CKEditor content and set to textarea
-            const content = editor.getData();
-            document.querySelector('textarea[name="content"]').value = content;
+            table: { contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'] }
+        }).then(editor => {
+            window.articleEditor = editor;
+            console.log('CKEditor initialized successfully');
             
-            // Validate content not empty
-            if (!content || content.trim() === '') {
-                e.preventDefault();
-                alert('Konten artikel tidak boleh kosong!');
-                return false;
+            // Form submit handler
+            const form = document.getElementById('articleForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const content = editor.getData();
+                    document.querySelector('textarea[name="content"]').value = content;
+                    if (!content.trim()) {
+                        e.preventDefault();
+                        alert('Konten artikel tidak boleh kosong!');
+                    }
+                });
             }
-        }
-    });
+        }).catch(error => {
+            console.error('CKEditor error:', error);
+        });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initEditor);
+    } else {
+        initEditor();
+    }
+})();
 </script>
 @endpush
 
