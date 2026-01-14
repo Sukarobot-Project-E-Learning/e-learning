@@ -16,7 +16,7 @@
 <div class="container px-6 mx-auto overflow-x-hidden max-w-full" x-data="programTable()">
     <div class="my-6 flex items-center justify-between">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Program Management</h2>
-        <a href="{{ route('admin.programs.create') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-all duration-200 transform hover:scale-105">
+        <a href="{{ route('admin.programs.create') }}" data-turbo="false" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition-all duration-200 transform hover:scale-105">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tambah Program
         </a>
