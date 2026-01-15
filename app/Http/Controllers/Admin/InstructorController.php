@@ -119,16 +119,34 @@ class InstructorController extends Controller
                 'updated_at' => now(),
             ];
 
-            // Upload photo jika ada (opsional)
-            if ($request->hasFile('photo')) {
+            // Upload photo jika ada (cropped atau original)
+            $croppedPhoto = $request->input('cropped_photo');
+            
+            if ($croppedPhoto && str_starts_with($croppedPhoto, 'data:image')) {
+                // Decode base64 cropped image
+                $imageData = explode(',', $croppedPhoto);
+                $decodedImage = base64_decode($imageData[1]);
+                
+                // Generate unique filename
+                $photoName = time() . '_cropped_new.png';
+                $uploadPath = public_path('images/users');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                
+                // Save cropped image
+                file_put_contents($uploadPath . '/' . $photoName, $decodedImage);
+                $data['avatar'] = 'images/users/' . $photoName;
+            } elseif ($request->hasFile('photo')) {
+                // Fallback: Upload original file if no cropped version
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/instructors');
+                $uploadPath = public_path('images/users');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'images/instructors/' . $photoName;
+                $data['avatar'] = 'images/users/' . $photoName;
             }
 
             // Add job to users data if provided
@@ -228,8 +246,35 @@ class InstructorController extends Controller
                 $data['password'] = Hash::make($validated['password']);
             }
 
-            // Upload photo jika ada (opsional)
-            if ($request->hasFile('photo')) {
+            // Upload photo jika ada (cropped atau original)
+            $croppedPhoto = $request->input('cropped_photo');
+            
+            if ($croppedPhoto && str_starts_with($croppedPhoto, 'data:image')) {
+                // Delete old photo if exists (menghindari duplikasi storage)
+                if ($user->avatar && file_exists(public_path($user->avatar))) {
+                    try {
+                        unlink(public_path($user->avatar));
+                    } catch (\Exception $e) {
+                        // Ignore error if file not found
+                    }
+                }
+                
+                // Decode base64 cropped image
+                $imageData = explode(',', $croppedPhoto);
+                $decodedImage = base64_decode($imageData[1]);
+                
+                // Generate unique filename
+                $photoName = time() . '_cropped_' . $id . '.png';
+                $uploadPath = public_path('images/users');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                
+                // Save cropped image
+                file_put_contents($uploadPath . '/' . $photoName, $decodedImage);
+                $data['avatar'] = 'images/users/' . $photoName;
+            } elseif ($request->hasFile('photo')) {
+                // Fallback: Upload original file if no cropped version
                 // Delete old photo if exists
                 if ($user->avatar && file_exists(public_path($user->avatar))) {
                     try {
@@ -241,12 +286,12 @@ class InstructorController extends Controller
                 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/instructors');
+                $uploadPath = public_path('images/users');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
                 $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'images/instructors/' . $photoName;
+                $data['avatar'] = 'images/users/' . $photoName;
             }
 
             // Add job to users data if provided

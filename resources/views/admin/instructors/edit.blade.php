@@ -136,24 +136,91 @@
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Photo Upload -->
-                    <div class="mb-2">
+                    <!-- Photo Upload with Preview -->
+                    <div class="mb-2" x-data="imageUploader()">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Upload Foto
                         </label>
-                        <div class="flex items-center justify-center w-full">
+                        
+                        {{-- Preview foto yang sudah ada --}}
+                        @if($instructor->photo)
+                        <div class="mb-4 flex items-center gap-4" x-show="!previewUrl">
+                            <div class="relative">
+                                <img src="{{ asset($instructor->photo) }}" 
+                                     alt="Foto {{ $instructor->name }}" 
+                                     class="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-600">
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                <p class="font-medium text-gray-700 dark:text-gray-300">Foto saat ini</p>
+                                <p>Pilih file baru untuk mengganti foto</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Preview Area dengan kontrol -->
+                        <div x-show="previewUrl" x-cloak class="mb-4">
+                            <div class="border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                                <!-- Preview Image Container -->
+                                <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 mb-3 flex items-center justify-center" 
+                                     style="height: 200px;"
+                                     x-ref="previewContainer"
+                                     @wheel.prevent="handleZoom($event)">
+                                    <img x-ref="previewImage"
+                                         x-bind:src="previewUrl" 
+                                         alt="Preview" 
+                                         class="max-h-full cursor-move select-none"
+                                         x-bind:style="'transform: scale(' + zoom + ') translate(' + posX + 'px, ' + posY + 'px);'"
+                                         @mousedown.prevent="startDrag($event)"
+                                         @mousemove="onDrag($event)"
+                                         @mouseup="stopDrag()"
+                                         @mouseleave="stopDrag()"
+                                         @touchstart.prevent="startDrag($event.touches[0])"
+                                         @touchmove="onDrag($event.touches[0])"
+                                         @touchend="stopDrag()"
+                                         @load="onImageLoad()"
+                                         draggable="false">
+                                    <!-- Circle Overlay untuk Preview Avatar -->
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-32 h-32 rounded-full border-4 border-white dark:border-gray-300 shadow-lg" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Zoom Controls dengan Slider -->
+                                <div class="flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">-</span>
+                                        <input type="range" 
+                                               min="10" max="300" 
+                                               x-bind:value="Math.round(zoom * 100)"
+                                               @input="setZoom($event.target.value / 100)"
+                                               class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600 accent-orange-500">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">+</span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200 min-w-[50px] text-center" x-text="Math.round(zoom * 100) + '%'"></span>
+                                        <button type="button" @click="resetPosition()" 
+                                                class="p-2 rounded-lg bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors" title="Reset">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button type="button" @click="clearImage()" 
+                                            class="text-sm text-red-500 hover:text-red-700 font-medium">
+                                        Hapus Foto
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Scroll untuk zoom, drag untuk geser. Gambar akan di-crop sesuai lingkaran saat disimpan.</p>
+                            </div>
+                        </div>
+
+                        <!-- Upload Area -->
+                        <div class="flex items-center justify-center w-full" x-show="!previewUrl">
                             <label for="photo" 
                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ fileName: null }"
-                                   @dragover.prevent
-                                   @drop.prevent="
-                                       let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           fileName = file.name;
-                                           $refs.photoInput.files = $event.dataTransfer.files;
-                                       }
-                                   ">
-                                <div class="flex flex-col items-center justify-center pt-2 pb-3" x-show="!fileName">
+                                   @dragover.prevent="isDragging = true"
+                                   @dragleave.prevent="isDragging = false"
+                                   @drop.prevent="handleDrop($event)"
+                                   :class="{'border-orange-400 bg-orange-50 dark:bg-orange-900/20': isDragging}">
+                                <div class="flex flex-col items-center justify-center pt-2 pb-3">
                                     <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                     </svg>
@@ -162,35 +229,261 @@
                                         <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk: JPG, JPEG, PNG
+                                        JPG, JPEG, PNG (Maks. 2MB)
                                     </p>
                                 </div>
-                                <div x-show="fileName" class="flex flex-col items-center justify-center w-full h-full p-4">
-                                    <svg class="w-8 h-8 mb-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200" x-text="'File terpilih: ' + fileName"></p>
-                                    <button type="button" 
-                                            @click.stop.prevent="fileName = null; $refs.photoInput.value = ''"
-                                            class="mt-2 text-xs text-red-500 hover:text-red-700 font-medium cursor-pointer">
-                                        Hapus File
-                                    </button>
-                                </div>
                                 <input id="photo" 
-                                       name="photo" 
                                        type="file" 
                                        class="hidden" 
-                                       accept="image/*"
+                                       accept="image/jpeg,image/png,image/jpg"
                                        x-ref="photoInput"
-                                       @change="
-                                           let file = $event.target.files[0];
-                                           if (file) {
-                                               fileName = file.name;
-                                           }
-                                       ">
+                                       @change="handleFileSelect($event)">
                             </label>
                         </div>
+                        
+                        <!-- Hidden input untuk cropped image -->
+                        <input type="hidden" name="cropped_photo" x-ref="croppedPhotoInput">
+                        <!-- Canvas untuk crop (hidden) -->
+                        <canvas x-ref="cropCanvas" style="display: none;"></canvas>
                     </div>
+
+                    <script>
+                        function imageUploader() {
+                            return {
+                                previewUrl: null,
+                                zoom: 1,
+                                posX: 0,
+                                posY: 0,
+                                isDragging: false,
+                                isMoving: false,
+                                startX: 0,
+                                startY: 0,
+                                originalImage: null,
+                                imageWidth: 0,
+                                imageHeight: 0,
+                                containerWidth: 0,
+                                containerHeight: 0,
+                                circleSize: 128, // w-32 = 128px
+                                
+                                handleFileSelect(event) {
+                                    const file = event.target.files[0];
+                                    if (file) this.processFile(file);
+                                },
+                                
+                                handleDrop(event) {
+                                    this.isDragging = false;
+                                    const file = event.dataTransfer.files[0];
+                                    if (file) {
+                                        // Create a new DataTransfer to set files
+                                        const dt = new DataTransfer();
+                                        dt.items.add(file);
+                                        this.$refs.photoInput.files = dt.files;
+                                        this.processFile(file);
+                                    }
+                                },
+                                
+                                processFile(file) {
+                                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                                    const maxSize = 2 * 1024 * 1024;
+                                    
+                                    if (!allowedTypes.includes(file.type)) {
+                                        Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.' });
+                                        this.$refs.photoInput.value = '';
+                                        return;
+                                    }
+                                    
+                                    if (file.size > maxSize) {
+                                        Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Ukuran file melebihi 2MB.' });
+                                        this.$refs.photoInput.value = '';
+                                        return;
+                                    }
+                                    
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => {
+                                        this.previewUrl = e.target.result;
+                                        this.resetPosition();
+                                        
+                                        // Load original image for cropping
+                                        this.originalImage = new Image();
+                                        this.originalImage.src = e.target.result;
+                                    };
+                                    reader.readAsDataURL(file);
+                                },
+                                
+                                onImageLoad() {
+                                    // Get container and image dimensions after image loads
+                                    this.$nextTick(() => {
+                                        const container = this.$refs.previewContainer;
+                                        const img = this.$refs.previewImage;
+                                        if (container && img) {
+                                            this.containerWidth = container.offsetWidth;
+                                            this.containerHeight = container.offsetHeight;
+                                            this.imageWidth = img.naturalWidth;
+                                            this.imageHeight = img.naturalHeight;
+                                            this.updateCroppedImage();
+                                        }
+                                    });
+                                },
+                                
+                                setZoom(value) {
+                                    this.zoom = Math.max(0.1, Math.min(3, value));
+                                    this.updateCroppedImage();
+                                },
+                                
+                                zoomIn() {
+                                    if (this.zoom < 3) {
+                                        this.zoom = Math.round(Math.min(3, this.zoom + 0.05) * 100) / 100;
+                                        this.updateCroppedImage();
+                                    }
+                                },
+                                
+                                zoomOut() {
+                                    if (this.zoom > 0.1) {
+                                        this.zoom = Math.round(Math.max(0.1, this.zoom - 0.05) * 100) / 100;
+                                        this.updateCroppedImage();
+                                    }
+                                },
+                                
+                                handleZoom(event) {
+                                    if (event.deltaY < 0) this.zoomIn();
+                                    else this.zoomOut();
+                                },
+                                
+                                startDrag(event) {
+                                    this.isMoving = true;
+                                    this.startX = event.clientX - this.posX;
+                                    this.startY = event.clientY - this.posY;
+                                },
+                                
+                                onDrag(event) {
+                                    if (!this.isMoving) return;
+                                    this.posX = event.clientX - this.startX;
+                                    this.posY = event.clientY - this.startY;
+                                },
+                                
+                                stopDrag() {
+                                    if (this.isMoving) {
+                                        this.isMoving = false;
+                                        this.updateCroppedImage();
+                                    }
+                                },
+                                
+                                resetPosition() {
+                                    this.zoom = 1;
+                                    this.posX = 0;
+                                    this.posY = 0;
+                                    this.$nextTick(() => this.updateCroppedImage());
+                                },
+                                
+                                clearImage() {
+                                    this.previewUrl = null;
+                                    this.originalImage = null;
+                                    this.$refs.photoInput.value = '';
+                                    this.$refs.croppedPhotoInput.value = '';
+                                    this.resetPosition();
+                                },
+                                
+                                updateCroppedImage() {
+                                    if (!this.originalImage || !this.previewUrl) return;
+                                    
+                                    const canvas = this.$refs.cropCanvas;
+                                    const ctx = canvas.getContext('2d');
+                                    const previewImg = this.$refs.previewImage;
+                                    const container = this.$refs.previewContainer;
+                                    
+                                    if (!previewImg || !container) return;
+                                    
+                                    // Output size (circle diameter * 2 for quality)
+                                    const outputSize = 256;
+                                    canvas.width = outputSize;
+                                    canvas.height = outputSize;
+                                    
+                                    // Get displayed image dimensions
+                                    const imgRect = previewImg.getBoundingClientRect();
+                                    const containerRect = container.getBoundingClientRect();
+                                    
+                                    // Image natural size
+                                    const natW = this.originalImage.width;
+                                    const natH = this.originalImage.height;
+                                    
+                                    // Displayed image size (before transform)
+                                    const dispW = previewImg.offsetWidth;
+                                    const dispH = previewImg.offsetHeight;
+                                    
+                                    // Scale from displayed to natural
+                                    const scaleX = natW / dispW;
+                                    const scaleY = natH / dispH;
+                                    
+                                    // Container center
+                                    const containerCenterX = container.offsetWidth / 2;
+                                    const containerCenterY = container.offsetHeight / 2;
+                                    
+                                    // Image center in container (accounting for flex centering)
+                                    const imgCenterInContainerX = containerCenterX;
+                                    const imgCenterInContainerY = containerCenterY;
+                                    
+                                    // Circle center is at container center
+                                    // Find what point of the ORIGINAL image is at the circle center
+                                    // The transform is: scale(zoom) translate(posX, posY)
+                                    // So image point at circle center = (circleCenter - translate) / zoom
+                                    
+                                    // Position offset due to translate (in scaled space)
+                                    const translateOffsetX = this.posX * this.zoom;
+                                    const translateOffsetY = this.posY * this.zoom;
+                                    
+                                    // Circle center position relative to image center (in displayed coords, after transform)
+                                    // Image center is at container center, then scaled
+                                    // The circle is always at container center
+                                    
+                                    // In the displayed (non-transformed) image space:
+                                    // Circle center maps to: displayedImageX = (circleCenterX - imgCenterX - translateX) / zoom + dispW/2
+                                    const circleInDisplayedX = (containerCenterX - imgCenterInContainerX - translateOffsetX) / this.zoom + dispW / 2;
+                                    const circleInDisplayedY = (containerCenterY - imgCenterInContainerY - translateOffsetY) / this.zoom + dispH / 2;
+                                    
+                                    // Size of circle in displayed image space
+                                    const circleSizeInDisplayed = this.circleSize / this.zoom;
+                                    
+                                    // Crop area in displayed image coords
+                                    const cropDisplayedX = circleInDisplayedX - circleSizeInDisplayed / 2;
+                                    const cropDisplayedY = circleInDisplayedY - circleSizeInDisplayed / 2;
+                                    
+                                    // Convert to natural image coords
+                                    const srcX = cropDisplayedX * scaleX;
+                                    const srcY = cropDisplayedY * scaleY;
+                                    const srcW = circleSizeInDisplayed * scaleX;
+                                    const srcH = circleSizeInDisplayed * scaleY;
+                                    
+                                    // Clear and setup canvas
+                                    ctx.clearRect(0, 0, outputSize, outputSize);
+                                    
+                                    // Draw circular clip
+                                    ctx.beginPath();
+                                    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+                                    ctx.closePath();
+                                    ctx.clip();
+                                    
+                                    // Fill with white background first
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.fillRect(0, 0, outputSize, outputSize);
+                                    
+                                    // Draw the cropped portion
+                                    try {
+                                        ctx.drawImage(
+                                            this.originalImage,
+                                            srcX, srcY, Math.max(srcW, srcH), Math.max(srcW, srcH),
+                                            0, 0, outputSize, outputSize
+                                        );
+                                    } catch (e) {
+                                        console.error('Crop error:', e);
+                                    }
+                                    
+                                    // Save cropped image as base64
+                                    const croppedData = canvas.toDataURL('image/png');
+                                    this.$refs.croppedPhotoInput.value = croppedData;
+                                }
+                            }
+                        }
+                    </script>
 
                 </div>
 

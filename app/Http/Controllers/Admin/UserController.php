@@ -92,14 +92,22 @@ class UserController extends Controller
                 'updated_at' => now(),
             ];
 
-            // Upload photo jika ada (opsional)
-            if ($request->hasFile('photo')) {
+            // Upload photo - prioritize cropped_photo (base64) over regular file upload
+            $uploadPath = public_path('images/users');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
+                $base64Image = $request->input('cropped_photo');
+                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
+                $imageData = base64_decode($imageData);
+                $photoName = 'user_' . time() . '_' . uniqid() . '.png';
+                file_put_contents($uploadPath . '/' . $photoName, $imageData);
+                $data['avatar'] = 'images/users/' . $photoName;
+            } elseif ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
                 $photo->move($uploadPath, $photoName);
                 $data['avatar'] = 'images/users/' . $photoName;
             }
@@ -173,20 +181,35 @@ class UserController extends Controller
                 $updateData['password'] = Hash::make($validated['password']);
             }
 
-            // Upload photo jika ada (opsional)
-            if ($request->hasFile('photo')) {
+            // Get old user data for photo deletion
+            $oldUser = DB::table('users')->where('id', $id)->first();
+
+            $uploadPath = public_path('images/users');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            // Upload photo - prioritize cropped_photo (base64) over regular file upload
+            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
                 // Delete old photo first
-                $oldUser = DB::table('users')->where('id', $id)->first();
                 if ($oldUser && $oldUser->avatar && file_exists(public_path($oldUser->avatar))) {
                     unlink(public_path($oldUser->avatar));
                 }
-                
+
+                $base64Image = $request->input('cropped_photo');
+                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
+                $imageData = base64_decode($imageData);
+                $photoName = 'user_' . time() . '_' . uniqid() . '.png';
+                file_put_contents($uploadPath . '/' . $photoName, $imageData);
+                $updateData['avatar'] = 'images/users/' . $photoName;
+            } elseif ($request->hasFile('photo')) {
+                // Delete old photo first
+                if ($oldUser && $oldUser->avatar && file_exists(public_path($oldUser->avatar))) {
+                    unlink(public_path($oldUser->avatar));
+                }
+
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
                 $photo->move($uploadPath, $photoName);
                 $updateData['avatar'] = 'images/users/' . $photoName;
             }
