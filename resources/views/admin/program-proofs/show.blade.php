@@ -126,10 +126,10 @@
                     </label>
                     <div class="w-full">
                         @if(isset($proof->documentation) && $proof->documentation)
-                            <img src="{{ $proof->documentation }}" 
+                            <img src="{{ asset($proof->documentation) }}" 
                                  alt="Documentation" 
                                  class="w-full h-auto rounded-lg border border-gray-300 dark:border-gray-600 object-cover cursor-pointer"
-                                 onclick="window.open('{{ $proof->documentation }}', '_blank')">
+                                 onclick="window.open('{{ asset($proof->documentation) }}', '_blank')">
                         @else
                             <div class="w-full h-64 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center border border-gray-300 dark:border-gray-600">
                                 <div class="text-center">

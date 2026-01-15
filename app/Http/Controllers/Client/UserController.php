@@ -149,9 +149,17 @@ class UserController extends Controller
         $user->address = $validated['address'];
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-            $avatar->move(public_path('assets/elearning/client/img/avatar'), $avatarName);
-            $user->avatar = $avatarName;
+            $avatarName = time() . '_' . $user->id . '.' . $avatar->getClientOriginalExtension();
+            $uploadPath = public_path('images/users');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            // Hapus foto lama
+            if ($user->avatar && file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+            $avatar->move($uploadPath, $avatarName);
+            $user->avatar = 'images/users/' . $avatarName;
         }
 
         // Update password
@@ -160,17 +168,6 @@ class UserController extends Controller
                 return back()->withErrors(['current_password' => 'Kata sandi lama salah.'])->withInput();
             }
             $user->password = Hash::make($validated['new_password']);
-        }
-
-        // Update foto
-        if ($request->hasFile('avatar')) {
-            // Hapus foto lama
-            if ($user->avatar && Storage::disk('public')->exists(str_replace('storage/', '', $user->avatar))) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $user->avatar));
-            }
-
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = 'storage/'.$path;
         }
 
         $user->save();

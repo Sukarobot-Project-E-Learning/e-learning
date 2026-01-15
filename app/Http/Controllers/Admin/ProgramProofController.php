@@ -67,7 +67,7 @@ class ProgramProofController extends Controller
                 'program_id' => $proof->program_id,
                 'student_id' => $proof->student_id,
                 'schedule' => $proof->schedule ?? '-',
-                'documentation' => $proof->documentation,
+                'documentation' => $proof->documentation ? asset($proof->documentation) : null,
                 'status' => $proof->status,
                 'created_at' => $proof->created_at,
                 'has_certificate_template' => $proof->has_certificate_template ?? 0

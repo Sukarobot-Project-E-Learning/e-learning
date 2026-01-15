@@ -70,18 +70,16 @@ class ProgramProofController extends Controller
         $scheduleId = $schedule ? $schedule->id : null;
 
         // Handle file upload
+        $documentationPath = null;
         if ($request->hasFile('proof_file')) {
             $file = $request->file('proof_file');
             $filename = time() . '_' . $user->id . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('program_proofs', $filename, 'public');
-            $fullPath = 'storage/program_proofs/' . $filename; // Adjust based on how you serve files
-            
-            // Or use the 'public_path' approach seen in other controllers if specifically required, but 'storeAs' is cleaner.
-            // Other controllers use $file->move(public_path(...)). I will stick to what works in this project.
-            // UserController uses $file->store('avatars', 'public') and returns 'storage/'.$path. content: $user->avatar = 'storage/'.$path;
-            // So:
-            // $path = $request->file('proof_file')->store('program_proofs', 'public');
-            // $fullPath = 'storage/' . $path;
+            $uploadPath = public_path('images/bukti-program');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+            $file->move($uploadPath, $filename);
+            $documentationPath = 'images/bukti-program/' . $filename;
         }
 
         ProgramProof::updateOrCreate(
@@ -91,7 +89,7 @@ class ProgramProofController extends Controller
             ],
             [
                 'schedule_id' => $scheduleId,
-                'documentation' => 'storage/' . $request->file('proof_file')->store('program_proofs', 'public'),
+                'documentation' => $documentationPath,
                 'rating' => $request->rating,
                 'review' => $request->review,
                 'status' => 'pending',

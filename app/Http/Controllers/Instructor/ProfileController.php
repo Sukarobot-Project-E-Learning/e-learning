@@ -46,8 +46,18 @@ class ProfileController extends Controller
         if ($trainer) {
             // Handle photo upload if provided
             if ($request->hasFile('foto')) {
-                $path = $request->file('foto')->store('trainer-photos', 'public');
-                $validated['foto'] = $path;
+                $photo = $request->file('foto');
+                $photoName = 'trainer_' . time() . '_' . $trainer->id . '.' . $photo->getClientOriginalExtension();
+                $uploadPath = public_path('images/users');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                // Hapus foto lama jika ada
+                if ($trainer->foto && file_exists(public_path($trainer->foto))) {
+                    unlink(public_path($trainer->foto));
+                }
+                $photo->move($uploadPath, $photoName);
+                $validated['foto'] = 'images/users/' . $photoName;
             }
 
             \DB::table('data_trainers')
