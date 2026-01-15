@@ -247,244 +247,6 @@
                         <canvas x-ref="cropCanvas" style="display: none;"></canvas>
                     </div>
 
-                    <script>
-                        function imageUploader() {
-                            return {
-                                previewUrl: null,
-                                zoom: 1,
-                                posX: 0,
-                                posY: 0,
-                                isDragging: false,
-                                isMoving: false,
-                                startX: 0,
-                                startY: 0,
-                                originalImage: null,
-                                imageWidth: 0,
-                                imageHeight: 0,
-                                containerWidth: 0,
-                                containerHeight: 0,
-                                circleSize: 128, // w-32 = 128px
-                                
-                                handleFileSelect(event) {
-                                    const file = event.target.files[0];
-                                    if (file) this.processFile(file);
-                                },
-                                
-                                handleDrop(event) {
-                                    this.isDragging = false;
-                                    const file = event.dataTransfer.files[0];
-                                    if (file) {
-                                        // Create a new DataTransfer to set files
-                                        const dt = new DataTransfer();
-                                        dt.items.add(file);
-                                        this.$refs.photoInput.files = dt.files;
-                                        this.processFile(file);
-                                    }
-                                },
-                                
-                                processFile(file) {
-                                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                                    const maxSize = 2 * 1024 * 1024;
-                                    
-                                    if (!allowedTypes.includes(file.type)) {
-                                        Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.' });
-                                        this.$refs.photoInput.value = '';
-                                        return;
-                                    }
-                                    
-                                    if (file.size > maxSize) {
-                                        Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Ukuran file melebihi 2MB.' });
-                                        this.$refs.photoInput.value = '';
-                                        return;
-                                    }
-                                    
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => {
-                                        this.previewUrl = e.target.result;
-                                        this.resetPosition();
-                                        
-                                        // Load original image for cropping
-                                        this.originalImage = new Image();
-                                        this.originalImage.src = e.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                },
-                                
-                                onImageLoad() {
-                                    // Get container and image dimensions after image loads
-                                    this.$nextTick(() => {
-                                        const container = this.$refs.previewContainer;
-                                        const img = this.$refs.previewImage;
-                                        if (container && img) {
-                                            this.containerWidth = container.offsetWidth;
-                                            this.containerHeight = container.offsetHeight;
-                                            this.imageWidth = img.naturalWidth;
-                                            this.imageHeight = img.naturalHeight;
-                                            this.updateCroppedImage();
-                                        }
-                                    });
-                                },
-                                
-                                setZoom(value) {
-                                    this.zoom = Math.max(0.1, Math.min(3, value));
-                                    this.updateCroppedImage();
-                                },
-                                
-                                zoomIn() {
-                                    if (this.zoom < 3) {
-                                        this.zoom = Math.round(Math.min(3, this.zoom + 0.05) * 100) / 100;
-                                        this.updateCroppedImage();
-                                    }
-                                },
-                                
-                                zoomOut() {
-                                    if (this.zoom > 0.1) {
-                                        this.zoom = Math.round(Math.max(0.1, this.zoom - 0.05) * 100) / 100;
-                                        this.updateCroppedImage();
-                                    }
-                                },
-                                
-                                handleZoom(event) {
-                                    if (event.deltaY < 0) this.zoomIn();
-                                    else this.zoomOut();
-                                },
-                                
-                                startDrag(event) {
-                                    this.isMoving = true;
-                                    this.startX = event.clientX - this.posX;
-                                    this.startY = event.clientY - this.posY;
-                                },
-                                
-                                onDrag(event) {
-                                    if (!this.isMoving) return;
-                                    this.posX = event.clientX - this.startX;
-                                    this.posY = event.clientY - this.startY;
-                                },
-                                
-                                stopDrag() {
-                                    if (this.isMoving) {
-                                        this.isMoving = false;
-                                        this.updateCroppedImage();
-                                    }
-                                },
-                                
-                                resetPosition() {
-                                    this.zoom = 1;
-                                    this.posX = 0;
-                                    this.posY = 0;
-                                    this.$nextTick(() => this.updateCroppedImage());
-                                },
-                                
-                                clearImage() {
-                                    this.previewUrl = null;
-                                    this.originalImage = null;
-                                    this.$refs.photoInput.value = '';
-                                    this.$refs.croppedPhotoInput.value = '';
-                                    this.resetPosition();
-                                },
-                                
-                                updateCroppedImage() {
-                                    if (!this.originalImage || !this.previewUrl) return;
-                                    
-                                    const canvas = this.$refs.cropCanvas;
-                                    const ctx = canvas.getContext('2d');
-                                    const previewImg = this.$refs.previewImage;
-                                    const container = this.$refs.previewContainer;
-                                    
-                                    if (!previewImg || !container) return;
-                                    
-                                    // Output size (circle diameter * 2 for quality)
-                                    const outputSize = 256;
-                                    canvas.width = outputSize;
-                                    canvas.height = outputSize;
-                                    
-                                    // Get displayed image dimensions
-                                    const imgRect = previewImg.getBoundingClientRect();
-                                    const containerRect = container.getBoundingClientRect();
-                                    
-                                    // Image natural size
-                                    const natW = this.originalImage.width;
-                                    const natH = this.originalImage.height;
-                                    
-                                    // Displayed image size (before transform)
-                                    const dispW = previewImg.offsetWidth;
-                                    const dispH = previewImg.offsetHeight;
-                                    
-                                    // Scale from displayed to natural
-                                    const scaleX = natW / dispW;
-                                    const scaleY = natH / dispH;
-                                    
-                                    // Container center
-                                    const containerCenterX = container.offsetWidth / 2;
-                                    const containerCenterY = container.offsetHeight / 2;
-                                    
-                                    // Image center in container (accounting for flex centering)
-                                    const imgCenterInContainerX = containerCenterX;
-                                    const imgCenterInContainerY = containerCenterY;
-                                    
-                                    // Circle center is at container center
-                                    // Find what point of the ORIGINAL image is at the circle center
-                                    // The transform is: scale(zoom) translate(posX, posY)
-                                    // So image point at circle center = (circleCenter - translate) / zoom
-                                    
-                                    // Position offset due to translate (in scaled space)
-                                    const translateOffsetX = this.posX * this.zoom;
-                                    const translateOffsetY = this.posY * this.zoom;
-                                    
-                                    // Circle center position relative to image center (in displayed coords, after transform)
-                                    // Image center is at container center, then scaled
-                                    // The circle is always at container center
-                                    
-                                    // In the displayed (non-transformed) image space:
-                                    // Circle center maps to: displayedImageX = (circleCenterX - imgCenterX - translateX) / zoom + dispW/2
-                                    const circleInDisplayedX = (containerCenterX - imgCenterInContainerX - translateOffsetX) / this.zoom + dispW / 2;
-                                    const circleInDisplayedY = (containerCenterY - imgCenterInContainerY - translateOffsetY) / this.zoom + dispH / 2;
-                                    
-                                    // Size of circle in displayed image space
-                                    const circleSizeInDisplayed = this.circleSize / this.zoom;
-                                    
-                                    // Crop area in displayed image coords
-                                    const cropDisplayedX = circleInDisplayedX - circleSizeInDisplayed / 2;
-                                    const cropDisplayedY = circleInDisplayedY - circleSizeInDisplayed / 2;
-                                    
-                                    // Convert to natural image coords
-                                    const srcX = cropDisplayedX * scaleX;
-                                    const srcY = cropDisplayedY * scaleY;
-                                    const srcW = circleSizeInDisplayed * scaleX;
-                                    const srcH = circleSizeInDisplayed * scaleY;
-                                    
-                                    // Clear and setup canvas
-                                    ctx.clearRect(0, 0, outputSize, outputSize);
-                                    
-                                    // Draw circular clip
-                                    ctx.beginPath();
-                                    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
-                                    ctx.closePath();
-                                    ctx.clip();
-                                    
-                                    // Fill with white background first
-                                    ctx.fillStyle = '#ffffff';
-                                    ctx.fillRect(0, 0, outputSize, outputSize);
-                                    
-                                    // Draw the cropped portion
-                                    try {
-                                        ctx.drawImage(
-                                            this.originalImage,
-                                            srcX, srcY, Math.max(srcW, srcH), Math.max(srcW, srcH),
-                                            0, 0, outputSize, outputSize
-                                        );
-                                    } catch (e) {
-                                        console.error('Crop error:', e);
-                                    }
-                                    
-                                    // Save cropped image as base64
-                                    const croppedData = canvas.toDataURL('image/png');
-                                    this.$refs.croppedPhotoInput.value = croppedData;
-                                }
-                            }
-                        }
-                    </script>
-
                 </div>
 
             </form>
@@ -512,6 +274,162 @@
 
 @push('scripts')
 <script>
+    // Image Uploader Function
+    function imageUploader() {
+        return {
+            previewUrl: null,
+            zoom: 1,
+            posX: 0,
+            posY: 0,
+            isDragging: false,
+            isMoving: false,
+            startX: 0,
+            startY: 0,
+            originalImage: null,
+            circleSize: 128,
+            
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) this.processFile(file);
+            },
+            
+            handleDrop(event) {
+                this.isDragging = false;
+                const file = event.dataTransfer.files[0];
+                if (file) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    this.$refs.photoInput.files = dt.files;
+                    this.processFile(file);
+                }
+            },
+            
+            processFile(file) {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                const maxSize = 2 * 1024 * 1024;
+                
+                if (!allowedTypes.includes(file.type)) {
+                    Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Format file tidak sesuai. Harap unggah JPG, JPEG, atau PNG.' });
+                    this.$refs.photoInput.value = '';
+                    return;
+                }
+                
+                if (file.size > maxSize) {
+                    Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Ukuran file melebihi 2MB.' });
+                    this.$refs.photoInput.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.previewUrl = e.target.result;
+                    this.resetPosition();
+                    this.originalImage = new Image();
+                    this.originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+            
+            onImageLoad() {
+                this.$nextTick(() => this.updateCroppedImage());
+            },
+            
+            setZoom(value) {
+                this.zoom = Math.max(0.1, Math.min(3, value));
+                this.updateCroppedImage();
+            },
+            
+            handleZoom(event) {
+                if (event.deltaY < 0) this.zoom = Math.min(3, this.zoom + 0.05);
+                else this.zoom = Math.max(0.1, this.zoom - 0.05);
+                this.updateCroppedImage();
+            },
+            
+            startDrag(event) {
+                this.isMoving = true;
+                this.startX = event.clientX - this.posX;
+                this.startY = event.clientY - this.posY;
+            },
+            
+            onDrag(event) {
+                if (!this.isMoving) return;
+                this.posX = event.clientX - this.startX;
+                this.posY = event.clientY - this.startY;
+            },
+            
+            stopDrag() {
+                if (this.isMoving) {
+                    this.isMoving = false;
+                    this.updateCroppedImage();
+                }
+            },
+            
+            resetPosition() {
+                this.zoom = 1;
+                this.posX = 0;
+                this.posY = 0;
+                this.$nextTick(() => this.updateCroppedImage());
+            },
+            
+            clearImage() {
+                this.previewUrl = null;
+                this.originalImage = null;
+                this.$refs.photoInput.value = '';
+                this.$refs.croppedPhotoInput.value = '';
+                this.resetPosition();
+            },
+            
+            updateCroppedImage() {
+                if (!this.originalImage || !this.previewUrl) return;
+                
+                const canvas = this.$refs.cropCanvas;
+                const ctx = canvas.getContext('2d');
+                const previewImg = this.$refs.previewImage;
+                const container = this.$refs.previewContainer;
+                
+                if (!previewImg || !container) return;
+                
+                const outputSize = 256;
+                canvas.width = outputSize;
+                canvas.height = outputSize;
+                
+                const natW = this.originalImage.width;
+                const natH = this.originalImage.height;
+                const dispW = previewImg.offsetWidth;
+                const dispH = previewImg.offsetHeight;
+                const scaleX = natW / dispW;
+                const scaleY = natH / dispH;
+                const containerCenterX = container.offsetWidth / 2;
+                const containerCenterY = container.offsetHeight / 2;
+                const translateOffsetX = this.posX * this.zoom;
+                const translateOffsetY = this.posY * this.zoom;
+                const circleInDisplayedX = (containerCenterX - containerCenterX - translateOffsetX) / this.zoom + dispW / 2;
+                const circleInDisplayedY = (containerCenterY - containerCenterY - translateOffsetY) / this.zoom + dispH / 2;
+                const circleSizeInDisplayed = this.circleSize / this.zoom;
+                const cropDisplayedX = circleInDisplayedX - circleSizeInDisplayed / 2;
+                const cropDisplayedY = circleInDisplayedY - circleSizeInDisplayed / 2;
+                const srcX = cropDisplayedX * scaleX;
+                const srcY = cropDisplayedY * scaleY;
+                const srcW = circleSizeInDisplayed * scaleX;
+                const srcH = circleSizeInDisplayed * scaleY;
+                
+                ctx.clearRect(0, 0, outputSize, outputSize);
+                ctx.beginPath();
+                ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, outputSize, outputSize);
+                
+                try {
+                    ctx.drawImage(this.originalImage, srcX, srcY, Math.max(srcW, srcH), Math.max(srcW, srcH), 0, 0, outputSize, outputSize);
+                } catch (e) { console.error('Crop error:', e); }
+                
+                this.$refs.croppedPhotoInput.value = canvas.toDataURL('image/png');
+            }
+        }
+    }
+
     // Handle success/error messages from session
     @if(session('success'))
         Swal.fire({
