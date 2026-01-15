@@ -93,9 +93,26 @@ class DashboardController extends Controller
         
         $maxYear = max(
             $latestUserDate ? Carbon::parse($latestUserDate)->year : now()->year,
-            $latestProgramDate ? Carbon::parse($latestProgramDate)->year : now()->year,
-            now()->year // Always include current year
+            $latestProgramDate ? Carbon::parse($latestProgramDate)->year : now()->year
         );
+        
+        // Only include current year if it has data or if it's within the range
+        $currentYear = now()->year;
+        if ($currentYear < $minYear || $currentYear > $maxYear) {
+            // Check if current year has any data
+            $hasCurrentYearData = DB::table('users')
+                ->whereYear('created_at', $currentYear)
+                ->exists() || DB::table('data_programs')
+                ->whereYear('created_at', $currentYear)
+                ->exists() || DB::table('transactions')
+                ->whereYear('created_at', $currentYear)
+                ->exists();
+                
+            if ($hasCurrentYearData) {
+                $maxYear = max($maxYear, $currentYear);
+                $minYear = min($minYear, $currentYear);
+            }
+        }
         
         // Generate years array from min to max
         $years = range($maxYear, $minYear); // Descending order (newest first)

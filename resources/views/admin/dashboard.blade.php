@@ -90,13 +90,32 @@
             <div class="flex items-center gap-2">
                 @php
                     $availableYears = array_keys($chartData);
-                    $latestYear = max($availableYears);
+                    $currentYear = date('Y');
+                    // Default to current year if it exists, otherwise the year with most data
+                    $bestYear = in_array($currentYear, $availableYears) ? $currentYear : $availableYears[0] ?? date('Y');
+                    
+                    // If current year doesn't have the most data, still prefer it for recency
+                    if (!in_array($currentYear, $availableYears)) {
+                        $maxDataPoints = 0;
+                        foreach($availableYears as $year) {
+                            $dataPoints = 0;
+                            if (isset($chartData[$year])) {
+                                $dataPoints = array_sum($chartData[$year]['users']) + 
+                                            array_sum($chartData[$year]['instructors']) + 
+                                            array_sum($chartData[$year]['programs']);
+                            }
+                            if ($dataPoints > $maxDataPoints) {
+                                $maxDataPoints = $dataPoints;
+                                $bestYear = $year;
+                            }
+                        }
+                    }
                 @endphp
                 
                 <label for="yearSelector" class="text-sm font-medium text-gray-600 dark:text-gray-400">Tahun:</label>
                 <select id="yearSelector" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 px-3 py-2">
                     @foreach($availableYears as $year)
-                        <option value="{{ $year }}" {{ $year == $latestYear ? 'selected' : '' }}>{{ $year }}</option>
+                        <option value="{{ $year }}" {{ $year == $bestYear ? 'selected' : '' }}>{{ $year }}</option>
                     @endforeach
                 </select>
             </div>
@@ -130,23 +149,19 @@
     function renderChart(year) {
         const currentData = chartDataByYear[year];
         
-        const cumulativeUsers = calculateCumulativeData(currentData.users);
-        const cumulativeInstructors = calculateCumulativeData(currentData.instructors);
-        const cumulativePrograms = calculateCumulativeData(currentData.programs);
-
         const options = {
             series: [
                 {
                     name: 'Pengguna',
-                    data: cumulativeUsers
+                    data: currentData.users
                 },
                 {
                     name: 'Instruktur',
-                    data: cumulativeInstructors
+                    data: currentData.instructors
                 },
                 {
                     name: 'Total Program',
-                    data: cumulativePrograms
+                    data: currentData.programs
                 }
             ],
             chart: {
@@ -207,7 +222,7 @@
             },
             yaxis: {
                 title: {
-                    text: 'Total Kumulatif',
+                    text: 'Jumlah Bulanan',
                     style: {
                         fontSize: '14px',
                         fontWeight: 600,
@@ -264,7 +279,7 @@
                 },
                 y: {
                     formatter: function(value) {
-                        return value + ' Total';
+                        return value + ' Bulan Ini';
                     }
                 },
                 marker: {
