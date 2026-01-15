@@ -70,17 +70,35 @@
                     </div>
 
                     <!-- Kategori -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="category">
+                    <div x-data="{ showCustom: false, customValue: '' }">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="category_select">
                             Kategori <span class="text-red-500">*</span>
                         </label>
-                        <select name="category" id="category" required
+                        <select id="category_select"
+                                name="category"
+                                x-bind:name="showCustom ? '' : 'category'"
+                                @change="showCustom = ($event.target.value === '__other__')"
                                 class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
                             <option value="">Pilih Kategori</option>
+                            @foreach($categories ?? [] as $cat)
+                            <option value="{{ $cat }}">{{ $cat }}</option>
+                            @endforeach
+                            @if(empty($categories))
                             <option value="Riset & AI">Riset & AI</option>
                             <option value="Produk">Produk</option>
                             <option value="Event">Event</option>
+                            @endif
+                            <option value="__other__">➕ Tambah Kategori Baru...</option>
                         </select>
+                        
+                        <!-- Input untuk kategori baru -->
+                        <div x-show="showCustom" x-transition class="mt-2">
+                            <input type="text" 
+                                   x-bind:name="showCustom ? 'category' : ''"
+                                   x-model="customValue"
+                                   placeholder="Ketik nama kategori baru"
+                                   class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                        </div>
                     </div>
 
                     <!-- Tanggal (Auto) -->

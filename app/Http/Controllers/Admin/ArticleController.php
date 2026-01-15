@@ -73,7 +73,15 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return view('admin.articles.create');
+        // Get existing categories from articles table
+        $categories = DB::table('articles')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category')
+            ->toArray();
+            
+        return view('admin.articles.create', compact('categories'));
     }
 
     /**
@@ -146,6 +154,14 @@ class ArticleController extends Controller
     {
         $articleModel = Article::findOrFail($id);
         
+        // Get existing categories from articles table
+        $categories = DB::table('articles')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category')
+            ->toArray();
+        
         $article = [
             'id' => $articleModel->id,
             'status' => $articleModel->is_published ? 'Publish' : 'Draft',
@@ -160,7 +176,7 @@ class ArticleController extends Controller
             'image' => $articleModel->image ? asset($articleModel->image) : null
         ];
 
-        return view('admin.articles.edit', compact('article'));
+        return view('admin.articles.edit', compact('article', 'categories'));
     }
 
     /**
