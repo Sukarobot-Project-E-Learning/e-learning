@@ -59,7 +59,7 @@
           </button>
 
           <!-- Dropdown Menu -->
-          <ul id="categoryMenu" class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-xl hidden overflow-hidden z-50 py-2">
+          <ul id="categoryMenu" class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden z-50 py-2 opacity-0 invisible scale-95 translate-y-1 transition-all duration-200">
             <li><button data-value="all" class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Semua Kategori</button></li>
             <li><button data-value="Riset & AI" class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Riset & AI</button></li>
             <li><button data-value="Produk" class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Produk</button></li>

@@ -45,9 +45,11 @@ class ArticleController extends Controller
         // Sort by date or views
         if ($request->has('sort')) {
             if ($request->sort === 'oldest') {
-                $query->orderBy('published_at', 'asc');
+                $query->reorder('published_at', 'asc');
             } elseif ($request->sort === 'popular') {
-                $query->orderBy('views', 'desc');
+                $query->reorder('views', 'desc');
+            } elseif ($request->sort === 'newest') {
+                $query->reorder('published_at', 'desc');
             }
         }
 
