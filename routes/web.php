@@ -256,6 +256,11 @@ Route::name('client.')->group(function () {
         ->middleware('auth')
         ->name('payment.resume');
 
+    // Cancel transaction API (requires auth)
+    Route::post('/api/payment/cancel/{transactionId}', [\App\Http\Controllers\Client\PaymentController::class, 'cancelTransaction'])
+        ->middleware('auth')
+        ->name('payment.cancel');
+
     // Midtrans callback (no auth required)
     Route::post('/payment/callback', [\App\Http\Controllers\Client\PaymentController::class, 'callback'])
         ->name('payment.callback');

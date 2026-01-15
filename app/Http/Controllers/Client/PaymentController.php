@@ -335,6 +335,34 @@ class PaymentController extends Controller
     }
 
     /**
+     * Cancel pending transaction
+     */
+    public function cancelTransaction($transactionId)
+    {
+        $user = Auth::user();
+        $transaction = Transaction::where('id', $transactionId)
+            ->where('student_id', $user->id)
+            ->first();
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        if ($transaction->status !== 'pending') {
+            return response()->json(['error' => 'Hanya transaksi pending yang dapat dibatalkan'], 400);
+        }
+
+        // Update status to cancelled
+        $transaction->status = 'cancelled';
+        $transaction->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi berhasil dibatalkan'
+        ]);
+    }
+
+    /**
      * Create enrollment after successful payment
      */
     private function createEnrollment($transaction)

@@ -104,6 +104,17 @@
                             <span>Bayar Sekarang</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </button>
+
+                        <!-- Tombol Batalkan Transaksi -->
+                        <button 
+                            type="button"
+                            class="w-full bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 px-4 py-2 rounded-lg transition-all text-xs font-semibold cancel-payment-btn flex items-center justify-center gap-1 border border-gray-200 hover:border-red-200"
+                            data-transaction-id="{{ $transaction->id }}"
+                            data-program-name="{{ $transaction->program->program ?? 'Program' }}"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <span>Batalkan Transaksi</span>
+                        </button>
                       </div>
                     @endif
 
@@ -174,6 +185,74 @@
               alert('Terjadi kesalahan. Silakan coba lagi.');
               button.disabled = false;
               button.innerHTML = 'Bayar Sekarang';
+            });
+          });
+        });
+
+        // Cancel payment buttons
+        document.querySelectorAll('.cancel-payment-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            const transactionId = this.getAttribute('data-transaction-id');
+            const programName = this.getAttribute('data-program-name');
+            const button = this;
+            
+            Swal.fire({
+              title: 'Batalkan Transaksi?',
+              html: `Apakah Anda yakin ingin membatalkan transaksi untuk <strong>"${programName}"</strong>?<br><br><span class="text-red-500 text-sm">Transaksi yang dibatalkan tidak dapat dikembalikan.</span>`,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#ef4444',
+              cancelButtonColor: '#6b7280',
+              confirmButtonText: 'Ya, Batalkan',
+              cancelButtonText: 'Kembali',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                button.disabled = true;
+                button.innerHTML = '<span class="animate-spin inline-block">⏳</span>';
+
+                fetch('/api/payment/cancel/' + transactionId, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  }
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.error) {
+                    Swal.fire({
+                      title: 'Gagal!',
+                      text: data.error,
+                      icon: 'error',
+                      confirmButtonColor: '#3b82f6'
+                    });
+                    button.disabled = false;
+                    button.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg><span>Batalkan Transaksi</span>';
+                    return;
+                  }
+
+                  Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Transaksi berhasil dibatalkan.',
+                    icon: 'success',
+                    confirmButtonColor: '#3b82f6'
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire({
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan. Silakan coba lagi.',
+                    icon: 'error',
+                    confirmButtonColor: '#3b82f6'
+                  });
+                  button.disabled = false;
+                  button.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg><span>Batalkan Transaksi</span>';
+                });
+              }
             });
           });
         });
