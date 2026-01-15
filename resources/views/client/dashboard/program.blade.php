@@ -54,12 +54,21 @@
               <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">{{ $enrollment->program_name }}</h2>
               <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: {{ \Carbon\Carbon::parse($enrollment->created_at)->translatedFormat('d M Y') }}</p>
               
+              {{-- Tombol Detail Kelas - selalu tampil untuk melihat detail program --}}
+              <a href="{{ route('client.program.detail', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-100 text-gray-700 text-sm font-medium leading-normal hover:bg-gray-200 border border-gray-300 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <span class="truncate">Detail Kelas</span>
+              </a>
+
               @if($enrollment->proof_id)
-                  <a href="{{ route('client.program.detail', $enrollment->slug) }}" class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-500 text-white text-sm font-medium leading-normal hover:bg-gray-600 focus:ring-4 focus:ring-primary/30">
+                  <a href="{{ route('client.program.detail', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-500 text-white text-sm font-medium leading-normal hover:bg-gray-600 focus:ring-4 focus:ring-primary/30">
                     <span class="truncate">Lihat Detail</span>
                   </a>
               @else
-                  <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="mt-auto flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
+                  <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
                     <span class="truncate">Kirim Bukti Program</span>
                   </a>
               @endif
