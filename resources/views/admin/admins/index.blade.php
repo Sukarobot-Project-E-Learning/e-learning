@@ -225,6 +225,17 @@ function adminTable() {
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
         },
         deleteAdmin(id) {
+            // Check if this is the last admin
+            if (this.total <= 1) {
+                Swal.fire({
+                    title: "Tidak Dapat Menghapus!",
+                    text: "Admin terakhir tidak dapat dihapus. Sistem harus memiliki minimal 1 admin.",
+                    icon: "error",
+                    confirmButtonColor: "#f97316"
+                });
+                return;
+            }
+            
             Swal.fire({ title: "Hapus admin?", text: "Data tidak dapat dikembalikan!", icon: "warning", showCancelButton: true, confirmButtonColor: "#f97316", cancelButtonColor: "#6b7280", confirmButtonText: "Ya, hapus!" }).then((result) => {
                 if (result.isConfirmed) {
                     fetch(`/admin/admins/${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content } })

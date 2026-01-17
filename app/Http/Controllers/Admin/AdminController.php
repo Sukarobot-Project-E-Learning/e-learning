@@ -38,6 +38,7 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username',
                 'email' => 'required|email|unique:users,email',
                 'phone' => 'nullable|string|max:20',
                 'password' => 'required|string|min:8|confirmed',
@@ -49,6 +50,7 @@ class AdminController extends Controller
 
             $data = [
                 'name' => $validated['name'],
+                'username' => $validated['username'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
                 'password' => Hash::make($validated['password']),
@@ -106,6 +108,7 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username,' . $id,
                 'email' => 'required|email|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:20',
                 'password' => 'nullable|string|min:8|confirmed',
@@ -117,6 +120,7 @@ class AdminController extends Controller
 
             $updateData = [
                 'name' => $validated['name'],
+                'username' => $validated['username'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
                 'is_active' => $isActive,
@@ -174,6 +178,13 @@ class AdminController extends Controller
     public function destroy($id)
     {
         try {
+            // Check if this is the last admin
+            $adminCount = DB::table('users')->where('role', 'admin')->count();
+            
+            if ($adminCount <= 1) {
+                return redirect()->back()->with('error', 'Tidak dapat menghapus admin terakhir. Sistem harus memiliki minimal 1 admin.');
+            }
+            
             $admin = DB::table('users')->where('id', $id)->where('role', 'admin')->first();
             if ($admin && $admin->avatar && file_exists(public_path($admin->avatar))) {
                 unlink(public_path($admin->avatar));

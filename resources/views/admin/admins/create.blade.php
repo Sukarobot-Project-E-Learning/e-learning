@@ -49,6 +49,16 @@
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
                     </div>
 
+                    <!-- Username -->
+                    <div class="mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="username">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="username" id="username" required
+                               placeholder="Masukkan username"
+                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                    </div>
+
                     <!-- Email -->
                     <div class="mb-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="email">

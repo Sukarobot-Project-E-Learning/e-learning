@@ -18,20 +18,57 @@
                     </a>
                     
                     @if($application->status === 'pending')
-                    <form action="{{ route('admin.instructor-applications.approve', $application->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui pengajuan ini?')">
+                    <button type="button" id="approveBtn"
+                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+                        Terima
+                    </button>
+                    <form id="approveForm" action="{{ route('admin.instructor-applications.approve', $application->id) }}" method="POST" class="hidden">
                         @csrf
-                        <button type="submit" 
-                                class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                            Terima
-                        </button>
                     </form>
-                    <form action="{{ route('admin.instructor-applications.reject', $application->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menolak pengajuan ini?')">
+                    
+                    <button type="button" id="rejectBtn"
+                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">
+                        Tolak
+                    </button>
+                    <form id="rejectForm" action="{{ route('admin.instructor-applications.reject', $application->id) }}" method="POST" class="hidden">
                         @csrf
-                        <button type="submit" 
-                                class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">
-                            Tolak
-                        </button>
                     </form>
+                    
+                    <script>
+                        document.getElementById('approveBtn').addEventListener('click', function() {
+                            Swal.fire({
+                                title: 'Terima Pengajuan?',
+                                text: 'Anda akan menyetujui pengajuan instruktur ini',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#22c55e',
+                                cancelButtonColor: '#6b7280',
+                                confirmButtonText: 'Ya, Terima!',
+                                cancelButtonText: 'Batal'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    document.getElementById('approveForm').submit();
+                                }
+                            });
+                        });
+                        
+                        document.getElementById('rejectBtn').addEventListener('click', function() {
+                            Swal.fire({
+                                title: 'Tolak Pengajuan?',
+                                text: 'Anda akan menolak pengajuan instruktur ini',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#ef4444',
+                                cancelButtonColor: '#6b7280',
+                                confirmButtonText: 'Ya, Tolak!',
+                                cancelButtonText: 'Batal'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    document.getElementById('rejectForm').submit();
+                                }
+                            });
+                        });
+                    </script>
                     @endif
                 </div>
             </div>
