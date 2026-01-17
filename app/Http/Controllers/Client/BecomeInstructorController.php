@@ -28,7 +28,7 @@ class BecomeInstructorController extends Controller
              return redirect()->route('client.dashboard')->with('info', 'Anda sudah terdaftar sebagai instruktur.');
         }
 
-        return view('client.instructor.create', compact('existingApplication'));
+        return view('client.dashboard.become-instructor', compact('existingApplication'));
     }
 
     /**
@@ -40,12 +40,14 @@ class BecomeInstructorController extends Controller
             'skills' => 'required|string',
             'cv' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'ktp' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'npwp' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'bio' => 'required|string',
         ]);
 
         $user = Auth::user();
         $cvPath = null;
         $ktpPath = null;
+        $npwpPath = null;
 
         // Upload CV
         if ($request->hasFile('cv')) {
@@ -63,17 +65,26 @@ class BecomeInstructorController extends Controller
             $ktpPath = 'uploads/documents/ktp/' . $ktpName;
         }
 
+        // Upload NPWP
+        if ($request->hasFile('npwp')) {
+            $npwp = $request->file('npwp');
+            $npwpName = time() . '_NPWP_' . $user->id . '.' . $npwp->getClientOriginalExtension();
+            $npwp->move(public_path('uploads/documents/npwp'), $npwpName);
+            $npwpPath = 'uploads/documents/npwp/' . $npwpName;
+        }
+
         DB::table('instructor_applications')->insert([
             'user_id' => $user->id,
             'skills' => $request->skills,
             'cv_path' => $cvPath,
             'ktp_path' => $ktpPath,
+            'npwp_path' => $npwpPath,
             'bio' => $request->bio,
             'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('client.dashboard')->with('success', 'Pengajuan menjadi instruktur berhasil dikirim. Kami akan meninjau data Anda.');
+        return redirect()->route('client.dashboard.become-instructor')->with('success', 'Pengajuan menjadi instruktur berhasil dikirim. Kami akan meninjau data Anda.');
     }
 }

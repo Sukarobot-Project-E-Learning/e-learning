@@ -233,13 +233,11 @@ Route::name('client.')->group(function () {
         Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard.update');
         Route::get('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'create'])->name('program.proof');
         Route::post('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'store'])->name('program.proof.store');
+        Route::get('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'create'])->name('dashboard.become-instructor');
+        Route::post('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'store'])->name('dashboard.become-instructor.store');
     });
 
-    // Become Instructor Routes
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'create'])->name('become-instructor.create');
-        Route::post('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'store'])->name('become-instructor.store');
-    });
+
 
     Route::middleware(['auth'])->group(function () {
         // Payment routes
