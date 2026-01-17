@@ -231,6 +231,7 @@ Route::name('client.')->group(function () {
         Route::get('/voucher', [UserDashboardController::class, 'voucher'])->name('dashboard.voucher');
 
         Route::put('/', [UserDashboardController::class, 'updateProfile'])->name('dashboard.update');
+        Route::get('/check-username', [UserDashboardController::class, 'checkUsername'])->name('check-username');
         Route::get('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'create'])->name('program.proof');
         Route::post('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'store'])->name('program.proof.store');
     });

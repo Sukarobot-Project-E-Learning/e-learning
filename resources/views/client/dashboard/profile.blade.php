@@ -89,7 +89,7 @@
       @endif
 
       <!-- Form Section -->
-      <form action="{{ route('client.dashboard.update') }}" method="POST" enctype="multipart/form-data" class="py-6 space-y-8">
+      <form action="{{ route('client.dashboard.update') }}" method="POST" enctype="multipart/form-data" class="py-6 space-y-8" id="profileForm">
         @csrf
         @method('PUT')
         <!-- Personal Information Section -->
@@ -100,6 +100,21 @@
             <div class="flex flex-col">
               <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
               <input name="name" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
+            </div>
+            <!-- TextField: Username -->
+            <div class="flex flex-col">
+              <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="username">Username</label>
+              <div class="relative">
+                <input name="username" 
+                       class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal pr-12" 
+                       id="username" 
+                       type="text" 
+                       placeholder="Masukkan username unik" 
+                       value="{{ $user->username ?? '' }}"
+                       autocomplete="off"/>
+                <span id="usernameStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xl hidden"></span>
+              </div>
+              <p id="usernameMessage" class="text-sm mt-1 hidden"></p>
             </div>
             <!-- TextField: Email -->
             <div class="flex flex-col">
@@ -125,9 +140,17 @@
           </div>
           <!-- Security Section -->
           <div>
-            <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">Ubah Kata Sandi</h2>
+            <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">
+              @if($user->provider === 'google')
+                Buat Kata Sandi
+                <span class="text-sm font-normal text-gray-500 block mt-1">Anda login via Google. Buat password untuk login manual.</span>
+              @else
+                Ubah Kata Sandi
+              @endif
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- TextField: Kata Sandi Lama -->
+              @if($user->provider !== 'google')
+              <!-- TextField: Kata Sandi Lama (hanya untuk non-SSO) -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
                 <input name="current_password" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('current_password') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="currentPassword" placeholder="••••••••" type="password"/>
@@ -135,6 +158,7 @@
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
               </div>
+              @endif
               <!-- TextField: Kata Sandi Baru -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
@@ -143,8 +167,10 @@
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
               </div>
-              <!-- ruang kosong -->
+              @if($user->provider !== 'google')
+              <!-- ruang kosong (hanya jika non-SSO agar layout seimbang) -->
               <div class="flex flex-col"></div>
+              @endif
               <!-- TextField: Konfirmasi Kata Sandi Baru -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPasswordConfirmation">Konfirmasi Kata Sandi Baru</label>
@@ -248,5 +274,98 @@
     });
   </script>
   @endif
+
+  <!-- Username Check Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const usernameInput = document.getElementById('username');
+        const usernameStatus = document.getElementById('usernameStatus');
+        const usernameMessage = document.getElementById('usernameMessage');
+        const profileForm = document.getElementById('profileForm');
+        let usernameTimeout = null;
+        let isUsernameValid = true;
+        const originalUsername = '{{ $user->username ?? '' }}';
+
+        if (usernameInput) {
+            usernameInput.addEventListener('input', function() {
+                clearTimeout(usernameTimeout);
+                const username = this.value.trim();
+                
+                // Reset status
+                usernameStatus.classList.add('hidden');
+                usernameMessage.classList.add('hidden');
+                
+                if (username === '') {
+                    isUsernameValid = true;
+                    return;
+                }
+
+                // Skip check if same as original
+                if (username === originalUsername) {
+                    isUsernameValid = true;
+                    return;
+                }
+
+                // Debounce - wait 500ms before checking
+                usernameTimeout = setTimeout(function() {
+                    // Show loading
+                    usernameStatus.textContent = '⏳';
+                    usernameStatus.classList.remove('hidden');
+                    
+                    // Check via AJAX
+                    fetch('{{ route("client.check-username") }}?username=' + encodeURIComponent(username), {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.available) {
+                            // Username tersedia
+                            usernameStatus.textContent = '✅';
+                            usernameStatus.classList.remove('hidden');
+                            usernameMessage.textContent = 'Username tersedia';
+                            usernameMessage.className = 'text-sm mt-1 text-green-600';
+                            usernameMessage.classList.remove('hidden');
+                            usernameInput.classList.remove('border-red-500');
+                            usernameInput.classList.add('border-green-500');
+                            isUsernameValid = true;
+                        } else {
+                            // Username sudah digunakan
+                            usernameStatus.textContent = '❌';
+                            usernameStatus.classList.remove('hidden');
+                            usernameMessage.textContent = 'Username sudah digunakan';
+                            usernameMessage.className = 'text-sm mt-1 text-red-600';
+                            usernameMessage.classList.remove('hidden');
+                            usernameInput.classList.remove('border-green-500');
+                            usernameInput.classList.add('border-red-500');
+                            isUsernameValid = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking username:', error);
+                        usernameStatus.classList.add('hidden');
+                        isUsernameValid = true;
+                    });
+                }, 500);
+            });
+
+            // Prevent form submission if username is not valid
+            profileForm.addEventListener('submit', function(e) {
+                if (!isUsernameValid) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Username Sudah Digunakan',
+                        text: 'Silakan pilih username lain yang belum digunakan.',
+                        confirmButtonColor: '#f97316'
+                    });
+                }
+            });
+        }
+    });
+  </script>
+
   <script src="{{ asset('assets/elearning/client/js/dashboard/profile.js') }}"></script>
 @endsection

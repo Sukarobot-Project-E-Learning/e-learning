@@ -117,20 +117,33 @@ class UserController extends Controller
         // Logic to update user profile
         $user = Auth::user();
         
-        // Validasi
-        $validated = $request->validate([
+        // Check if user is SSO (Google) user
+        $isSsoUser = ($user->provider === 'google');
+        
+        // Build validation rules
+        $rules = [
             'name' => 'required|string|min:3|max:255',
+            'username' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => 'nullable|string|min:10|max:20',
             'job' => 'nullable|string|max:100',
             'address' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'current_password' => 'nullable|required_with:new_password',
-            'new_password' => 'nullable|min:8|required_with:current_password',
+            'new_password' => 'nullable|min:8',
             'new_password_confirmation' => 'nullable|same:new_password',
-        ], [
+        ];
+        
+        // For non-SSO users, require current password to change password
+        if (!$isSsoUser) {
+            $rules['current_password'] = 'nullable|required_with:new_password';
+        }
+        
+        // Validasi
+        $validated = $request->validate($rules, [
             // Custom error massage
             'name.required' => 'Nama wajib diisi',
+            'username.unique' => 'Username sudah digunakan',
+            'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, dash dan underscore',
             'email.unique' => 'Email sudah terdaftar',
             'phone.regex' => 'Format nomor telepon tidak valid',
             'job.max' => 'Pekerjaan maksimal 100 karakter',
@@ -143,6 +156,7 @@ class UserController extends Controller
 
         // Update data user
         $user->name = $validated['name'];
+        $user->username = $validated['username'] ?? $user->username;
         $user->email = $validated['email'];
         $user->phone = $validated['phone'];
         $user->job = $validated['job'];
@@ -164,14 +178,42 @@ class UserController extends Controller
 
         // Update password
         if (!empty($validated['new_password'])) {
-            if (!Hash::check($validated['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'Kata sandi lama salah.'])->withInput();
+            // For SSO users, no need to check current password
+            if ($isSsoUser) {
+                $user->password = Hash::make($validated['new_password']);
+            } else {
+                // For non-SSO users, verify current password
+                if (!Hash::check($validated['current_password'], $user->password)) {
+                    return back()->withErrors(['current_password' => 'Kata sandi lama salah.'])->withInput();
+                }
+                $user->password = Hash::make($validated['new_password']);
             }
-            $user->password = Hash::make($validated['new_password']);
         }
 
         $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
+
+    /**
+     * Check if username is available (AJAX endpoint)
+     */
+    public function checkUsername(Request $request)
+    {
+        $username = $request->get('username');
+        $userId = Auth::id();
+        
+        if (empty($username)) {
+            return response()->json(['available' => true]);
+        }
+        
+        // Check if username exists (excluding current user)
+        $exists = DB::table('users')
+            ->where('username', $username)
+            ->where('id', '!=', $userId)
+            ->exists();
+        
+        return response()->json(['available' => !$exists]);
+    }
 }
+
