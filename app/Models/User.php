@@ -55,4 +55,17 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
         ];
     }
+    /**
+     * Get the user's avatar URL.
+     *
+     * @return string
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return asset($this->avatar);
+        }
+
+        return asset('assets/elearning/client/img/default-avatar.jpeg');
+    }
 }

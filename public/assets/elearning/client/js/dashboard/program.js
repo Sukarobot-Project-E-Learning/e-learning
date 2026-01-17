@@ -61,7 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cards.forEach(card => {
             const cardCategory = card.dataset.category || '';
-            if (category === 'Semua Program' || cardCategory.toLowerCase().trim() === category.toLowerCase().trim()) {
+            // Normalize: lowercase and replace hyphens with spaces
+            const normalizedCardCategory = cardCategory.toLowerCase().trim().replace(/-/g, ' ');
+            const normalizedCategory = category.toLowerCase().trim().replace(/-/g, ' ');
+
+            if (category === 'Semua Program' || normalizedCardCategory === normalizedCategory) {
                 card.style.display = 'flex';
                 visibleCount++;
             } else {

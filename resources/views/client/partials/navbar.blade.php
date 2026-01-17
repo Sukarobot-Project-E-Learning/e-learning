@@ -51,7 +51,7 @@
                     <!-- User Dropdown -->
                     <div class="relative group">
                         <button class="flex items-center gap-2 focus:outline-none cursor-pointer">
-                            <img src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                            <img src="{{ Auth::user()->avatar_url }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                             <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Dashboard</a>
@@ -113,7 +113,7 @@
             @auth
                 <div class="pt-4 border-t border-gray-300">
                     <div class="flex items-center gap-3 mb-3">
-                        <img src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" class="w-10 h-10 rounded-full object-cover">
+                        <img src="{{ Auth::user()->avatar_url }}" class="w-10 h-10 rounded-full object-cover">
                         <span class="font-medium text-gray-900">{{ Auth::user()->name }}</span>
                     </div>
                     <a href="{{ url('/dashboard') }}" class="w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-700 transition-colors mb-3">Dashboard</a>

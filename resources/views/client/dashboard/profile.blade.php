@@ -8,7 +8,7 @@
       <div class="py-6 border-b border-gray-200">
         <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
           <div class="flex gap-4 items-center">
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }})"></div>
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar_url }})"></div>
             <div class="flex flex-col justify-center">
               <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">{{ $user->name }}</p>
               <p class="text-[#616f89] text-base font-normal leading-normal">{{ $user->email }}</p>
@@ -195,7 +195,7 @@
               <div class="flex justify-center mb-6">
                   <div class="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden">
                       <img id="photoPreview" 
-                          src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" 
+                          src="{{ $user->avatar_url }}" 
                           class="w-full h-full object-cover">
                   </div>
               </div>
