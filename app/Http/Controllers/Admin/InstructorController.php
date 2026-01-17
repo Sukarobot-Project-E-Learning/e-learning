@@ -195,6 +195,7 @@ class InstructorController extends Controller
         $instructorData = [
             'id' => $user->id,
             'name' => $user->name,
+            'username' => $user->username ?? '',
             'email' => $user->email,
             'phone' => $user->phone ?? '',
             'status' => $user->is_active ? 'Aktif' : 'Non-Aktif',
