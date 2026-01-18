@@ -73,7 +73,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
                 <div class="flex items-start gap-3">
                     <template x-if="template.template_path">
-                        <img :src="template.template_path" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(template.template_path, '_blank')">
+                        <img :src="getImageUrl(template.template_path)" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getImageUrl(template.template_path), '_blank')">
                     </template>
                     <template x-if="!template.template_path">
                         <div class="w-16 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -131,7 +131,7 @@
                             <td class="px-6 py-4"><div class="font-semibold text-gray-800 dark:text-white" x-html="highlightText(template.program_name)"></div></td>
                             <td class="px-6 py-4 text-sm"><code class="px-2 py-1 text-xs bg-gray-100 dark:bg-white rounded" x-text="template.number_prefix"></code></td>
                             <td class="px-6 py-4">
-                                <template x-if="template.template_path"><img :src="template.template_path" class="w-20 h-14 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer hover:opacity-80 transition" @click="window.open(template.template_path, '_blank')"></template>
+                                <template x-if="template.template_path"><img :src="getImageUrl(template.template_path)" class="w-20 h-14 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer hover:opacity-80 transition" @click="window.open(getImageUrl(template.template_path), '_blank')"></template>
                                 <template x-if="!template.template_path"><div class="w-20 h-14 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500"><svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div></template>
                             </td>
                             <td class="px-6 py-4 text-sm">
@@ -268,6 +268,12 @@ function certificateTable() {
             if (!this.search || !text) return text;
             const regex = new RegExp(`(${this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
+        },
+        getImageUrl(image) {
+            if (!image) return '';
+            if (image.startsWith('http')) return image;
+            if (image.startsWith('images/')) return '/' + image;
+            return '/storage/' + image;
         },
         deleteTemplate(id) {
             Swal.fire({ title: "Hapus template?", text: "Data tidak dapat dikembalikan!", icon: "warning", showCancelButton: true, confirmButtonColor: "#f97316", cancelButtonColor: "#6b7280", confirmButtonText: "Ya, hapus!" }).then((result) => {

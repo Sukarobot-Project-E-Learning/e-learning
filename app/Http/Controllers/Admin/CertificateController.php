@@ -152,7 +152,6 @@ class CertificateController extends Controller
             'number_prefix' => $request->input('number_prefix'),
             'description' => $request->input('description'),
             'template_path' => $templateRelativePath,
-            'cloudinary_public_id' => $request->input('cloudinary_public_id'),
             'is_active' => 1,
             'name_x' => $request->input('name_x'),
             'name_y' => $request->input('name_y'),
@@ -247,11 +246,6 @@ class CertificateController extends Controller
             'updated_at' => Carbon::now(),
         ];
 
-        // Update cloudinary_public_id if provided
-        if ($request->filled('cloudinary_public_id')) {
-            $updateData['cloudinary_public_id'] = $request->input('cloudinary_public_id');
-        }
-
 
         if ($request->hasFile('blanko')) {
             $blankoFile = $request->file('blanko');
@@ -314,7 +308,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Upload template to Cloudinary (AJAX endpoint)
+     * Upload template to local storage (AJAX endpoint)
      */
     public function uploadTemplate(Request $request)
     {
@@ -322,40 +316,38 @@ class CertificateController extends Controller
             'blanko' => 'required|image|mimes:jpeg,jpg,png|max:5120',
         ]);
 
-        $cloudinary = new \App\Services\CloudinaryService();
-        
-        if (!$cloudinary->isConfigured()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cloudinary belum dikonfigurasi. Periksa file .env'
-            ], 500);
-        }
-
-        $result = $cloudinary->uploadTemplate($request->file('blanko'));
-        
-        if ($result['success']) {
+        try {
+            $file = $request->file('blanko');
+            $fileName = 'temp_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+            
+            // Save to storage/app/public/certificates/templates/
+            $path = $file->storeAs('public/certificates/templates', $fileName);
+            
+            // Get image dimensions
+            $imageInfo = getimagesize($file->getPathname());
+            
             return response()->json([
                 'success' => true,
-                'public_id' => $result['public_id'],
-                'url' => $result['secure_url'],
-                'width' => $result['width'],
-                'height' => $result['height'],
+                'file_path' => 'certificates/templates/' . $fileName,
+                'url' => asset('storage/certificates/templates/' . $fileName),
+                'width' => $imageInfo[0] ?? 1920,
+                'height' => $imageInfo[1] ?? 1357,
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload gagal: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => false,
-            'message' => $result['message'] ?? 'Upload gagal'
-        ], 500);
     }
 
     /**
-     * Generate certificate preview using Cloudinary (AJAX endpoint)
+     * Generate certificate preview using local rendering (AJAX endpoint)
      */
     public function previewCertificate(Request $request)
     {
         $request->validate([
-            'public_id' => 'required|string',
+            'file_path' => 'required|string',
             'name_x' => 'required|numeric',
             'name_y' => 'required|numeric',
             'name_font_size' => 'required|integer',
@@ -370,66 +362,76 @@ class CertificateController extends Controller
             'date_font_size' => 'required|integer',
             'description' => 'nullable|string',
             'number_prefix' => 'nullable|string',
-            'image_width' => 'nullable|integer',
-            'image_height' => 'nullable|integer',
         ]);
 
-        $cloudinary = new \App\Services\CloudinaryService();
-        
-        if (!$cloudinary->isConfigured()) {
+        try {
+            // Generate sample certificate data
+            $currentMonth = self::getRomanMonth(Carbon::now()->month);
+            $currentYear = Carbon::now()->year;
+            $prefix = $request->input('number_prefix', 'B-1/PT.STG');
+            $sampleNumber = "001/{$prefix}/{$currentMonth}/{$currentYear}";
+
+            $settings = [
+                'name_x' => $request->input('name_x'),
+                'name_y' => $request->input('name_y'),
+                'name_font_size' => $request->input('name_font_size'),
+                'number_x' => $request->input('number_x'),
+                'number_y' => $request->input('number_y'),
+                'number_font_size' => $request->input('number_font_size'),
+                'desc_x' => $request->input('desc_x'),
+                'desc_y' => $request->input('desc_y'),
+                'desc_font_size' => $request->input('desc_font_size'),
+                'date_x' => $request->input('date_x'),
+                'date_y' => $request->input('date_y'),
+                'date_font_size' => $request->input('date_font_size'),
+            ];
+
+            // Get template path from storage
+            $filePath = $request->input('file_path');
+            $templateFullPath = storage_path('app/public/' . $filePath);
+            
+            if (!file_exists($templateFullPath)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Template file tidak ditemukan'
+                ], 404);
+            }
+
+            // Generate preview using local rendering
+            $previewPath = self::renderCertificateImage(
+                $templateFullPath,
+                $sampleNumber,
+                'Nama Penerima',
+                $request->input('description', 'Deskripsi sertifikat'),
+                Carbon::now(),
+                $settings
+            );
+
+            if (!$previewPath) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal generate preview'
+                ], 500);
+            }
+
+            $previewUrl = asset($previewPath);
+
+            // Generate download URL
+            $downloadUrl = route('admin.certificates.download-pdf') . '?' . http_build_query([
+                'image_url' => $previewUrl
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'preview_url' => $previewUrl,
+                'pdf_url' => $downloadUrl,
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cloudinary belum dikonfigurasi'
+                'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
-
-        // Generate sample certificate data
-        $currentMonth = self::getRomanMonth(Carbon::now()->month);
-        $currentYear = Carbon::now()->year;
-        $prefix = $request->input('number_prefix', 'B-1/PT.STG');
-        $sampleNumber = "001/{$prefix}/{$currentMonth}/{$currentYear}";
-
-        $settings = [
-            'name_x' => $request->input('name_x'),
-            'name_y' => $request->input('name_y'),
-            'name_font_size' => $request->input('name_font_size'),
-            'number_x' => $request->input('number_x'),
-            'number_y' => $request->input('number_y'),
-            'number_font_size' => $request->input('number_font_size'),
-            'desc_x' => $request->input('desc_x'),
-            'desc_y' => $request->input('desc_y'),
-            'desc_font_size' => $request->input('desc_font_size'),
-            'date_x' => $request->input('date_x'),
-            'date_y' => $request->input('date_y'),
-            'date_font_size' => $request->input('date_font_size'),
-            'description' => $request->input('description', 'Deskripsi sertifikat'),
-        ];
-
-        // Get image dimensions (default to standard certificate size)
-        $imageWidth = $request->input('image_width', 1920);
-        $imageHeight = $request->input('image_height', 1357);
-
-        $previewUrl = $cloudinary->generateCertificateUrl(
-            $request->input('public_id'),
-            'Nama Penerima',
-            $sampleNumber,
-            $settings['description'],
-            $cloudinary->formatIndonesianDate(Carbon::now()),
-            $settings,
-            $imageWidth,
-            $imageHeight
-        );
-
-        // Generate download URL that points to our server-side PDF endpoint
-        $downloadUrl = route('admin.certificates.download-pdf') . '?' . http_build_query([
-            'image_url' => $previewUrl
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'preview_url' => $previewUrl,
-            'pdf_url' => $downloadUrl,
-        ]);
     }
 
 

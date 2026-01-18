@@ -53,7 +53,7 @@ class ArticleController extends Controller
                 'title' => $article->title ?? 'N/A',
                 'category' => $article->category ?? '-',
                 'date' => $article->created_at ? date('d F Y', strtotime($article->created_at)) : '-',
-                'image' => $article->image ? asset($article->image) : null,
+                'image' => $article->image ? (str_starts_with($article->image, 'images/') ? asset($article->image) : asset('storage/' . $article->image)) : null,
                 'status' => $article->is_published ? 'Aktif' : 'Draft',
                 'is_published' => $article->is_published,
                 'views' => $article->views ?? 0,

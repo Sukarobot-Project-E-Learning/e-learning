@@ -126,10 +126,17 @@ class Article extends Model
      */
     public function getImageUrlAttribute()
     {
-        if ($this->image && file_exists(public_path($this->image))) {
+        if (!$this->image) {
+            return asset('assets/elearning/client/img/blogilustrator.jpeg');
+        }
+        
+        // Handle old images/ path
+        if (str_starts_with($this->image, 'images/')) {
             return asset($this->image);
         }
-        return asset('assets/elearning/client/img/blogilustrator.jpeg');
+        
+        // Handle storage path
+        return asset('storage/' . $this->image);
     }
 }
 

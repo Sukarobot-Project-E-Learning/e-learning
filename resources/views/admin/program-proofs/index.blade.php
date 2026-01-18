@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <template x-if="item.documentation">
-                        <img :src="item.documentation" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(item.documentation, '_blank')">
+                        <img :src="getImageUrl(item.documentation)" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getImageUrl(item.documentation), '_blank')">
                     </template>
                     <template x-if="!item.documentation">
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -144,7 +144,7 @@
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-text="item.schedule"></td>
                             <td class="px-6 py-4">
                                 <template x-if="item.documentation">
-                                    <img :src="item.documentation" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(item.documentation, '_blank')">
+                                    <img :src="getImageUrl(item.documentation)" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(getImageUrl(item.documentation), '_blank')">
                                 </template>
                                 <template x-if="!item.documentation">
                                     <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -283,6 +283,12 @@ function proofTable() {
             if (!this.search || !text) return text;
             const regex = new RegExp(`(${this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
+        },
+        getImageUrl(image) {
+            if (!image) return '';
+            if (image.startsWith('http')) return image;
+            if (image.startsWith('images/')) return '/' + image;
+            return '/storage/' + image;
         },
         toggleSelectAll() {
             this.selectAll = !this.selectAll;
