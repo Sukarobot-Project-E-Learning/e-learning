@@ -232,5 +232,33 @@ class InstructorApplicationController extends Controller
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus pengajuan'], 500);
         }
     }
+
+    /**
+     * Download private document (CV, KTP, or NPWP) - Admin only
+     */
+    public function downloadDocument($id, $type)
+    {
+        $application = DB::table('instructor_applications')->where('id', $id)->first();
+        
+        if (!$application) {
+            abort(404, 'Pengajuan tidak ditemukan');
+        }
+
+        $pathField = $type . '_path';
+        $validTypes = ['cv', 'ktp', 'npwp'];
+        
+        if (!in_array($type, $validTypes) || empty($application->$pathField)) {
+            abort(404, 'Dokumen tidak ditemukan');
+        }
+
+        $path = $application->$pathField;
+        
+        // Check if file exists in storage
+        if (!Storage::disk('local')->exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return Storage::disk('local')->download($path);
+    }
 }
 

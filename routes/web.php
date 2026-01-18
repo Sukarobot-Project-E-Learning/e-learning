@@ -106,6 +106,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::post('instructor-applications/{id}/approve', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'approve'])->name('instructor-applications.approve');
     Route::post('instructor-applications/{id}/reject', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'reject'])->name('instructor-applications.reject');
     Route::delete('instructor-applications/{id}', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'destroy'])->name('instructor-applications.destroy');
+    Route::get('instructor-applications/{id}/document/{type}', [\App\Http\Controllers\Admin\InstructorApplicationController::class, 'downloadDocument'])->name('instructor-applications.download');
 
     // Instructor Management (Konfirmasi Akun Instruktur)
     Route::get('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'index'])->name('instructors.index');

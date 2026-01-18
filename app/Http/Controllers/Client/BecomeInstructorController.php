@@ -49,28 +49,28 @@ class BecomeInstructorController extends Controller
         $ktpPath = null;
         $npwpPath = null;
 
-        // Upload CV
+        // Upload CV to private storage (not publicly accessible)
         if ($request->hasFile('cv')) {
             $cv = $request->file('cv');
             $cvName = time() . '_CV_' . $user->id . '.' . $cv->getClientOriginalExtension();
-            $cv->move(public_path('uploads/documents/cv'), $cvName);
-            $cvPath = 'uploads/documents/cv/' . $cvName;
+            $cv->storeAs('private/documents/cv', $cvName);
+            $cvPath = 'private/documents/cv/' . $cvName;
         }
 
-        // Upload KTP
+        // Upload KTP to private storage (not publicly accessible)
         if ($request->hasFile('ktp')) {
             $ktp = $request->file('ktp');
             $ktpName = time() . '_KTP_' . $user->id . '.' . $ktp->getClientOriginalExtension();
-            $ktp->move(public_path('uploads/documents/ktp'), $ktpName);
-            $ktpPath = 'uploads/documents/ktp/' . $ktpName;
+            $ktp->storeAs('private/documents/ktp', $ktpName);
+            $ktpPath = 'private/documents/ktp/' . $ktpName;
         }
 
-        // Upload NPWP
+        // Upload NPWP to private storage (not publicly accessible)
         if ($request->hasFile('npwp')) {
             $npwp = $request->file('npwp');
             $npwpName = time() . '_NPWP_' . $user->id . '.' . $npwp->getClientOriginalExtension();
-            $npwp->move(public_path('uploads/documents/npwp'), $npwpName);
-            $npwpPath = 'uploads/documents/npwp/' . $npwpName;
+            $npwp->storeAs('private/documents/npwp', $npwpName);
+            $npwpPath = 'private/documents/npwp/' . $npwpName;
         }
 
         DB::table('instructor_applications')->insert([
