@@ -40,7 +40,12 @@
                   <div class="flex-1">
                     <div class="flex items-center gap-5">
                       @if($transaction->program && $transaction->program->image)
-                        <img src="{{ asset($transaction->program->image) }}" alt="{{ $transaction->program->program ?? 'Program' }}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                        @php
+                            $transactionImageUrl = str_starts_with($transaction->program->image, 'images/') 
+                                ? asset($transaction->program->image) 
+                                : asset('storage/' . $transaction->program->image);
+                        @endphp
+                        <img src="{{ $transactionImageUrl }}" alt="{{ $transaction->program->program ?? 'Program' }}" class="w-20 h-20 rounded-xl object-cover shadow-sm">
                       @else
                         <div class="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center">
                           <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

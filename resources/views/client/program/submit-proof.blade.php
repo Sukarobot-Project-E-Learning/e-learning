@@ -58,7 +58,12 @@
             <!-- Decoration / Image -->
             <div class="w-full md:w-40 h-32 md:h-28 rounded-2xl bg-gradient-to-br from-green-400 to-blue-500 shrink-0 shadow-lg relative overflow-hidden group">
                  @if($program->image)
-                    <img src="{{ asset($program->image) }}" class="w-full h-full object-cover mix-blend-overlay opacity-90 group-hover:opacity-100 transition duration-500" alt="{{ $program->program }}">
+                    @php
+                        $proofImageUrl = str_starts_with($program->image, 'images/') 
+                            ? asset($program->image) 
+                            : asset('storage/' . $program->image);
+                    @endphp
+                    <img src="{{ $proofImageUrl }}" class="w-full h-full object-cover mix-blend-overlay opacity-90 group-hover:opacity-100 transition duration-500" alt="{{ $program->program }}">
                  @endif
             </div>
         </div>

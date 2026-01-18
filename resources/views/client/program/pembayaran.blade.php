@@ -9,7 +9,12 @@
 
     <!-- Kiri: Program Info -->
     <div>
-      <img src="{{ asset($program->image ?? 'client/img/placeholder.jpg') }}" alt="{{ $program->program }}"
+      @php
+          $pembayaranImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
+              ? asset($program->image) 
+              : ($program->image ? asset('storage/' . $program->image) : asset('client/img/placeholder.jpg'));
+      @endphp
+      <img src="{{ $pembayaranImageUrl }}" alt="{{ $program->program }}"
         class="rounded-xl shadow-md mb-4 w-full object-cover h-64">
       <h1 class="text-2xl sm:text-3xl font-bold mb-2 text-gray-900 leading-snug">
         {{ $program->program }}

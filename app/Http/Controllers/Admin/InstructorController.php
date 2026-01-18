@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorController extends Controller
 {
@@ -131,24 +132,15 @@ class InstructorController extends Controller
                 
                 // Generate unique filename
                 $photoName = time() . '_cropped_new.png';
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
                 
-                // Save cropped image
-                file_put_contents($uploadPath . '/' . $photoName, $decodedImage);
-                $data['avatar'] = 'images/users/' . $photoName;
+                // Save cropped image to storage
+                Storage::disk('public')->put('users/' . $photoName, $decodedImage);
+                $data['avatar'] = 'users/' . $photoName;
             } elseif ($request->hasFile('photo')) {
                 // Fallback: Upload original file if no cropped version
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
-                $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'images/users/' . $photoName;
+                $data['avatar'] = $photo->storeAs('users', $photoName, 'public');
             }
 
             // Add job to users data if provided
@@ -270,33 +262,28 @@ class InstructorController extends Controller
                 
                 // Generate unique filename
                 $photoName = time() . '_cropped_' . $id . '.png';
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
                 
-                // Save cropped image
-                file_put_contents($uploadPath . '/' . $photoName, $decodedImage);
-                $data['avatar'] = 'images/users/' . $photoName;
+                // Save cropped image to storage
+                Storage::disk('public')->put('users/' . $photoName, $decodedImage);
+                $data['avatar'] = 'users/' . $photoName;
             } elseif ($request->hasFile('photo')) {
                 // Fallback: Upload original file if no cropped version
                 // Delete old photo if exists
-                if ($user->avatar && file_exists(public_path($user->avatar))) {
-                    try {
-                        unlink(public_path($user->avatar));
-                    } catch (\Exception $e) {
-                        // Ignore error if file not found
+                if ($user->avatar) {
+                    if (Storage::disk('public')->exists($user->avatar)) {
+                        Storage::disk('public')->delete($user->avatar);
+                    } elseif (file_exists(public_path($user->avatar))) {
+                        try {
+                            unlink(public_path($user->avatar));
+                        } catch (\Exception $e) {
+                            // Ignore error if file not found
+                        }
                     }
                 }
                 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
-                $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'images/users/' . $photoName;
+                $data['avatar'] = $photo->storeAs('users', $photoName, 'public');
             }
 
             // Add job to users data if provided

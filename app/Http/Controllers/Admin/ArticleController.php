@@ -116,8 +116,7 @@ class ArticleController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/articles'), $imageName);
-                $imagePath = 'images/articles/' . $imageName;
+                $imagePath = $image->storeAs('articles', $imageName, 'public');
             }
 
             // Create article
@@ -212,15 +211,18 @@ class ArticleController extends Controller
             $imagePath = $article->image;
             if ($request->hasFile('image')) {
                 // Delete old image
-                if ($article->image && file_exists(public_path($article->image))) {
-                    unlink(public_path($article->image));
+                if ($article->image) {
+                    if (Storage::disk('public')->exists($article->image)) {
+                        Storage::disk('public')->delete($article->image);
+                    } elseif (file_exists(public_path($article->image))) {
+                        unlink(public_path($article->image));
+                    }
                 }
 
                 // Upload new image
                 $image = $request->file('image');
                 $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/articles'), $imageName);
-                $imagePath = 'images/articles/' . $imageName;
+                $imagePath = $image->storeAs('articles', $imageName, 'public');
             }
 
             // Update article

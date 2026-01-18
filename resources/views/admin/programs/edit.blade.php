@@ -456,9 +456,14 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                         
                         <!-- Current Image (if exists) -->
                         @if(!empty($program->image))
+                            @php
+                                $programImageUrl = str_starts_with($program->image, 'images/') 
+                                    ? asset($program->image) 
+                                    : asset('storage/' . $program->image);
+                            @endphp
                             <div class="mb-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Gambar saat ini:</p>
-                                <img src="{{ asset($program->image) }}" alt="Current program image"
+                                <img src="{{ $programImageUrl }}" alt="Current program image"
                                     class="w-48 h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600">
                             </div>
                         @endif

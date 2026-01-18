@@ -349,7 +349,12 @@
                                 <a href="{{ route('client.program.detail', $program->slug) }}"
                                     class="block program-card bg-white rounded-2xl shadow-sm transition-all duration-300 border border-gray-100 overflow-hidden group h-full flex flex-col">
                                     <div class="relative overflow-hidden">
-                                        <img src="{{ asset($program->image ?? 'assets/elearning/client/img/home1.jpeg') }}"
+                                        @php
+                                            $programImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
+                                                ? asset($program->image) 
+                                                : ($program->image ? asset('storage/' . $program->image) : asset('assets/elearning/client/img/home1.jpeg'));
+                                        @endphp
+                                        <img src="{{ $programImageUrl }}"
                                             alt="{{ $program->program }}"
                                             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
                                         <div
@@ -784,7 +789,12 @@
                                         <div
                                             class="absolute inset-0 bg-blue-100 rounded-full scale-110 group-hover:scale-125 transition-transform  duration-300">
                                         </div>
-                                        <img src="{{ $instructor->foto }}"
+                                        @php
+                                            $instructorFotoUrl = ($instructor->foto && str_starts_with($instructor->foto, 'images/'))
+                                                ? asset($instructor->foto) 
+                                                : ($instructor->foto ? asset('storage/' . $instructor->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($instructor->nama) . '&background=random');
+                                        @endphp
+                                        <img src="{{ $instructorFotoUrl }}"
                                             alt="{{ $instructor->nama }}"
                                             class="relative w-full h-full rounded-full object-cover border-4 border-white shadow-md">
                                     </div>

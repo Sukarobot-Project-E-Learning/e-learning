@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -61,24 +62,19 @@ class AdminController extends Controller
             ];
 
             // Upload photo - prioritize cropped_photo (base64) over regular file upload
-            $uploadPath = public_path('images/admins');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
             if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
                 $base64Image = $request->input('cropped_photo');
                 $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
                 $imageData = base64_decode($imageData);
                 $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
-                file_put_contents($uploadPath . '/' . $photoName, $imageData);
-                $data['avatar'] = 'images/admins/' . $photoName;
+                Storage::disk('public')->put('admins/' . $photoName, $imageData);
+                $data['avatar'] = 'admins/' . $photoName;
             } elseif ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $photo->move($uploadPath, $photoName);
-                $data['avatar'] = 'images/admins/' . $photoName;
+                $data['avatar'] = $photo->storeAs('admins', $photoName, 'public');
             }
+
 
             DB::table('users')->insert($data);
 
@@ -134,34 +130,36 @@ class AdminController extends Controller
             // Get old admin data for photo deletion
             $oldAdmin = DB::table('users')->where('id', $id)->first();
 
-            $uploadPath = public_path('images/admins');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
             // Upload photo - prioritize cropped_photo (base64) over regular file upload
             if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
                 // Delete old photo first
-                if ($oldAdmin && $oldAdmin->avatar && file_exists(public_path($oldAdmin->avatar))) {
-                    unlink(public_path($oldAdmin->avatar));
+                if ($oldAdmin && $oldAdmin->avatar) {
+                    if (Storage::disk('public')->exists($oldAdmin->avatar)) {
+                        Storage::disk('public')->delete($oldAdmin->avatar);
+                    } elseif (file_exists(public_path($oldAdmin->avatar))) {
+                        unlink(public_path($oldAdmin->avatar));
+                    }
                 }
 
                 $base64Image = $request->input('cropped_photo');
                 $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
                 $imageData = base64_decode($imageData);
                 $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
-                file_put_contents($uploadPath . '/' . $photoName, $imageData);
-                $updateData['avatar'] = 'images/admins/' . $photoName;
+                Storage::disk('public')->put('admins/' . $photoName, $imageData);
+                $updateData['avatar'] = 'admins/' . $photoName;
             } elseif ($request->hasFile('photo')) {
                 // Delete old photo first
-                if ($oldAdmin && $oldAdmin->avatar && file_exists(public_path($oldAdmin->avatar))) {
-                    unlink(public_path($oldAdmin->avatar));
+                if ($oldAdmin && $oldAdmin->avatar) {
+                    if (Storage::disk('public')->exists($oldAdmin->avatar)) {
+                        Storage::disk('public')->delete($oldAdmin->avatar);
+                    } elseif (file_exists(public_path($oldAdmin->avatar))) {
+                        unlink(public_path($oldAdmin->avatar));
+                    }
                 }
 
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
-                $photo->move($uploadPath, $photoName);
-                $updateData['avatar'] = 'images/admins/' . $photoName;
+                $updateData['avatar'] = $photo->storeAs('admins', $photoName, 'public');
             }
 
             DB::table('users')->where('id', $id)->update($updateData);

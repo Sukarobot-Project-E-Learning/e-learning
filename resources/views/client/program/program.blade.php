@@ -148,7 +148,12 @@
                     <article
                         class="h-full flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 {{ $program->available_slots == 0 ? 'grayscale opacity-80 hover:opacity-100' : '' }}">
                         <div class="relative overflow-hidden">
-                            <img src="{{ asset($program->image ?? 'https://picsum.photos/400/250?random=' . $program->id) }}"
+                            @php
+                                $programImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
+                                    ? asset($program->image) 
+                                    : ($program->image ? asset('storage/' . $program->image) : 'https://picsum.photos/400/250?random=' . $program->id);
+                            @endphp
+                            <img src="{{ $programImageUrl }}"
                                 class="w-full h-52 object-cover transform group-hover:scale-105 transition duration-500"
                                 alt="{{ $program->program }}">
                             @if($program->available_slots == 0)

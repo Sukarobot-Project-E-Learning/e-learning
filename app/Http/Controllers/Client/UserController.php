@@ -164,16 +164,18 @@ class UserController extends Controller
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             $avatarName = time() . '_' . $user->id . '.' . $avatar->getClientOriginalExtension();
-            $uploadPath = public_path('images/users');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-            // Hapus foto lama
-            if ($user->avatar && file_exists(public_path($user->avatar))) {
+            
+            // Delete old avatar from storage
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            } elseif ($user->avatar && file_exists(public_path($user->avatar))) {
+                // Fallback: delete from old public path
                 unlink(public_path($user->avatar));
             }
-            $avatar->move($uploadPath, $avatarName);
-            $user->avatar = 'images/users/' . $avatarName;
+            
+            // Store new avatar to storage/app/public/users/
+            $avatarPath = $avatar->storeAs('users', $avatarName, 'public');
+            $user->avatar = $avatarPath;
         }
 
         // Update password

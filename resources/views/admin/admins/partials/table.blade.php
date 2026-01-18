@@ -23,10 +23,15 @@
             <td class="px-4 py-3 text-sm">{{ $user->phone ?? '-' }}</td>
             <td class="px-4 py-3">
                 @if($user->avatar)
-                    <img src="{{ asset($user->avatar) }}" 
+                    @php
+                        $avatarUrl = str_starts_with($user->avatar, 'images/') 
+                            ? asset($user->avatar) 
+                            : asset('storage/' . $user->avatar);
+                    @endphp
+                    <img src="{{ $avatarUrl }}" 
                          alt="Avatar" 
                          class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
-                         onclick="window.open('{{ asset($user->avatar) }}', '_blank')">
+                         onclick="window.open('{{ $avatarUrl }}', '_blank')">
                 @else
                     <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
                         <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">

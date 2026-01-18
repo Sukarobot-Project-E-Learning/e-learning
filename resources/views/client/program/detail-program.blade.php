@@ -176,7 +176,12 @@
       <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-28">
         <!-- Poster -->
         <div class="relative overflow-hidden rounded-xl mb-6 group">
-          <img src="{{ asset($program->image ?? 'sukarobot.com/source/img/Sukarobot-logo.png') }}" alt="Poster Kelas"
+          @php
+              $detailImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
+                  ? asset($program->image) 
+                  : ($program->image ? asset('storage/' . $program->image) : asset('sukarobot.com/source/img/Sukarobot-logo.png'));
+          @endphp
+          <img src="{{ $detailImageUrl }}" alt="Poster Kelas"
             class="w-full object-cover transform group-hover:scale-105 transition duration-500">
         </div>
 

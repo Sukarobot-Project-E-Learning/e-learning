@@ -173,7 +173,12 @@
                 @if($submission->image)
                 <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Gambar Program</h3>
-                    <img src="{{ asset($submission->image) }}" alt="Program Image" class="max-w-md rounded-lg shadow">
+                    @php
+                        $submissionImageUrl = str_starts_with($submission->image, 'images/') 
+                            ? asset($submission->image) 
+                            : asset('storage/' . $submission->image);
+                    @endphp
+                    <img src="{{ $submissionImageUrl }}" alt="Program Image" class="max-w-md rounded-lg shadow">
                 </div>
                 @endif
 

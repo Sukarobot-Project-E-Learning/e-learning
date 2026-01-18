@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -48,16 +49,17 @@ class ProfileController extends Controller
             if ($request->hasFile('foto')) {
                 $photo = $request->file('foto');
                 $photoName = 'trainer_' . time() . '_' . $trainer->id . '.' . $photo->getClientOriginalExtension();
-                $uploadPath = public_path('images/users');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
+                
                 // Hapus foto lama jika ada
-                if ($trainer->foto && file_exists(public_path($trainer->foto))) {
-                    unlink(public_path($trainer->foto));
+                if ($trainer->foto) {
+                    if (Storage::disk('public')->exists($trainer->foto)) {
+                        Storage::disk('public')->delete($trainer->foto);
+                    } elseif (file_exists(public_path($trainer->foto))) {
+                        unlink(public_path($trainer->foto));
+                    }
                 }
-                $photo->move($uploadPath, $photoName);
-                $validated['foto'] = 'images/users/' . $photoName;
+                
+                $validated['foto'] = $photo->storeAs('users', $photoName, 'public');
             }
 
             \DB::table('data_trainers')

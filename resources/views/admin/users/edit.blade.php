@@ -177,9 +177,14 @@
 
                     {{-- Preview foto yang sudah ada --}}
                     @if($user->photo)
+                    @php
+                        $photoUrl = str_starts_with($user->photo, 'images/') 
+                            ? asset($user->photo) 
+                            : asset('storage/' . $user->photo);
+                    @endphp
                     <div class="mb-4 flex items-center gap-4" x-show="!previewUrl">
                         <div class="relative">
-                            <img src="{{ asset($user->photo) }}" alt="Foto {{ $user->name }}" class="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-600">
+                            <img src="{{ $photoUrl }}" alt="Foto {{ $user->name }}" class="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-600">
                         </div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">
                             <p class="font-medium text-gray-700 dark:text-gray-300">Foto saat ini</p>

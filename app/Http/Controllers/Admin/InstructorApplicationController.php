@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorApplicationController extends Controller
 {
@@ -133,6 +134,61 @@ class InstructorApplicationController extends Controller
     }
 
     /**
+     * Download private files (KTP, NPWP).
+     */
+    public function downloadFile($id, $type)
+    {
+        $application = DB::table('instructor_applications')->where('id', $id)->first();
+        
+        if (!$application) {
+            return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
+        }
+
+        $filePath = null;
+        $fileName = '';
+
+        switch ($type) {
+            case 'cv':
+                $filePath = $application->cv_path;
+                $fileName = 'CV_' . $id;
+                break;
+            case 'ktp':
+                $filePath = $application->ktp_path;
+                $fileName = 'KTP_' . $id;
+                break;
+            case 'npwp':
+                $filePath = $application->npwp_path ?? null;
+                $fileName = 'NPWP_' . $id;
+                break;
+            default:
+                return redirect()->back()->with('error', 'Tipe file tidak valid');
+        }
+
+        if (!$filePath) {
+            return redirect()->back()->with('error', 'File tidak ditemukan');
+        }
+
+        // CV is stored in public storage
+        if ($type === 'cv') {
+            if (Storage::disk('public')->exists($filePath)) {
+                return Storage::disk('public')->download($filePath, $fileName . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
+            }
+        } else {
+            // KTP and NPWP are stored in local (private) storage
+            if (Storage::disk('local')->exists($filePath)) {
+                return Storage::disk('local')->download($filePath, $fileName . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
+            }
+        }
+
+        // Fallback: check if file exists in old public path
+        if (file_exists(public_path($filePath))) {
+            return response()->download(public_path($filePath), $fileName . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
+        }
+
+        return redirect()->back()->with('error', 'File tidak ditemukan');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
@@ -141,13 +197,29 @@ class InstructorApplicationController extends Controller
             $application = DB::table('instructor_applications')->where('id', $id)->first();
             
             if ($application) {
-                // Determine if we should delete associated files
-                // Typically you might want to keep them for records if rejected, but for destroy we usually delete
-                if ($application->cv_path && file_exists(public_path($application->cv_path))) {
-                    unlink(public_path($application->cv_path));
+                // Delete CV from public storage
+                if ($application->cv_path) {
+                    if (Storage::disk('public')->exists($application->cv_path)) {
+                        Storage::disk('public')->delete($application->cv_path);
+                    } elseif (file_exists(public_path($application->cv_path))) {
+                        unlink(public_path($application->cv_path));
+                    }
                 }
-                if ($application->ktp_path && file_exists(public_path($application->ktp_path))) {
-                    unlink(public_path($application->ktp_path));
+                
+                // Delete KTP from private storage
+                if ($application->ktp_path) {
+                    if (Storage::disk('local')->exists($application->ktp_path)) {
+                        Storage::disk('local')->delete($application->ktp_path);
+                    } elseif (file_exists(public_path($application->ktp_path))) {
+                        unlink(public_path($application->ktp_path));
+                    }
+                }
+                
+                // Delete NPWP from private storage
+                if (isset($application->npwp_path) && $application->npwp_path) {
+                    if (Storage::disk('local')->exists($application->npwp_path)) {
+                        Storage::disk('local')->delete($application->npwp_path);
+                    }
                 }
                 
                 DB::table('instructor_applications')->where('id', $id)->delete();
@@ -161,3 +233,4 @@ class InstructorApplicationController extends Controller
         }
     }
 }
+

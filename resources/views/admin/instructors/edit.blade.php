@@ -155,9 +155,14 @@
                         
                         {{-- Preview foto yang sudah ada --}}
                         @if($instructor->photo)
+                        @php
+                            $photoUrl = str_starts_with($instructor->photo, 'images/') 
+                                ? asset($instructor->photo) 
+                                : asset('storage/' . $instructor->photo);
+                        @endphp
                         <div class="mb-4 flex items-center gap-4" x-show="!previewUrl">
                             <div class="relative">
-                                <img src="{{ asset($instructor->photo) }}" 
+                                <img src="{{ $photoUrl }}" 
                                      alt="Foto {{ $instructor->name }}" 
                                      class="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-600">
                             </div>

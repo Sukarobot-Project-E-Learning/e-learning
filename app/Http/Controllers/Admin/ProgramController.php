@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProgramController extends Controller
@@ -139,8 +140,7 @@ class ProgramController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/programs'), $imageName);
-            $imagePath = 'images/programs/' . $imageName;
+            $imagePath = $image->storeAs('programs', $imageName, 'public');
         }
 
         // Prepare JSON fields
@@ -285,14 +285,18 @@ class ProgramController extends Controller
         // Handle image upload
         $imagePath = $program->image;
         if ($request->hasFile('image')) {
-            if ($program->image && file_exists(public_path($program->image))) {
-                unlink(public_path($program->image));
+            // Delete old image
+            if ($program->image) {
+                if (Storage::disk('public')->exists($program->image)) {
+                    Storage::disk('public')->delete($program->image);
+                } elseif (file_exists(public_path($program->image))) {
+                    unlink(public_path($program->image));
+                }
             }
 
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/programs'), $imageName);
-            $imagePath = 'images/programs/' . $imageName;
+            $imagePath = $image->storeAs('programs', $imageName, 'public');
         }
 
         // Prepare JSON fields
@@ -365,8 +369,12 @@ class ProgramController extends Controller
             }
 
             // Delete image
-            if ($program->image && file_exists(public_path($program->image))) {
-                unlink(public_path($program->image));
+            if ($program->image) {
+                if (Storage::disk('public')->exists($program->image)) {
+                    Storage::disk('public')->delete($program->image);
+                } elseif (file_exists(public_path($program->image))) {
+                    unlink(public_path($program->image));
+                }
             }
 
             DB::table('data_programs')->where('id', $id)->delete();

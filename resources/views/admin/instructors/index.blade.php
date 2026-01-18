@@ -55,7 +55,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-start gap-3">
                     <template x-if="instructor.avatar">
-                        <img :src="instructor.avatar.startsWith('http') ? instructor.avatar : '/' + instructor.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer">
+                        <img :src="getAvatarUrl(instructor.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 cursor-pointer">
                     </template>
                     <template x-if="!instructor.avatar">
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -107,7 +107,7 @@
                             <td class="px-6 py-4"><div class="font-semibold text-gray-800 dark:text-white" x-html="highlightText(instructor.name)"></div></td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(instructor.email || '-')"></td>
                             <td class="px-6 py-4">
-                                <template x-if="instructor.avatar"><img :src="instructor.avatar.startsWith('http') ? instructor.avatar : '/' + instructor.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(instructor.avatar.startsWith('http') ? instructor.avatar : '/' + instructor.avatar, '_blank')"></template>
+                                <template x-if="instructor.avatar"><img :src="getAvatarUrl(instructor.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(getAvatarUrl(instructor.avatar), '_blank')"></template>
                                 <template x-if="!instructor.avatar"><div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center"><svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg></div></template>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-text="instructor.expertise || '-'"></td>
@@ -218,6 +218,12 @@ function instructorTable() {
             if (!this.search || !text) return text;
             const regex = new RegExp(`(${this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
+        },
+        getAvatarUrl(avatar) {
+            if (!avatar) return '';
+            if (avatar.startsWith('http')) return avatar;
+            if (avatar.startsWith('images/')) return '/' + avatar;
+            return '/storage/' + avatar;
         },
         deleteInstructor(id) {
             Swal.fire({ title: "Hapus instruktur?", text: "Data tidak dapat dikembalikan!", icon: "warning", showCancelButton: true, confirmButtonColor: "#f97316", cancelButtonColor: "#6b7280", confirmButtonText: "Ya, hapus!" }).then((result) => {

@@ -42,9 +42,14 @@
         @foreach($enrollments as $enrollment)
           <div class="program-card flex flex-col rounded-xl overflow-hidden shadow-sm bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300" data-category="{{ $enrollment->category }}">
             <div class="relative">
+              @php
+                  $enrollmentImageUrl = ($enrollment->image && str_starts_with($enrollment->image, 'images/'))
+                      ? asset($enrollment->image) 
+                      : ($enrollment->image ? asset('storage/' . $enrollment->image) : asset('assets/elearning/client/img/home1.jpeg'));
+              @endphp
               <div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" 
                    data-alt="{{ $enrollment->program_name }}" 
-                   style='background-image: url("{{ asset($enrollment->image) }}");'>
+                   style='background-image: url("{{ $enrollmentImageUrl }}");'>
               </div>
               <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 z-20">
                   {{ $enrollment->category }}

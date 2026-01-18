@@ -57,7 +57,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
                 <div class="flex items-start gap-3">
                     <template x-if="user.avatar">
-                        <img :src="user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar, '_blank')">
+                        <img :src="getAvatarUrl(user.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getAvatarUrl(user.avatar), '_blank')">
                     </template>
                     <template x-if="!user.avatar">
                         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -111,7 +111,7 @@
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(user.email || '-')"></td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(user.phone || '-')"></td>
                             <td class="px-6 py-4">
-                                <template x-if="user.avatar"><img :src="user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(user.avatar.startsWith('http') ? user.avatar : '/' + user.avatar, '_blank')"></template>
+                                <template x-if="user.avatar"><img :src="getAvatarUrl(user.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(getAvatarUrl(user.avatar), '_blank')"></template>
                                 <template x-if="!user.avatar"><div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center"><svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg></div></template>
                             </td>
                             <td class="px-6 py-4"><span :class="user.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'" class="px-3 py-1 text-xs font-bold rounded-full" x-text="user.is_active ? 'Aktif' : 'Tidak Aktif'"></span></td>
@@ -226,6 +226,12 @@ function userTable() {
             const regex = new RegExp(`(${this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
         },
+        getAvatarUrl(avatar) {
+            if (!avatar) return '';
+            if (avatar.startsWith('http')) return avatar;
+            if (avatar.startsWith('images/')) return '/' + avatar;
+            return '/storage/' + avatar;
+        },
         deleteUser(id) {
             Swal.fire({ title: "Hapus user?", text: "Data tidak dapat dikembalikan!", icon: "warning", showCancelButton: true, confirmButtonColor: "#f97316", cancelButtonColor: "#6b7280", confirmButtonText: "Ya, hapus!" }).then((result) => {
                 if (result.isConfirmed) {
@@ -237,4 +243,26 @@ function userTable() {
     }
 }
 </script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        title: "Berhasil!",
+        text: "{{ session('success') }}",
+        icon: "success",
+        confirmButtonColor: "#f97316"
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        title: "Error!",
+        text: "{{ session('error') }}",
+        icon: "error",
+        confirmButtonColor: "#f97316"
+    });
+</script>
+@endif
 @endsection

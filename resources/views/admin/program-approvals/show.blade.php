@@ -72,9 +72,14 @@
                         </div>
 
                         @if($approval->image)
+                        @php
+                            $imageUrl = str_starts_with($approval->image, 'images/') 
+                                ? asset($approval->image) 
+                                : asset('storage/' . $approval->image);
+                        @endphp
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gambar Program</label>
-                            <img src="{{ asset($approval->image) }}" alt="{{ $approval->title }}" class="mt-2 rounded-lg max-w-full h-auto max-h-64">
+                            <img src="{{ $imageUrl }}" alt="{{ $approval->title }}" class="mt-2 rounded-lg max-w-full h-auto max-h-64">
                         </div>
                         @endif
                     </div>

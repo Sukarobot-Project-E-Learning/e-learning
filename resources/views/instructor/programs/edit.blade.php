@@ -410,7 +410,12 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                         @if($submission->image)
                         <div class="mb-4">
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Gambar saat ini:</p>
-                            <img src="{{ asset($submission->image) }}" alt="Current Image" class="max-w-xs rounded-lg shadow">
+                            @php
+                                $submissionEditImageUrl = str_starts_with($submission->image, 'images/') 
+                                    ? asset($submission->image) 
+                                    : asset('storage/' . $submission->image);
+                            @endphp
+                            <img src="{{ $submissionEditImageUrl }}" alt="Current Image" class="max-w-xs rounded-lg shadow">
                         </div>
                         @endif
                         

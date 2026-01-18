@@ -63,7 +63,12 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar) {
-            return asset($this->avatar);
+            // Check if it's an old path (images/) or new storage path
+            if (str_starts_with($this->avatar, 'images/')) {
+                return asset($this->avatar);
+            }
+            // New storage path - prepend 'storage/'
+            return asset('storage/' . $this->avatar);
         }
 
         return asset('assets/elearning/client/img/default-avatar.jpeg');
