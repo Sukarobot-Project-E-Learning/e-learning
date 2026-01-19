@@ -125,9 +125,7 @@
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPassword">Kata Sandi Baru</label>
                 <input name="new_password" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('new_password') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPassword" placeholder="Minimal 8 karakter" type="password"/>
-                @error('new_password')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <p id="newPasswordError" class="text-red-500 text-sm mt-1 hidden"></p>
               </div>
               @if($user->provider !== 'google')
               <!-- ruang kosong (hanya jika non-SSO agar layout seimbang) -->
@@ -137,9 +135,7 @@
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPasswordConfirmation">Konfirmasi Kata Sandi Baru</label>
                 <input name="new_password_confirmation" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border {{ $errors->has('new_password_confirmation') ? 'border-red-500' : 'border-[#dbdfe6]' }} bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="newPasswordConfirmation" placeholder="Ulangi kata sandi baru" type="password"/>
-                @error('new_password_confirmation')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <p id="confirmPasswordError" class="text-red-500 text-sm mt-1 hidden"></p>
               </div>
             </div>
           </div>
