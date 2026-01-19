@@ -114,8 +114,9 @@
     <!-- Auto-loading script for forms and navigation -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get Alpine data
-            const alpineData = window.Alpine ? Alpine.raw(document.querySelector('[x-data="data()"]').__x.$data) : null;
+            // Get Alpine data - works for Alpine v2.x
+            const alpineEl = document.querySelector('[x-data="data()"]');
+            const alpineData = alpineEl && alpineEl.__x ? alpineEl.__x.$data : null;
             
             // Show loading on form submit
             document.querySelectorAll('form').forEach(form => {

@@ -158,7 +158,7 @@
             <!-- Right Column: Cloudinary Preview -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Cloudinary</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Priview</h3>
                     <div class="flex gap-2">
                         <button type="button" id="refreshPreviewBtn" onclick="generateCloudinaryPreview()"
                             class="{{ $template->cloudinary_public_id ? '' : 'hidden' }} inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors cursor-pointer">

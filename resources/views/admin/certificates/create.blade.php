@@ -18,7 +18,7 @@
 
     <form id="templateForm" action="{{ route('admin.certificates.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <input type="hidden" name="cloudinary_public_id" id="cloudinaryPublicId" value="">
+        <input type="hidden" name="template_path" id="templatePathInput" value="">
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
@@ -161,7 +161,7 @@
             <!-- Right Column: Cloudinary Preview -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Cloudinary</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Priview</h3>
                     <div class="flex gap-2">
                         <button type="button" id="refreshPreviewBtn" onclick="generateCloudinaryPreview()"
                             class="hidden inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors cursor-pointer">
@@ -212,15 +212,15 @@
 </div>
 
 <script>
-    var cloudinaryPublicId = null;
-    var cloudinaryUrl = null;
+    var templateFilePath = null;
+    var templateUrl = null;
     var imageWidth = 0;
     var imageHeight = 0;
     var refreshTimeout = null;
 
     // Auto-refresh with debounce when values change
     function autoRefreshPreview() {
-        if (!cloudinaryPublicId) return;
+        if (!templateFilePath) return;
         
         if (refreshTimeout) clearTimeout(refreshTimeout);
         refreshTimeout = setTimeout(function() {
@@ -278,12 +278,12 @@
         .then(function(response) { return response.json(); })
         .then(function(data) {
             if (data.success) {
-                cloudinaryPublicId = data.public_id;
-                cloudinaryUrl = data.secure_url;
+                templateFilePath = data.file_path;
+                templateUrl = data.url;
                 imageWidth = data.width;
                 imageHeight = data.height;
                 
-                document.getElementById('cloudinaryPublicId').value = data.public_id;
+                document.getElementById('templatePathInput').value = data.file_path;
                 
                 // Hide upload prompt
                 document.getElementById('uploadPrompt').style.display = 'none';
@@ -305,7 +305,7 @@
     }
 
     function generateCloudinaryPreview() {
-        if (!cloudinaryPublicId) {
+        if (!templateFilePath) {
             showStatus('Silakan upload blanko terlebih dahulu', 'error');
             return;
         }
@@ -313,7 +313,7 @@
         showStatus('Generating preview...', 'info');
 
         var formData = {
-            public_id: cloudinaryPublicId,
+            file_path: templateFilePath,
             name_x: document.getElementById('name_x').value,
             name_y: document.getElementById('name_y').value,
             name_font_size: document.getElementById('name_font_size').value,

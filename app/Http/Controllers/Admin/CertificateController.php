@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CertificateController extends Controller
@@ -66,7 +67,8 @@ class CertificateController extends Controller
                 'program_id' => $template->program_id,
                 'number_prefix' => $template->number_prefix,
                 'description' => $template->description,
-                'template_path' => $template->template_path ? asset($template->template_path) : null,
+                // Template path is private, don't expose URL
+                'template_path' => $template->template_path ? true : false, // Just indicate if exists
                 'is_active' => $template->is_active,
                 'certificates_count' => $certificatesCount,
                 'created_at' => $template->created_at ? date('d F Y', strtotime($template->created_at)) : '-'
@@ -137,15 +139,13 @@ class CertificateController extends Controller
             'program_id.unique' => 'Template untuk program ini sudah ada.',
         ]);
 
-        // Upload blanko template
+        // Upload blanko template to PRIVATE storage
         $blankoFile = $request->file('blanko');
         $blankoName = time() . '_' . Str::random(6) . '.' . $blankoFile->getClientOriginalExtension();
-        $blankoDir = public_path('uploads/certificates/templates');
-        if (!is_dir($blankoDir)) {
-            mkdir($blankoDir, 0755, true);
-        }
-        $blankoFile->move($blankoDir, $blankoName);
-        $templateRelativePath = 'uploads/certificates/templates/' . $blankoName;
+        
+        // Save to storage/app/private/certificates/templates/
+        $templatePath = $blankoFile->storeAs('certificates/templates', $blankoName, 'local');
+        $templateRelativePath = $templatePath; // e.g., 'certificates/templates/filename.png'
 
         DB::table('certificate_templates')->insert([
             'program_id' => $request->input('program_id'),
@@ -250,20 +250,16 @@ class CertificateController extends Controller
         if ($request->hasFile('blanko')) {
             $blankoFile = $request->file('blanko');
             $blankoName = time() . '_' . Str::random(6) . '.' . $blankoFile->getClientOriginalExtension();
-            $blankoDir = public_path('uploads/certificates/templates');
-            if (!is_dir($blankoDir)) {
-                mkdir($blankoDir, 0755, true);
-            }
-            $blankoFile->move($blankoDir, $blankoName);
             
+            // Save to PRIVATE storage
+            $templatePath = $blankoFile->storeAs('certificates/templates', $blankoName, 'local');
+            
+            // Delete old template from private storage if exists
             if ($template->template_path) {
-                $oldPath = public_path($template->template_path);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
+                Storage::disk('local')->delete($template->template_path);
             }
             
-            $updateData['template_path'] = 'uploads/certificates/templates/' . $blankoName;
+            $updateData['template_path'] = $templatePath;
         }
 
         DB::table('certificate_templates')->where('id', $id)->update($updateData);
@@ -292,11 +288,9 @@ class CertificateController extends Controller
                     ], 400);
                 }
                 
+                // Delete template file from private storage
                 if ($template->template_path) {
-                    $filePath = public_path($template->template_path);
-                    if (file_exists($filePath)) {
-                        unlink($filePath);
-                    }
+                    Storage::disk('local')->delete($template->template_path);
                 }
             }
             
@@ -308,7 +302,8 @@ class CertificateController extends Controller
     }
 
     /**
-     * Upload template to local storage (AJAX endpoint)
+     * Upload template to PRIVATE storage (AJAX endpoint)
+     * Templates are admin-only and should not be publicly accessible
      */
     public function uploadTemplate(Request $request)
     {
@@ -318,22 +313,35 @@ class CertificateController extends Controller
 
         try {
             $file = $request->file('blanko');
+            
+            // Get image dimensions BEFORE saving (from temp location)
+            $imageInfo = getimagesize($file->getPathname());
+            $width = $imageInfo[0] ?? 1920;
+            $height = $imageInfo[1] ?? 1357;
+            
             $fileName = 'temp_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
             
-            // Save to storage/app/public/certificates/templates/
-            $path = $file->storeAs('public/certificates/templates', $fileName);
+            // Save to storage/app/private/certificates/templates/ using LOCAL disk (private)
+            $path = $file->storeAs('certificates/templates', $fileName, 'local');
             
-            // Get image dimensions
-            $imageInfo = getimagesize($file->getPathname());
+            if (!$path) {
+                throw new \Exception('Failed to save file to storage');
+            }
+            
+            // Verify file exists using Storage facade
+            if (!Storage::disk('local')->exists($path)) {
+                throw new \Exception('File not saved correctly at: ' . $path);
+            }
             
             return response()->json([
                 'success' => true,
-                'file_path' => 'certificates/templates/' . $fileName,
-                'url' => asset('storage/certificates/templates/' . $fileName),
-                'width' => $imageInfo[0] ?? 1920,
-                'height' => $imageInfo[1] ?? 1357,
+                'file_path' => $path,
+                // No public URL for private files - we'll read it server-side
+                'width' => $width,
+                'height' => $height,
             ]);
         } catch (\Exception $e) {
+            \Log::error('Certificate upload error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Upload gagal: ' . $e->getMessage()
@@ -386,9 +394,9 @@ class CertificateController extends Controller
                 'date_font_size' => $request->input('date_font_size'),
             ];
 
-            // Get template path from storage
+            // Get template path from PRIVATE storage
             $filePath = $request->input('file_path');
-            $templateFullPath = storage_path('app/public/' . $filePath);
+            $templateFullPath = storage_path('app/private/' . $filePath);
             
             if (!file_exists($templateFullPath)) {
                 return response()->json([
@@ -447,8 +455,35 @@ class CertificateController extends Controller
         }
 
         try {
-            // Fetch image content from Cloudinary
-            $imageContent = file_get_contents($imageUrl);
+            // Check if it's a local URL and convert to file path
+            $imageContent = null;
+            $parsedUrl = parse_url($imageUrl);
+            
+            // Check if local URL (127.0.0.1 or localhost)
+            if (isset($parsedUrl['host']) && in_array($parsedUrl['host'], ['127.0.0.1', 'localhost'])) {
+                // Extract path from URL and read from disk
+                $path = ltrim($parsedUrl['path'], '/');
+                
+                // Check if it's a storage path (/storage/...) or public path
+                if (str_starts_with($path, 'storage/')) {
+                    // Remove 'storage/' prefix and read from storage/app/public/
+                    $storagePath = substr($path, 8); // Remove 'storage/'
+                    $localPath = storage_path('app/public/' . $storagePath);
+                } else {
+                    // Regular public path
+                    $localPath = public_path($path);
+                }
+                
+                if (file_exists($localPath)) {
+                    $imageContent = file_get_contents($localPath);
+                } else {
+                    \Log::error('PDF Download: File not found at ' . $localPath);
+                    return response()->json(['error' => 'Image file not found: ' . $path], 404);
+                }
+            } else {
+                // Fetch from external URL
+                $imageContent = @file_get_contents($imageUrl);
+            }
             
             if (!$imageContent) {
                 return response()->json(['error' => 'Failed to fetch image'], 500);
@@ -561,8 +596,9 @@ class CertificateController extends Controller
         ];
 
         // Generate certificate image with custom positions and font sizes
+        // Template is stored in PRIVATE storage
         $generatedPath = self::renderCertificateImage(
-            public_path($template->template_path),
+            storage_path('app/private/' . $template->template_path),
             $certificateNumber,
             $user->name,
             $template->description,
@@ -743,8 +779,8 @@ class CertificateController extends Controller
         $dateText = self::formatIndonesianDate($issuedAt);
         $drawAtPosition($dateText, $latoFont, $sizeDate, $settings['date_x'], $settings['date_y'], $textColorDark);
 
-        // Save generated certificate
-        $saveDir = public_path('uploads/certificates/generated');
+        // Save generated certificate to storage/app/public/certificates/generated/
+        $saveDir = storage_path('app/public/certificates/generated');
         if (!is_dir($saveDir)) {
             mkdir($saveDir, 0755, true);
         }
@@ -754,6 +790,7 @@ class CertificateController extends Controller
         imagepng($im, $savePath);
         imagedestroy($im);
 
-        return 'uploads/certificates/generated/' . $fileName;
+        // Return path relative to storage symlink (accessible via /storage/)
+        return 'storage/certificates/generated/' . $fileName;
     }
 }
