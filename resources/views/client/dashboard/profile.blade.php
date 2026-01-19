@@ -119,7 +119,7 @@
             <!-- TextField: Email -->
             <div class="flex flex-col">
               <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="email">Alamat Email</label>
-                <input name="email" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="email" type="email" value="{{ $user->email }}"/>
+                <input name="email" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-gray-500 focus:outline-0 border border-[#dbdfe6] bg-gray-100 h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal cursor-not-allowed" id="email" type="email" value="{{ $user->email }}" readonly/>
               </div>
               <!-- TextField: Phone -->
               <div class="flex flex-col">

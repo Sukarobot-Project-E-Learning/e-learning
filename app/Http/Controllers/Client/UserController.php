@@ -124,7 +124,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|min:3|max:255',
             'username' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+
             'phone' => 'nullable|string|min:10|max:20',
             'job' => 'nullable|string|max:100',
             'address' => 'nullable|string|max:255',
@@ -144,7 +144,7 @@ class UserController extends Controller
             'name.required' => 'Nama wajib diisi',
             'username.unique' => 'Username sudah digunakan',
             'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, dash dan underscore',
-            'email.unique' => 'Email sudah terdaftar',
+
             'phone.regex' => 'Format nomor telepon tidak valid',
             'job.max' => 'Pekerjaan maksimal 100 karakter',
             'address.max' => 'Alamat maksimal 255 karakter',
@@ -157,7 +157,7 @@ class UserController extends Controller
         // Update data user
         $user->name = $validated['name'];
         $user->username = $validated['username'] ?? $user->username;
-        $user->email = $validated['email'];
+
         $user->phone = $validated['phone'];
         $user->job = $validated['job'];
         $user->address = $validated['address'];
