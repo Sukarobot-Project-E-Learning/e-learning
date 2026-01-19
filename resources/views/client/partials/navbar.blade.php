@@ -51,7 +51,7 @@
                     <!-- User Dropdown -->
                     <div class="relative group">
                         <button class="flex items-center gap-2 focus:outline-none cursor-pointer">
-                            <img src="{{ Auth::user()->avatar ?? asset('assets/elearning/client/img/default-avatar.jpeg') }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                            <img src="{{ Auth::user()->avatar_url }}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                             @if(Auth::user()->role === 'instructor')

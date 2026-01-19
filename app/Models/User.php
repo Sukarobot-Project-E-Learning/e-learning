@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Support\Facades\Storage;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -55,6 +57,7 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
         ];
     }
+
     /**
      * Get the user's avatar URL.
      *
@@ -62,13 +65,19 @@ class User extends Authenticatable
      */
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->avatar) {
-            // Check if it's an old path (images/) or new storage path
+        if ($this->avatar && trim($this->avatar) !== '') {
+            // Check if it's an old path (images/)
             if (str_starts_with($this->avatar, 'images/')) {
-                return asset($this->avatar);
+                if (file_exists(public_path($this->avatar))) {
+                    return asset($this->avatar);
+                }
+            } 
+            // New storage path
+            else {
+                if (Storage::disk('public')->exists($this->avatar)) {
+                    return asset('storage/' . $this->avatar);
+                }
             }
-            // New storage path - prepend 'storage/'
-            return asset('storage/' . $this->avatar);
         }
 
         return asset('assets/elearning/client/img/default-avatar.jpeg');
