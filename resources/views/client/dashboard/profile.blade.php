@@ -199,54 +199,59 @@
       <!-- Modal content -->
       <div class="bg-white rounded-2xl w-full max-w-lg shadow-xl animate-fadeIn">
           
-          <!-- Header -->
-          <div class="flex justify-between items-center px-6 py-4 border-b">
-              <h2 class="text-xl font-bold text-gray-900">Ubah Foto Profil</h2>
-              <button id="closePhotoModal" class="text-gray-500 hover:text-gray-700 text-xl cursor-pointer">
-                  &times;
-              </button>
-          </div>
-
-          <!-- Tabs -->
-          <div class="flex border-b px-6 justify-center">
-              <button class="tab-btn font-medium py-3 px-4">
-                  Upload Foto
-              </button>
-          </div>
-
-          <!-- Body -->
-          <div class="px-6 py-6 text-center">
-
-              <!-- Foto preview -->
-              <div class="flex justify-center mb-6">
-                  <div class="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden">
-                      <img id="photoPreview" 
-                          src="{{ $user->avatar_url }}" 
-                          class="w-full h-full object-cover">
-                  </div>
-              </div>
-
-              <!-- Upload Box -->
-              <label for="inputPhoto" 
-                    class="border-2 border-dashed border-gray-300 rounded-xl p-6 block cursor-pointer hover:bg-gray-50 transition">
-                  <p class="text-gray-600">Klik untuk memilih foto dari komputer</p>
-                  <p class="text-xs text-gray-400">JPG, PNG, max 2MB</p>
-                  <input name="avatar" type="file" id="inputPhoto" class="hidden" accept="image/*">
-              </label>
-
-          </div>
-
-          <!-- Footer -->
-          <div class="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
-              <button id="cancelPhotoModal" 
-                      class="px-4 py-2 rounded-lg bg-white border text-gray-600 hover:bg-gray-100 cursor-pointer">
-                  Batal
-              </button>
-
-              <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 cursor-pointer">
-                  Simpan Perubahan
-              </button>
-          </div>
+        <form action="{{ route('client.dashboard.update-avatar') }}" method="POST" enctype="multipart/form-data" id="avatarForm">
+            @csrf
+            @method('PUT')
+            
+            <!-- Header -->
+            <div class="flex justify-between items-center px-6 py-4 border-b">
+                <h2 class="text-xl font-bold text-gray-900">Ubah Foto Profil</h2>
+                <button type="button" id="closePhotoModal" class="text-gray-500 hover:text-gray-700 text-xl cursor-pointer">
+                    &times;
+                </button>
+            </div>
+  
+            <!-- Tabs -->
+            <div class="flex border-b px-6 justify-center">
+                <button type="button" class="tab-btn font-medium py-3 px-4">
+                    Upload Foto
+                </button>
+            </div>
+  
+            <!-- Body -->
+            <div class="px-6 py-6 text-center">
+  
+                <!-- Foto preview -->
+                <div class="flex justify-center mb-6">
+                    <div class="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden">
+                        <img id="photoPreview" 
+                            src="{{ $user->avatar_url }}" 
+                            class="w-full h-full object-cover">
+                    </div>
+                </div>
+  
+                <!-- Upload Box -->
+                <label for="inputPhoto" 
+                      class="border-2 border-dashed border-gray-300 rounded-xl p-6 block cursor-pointer hover:bg-gray-50 transition">
+                    <p class="text-gray-600">Klik untuk memilih foto dari komputer</p>
+                    <p class="text-xs text-gray-400">JPG, PNG, max 2MB</p>
+                    <input name="avatar" type="file" id="inputPhoto" class="hidden" accept="image/*">
+                </label>
+  
+            </div>
+  
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-2xl">
+                <button type="button" id="cancelPhotoModal" 
+                        class="px-4 py-2 rounded-lg bg-white border text-gray-600 hover:bg-gray-100 cursor-pointer">
+                    Batal
+                </button>
+  
+                <button type="submit" class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 cursor-pointer">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
 
       </div>
   </div>

@@ -197,6 +197,40 @@ class UserController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'avatar.required' => 'Pilih gambar terlebih dahulu',
+            'avatar.image' => 'File harus berupa gambar',
+            'avatar.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif',
+            'avatar.max' => 'Ukuran gambar maksimal 2MB',
+        ]);
+
+        $user = Auth::user();
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarName = time() . '_' . $user->id . '.' . $avatar->getClientOriginalExtension();
+            
+            // Delete old avatar from storage
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            } elseif ($user->avatar && file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+            
+            $avatarPath = $avatar->storeAs('users', $avatarName, 'public');
+            $user->avatar = $avatarPath;
+            $user->save();
+
+            return back()->with('success', 'Foto profil berhasil diperbarui.');
+        }
+
+        return back()->with('error', 'Gagal mengupload gambar.');
+    }
+
     /**
      * Check if username is available (AJAX endpoint)
      */
