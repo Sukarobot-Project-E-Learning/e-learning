@@ -36,11 +36,7 @@
             <a href="{{ route('client.dashboard.voucher') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 {{ request()->routeIs('client.dashboard.voucher') ? 'bg-blue-50 text-blue-600' : 'text-gray-600' }}">
                 <i class="fa-solid fa-ticket mr-2 w-5 text-center"></i> Voucher
             </a>
-            @if(Auth::user()->role !== 'instructor')
-            <a href="{{ route('client.dashboard.become-instructor') }}" class="sidebar-link block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 {{ request()->routeIs('client.dashboard.become-instructor') ? 'bg-blue-50 text-blue-600' : 'text-gray-600' }}">
-                <i class="fa-solid fa-chalkboard-user mr-2 w-5 text-center"></i> Menjadi Instruktur
-            </a>
-            @endif
+
         </nav>
     </aside>
 

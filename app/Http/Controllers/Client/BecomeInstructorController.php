@@ -21,11 +21,13 @@ class BecomeInstructorController extends Controller
             ->first();
 
         if ($existingApplication && $existingApplication->status === 'pending') {
-            return redirect()->route('client.dashboard')->with('info', 'Anda sudah mengajukan permohonan menjadi instruktur. Mohon tunggu konfirmasi admin.');
+            // Let them see the page to show the "Pending" status card
+            // return redirect()->route('client.dashboard')->with('info', 'Anda sudah mengajukan permohonan menjadi instruktur. Mohon tunggu konfirmasi admin.');
         }
 
         if ($existingApplication && $existingApplication->status === 'approved') {
-             return redirect()->route('client.dashboard')->with('info', 'Anda sudah terdaftar sebagai instruktur.');
+             // Let them see the page to show the "Already an Instructor" state
+             // return redirect()->route('client.dashboard')->with('info', 'Anda sudah terdaftar sebagai instruktur.');
         }
 
         return view('client.dashboard.become-instructor', compact('existingApplication'));
@@ -37,6 +39,7 @@ class BecomeInstructorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'job' => 'required|string|max:100',
             'skills' => 'required|string',
             'cv' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'ktp' => 'required|image|mimes:jpeg,jpg,png|max:2048',
@@ -45,6 +48,12 @@ class BecomeInstructorController extends Controller
         ]);
 
         $user = Auth::user();
+        
+        // Update user job
+        if ($user->job !== $request->job) {
+            DB::table('users')->where('id', $user->id)->update(['job' => $request->job]);
+        }
+        
         $cvPath = null;
         $ktpPath = null;
         $npwpPath = null;

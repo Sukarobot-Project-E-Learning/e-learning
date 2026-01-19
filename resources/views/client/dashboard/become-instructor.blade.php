@@ -30,8 +30,61 @@
         </div>
     @endif
 
+    @if(isset($existingApplication) && $existingApplication->status == 'pending')
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Pengajuan Sedang Ditinjau</h3>
+            <p class="text-gray-600 max-w-md mb-8">
+                Terima kasih telah mendaftar. Tim kami sedang meninjau dokumen dan profil Anda. Harap menunggu konfirmasi selanjutnya melalui email atau halaman ini.
+            </p>
+            <a href="{{ route('client.dashboard') }}" 
+               class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-xl transition duration-200 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span>Kembali ke Dashboard</span>
+            </a>
+        </div>
+    @elseif(isset($existingApplication) && $existingApplication->status == 'approved')
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Selamat! Anda Sudah Menjadi Instruktur</h3>
+            <p class="text-gray-600 max-w-md mb-8">
+                Akun Anda telah disetujui sebagai instruktur di Sukarobot Academy. Anda sekarang dapat membuat kursus, mengelola siswa, dan mulai mengajar.
+            </p>
+            <a href="{{ route('instructor.dashboard') }}" 
+               class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-xl transition duration-200 flex items-center gap-2 transform hover:scale-105 shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                </svg>
+                <span>Masuk ke Dashboard Instruktur</span>
+            </a>
+        </div>
+    @else
     <form action="{{ route('client.dashboard.become-instructor.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
+
+        <!-- Job -->
+        <div>
+            <label class="block text-gray-900 font-medium mb-2" for="job">
+                Pekerjaan
+            </label>
+            <input type="text" name="job" id="job"
+                class="w-full rounded-xl border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-3 px-4 text-gray-700 placeholder-gray-400"
+                placeholder="Contoh: Software Engineer, Dosen, Freelancer..."
+                value="{{ old('job', Auth::user()->job) }}">
+            @error('job')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
 
         <!-- Skills -->
         <div>
@@ -139,6 +192,7 @@
             <span>Kirim Pengajuan</span>
         </button>
     </form>
+    @endif
 
     <script>
         function updateFileName(input, labelId) {

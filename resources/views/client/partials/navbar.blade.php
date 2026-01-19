@@ -55,11 +55,11 @@
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                             @if(Auth::user()->role === 'instructor')
-                                <a href="{{ route('instructor.dashboard') }}?welcome=1" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Dashboard Instruktur</a>
                                 <a href="{{ route('client.dashboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Profil Saya</a>
+                                <a href="{{ route('instructor.dashboard') }}?welcome=1" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Dashboard Instruktur</a>
                             @else
-                                <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Profil Saya</a>
-                                <a href="{{ url('/dashboard/become-instructor') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Menjadi Instruktur</a>
+                                <a href="{{ route('client.dashboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Profil Saya</a>
+                                <a href="{{ route('client.dashboard.become-instructor') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Menjadi Instruktur</a>
                             @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -121,7 +121,14 @@
                         <img src="{{ Auth::user()->avatar_url }}" class="w-10 h-10 rounded-full object-cover">
                         <span class="font-medium text-gray-900">{{ Auth::user()->name }}</span>
                     </div>
-                    <a href="{{ url('/dashboard') }}" class="w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-700 transition-colors mb-3">Dashboard</a>
+                    <a href="{{ route('client.dashboard') }}" class="w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-700 transition-colors mb-3">Profil Saya</a>
+                    
+                    @if(Auth::user()->role === 'instructor')
+                        <a href="{{ route('instructor.dashboard') }}?welcome=1" class="w-full bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-50 transition-colors mb-3">Dashboard Instruktur</a>
+                    @else
+                        <a href="{{ route('client.dashboard.become-instructor') }}" class="w-full bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-50 transition-colors mb-3">Menjadi Instruktur</a>
+                    @endif
+                    
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full bg-red-600 text-white px-6 py-3 rounded-xl font-semibold text-center block hover:bg-red-700 transition-colors cursor-pointer">Logout</button>

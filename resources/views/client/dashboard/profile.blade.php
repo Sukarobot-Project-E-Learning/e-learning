@@ -22,45 +22,7 @@
 
       <!-- Instructor Status Indicator -->
       @if(isset($instructorApplication))
-          @if($instructorApplication->status == 'pending')
-              <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r">
-                  <div class="flex">
-                      <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                          </svg>
-                      </div>
-                      <div class="ml-3">
-                          <h3 class="text-sm leading-5 font-medium text-yellow-800">
-                              Pengajuan Instruktur Sedang Pending
-                          </h3>
-                          <div class="mt-2 text-sm leading-5 text-yellow-700">
-                              <p>Mohon menunggu admin melakukan verifikasi terhadap data Anda.</p>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          @elseif($instructorApplication->status == 'approved')
-              <div class="mt-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r">
-                  <div class="flex justify-between items-start">
-                      <div class="flex">
-                          <div class="flex-shrink-0">
-                              <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                              </svg>
-                          </div>
-                          <div class="ml-3">
-                              <h3 class="text-sm leading-5 font-medium text-green-800">
-                                  Selamat! Anda adalah Instruktur
-                              </h3>
-                              <div class="mt-2 text-sm leading-5 text-green-700">
-                                  <p>Akun Anda telah disetujui sebagai instruktur. Anda dapat mengakses dashboard instruktur <a href="{{ route('instructor.dashboard') }}" class="font-medium text-green-600 hover:text-green-500 underline transition duration-150 ease-in-out">di sini</a>.</p>  
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          @elseif($instructorApplication->status == 'rejected')
+          @if($instructorApplication->status == 'rejected')
               <div class="mt-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r">
                   <div class="flex justify-between items-start">
                       <div class="flex">
@@ -124,7 +86,7 @@
               <!-- TextField: Phone -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="phone">Nomor Telepon</label>
-                <input name="phone" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" type="number" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
+                <input name="phone" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
               </div>
               <!-- Job -->
               <div class="flex flex-col">
