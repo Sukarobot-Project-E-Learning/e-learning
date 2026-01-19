@@ -127,37 +127,42 @@ class DashboardController extends Controller
             $programsData = [];
 
             // Get 12 months for this year
+            $yearStart = Carbon::create($year, 1, 1)->startOfYear();
+            
             for ($month = 1; $month <= 12; $month++) {
                 $date = Carbon::create($year, $month, 1);
-                $monthStart = $date->copy()->startOfMonth();
                 $monthEnd = $date->copy()->endOfMonth();
                 
                 $months[] = $date->format('M');
                 
-                // Revenue data (from transactions)
+                // Revenue data - cumulative within this year only
                 $revenue = DB::table('transactions')
                     ->where('status', 'paid')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->where('created_at', '>=', $yearStart)
+                    ->where('created_at', '<=', $monthEnd)
                     ->sum('amount') ?? 0;
                 $revenueData[] = (int) $revenue;
                 
-                // Users data (total users created in that month)
+                // Users data - cumulative within this year only
                 $users = DB::table('users')
                     ->where('role', 'user')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->where('created_at', '>=', $yearStart)
+                    ->where('created_at', '<=', $monthEnd)
                     ->count();
                 $usersData[] = $users;
                 
-                // Instructors data (total instructors created in that month)
+                // Instructors data - cumulative within this year only
                 $instructors = DB::table('users')
                     ->where('role', 'instructor')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->where('created_at', '>=', $yearStart)
+                    ->where('created_at', '<=', $monthEnd)
                     ->count();
                 $instructorsData[] = $instructors;
                 
-                // Programs data (total programs created in that month)
+                // Programs data - cumulative within this year only
                 $programs = DB::table('data_programs')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->where('created_at', '>=', $yearStart)
+                    ->where('created_at', '<=', $monthEnd)
                     ->count();
                 $programsData[] = $programs;
             }

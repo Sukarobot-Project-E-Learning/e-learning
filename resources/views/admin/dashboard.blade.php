@@ -222,7 +222,7 @@
             },
             yaxis: {
                 title: {
-                    text: 'Jumlah Bulanan',
+                    text: 'Total Kumulatif',
                     style: {
                         fontSize: '14px',
                         fontWeight: 600,
@@ -279,7 +279,7 @@
                 },
                 y: {
                     formatter: function(value) {
-                        return value + ' Bulan Ini';
+                        return value + ' Total';
                     }
                 },
                 marker: {
