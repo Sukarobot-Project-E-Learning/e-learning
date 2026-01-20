@@ -116,6 +116,7 @@ class ProgramProofController extends Controller
 
     /**
      * Accept the program proof and auto-generate certificate if template exists.
+     * Requires certificate template to be set for the program first.
      */
     public function accept(Request $request, $id)
     {
@@ -133,7 +134,21 @@ class ProgramProofController extends Controller
                     ->with('error', 'Bukti program tidak ditemukan.');
             }
 
-            // Update proof status to accepted
+            // Check if certificate template exists for this program FIRST
+            $template = CertificateController::getTemplateForProgram($proof->program_id);
+            
+            if (!$template) {
+                // No template - return failure, don't change status
+                $message = 'Gagal menerima bukti program. Template sertifikat belum disantumkan pada program ini. Silakan tambahkan template sertifikat terlebih dahulu.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => $message], 400);
+                }
+                return redirect()->route('admin.program-proofs.index')
+                    ->with('error', $message);
+            }
+
+            // Template exists, proceed to accept and generate certificate
             DB::table('program_proofs')
                 ->where('id', $id)
                 ->update([
@@ -143,30 +158,19 @@ class ProgramProofController extends Controller
                     'updated_at' => now(),
                 ]);
 
-            $message = 'Bukti program berhasil diterima';
-            $certificateGenerated = false;
+            // Auto-generate certificate for the user
+            $result = CertificateController::generateCertificateForUser(
+                $template->id,
+                $proof->program_id,
+                $proof->student_id,
+                $id
+            );
 
-            // Check if certificate template exists for this program
-            $template = CertificateController::getTemplateForProgram($proof->program_id);
-            
-            if ($template) {
-                // Auto-generate certificate for the user
-                $result = CertificateController::generateCertificateForUser(
-                    $template->id,
-                    $proof->program_id,
-                    $proof->student_id,
-                    $id
-                );
-
-                if ($result['success']) {
-                    $certificateGenerated = true;
-                    $message = 'Bukti program diterima dan sertifikat berhasil di-generate (No: ' . $result['certificate_number'] . ')';
-                } else {
-                    // Certificate generation failed but proof is still accepted
-                    $message = 'Bukti program diterima, tetapi sertifikat gagal di-generate: ' . $result['message'];
-                }
+            if ($result['success']) {
+                $message = 'Bukti program diterima dan sertifikat berhasil di-generate (No: ' . $result['certificate_number'] . ')';
             } else {
-                $message = 'Bukti program diterima. (Catatan: Template sertifikat belum tersedia untuk program ini)';
+                // Certificate generation failed but proof is still accepted
+                $message = 'Bukti program diterima, tetapi sertifikat gagal di-generate: ' . $result['message'];
             }
 
             // Return JSON for AJAX requests
@@ -174,12 +178,12 @@ class ProgramProofController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => $message,
-                    'certificate_generated' => $certificateGenerated
+                    'certificate_generated' => $result['success']
                 ]);
             }
 
             return redirect()->route('admin.program-proofs.index')
-                ->with($certificateGenerated ? 'success' : 'warning', $message);
+                ->with($result['success'] ? 'success' : 'warning', $message);
 
         } catch (\Exception $e) {
             if ($request->ajax() || $request->wantsJson()) {
