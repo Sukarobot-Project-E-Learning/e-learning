@@ -789,12 +789,7 @@
                                         <div
                                             class="absolute inset-0 bg-blue-100 rounded-full scale-110 group-hover:scale-125 transition-transform  duration-300">
                                         </div>
-                                        @php
-                                            $instructorFotoUrl = ($instructor->foto && str_starts_with($instructor->foto, 'images/'))
-                                                ? asset($instructor->foto) 
-                                                : ($instructor->foto ? asset('storage/' . $instructor->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($instructor->nama) . '&background=random');
-                                        @endphp
-                                        <img src="{{ $instructorFotoUrl }}"
+                                        <img src="{{ $instructor->foto }}"
                                             alt="{{ $instructor->nama }}"
                                             class="relative w-full h-full rounded-full object-cover border-4 border-white shadow-md">
                                     </div>

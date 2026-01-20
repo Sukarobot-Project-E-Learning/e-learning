@@ -47,10 +47,11 @@ class HomeController extends Controller
             ->map(function ($instructor) {
                 // Determine photo to use: instructor-specific photo > user avatar > default
                 $photo = null;
+                
                 if ($instructor->foto) {
-                    $photo = asset($instructor->foto);
+                    $photo = str_starts_with($instructor->foto, 'http') ? $instructor->foto : asset('storage/' . $instructor->foto);
                 } elseif ($instructor->avatar) {
-                    $photo = asset($instructor->avatar);
+                    $photo = str_starts_with($instructor->avatar, 'http') ? $instructor->avatar : asset('storage/' . $instructor->avatar);
                 } else {
                     $photo = 'https://ui-avatars.com/api/?name=' . urlencode($instructor->nama);
                 }
