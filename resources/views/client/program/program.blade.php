@@ -95,16 +95,16 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="py-16 bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden text-center">
+    <section class="py-8 bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden text-center">
         <!-- Background Elements -->
         <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-orange-200/20 rounded-full blur-[80px] animate-pulse pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-200/20 rounded-full blur-[80px] animate-pulse pointer-events-none"></div>
 
-        <div class="relative z-10 max-w-4xl mx-auto px-6">
+        <div class="relative z-10 max-w-2xl mx-auto px-6">
             <h1 id="hero-title" class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
                 {!! $heroContent[$currentCategory]['title'] ?? $heroContent['all']['title'] !!}
             </h1>
-            <p id="hero-description" class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            <p id="hero-description" class="text-gray-600 text-sm mb-8 max-w-2xl mx-auto">
                 {{ $heroContent[$currentCategory]['description'] ?? $heroContent['all']['description'] }}
             </p>
             <div class="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-orange-500 mx-auto rounded-full"></div>
@@ -120,17 +120,28 @@
                 Menampilkan {{ $currentCategory === 'all' ? 'semua program' : 'program ' . strtolower($categoryNames[$currentCategory] ?? $currentCategory) }}
             </div>
 
-            <!-- Right side: Sort Options -->
-            <div class="flex items-center gap-3">
-                <span class="text-gray-600 text-sm font-medium">Urutkan:</span>
-                <div class="relative">
-                    <select id="sort-select" class="appearance-none border border-gray-200 rounded-xl px-4 py-2.5 pr-8 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white cursor-pointer hover:border-blue-400 transition shadow-sm font-medium text-gray-700">
-                        <option value="newest">Terbaru</option>
-                        <option value="oldest">Terlama</option>
-                        <option value="available">Tersedia</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"></path></svg>
+            <!-- Right side: Sort Options & Search -->
+            <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+                <div class="relative w-full md:w-64">
+                    <input type="text" id="program-search-input" placeholder="Cari program..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                    <span class="text-gray-600 text-sm font-medium whitespace-nowrap">Urutkan:</span>
+                    <div class="relative w-full md:w-auto">
+                        <select id="sort-select" class="w-full md:w-auto appearance-none border border-gray-200 rounded-xl px-4 py-2.5 pr-8 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white cursor-pointer hover:border-blue-400 transition shadow-sm font-medium text-gray-700">
+                            <option value="newest">Terbaru</option>
+                            <option value="oldest">Terlama</option>
+                            <option value="available">Tersedia</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -176,7 +187,7 @@
 
                             <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
                                 {{ $program->program }}</h3>
-                            <p class="text-gray-600 text-sm mb-5 line-clamp-2 leading-relaxed">{{ $program->description }}</p>
+                            <p class="text-gray-600 text-[10px] mb-5 line-clamp-2 leading-relaxed">{{ $program->description }}</p>
                             
                             <div class="flex items-center gap-4 text-sm text-gray-500 mb-6">
                                 <div class="flex items-center gap-1.5">
@@ -219,3 +230,46 @@
 
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program/program.css') }}">
 <script src="{{ asset('assets/elearning/client/js/program/program.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('program-search-input');
+        const programCards = document.querySelectorAll('.kelas-card');
+        const countDisplay = document.querySelector('.jumlah-kelas');
+        const originalCountText = countDisplay ? countDisplay.innerText : '';
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                programCards.forEach(card => {
+                    // Only filter currently visible cards (if filtered by category via JS in the future, 
+                    // this logic might need adjustment, but for now PHP handles category)
+                    // Note: If we had client-side category filtering too, we'd need to check that status.
+                    // Assuming current page load is category-filtered by PHP.
+                    
+                    const title = card.querySelector('h3').innerText.toLowerCase();
+                    const description = card.querySelector('p.text-gray-600').innerText.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // Update count text
+                if (countDisplay) {
+                    if (searchTerm === '') {
+                        // Restore original text logic (or reload page if complex)
+                         // Ideally we parse the original count or just say "Menampilkan X program"
+                         countDisplay.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full"></span> Menampilkan ${visibleCount} program`;
+                    } else {
+                        countDisplay.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full"></span> Menampilkan ${visibleCount} program (hasil pencarian "${e.target.value}")`;
+                    }
+                }
+            });
+        }
+    });
+</script>
