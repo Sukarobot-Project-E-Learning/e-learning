@@ -183,7 +183,14 @@
                     enabled: true,
                     easing: 'easeinout',
                     speed: 800
-                }
+                },
+                // Add padding to prevent label cutoff
+                sparkline: {
+                    enabled: false
+                },
+                offsetX: 0,
+                offsetY: 0,
+                parentHeightOffset: 0
             },
             colors: ['#F97316', '#3B82F6', '#A855F7'], // Orange, Blue, orange
             dataLabels: {
@@ -221,13 +228,16 @@
                 }
             },
             yaxis: {
+                min: 0,
+                forceNiceScale: true,
                 title: {
                     text: 'Total Kumulatif',
                     style: {
                         fontSize: '14px',
                         fontWeight: 600,
                         color: '#374151'
-                    }
+                    },
+                    offsetX: 0
                 },
                 labels: {
                     style: {
@@ -236,7 +246,8 @@
                     },
                     formatter: function(val) {
                         return Math.floor(val);
-                    }
+                    },
+                    offsetX: -10
                 }
             },
             grid: {
