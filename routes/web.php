@@ -112,12 +112,15 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::get('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'index'])->name('instructors.index');
     Route::get('instructors/create', [\App\Http\Controllers\Admin\InstructorController::class, 'create'])->name('instructors.create');
     Route::post('instructors', [\App\Http\Controllers\Admin\InstructorController::class, 'store'])->name('instructors.store');
+    Route::get('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'show'])->name('instructors.show');
     Route::get('instructors/{id}/edit', [\App\Http\Controllers\Admin\InstructorController::class, 'edit'])->name('instructors.edit');
     Route::put('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'update'])->name('instructors.update');
 
     Route::post('instructors/{id}/approve', [\App\Http\Controllers\Admin\InstructorController::class, 'approve'])->name('instructors.approve');
     Route::post('instructors/{id}/reject', [\App\Http\Controllers\Admin\InstructorController::class, 'reject'])->name('instructors.reject');
     Route::delete('instructors/{id}', [\App\Http\Controllers\Admin\InstructorController::class, 'destroy'])->name('instructors.destroy');
+    Route::get('instructors/{id}/document/{type}', [\App\Http\Controllers\Admin\InstructorController::class, 'downloadDocument'])->name('instructors.download');
+
 
     // Program Proof Management
     Route::get('program-proofs', [\App\Http\Controllers\Admin\ProgramProofController::class, 'index'])->name('program-proofs.index');

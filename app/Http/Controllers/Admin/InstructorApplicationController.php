@@ -234,7 +234,7 @@ class InstructorApplicationController extends Controller
     }
 
     /**
-     * Download private document (CV, KTP, or NPWP) - Admin only
+     * Download private document (CV, KTP, NPWP, or Avatar) - Admin only
      */
     public function downloadDocument($id, $type)
     {
@@ -242,6 +242,36 @@ class InstructorApplicationController extends Controller
         
         if (!$application) {
             abort(404, 'Pengajuan tidak ditemukan');
+        }
+
+        // Handle avatar separately (from users table)
+        if ($type === 'avatar') {
+            $user = DB::table('users')->where('id', $application->user_id)->first();
+            if (!$user || empty($user->avatar)) {
+                abort(404, 'Foto profil tidak ditemukan');
+            }
+            
+            $avatarPath = $user->avatar;
+            
+            // Check if it's a public storage path
+            if (str_starts_with($avatarPath, 'avatars/') || str_starts_with($avatarPath, 'images/')) {
+                $fullPath = storage_path('app/public/' . $avatarPath);
+                if (file_exists($fullPath)) {
+                    return response()->download($fullPath);
+                }
+            }
+            
+            // Try local storage
+            if (Storage::disk('local')->exists($avatarPath)) {
+                return Storage::disk('local')->download($avatarPath);
+            }
+            
+            // Try public storage
+            if (Storage::disk('public')->exists($avatarPath)) {
+                return Storage::disk('public')->download($avatarPath);
+            }
+            
+            abort(404, 'File foto tidak ditemukan');
         }
 
         $pathField = $type . '_path';

@@ -90,6 +90,70 @@ class InstructorController extends Controller
     }
 
     /**
+     * Display the specified instructor details.
+     */
+    public function show($id)
+    {
+        // Get instructor from users table
+        $instructor = DB::table('users')
+            ->where('id', $id)
+            ->where('role', 'instructor')
+            ->first();
+
+        if (!$instructor) {
+            return redirect()->route('admin.instructors.index')
+                ->with('error', 'Instruktur tidak ditemukan.');
+        }
+
+        // Get instructor application data for documents (CV, KTP, NPWP)
+        $applicationData = DB::table('instructor_applications')
+            ->where('user_id', $id)
+            ->first();
+
+        // Merge application data to instructor object
+        if ($applicationData) {
+            $instructor->cv_path = $applicationData->cv_path ?? null;
+            $instructor->ktp_path = $applicationData->ktp_path ?? null;
+            $instructor->npwp_path = $applicationData->npwp_path ?? null;
+            $instructor->skills = $applicationData->skills ?? null;
+            $instructor->application_id = $applicationData->id ?? null;
+        }
+
+        return view('admin.instructors.detail', compact('instructor'));
+    }
+
+    /**
+     * Download private document (CV, KTP, or NPWP) for an instructor - Admin only
+     */
+    public function downloadDocument($id, $type)
+    {
+        // Get application data for the instructor
+        $applicationData = DB::table('instructor_applications')
+            ->where('user_id', $id)
+            ->first();
+        
+        if (!$applicationData) {
+            abort(404, 'Data aplikasi instruktur tidak ditemukan');
+        }
+
+        $pathField = $type . '_path';
+        $validTypes = ['cv', 'ktp', 'npwp'];
+        
+        if (!in_array($type, $validTypes) || empty($applicationData->$pathField)) {
+            abort(404, 'Dokumen tidak ditemukan');
+        }
+
+        $path = $applicationData->$pathField;
+        
+        // Check if file exists in storage
+        if (!Storage::disk('local')->exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return Storage::disk('local')->download($path);
+    }
+
+    /**
      * Store a newly created instructor in storage.
      */
     public function store(Request $request)
