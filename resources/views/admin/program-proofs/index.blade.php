@@ -292,15 +292,16 @@ function proofTable() {
         },
         toggleSelectAll() {
             this.selectAll = !this.selectAll;
-            this.selectedIds = this.selectAll ? this.items.map(i => i.id) : [];
+            this.selectedIds = this.selectAll ? this.items.map(i => Number(i.id)) : [];
         },
         toggleSelect(id) {
-            const idx = this.selectedIds.indexOf(id);
+            const numId = Number(id);
+            const idx = this.selectedIds.indexOf(numId);
             if (idx > -1) this.selectedIds.splice(idx, 1);
-            else this.selectedIds.push(id);
+            else this.selectedIds.push(numId);
             this.selectAll = this.selectedIds.length === this.items.length;
         },
-        isSelected(id) { return this.selectedIds.includes(id); },
+        isSelected(id) { return this.selectedIds.includes(Number(id)); },
         acceptProof(id) {
             Swal.fire({
                 title: 'Terima Bukti Program?',
@@ -315,9 +316,16 @@ function proofTable() {
                 if (result.isConfirmed) {
                     fetch(`{{ url('admin/program-proofs') }}/${id}/accept`, {
                         method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                        headers: { 
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
                     })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (!r.ok) throw new Error('Server error');
+                        return r.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message || 'Bukti program berhasil diterima.', timer: 2000, showConfirmButton: false })
@@ -326,7 +334,10 @@ function proofTable() {
                             Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });
                         }
                     })
-                    .catch(() => Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan' }));
+                    .catch((err) => {
+                        console.error('Accept error:', err);
+                        Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan saat memproses permintaan' });
+                    });
                 }
             });
         },
@@ -349,18 +360,29 @@ function proofTable() {
                     Promise.all(this.selectedIds.map(id => 
                         fetch(`{{ url('admin/program-proofs') }}/${id}/accept`, {
                             method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                            headers: { 
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
                         })
                     ))
-                    .then(() => {
-                        Swal.fire({ icon: 'success', title: 'Berhasil!', text: `${this.selectedIds.length} bukti program berhasil diterima.`, timer: 2000, showConfirmButton: false })
+                    .then((responses) => {
+                        return Promise.all(responses.map(r => r.json()));
+                    })
+                    .then((results) => {
+                        const successCount = results.filter(r => r.success).length;
+                        Swal.fire({ icon: 'success', title: 'Berhasil!', text: `${successCount} bukti program berhasil diterima.`, timer: 2000, showConfirmButton: false })
                         .then(() => {
                             this.selectedIds = [];
                             this.selectAll = false;
                             this.fetchData();
                         });
                     })
-                    .catch(() => Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan' }));
+                    .catch((err) => {
+                        console.error('Bulk accept error:', err);
+                        Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan saat memproses' });
+                    });
                 }
             });
         },
@@ -383,18 +405,29 @@ function proofTable() {
                     Promise.all(this.selectedIds.map(id => 
                         fetch(`{{ url('admin/program-proofs') }}/${id}/reject`, {
                             method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                            headers: { 
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
                         })
                     ))
-                    .then(() => {
-                        Swal.fire({ icon: 'success', title: 'Berhasil!', text: `${this.selectedIds.length} bukti program berhasil ditolak.`, timer: 2000, showConfirmButton: false })
+                    .then((responses) => {
+                        return Promise.all(responses.map(r => r.json()));
+                    })
+                    .then((results) => {
+                        const successCount = results.filter(r => r.success).length;
+                        Swal.fire({ icon: 'success', title: 'Berhasil!', text: `${successCount} bukti program berhasil ditolak.`, timer: 2000, showConfirmButton: false })
                         .then(() => {
                             this.selectedIds = [];
                             this.selectAll = false;
                             this.fetchData();
                         });
                     })
-                    .catch(() => Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan' }));
+                    .catch((err) => {
+                        console.error('Bulk reject error:', err);
+                        Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan saat memproses' });
+                    });
                 }
             });
         },

@@ -39,6 +39,55 @@ class DashboardController extends Controller
             ->where('status', 'paid')
             ->sum('amount') ?? 0;
 
+        // ===== FINANCIAL SUMMARY DATA =====
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        // Monthly Revenue (current month)
+        $monthlyRevenue = DB::table('transactions')
+            ->where('status', 'paid')
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->sum('amount') ?? 0;
+        
+        // Yearly Revenue (current year)
+        $yearlyRevenue = DB::table('transactions')
+            ->where('status', 'paid')
+            ->whereYear('created_at', $currentYear)
+            ->sum('amount') ?? 0;
+        
+        // Monthly Transaction Count (current month)
+        $monthlyTransactions = DB::table('transactions')
+            ->where('status', 'paid')
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+        
+        // Yearly Transaction Count (current year)
+        $yearlyTransactions = DB::table('transactions')
+            ->where('status', 'paid')
+            ->whereYear('created_at', $currentYear)
+            ->count();
+        
+        // Total Kursus (active programs/courses)
+        $totalCourses = DB::table('data_programs')
+            ->where('status', 'published')
+            ->count();
+
+        // ===== PROGRAM REVIEWS DATA =====
+        $programReviews = DB::table('program_reviews')
+            ->join('users', 'program_reviews.student_id', '=', 'users.id')
+            ->join('data_programs', 'program_reviews.program_id', '=', 'data_programs.id')
+            ->select(
+                'program_reviews.*',
+                'users.name as student_name',
+                'users.avatar as student_avatar',
+                'data_programs.program as program_name'
+            )
+            ->orderBy('program_reviews.created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         // Get recent programs
         $recentPrograms = DB::table('data_programs')
             ->orderBy('created_at', 'desc')
@@ -58,6 +107,12 @@ class DashboardController extends Controller
             'programsAvailable',
             'programsUnavailable',
             'totalRevenue',
+            'monthlyRevenue',
+            'yearlyRevenue',
+            'monthlyTransactions',
+            'yearlyTransactions',
+            'totalCourses',
+            'programReviews',
             'recentPrograms',
             'chartData'
         ));

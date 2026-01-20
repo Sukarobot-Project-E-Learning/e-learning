@@ -117,7 +117,7 @@ class ProgramProofController extends Controller
     /**
      * Accept the program proof and auto-generate certificate if template exists.
      */
-    public function accept($id)
+    public function accept(Request $request, $id)
     {
         try {
             // Get proof details
@@ -126,6 +126,9 @@ class ProgramProofController extends Controller
                 ->first();
 
             if (!$proof) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Bukti program tidak ditemukan.'], 404);
+                }
                 return redirect()->route('admin.program-proofs.index')
                     ->with('error', 'Bukti program tidak ditemukan.');
             }
@@ -166,10 +169,22 @@ class ProgramProofController extends Controller
                 $message = 'Bukti program diterima. (Catatan: Template sertifikat belum tersedia untuk program ini)';
             }
 
+            // Return JSON for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'certificate_generated' => $certificateGenerated
+                ]);
+            }
+
             return redirect()->route('admin.program-proofs.index')
                 ->with($certificateGenerated ? 'success' : 'warning', $message);
 
         } catch (\Exception $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            }
             return redirect()->route('admin.program-proofs.index')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -178,7 +193,7 @@ class ProgramProofController extends Controller
     /**
      * Reject the program proof.
      */
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         try {
             DB::table('program_proofs')
@@ -189,8 +204,18 @@ class ProgramProofController extends Controller
                     'updated_at' => now(),
                 ]);
 
-            return redirect()->route('admin.program-proofs.index')->with('success', 'Bukti program berhasil ditolak');
+            $message = 'Bukti program berhasil ditolak';
+
+            // Return JSON for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $message]);
+            }
+
+            return redirect()->route('admin.program-proofs.index')->with('success', $message);
         } catch (\Exception $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            }
             return redirect()->route('admin.program-proofs.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
