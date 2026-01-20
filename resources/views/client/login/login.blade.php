@@ -66,7 +66,7 @@
           </div>
 
           <button type="submit" id="submit-btn"
-                  class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
+                  class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer">
             Login
           </button>
         </form>
@@ -81,8 +81,8 @@
         </div>
 
         <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">
-          <a href="{{ route('client.reset-password') }}" class="hover:text-blue-600 transition">Lupa Password?</a>
-          <a href="{{ url('/register') }}" class="hover:text-orange-500 transition">Buat Akun Baru</a>
+          <a href="{{ route('client.reset-password') }}" class="text-blue-600 transition hover:underline">Lupa Password?</a>
+          <a href="{{ url('/register') }}" class="text-blue-600 transition hover:underline">Buat Akun Baru</a>
         </div>
       </div>
     </div>

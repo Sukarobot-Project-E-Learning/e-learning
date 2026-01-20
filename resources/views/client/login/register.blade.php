@@ -83,7 +83,7 @@
 
           <!-- Button daftar -->
           <button type="submit" id="submit-btn"
-                  class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95">
+                  class="w-full py-2 bg-gradient-to-r from-orange-500 to-blue-600 text-white rounded-xl font-semibold shadow-md transform transition duration-300 hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer">
             Buat Akun
           </button>
         </form>
