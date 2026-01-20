@@ -219,6 +219,8 @@ Route::name('client.')->group(function () {
         return view('client.login.register');
     })->name('register');
 
+    Route::post('/auth/register', [ClientAuthController::class, 'register'])->name('auth.register');
+
     Route::get('/reset-password', function () {
         return view('client.login.reset');
     })->name('reset-password');

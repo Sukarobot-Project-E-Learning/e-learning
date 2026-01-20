@@ -33,12 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Call API register
-            const response = await fetch("/api/auth/register", {
+            const response = await fetch("/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 body: JSON.stringify(formData)
             });

@@ -120,12 +120,12 @@ class PasswordResetController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'token' => 'required|string|size:4',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ], [
             'email.required' => 'Email wajib diisi',
             'token.required' => 'Kode OTP wajib diisi',
             'password.required' => 'Password baru wajib diisi',
-            'password.min' => 'Password minimal 6 karakter',
+            'password.min' => 'Password minimal 8 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
         ]);
 
