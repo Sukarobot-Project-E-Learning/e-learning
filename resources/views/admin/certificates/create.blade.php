@@ -217,6 +217,49 @@
     var imageWidth = 0;
     var imageHeight = 0;
     var refreshTimeout = null;
+    var formSubmitting = false; // Track if form is being submitted
+
+    // Function to delete temp file via sendBeacon (works even on page close)
+    function deleteTempFile() {
+        if (!templateFilePath) return;
+        
+        var data = new FormData();
+        data.append('file_path', templateFilePath);
+        data.append('_token', '{{ csrf_token() }}');
+        
+        // Use sendBeacon for reliable request on page unload
+        navigator.sendBeacon('{{ route("admin.certificates.delete-temp") }}', data);
+    }
+
+    // Warn user before leaving if there's unsaved temp file
+    window.addEventListener('beforeunload', function(e) {
+        if (templateFilePath && !formSubmitting) {
+            // Show browser's native confirmation dialog
+            e.preventDefault();
+            e.returnValue = 'Anda memiliki blanko yang belum disimpan. Yakin ingin keluar?';
+            return e.returnValue;
+        }
+    });
+
+    // Delete temp file when page is actually unloading
+    window.addEventListener('unload', function() {
+        if (templateFilePath && !formSubmitting) {
+            deleteTempFile();
+        }
+    });
+
+    // Handle page visibility change (for when user switches tabs then closes)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && templateFilePath && !formSubmitting) {
+            // User switched away, prepare for potential close
+            deleteTempFile();
+        }
+    });
+
+    // Mark form as submitting to prevent temp file deletion
+    document.getElementById('templateForm').addEventListener('submit', function() {
+        formSubmitting = true;
+    });
 
     // Auto-refresh with debounce when values change
     function autoRefreshPreview() {
@@ -268,6 +311,11 @@
         var formData = new FormData();
         formData.append('blanko', file);
         formData.append('_token', '{{ csrf_token() }}');
+        
+        // Send previous file path so server can delete old temp file
+        if (templateFilePath) {
+            formData.append('previous_file_path', templateFilePath);
+        }
 
         showStatus('Mengupload blanko...', 'info');
 

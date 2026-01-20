@@ -304,6 +304,7 @@ class CertificateController extends Controller
     /**
      * Upload template to PRIVATE storage (AJAX endpoint)
      * Templates are admin-only and should not be publicly accessible
+     * Auto-deletes previous temp file to prevent accumulation
      */
     public function uploadTemplate(Request $request)
     {
@@ -312,6 +313,12 @@ class CertificateController extends Controller
         ]);
 
         try {
+            // Delete previous temp file if provided (to prevent accumulation)
+            $previousFilePath = $request->input('previous_file_path');
+            if ($previousFilePath && str_starts_with(basename($previousFilePath), 'temp_')) {
+                Storage::disk('local')->delete($previousFilePath);
+            }
+            
             $file = $request->file('blanko');
             
             // Get image dimensions BEFORE saving (from temp location)
@@ -347,6 +354,27 @@ class CertificateController extends Controller
                 'message' => 'Upload gagal: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Delete temporary template file (called when user leaves page without saving)
+     * Used by sendBeacon on page unload
+     */
+    public function deleteTempTemplate(Request $request)
+    {
+        $filePath = $request->input('file_path');
+        
+        // Safety check: only delete files with 'temp_' prefix
+        if ($filePath && str_starts_with(basename($filePath), 'temp_')) {
+            try {
+                Storage::disk('local')->delete($filePath);
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                \Log::error('Failed to delete temp template: ' . $e->getMessage());
+            }
+        }
+        
+        return response()->json(['success' => false], 400);
     }
 
     /**
