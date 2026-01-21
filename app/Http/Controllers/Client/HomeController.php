@@ -20,7 +20,7 @@ class HomeController extends Controller
                 'users.name as instructor_name'
             )
             ->where('data_programs.status', 'published')
-            ->whereDate('data_programs.end_date', '>=', now())
+            ->where('data_programs.start_date', '>', now())
             ->orderBy('data_programs.rating', 'desc')
             ->orderBy('data_programs.enrolled_count', 'desc')
             ->limit(8)

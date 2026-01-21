@@ -22,7 +22,7 @@ class ProgramController extends Controller
                 'users.job as instructor_job'
             )
             ->where('data_programs.status', 'published')
-            ->whereDate('data_programs.end_date', '>=', now());
+            ->where('data_programs.start_date', '>', now());
 
         // Get active category from query parameter (for URL state and tab highlighting)
         $activeCategory = $request->get('category', 'all');
@@ -130,7 +130,7 @@ class ProgramController extends Controller
                 'users.job as instructor_job'
             )
             ->where('data_programs.status', 'published')
-            ->whereDate('data_programs.end_date', '>=', now())
+            ->where('data_programs.start_date', '>', now())
             ->orderBy('data_programs.rating', 'desc')
             ->orderBy('data_programs.enrolled_count', 'desc')
             ->limit(8)

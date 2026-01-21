@@ -60,7 +60,7 @@
               <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: {{ \Carbon\Carbon::parse($enrollment->created_at)->translatedFormat('d M Y') }}</p>
 
               <div class="mt-auto space-y-3">
-                  @if(!$enrollment->proof_id)
+                  @if(!$enrollment->proof_id && \Carbon\Carbon::parse($enrollment->end_date)->isPast())
                       <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
                         <span class="truncate">Kirim Bukti Program</span>
                       </a>

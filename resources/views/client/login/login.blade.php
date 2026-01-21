@@ -80,7 +80,7 @@
           </a>
         </div>
 
-        <div class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">
+        <div class="mt-6 flex flex-row items-center justify-between text-sm text-gray-600">
           <a href="{{ route('client.reset-password') }}" class="text-blue-600 transition hover:underline">Lupa Password?</a>
           <a href="{{ url('/register') }}" class="text-blue-600 transition hover:underline">Buat Akun Baru</a>
         </div>
