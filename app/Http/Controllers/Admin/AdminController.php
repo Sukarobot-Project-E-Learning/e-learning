@@ -47,7 +47,7 @@ class AdminController extends Controller
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
-            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
+            $isActive = strtolower($validated['status'] ?? 'aktif') === 'aktif';
 
             $data = [
                 'name' => $validated['name'],
@@ -112,7 +112,7 @@ class AdminController extends Controller
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
-            $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
+            $isActive = strtolower($validated['status'] ?? 'aktif') === 'aktif';
 
             $updateData = [
                 'name' => $validated['name'],

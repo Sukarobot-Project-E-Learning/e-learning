@@ -75,11 +75,10 @@
             <div x-show="search" class="text-orange-600 text-xs sm:text-sm">Hasil pencarian untuk "<span x-text="search" class="font-semibold"></span>"</div>
         </div>
     </div>
-
     <!-- Mobile Card View -->
     <div class="block lg:hidden space-y-3 mb-6">
-        <template x-for="(item, index) in items" :key="item.id">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
+        <template x-for="(item, idx) in items" :key="item.id">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-start gap-3">
                     <input type="checkbox" :checked="isSelected(item.id)" @change="toggleSelect(item.id)" class="mt-1 w-4 h-4 text-orange-600 rounded focus:ring-orange-500">
                     <div class="flex-1 min-w-0">
@@ -90,19 +89,11 @@
                             <span class="px-2 py-1 text-xs rounded-full" :class="item.status == 'pending' ? 'bg-yellow-100 text-yellow-700' : item.status == 'accepted' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" x-text="item.status == 'pending' ? 'Menunggu' : item.status == 'accepted' ? 'Diterima' : 'Ditolak'"></span>
                         </div>
                     </div>
-                    <template x-if="item.documentation">
-                        <img :src="getImageUrl(item.documentation)" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getImageUrl(item.documentation), '_blank')">
-                    </template>
-                    <template x-if="!item.documentation">
-                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        </div>
-                    </template>
                 </div>
                 <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-2">
                     <a :href="'/admin/program-proofs/' + item.id" class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Detail</a>
-                    <button x-show="item.status == 'pending'" @click="acceptProof(item.id)" class="px-3 py-1.5 text-sm font-medium text-green-600 hover:bg-green-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Terima</button>
-                    <button @click="deleteProof(item.id)" class="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Hapus</button>
+                    <button x-show="item.status == 'pending'" @click="acceptProof(item.id)" class="px-3 py-1.5 text-sm font-medium text-green-600 hover:bg-green-50 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer">Terima</button>
+                    <button x-show="item.status != 'accepted'" @click="rejectProof(item.id)" class="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer">Tolak</button>
                 </div>
             </div>
         </template>
@@ -134,24 +125,14 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-orange-100 dark:divide-gray-700">
-                    <template x-for="(item, index) in items" :key="item.id">
-                        <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150" :style="'animation-delay:' + (index * 50) + 'ms'">
+                    <template x-for="(item, idx) in items" :key="item.id">
+                        <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-4 py-4"><input type="checkbox" :checked="isSelected(item.id)" @change="toggleSelect(item.id)" class="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"></td>
                             <td class="px-6 py-4">
                                 <a :href="'/admin/program-proofs/' + item.id" class="font-semibold text-orange-600 hover:text-orange-800 dark:text-orange-400" x-html="highlightText(item.name)"></a>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(item.program_title)"></td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-text="item.schedule"></td>
-                            <td class="px-6 py-4">
-                                <template x-if="item.documentation">
-                                    <img :src="getImageUrl(item.documentation)" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(getImageUrl(item.documentation), '_blank')">
-                                </template>
-                                <template x-if="!item.documentation">
-                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    </div>
-                                </template>
-                            </td>
                             <td class="px-6 py-4">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full" :class="item.status == 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100' : item.status == 'accepted' ? 'bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100' : 'bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100'" x-text="item.status == 'pending' ? 'Menunggu' : item.status == 'accepted' ? 'Diterima' : 'Ditolak'"></span>
                             </td>
@@ -160,11 +141,11 @@
                                     <a :href="'/admin/program-proofs/' + item.id" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Detail">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                     </a>
-                                    <button x-show="item.status == 'pending'" @click="acceptProof(item.id)" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors" title="Terima">
+                                    <button x-show="item.status == 'pending'" @click="acceptProof(item.id)" class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors cursor-pointer" title="Terima">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                     </button>
-                                    <button @click="deleteProof(item.id)" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Hapus">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    <button x-show="item.status != 'accepted'" @click="rejectProof(item.id)" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors cursor-pointer" title="Tolak">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </button>
                                 </div>
                             </td>
@@ -237,7 +218,6 @@ function proofTable() {
             { key: 'name', label: 'Nama', sortable: true },
             { key: 'program_title', label: 'Judul Program', sortable: true },
             { key: 'schedule', label: 'Jadwal', sortable: false },
-            { key: 'documentation', label: 'Dokumentasi', sortable: false },
             { key: 'status', label: 'Status', sortable: true },
             { key: 'actions', label: 'Aksi', sortable: false }
         ],
@@ -431,26 +411,30 @@ function proofTable() {
                 }
             });
         },
-        deleteProof(id) {
+        rejectProof(id) {
             Swal.fire({
-                title: 'Hapus Bukti Program?',
-                text: 'Data tidak dapat dikembalikan!',
+                title: 'Tolak Bukti Program?',
+                text: 'Data akan ditolak dan dihapus permanen!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#f97316',
+                confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
+                confirmButtonText: 'Ya, Tolak!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`{{ url('admin/program-proofs') }}/${id}`, {
-                        method: 'DELETE',
-                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                    fetch(`{{ url('admin/program-proofs') }}/${id}/reject`, {
+                        method: 'POST',
+                        headers: { 
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
                     })
                     .then(r => r.json())
                     .then(data => {
                         if (data.success) {
-                            Swal.fire({ icon: 'success', title: 'Dihapus!', text: data.message || 'Bukti program berhasil dihapus.', timer: 2000, showConfirmButton: false })
+                            Swal.fire({ icon: 'success', title: 'Ditolak!', text: data.message || 'Bukti program berhasil ditolak.', timer: 2000, showConfirmButton: false })
                             .then(() => this.fetchData());
                         } else {
                             Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });

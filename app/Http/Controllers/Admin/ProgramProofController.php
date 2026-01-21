@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\CertificateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramProofController extends Controller
 {
@@ -67,7 +68,7 @@ class ProgramProofController extends Controller
                 'program_id' => $proof->program_id,
                 'student_id' => $proof->student_id,
                 'schedule' => $proof->schedule ?? '-',
-                'documentation' => $proof->documentation ? asset($proof->documentation) : null,
+                'documentation' => $proof->documentation ? asset('storage/' . $proof->documentation) : null,
                 'status' => $proof->status,
                 'created_at' => $proof->created_at,
                 'has_certificate_template' => $proof->has_certificate_template ?? 0
@@ -195,20 +196,39 @@ class ProgramProofController extends Controller
     }
 
     /**
-     * Reject the program proof.
+     * Reject the program proof and delete it.
      */
     public function reject(Request $request, $id)
     {
         try {
-            DB::table('program_proofs')
-                ->where('id', $id)
-                ->update([
-                    'status' => 'rejected',
-                    'rejected_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            // Get proof details first
+            $proof = DB::table('program_proofs')->where('id', $id)->first();
+            
+            if (!$proof) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Bukti program tidak ditemukan.'], 404);
+                }
+                return redirect()->route('admin.program-proofs.index')
+                    ->with('error', 'Bukti program tidak ditemukan.');
+            }
 
-            $message = 'Bukti program berhasil ditolak';
+            // Delete documentation file from storage if exists
+            if ($proof->documentation) {
+                if (Storage::disk('public')->exists($proof->documentation)) {
+                    Storage::disk('public')->delete($proof->documentation);
+                } else {
+                    // Fallback: try old public path for legacy files
+                    $filePath = public_path($proof->documentation);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+
+            // Delete the program proof record
+            DB::table('program_proofs')->where('id', $id)->delete();
+
+            $message = 'Bukti program berhasil ditolak dan dihapus';
 
             // Return JSON for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
@@ -232,9 +252,15 @@ class ProgramProofController extends Controller
         try {
             $proof = DB::table('program_proofs')->where('id', $id)->first();
             if ($proof && $proof->documentation) {
-                $filePath = public_path($proof->documentation);
-                if (file_exists($filePath)) {
-                    unlink($filePath);
+                // Delete from storage
+                if (Storage::disk('public')->exists($proof->documentation)) {
+                    Storage::disk('public')->delete($proof->documentation);
+                } else {
+                    // Fallback: try old public path for legacy files
+                    $filePath = public_path($proof->documentation);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
                 }
             }
             DB::table('program_proofs')->where('id', $id)->delete();

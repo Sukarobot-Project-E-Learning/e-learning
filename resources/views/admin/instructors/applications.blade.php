@@ -15,13 +15,19 @@
     <div class="my-6 flex items-center justify-between flex-wrap gap-4">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengajuan Menjadi Instruktur</h2>
         <div class="flex items-center gap-3">
-            <button type="button" @click="acceptAllSelected()" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all duration-200">
+            <button type="button" @click="acceptAllSelected()" 
+                    :disabled="selectedIds.length === 0"
+                    :class="selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg transition-all duration-200">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                Terima (<span x-text="selectedIds.length"></span>)
+                Terima Semua
             </button>
-            <button type="button" @click="rejectAllSelected()" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all duration-200">
+            <button type="button" @click="rejectAllSelected()" 
+                    :disabled="selectedIds.length === 0"
+                    :class="selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg transition-all duration-200">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                Tolak (<span x-text="selectedIds.length"></span>)
+                Tolak Semua
             </button>
         </div>
     </div>
@@ -55,7 +61,7 @@
         <template x-for="(app, index) in applications" :key="app.id">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-start gap-3">
-                    <input type="checkbox" :value="app.id" x-model="selectedIds" class="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                    <input type="checkbox" :value="app.id" x-model.number="selectedIds" class="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
                     <template x-if="app.avatar">
                         <img :src="app.avatar.startsWith('http') ? app.avatar : '/' + app.avatar" class="w-12 h-12 rounded-lg object-cover border-2 border-orange-200">
                     </template>
@@ -74,8 +80,8 @@
                     <p class="text-sm text-gray-600 dark:text-gray-300 truncate" x-html="highlightText(app.skills || '-')"></p>
                     <div class="flex items-center justify-between mt-2">
                         <div class="flex gap-2">
-                            <template x-if="app.cv_path"><a :href="'/' + app.cv_path" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600">CV</a></template>
-                            <template x-if="app.ktp_path"><a :href="'/' + app.ktp_path" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">KTP</a></template>
+                            <template x-if="app.cv_path"><a :href="'/admin/instructor-applications/' + app.id + '/document/cv'" data-turbo="false" class="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600">CV</a></template>
+                            <template x-if="app.ktp_path"><a :href="'/admin/instructor-applications/' + app.id + '/document/ktp'" data-turbo="false" class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">KTP</a></template>
                         </div>
                         <div class="flex gap-2">
                             <a :href="'/admin/instructor-applications/' + app.id" class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg">Detail</a>
@@ -117,7 +123,7 @@
                     <template x-for="(app, index) in applications" :key="app.id">
                         <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-4 py-4">
-                                <input type="checkbox" :value="app.id" x-model="selectedIds" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                                <input type="checkbox" :value="app.id" x-model.number="selectedIds" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
@@ -134,9 +140,9 @@
                             </td>
                             <td class="px-6 py-4 text-sm">
                                 <div class="flex space-x-2">
-                                    <template x-if="app.cv_path"><a :href="'/' + app.cv_path" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600">CV</a></template>
+                                    <template x-if="app.cv_path"><a :href="'/admin/instructor-applications/' + app.id + '/document/cv'" data-turbo="false" class="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600">CV</a></template>
                                     <template x-if="!app.cv_path"><span class="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">No CV</span></template>
-                                    <template x-if="app.ktp_path"><a :href="'/' + app.ktp_path" target="_blank" class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">KTP</a></template>
+                                    <template x-if="app.ktp_path"><a :href="'/admin/instructor-applications/' + app.id + '/document/ktp'" data-turbo="false" class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">KTP</a></template>
                                     <template x-if="!app.ktp_path"><span class="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">No KTP</span></template>
                                 </div>
                             </td>
@@ -257,10 +263,7 @@ function applicationTable() {
             return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         },
         acceptAllSelected() {
-            if (this.selectedIds.length === 0) {
-                Swal.fire('Peringatan', 'Pilih minimal satu pengajuan untuk disetujui', 'warning');
-                return;
-            }
+            if (this.selectedIds.length === 0) return;
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: `Anda akan menyetujui ${this.selectedIds.length} pengajuan instruktur`,
@@ -287,10 +290,7 @@ function applicationTable() {
             });
         },
         rejectAllSelected() {
-            if (this.selectedIds.length === 0) {
-                Swal.fire('Peringatan', 'Pilih minimal satu pengajuan untuk ditolak', 'warning');
-                return;
-            }
+            if (this.selectedIds.length === 0) return;
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: `Anda akan menolak ${this.selectedIds.length} pengajuan instruktur`,

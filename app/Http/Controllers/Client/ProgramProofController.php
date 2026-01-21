@@ -74,12 +74,10 @@ class ProgramProofController extends Controller
         if ($request->hasFile('proof_file')) {
             $file = $request->file('proof_file');
             $filename = time() . '_' . $user->id . '_' . $file->getClientOriginalName();
-            $uploadPath = public_path('images/bukti-program');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-            $file->move($uploadPath, $filename);
-            $documentationPath = 'images/bukti-program/' . $filename;
+            
+            // Store in storage/app/public/bukti-program
+            $path = $file->storeAs('bukti-program', $filename, 'public');
+            $documentationPath = $path; // This will be 'bukti-program/filename'
         }
 
         ProgramProof::updateOrCreate(

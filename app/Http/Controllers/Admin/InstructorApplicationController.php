@@ -241,14 +241,14 @@ class InstructorApplicationController extends Controller
         $application = DB::table('instructor_applications')->where('id', $id)->first();
         
         if (!$application) {
-            abort(404, 'Pengajuan tidak ditemukan');
+            return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
         }
 
         // Handle avatar separately (from users table)
         if ($type === 'avatar') {
             $user = DB::table('users')->where('id', $application->user_id)->first();
             if (!$user || empty($user->avatar)) {
-                abort(404, 'Foto profil tidak ditemukan');
+                return redirect()->back()->with('error', 'Foto profil tidak ditemukan');
             }
             
             $avatarPath = $user->avatar;
@@ -271,24 +271,34 @@ class InstructorApplicationController extends Controller
                 return Storage::disk('public')->download($avatarPath);
             }
             
-            abort(404, 'File foto tidak ditemukan');
+            return redirect()->back()->with('error', 'File foto tidak ditemukan');
         }
 
         $pathField = $type . '_path';
         $validTypes = ['cv', 'ktp', 'npwp'];
         
         if (!in_array($type, $validTypes) || empty($application->$pathField)) {
-            abort(404, 'Dokumen tidak ditemukan');
+            return redirect()->back()->with('error', 'Dokumen tidak ditemukan');
         }
 
         $path = $application->$pathField;
         
-        // Check if file exists in storage
-        if (!Storage::disk('local')->exists($path)) {
-            abort(404, 'File tidak ditemukan');
+        // Check if file exists in local storage
+        if (Storage::disk('local')->exists($path)) {
+            return Storage::disk('local')->download($path);
+        }
+        
+        // Try public storage as fallback
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->download($path);
+        }
+        
+        // Try public path as last resort
+        if (file_exists(public_path($path))) {
+            return response()->download(public_path($path));
         }
 
-        return Storage::disk('local')->download($path);
+        return redirect()->back()->with('error', 'File tidak ditemukan');
     }
 }
 
