@@ -9,9 +9,9 @@
         <div class="flex w-full flex-col gap-4 @container sm:flex-row sm:justify-between sm:items-center">
           <div class="flex gap-4 items-center">
             <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0" data-alt="User profile picture" style="background-image: url({{ $user->avatar_url }})"></div>
-            <div class="flex flex-col justify-center">
-              <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em]">{{ $user->name }}</p>
-              <p class="text-[#616f89] text-base font-normal leading-normal">{{ $user->email }}</p>
+            <div class="flex flex-col justify-center min-w-0">
+              <p class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] break-words">{{ $user->name }}</p>
+              <p class="text-[#616f89] text-base font-normal leading-normal break-all">{{ $user->email }}</p>
             </div>
           </div>
           <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f2f4] text-[#111318] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] sm:w-auto" id="photo-change-btn">
@@ -104,10 +104,10 @@
           <div>
             <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">
               @if($user->provider === 'google')
-                Buat Kata Sandi
+                Buat Kata Sandi (Opsional)
                 <span class="text-sm font-normal text-gray-500 block mt-1">Anda login via Google. Buat password untuk login manual.</span>
               @else
-                Ubah Kata Sandi
+                Ubah Kata Sandi (Opsional)
               @endif
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,7 +157,7 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
           <button id="cancelEditProfile" data-route="{{ route('client.dashboard') }}" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#f0f2f4] text-[#111318] text-base font-bold leading-normal tracking-[0.015em]" type="button">
-          <span class="truncate">Batal</span>
+          <span class="truncate">Reset</span>
           </button>
           <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-orange-500 text-white text-base font-bold leading-normal tracking-[0.015em]" type="submit">
           <span class="truncate">Simpan Perubahan</span>
