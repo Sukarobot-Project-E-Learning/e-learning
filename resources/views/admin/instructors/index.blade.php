@@ -58,7 +58,7 @@
                         <img :src="getAvatarUrl(instructor.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 cursor-pointer">
                     </template>
                     <template x-if="!instructor.avatar">
-                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                             <svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
                         </div>
                     </template>
@@ -86,7 +86,7 @@
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-orange-100 dark:border-gray-700 mb-6">
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full whitespace-nowrap">
                 <thead class="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
                     <tr>
                         <template x-for="col in columns" :key="col.key">
@@ -108,10 +108,10 @@
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-html="highlightText(instructor.email || '-')"></td>
                             <td class="px-6 py-4">
                                 <template x-if="instructor.avatar"><img :src="getAvatarUrl(instructor.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110" @click="window.open(getAvatarUrl(instructor.avatar), '_blank')"></template>
-                                <template x-if="!instructor.avatar"><div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center"><svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg></div></template>
+                                <template x-if="!instructor.avatar"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center"><svg class="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg></div></template>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300" x-text="instructor.expertise || '-'"></td>
-                            <td class="px-6 py-4"><span :class="instructor.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'" class="px-3 py-1 text-xs font-bold rounded-full" x-text="instructor.status"></span></td>
+                            <td class="px-6 py-4"><span :class="instructor.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'" class="px-3 py-1 text-xs font-bold rounded-full whitespace-nowrap" x-text="instructor.status"></span></td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <a :href="'/admin/instructors/' + instructor.id + '/edit'" class="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></a>

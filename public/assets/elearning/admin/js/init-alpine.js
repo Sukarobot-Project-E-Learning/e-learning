@@ -66,5 +66,12 @@ function data() {
         hideLoading() {
             this.isLoading = false;
         },
+        init() {
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    this.closeSideMenu();
+                }
+            });
+        },
     };
 }

@@ -1,5 +1,5 @@
 <div class="w-full overflow-x-auto">
-    <table class="w-full whitespace-no-wrap">
+    <table class="w-full whitespace-nowrap">
         <thead>
             <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                 <th class="px-4 py-3">Nama</th>
@@ -32,10 +32,10 @@
                         @endphp
                         <img src="{{ $avatarUrl }}" 
                              alt="Avatar" 
-                             class="w-16 h-12 rounded object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
+                             class="w-12 h-12 rounded-full object-cover border border-gray-300 dark:border-gray-600 cursor-pointer"
                              onclick="window.open('{{ $avatarUrl }}', '_blank')">
                     @else
-                        <div class="w-16 h-12 rounded bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center border border-gray-300 dark:border-gray-500">
                             <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                             </svg>
@@ -49,7 +49,7 @@
                             Aktif
                         </span>
                     @elseif($instructor['status'] == 'Tidak Aktif')
-                        <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-100 rounded-full">
+                        <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-100 rounded-full whitespace-nowrap">
                             Tidak Aktif
                         </span>
                     @elseif($instructor['status'] == 'Pending')

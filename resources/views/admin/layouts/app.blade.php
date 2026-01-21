@@ -60,10 +60,63 @@
     <script src="{{ asset('assets/elearning/admin/js/init-alpine.js') }}"></script>
 
     @stack('styles')
+
+    <!-- Turbo Drive -->
+    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
+    <script>
+        // Show the progress bar immediately on navigation
+        Turbo.setProgressBarDelay(0);
+
+        // Reinitialize Alpine components when Turbo loads a new page
+        document.addEventListener('turbo:load', () => {
+            if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                window.Alpine.initTree(document.body);
+            }
+
+            // Restore sidebar scroll position
+            try {
+                const saved = sessionStorage.getItem('sidebar:scrollTop');
+                const sidebar = document.querySelector('.sidebar-scroll');
+                if (sidebar && saved !== null) {
+                    sidebar.scrollTop = Number(saved) || 0;
+                }
+            } catch (_) {}
+
+            // Restore mobile sidebar scroll position
+            try {
+                const savedMobile = sessionStorage.getItem('mobile-sidebar:scrollTop');
+                const mobile = document.querySelector('.mobile-scroll');
+                if (mobile && savedMobile !== null) {
+                    mobile.scrollTop = Number(savedMobile) || 0;
+                }
+            } catch (_) {}
+        });
+
+        // Save scroll positions before visit
+        document.addEventListener('turbo:before-visit', () => {
+            try {
+                const sidebar = document.querySelector('.sidebar-scroll');
+                if (sidebar) {
+                    sessionStorage.setItem('sidebar:scrollTop', String(sidebar.scrollTop));
+                }
+                const mobile = document.querySelector('.mobile-scroll');
+                if (mobile) {
+                    sessionStorage.setItem('mobile-sidebar:scrollTop', String(mobile.scrollTop));
+                }
+            } catch (_) {}
+        });
+    </script>
+    <style>
+        turbo-progress-bar {
+            background: linear-gradient(to right, #f97316, #ea580c);
+            height: 3px;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+        }
+    </style>
 </head>
 
-<body>
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }" x-data="data()" x-init="init()">
 
         <!-- Loading Indicator Overlay -->
         <div x-show="isLoading" 
@@ -94,14 +147,14 @@
         <!-- Mobile Sidebar -->
         @include('admin.layouts.mobile-sidebar')
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="flex flex-col flex-1 min-w-0">
 
             <!-- Header/Navbar -->
             @include('admin.layouts.header')
 
             <!-- Main Content -->
-            <main class="h-full overflow-y-auto">
-                <div class="container px-6 mx-auto grid">
+            <main class="flex-1 overflow-y-auto overflow-x-hidden">
+                <div class="w-full px-6 mx-auto">
                     @yield('content')
                 </div>
             </main>

@@ -4,7 +4,7 @@
         $adminRoleLabel = $admin?->role === 'admin' ? 'Administrator' : ucfirst($admin?->role ?? 'Administrator');
         $adminAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($admin?->name ?? 'Admin') . '&background=f97316&color=fff';
     @endphp
-    <div class="container flex items-center justify-between h-full px-6 mx-auto text-orange-600 dark:text-orange-300">
+    <div class="w-full flex items-center justify-between h-full px-6 mx-auto text-orange-600 dark:text-orange-300">
 
         <!-- Mobile hamburger -->
         <button class="p-1 mr-5 -ml-1 rounded-lg md:hidden focus:outline-none hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300"
