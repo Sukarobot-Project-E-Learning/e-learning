@@ -253,6 +253,29 @@
   </script>
   @endif
 
+  @if ($errors->any())
+  <script>
+    let errorMessage = '';
+    @if($errors->has('current_password'))
+        errorMessage = '{{ $errors->first('current_password') }}';
+    @elseif($errors->has('new_password'))
+        errorMessage = '{{ $errors->first('new_password') }}';
+    @elseif($errors->has('new_password_confirmation'))
+        errorMessage = '{{ $errors->first('new_password_confirmation') }}';
+    @endif
+
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Menyimpan',
+            text: errorMessage,
+            confirmButtonText: 'Oke',
+            confirmButtonColor: '#3b82f6'
+        });
+    }
+  </script>
+  @endif
+
   <!-- Username Check Script -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
