@@ -186,7 +186,7 @@ class UserController extends Controller
             } else {
                 // For non-SSO users, verify current password
                 if (!Hash::check($validated['current_password'], $user->password)) {
-                    return back()->with('error', 'Kata sandi saat ini salah.');
+                    return back()->with('error', 'Kata sandi saat ini salah.')->withInput();
                 }
                 $user->password = Hash::make($validated['new_password']);
             }

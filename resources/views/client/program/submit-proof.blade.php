@@ -119,7 +119,7 @@
                     </div>
                     
                     <p class="text-gray-700 font-semibold text-lg"><span class="text-green-600 underline">Klik untuk unggah</span> atau seret file</p>
-                    <p class="text-gray-400 text-sm mt-2">PDF, JPG, atau PNG (Maks. 5MB)</p>
+                    <p class="text-gray-400 text-sm mt-2">PDF, JPG, atau PNG (Maks. 2MB)</p>
                 </div>
                 
                 <!-- Preview File -->
@@ -142,6 +142,18 @@
                  @error('proof_file')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
+
+                <!-- Bantuan Jika Lupa Dokumentasi -->
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-gray-500">
+                        Lupa mengambil dokumentasi saat kegiatan? 
+                        <a href="https://wa.me/6285795899901?text=Halo%20Admin,%20saya%20terdaftar%20di%20program%20{{ urlencode($program->program) }}%20namun%20lupa/tidak%20sempat%20mengambil%20dokumentasi%20bukti%20kegiatan.%20Mohon%20bantuannya." 
+                           target="_blank" 
+                           class="text-green-600 font-semibold hover:text-green-700 hover:underline transition-colors">
+                           Hubungi Admin
+                        </a>
+                    </p>
+                </div>
             </div>
 
             <!-- Actions -->
@@ -238,6 +250,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function handleFile(file) {
+        // Validasi ukuran file (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar',
+                text: 'Maksimal ukuran file adalah 2MB',
+                confirmButtonColor: '#16a34a'
+            });
+            fileInput.value = '';
+            return;
+        }
+
         filenameDisplay.textContent = file.name;
         filesizeDisplay.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
         

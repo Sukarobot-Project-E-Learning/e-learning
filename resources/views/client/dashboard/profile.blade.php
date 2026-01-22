@@ -61,7 +61,7 @@
             <!-- TextField: Nama Lengkap -->
             <div class="flex flex-col">
               <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="fullName">Nama Lengkap</label>
-              <input name="name" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ $user->name }}"/>
+              <input name="name" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="fullName" value="{{ old('name', $user->name) }}"/>
             </div>
             <!-- TextField: Username -->
             <div class="flex flex-col">
@@ -72,7 +72,7 @@
                        id="username" 
                        type="text" 
                        placeholder="Masukkan username unik" 
-                       value="{{ $user->username ?? '' }}"
+                       value="{{ old('username', $user->username ?? '') }}"
                        autocomplete="off"/>
                 <span id="usernameStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xl hidden"></span>
               </div>
@@ -86,17 +86,17 @@
               <!-- TextField: Phone -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="phone">Nomor Telepon</label>
-                <input name="phone" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" placeholder="Tambah nomor telepon Anda..." value="{{ $user->phone }}"/>
+                <input name="phone" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="phone" placeholder="Tambah nomor telepon Anda..." value="{{ old('phone', $user->phone) }}"/>
               </div>
               <!-- Job -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="job">Pekerjaan</label>
-                <input name="job" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="job" type="text" placeholder="Tambah pekerjaan Anda..." value="{{ $user->job }}"/>
+                <input name="job" class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary h-14 placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal" id="job" type="text" placeholder="Tambah pekerjaan Anda..." value="{{ old('job', $user->job) }}"/>
               </div>
               <!-- TextField: Address -->
               <div class="flex flex-col md:col-span-2">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="address">Alamat</label>
-                <textarea name="address" class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal min-h-32" id="address" placeholder="Tambah alamat Anda...">{{ $user->address }}</textarea>
+                <textarea name="address" class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] bg-white focus:border-primary placeholder:text-[#616f89] p-[15px] text-base font-normal leading-normal min-h-32" id="address" placeholder="Tambah alamat Anda...">{{ old('address', $user->address) }}</textarea>
               </div>
             </div>
           </div>
