@@ -243,7 +243,7 @@
                 
                 {{-- Logout --}}
                 <div class="py-2">
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" data-turbo="false">
                         @csrf
                         <button type="submit" 
                                 class="flex items-center w-full px-5 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 group">
