@@ -15,75 +15,59 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Get current instructor/trainer ID
-        $trainerId = null;
+        // Get current logged in user ID
+        $userId = auth()->id();
         
-        // If user is authenticated and has trainer relation
-        if (auth()->check()) {
-            $user = auth()->user();
-            // Find trainer by email
-            $trainer = DB::table('data_trainers')
-                ->where('email', $user->email)
-                ->first();
-            
-            if ($trainer) {
-                $trainerId = $trainer->id;
-            }
-        }
-        
-        // If no trainer found, use first active trainer (for testing)
-        if (!$trainerId) {
-            $trainer = DB::table('data_trainers')
-                ->where('status_trainer', 'Aktif')
-                ->first();
-            $trainerId = $trainer ? $trainer->id : null;
+        if (!$userId) {
+             return redirect()->route('login');
         }
 
-        if (!$trainerId) {
-            // No trainer found, return with empty data
-            return view('instructor.dashboard', [
-                'totalPrograms' => 0,
-                'totalQuizzes' => 0,
-                'totalStudents' => 0,
-                'totalSubmissions' => 0,
-                'recentPrograms' => collect([])
-            ]);
-        }
+        $trainer = DB::table('data_trainers')->where('email', auth()->user()->email)->first();
+        $trainerId = $trainer ? $trainer->id : null;
 
-        // Get programs assigned to this trainer (from schedules)
-        $programIds = DB::table('schedules')
-            ->where('id_trainer', $trainerId)
-            ->where('ket', 'Aktif')
-            ->distinct()
-            ->pluck('id_program')
-            ->filter()
-            ->toArray();
-
-        $totalPrograms = count($programIds);
-        
-        // Get program details
-        $programs = DB::table('data_programs')
-            ->whereIn('id', $programIds)
-            ->get();
-
-        // Get total students enrolled in instructor's programs
-        $totalStudents = 0;
-        if (!empty($programIds)) {
-            $totalStudents = DB::table('enrollments')
-                ->whereIn('program_id', $programIds)
-                ->where('status', 'active')
-                ->distinct()
-                ->count('student_id');
-        }
-
-        // Get total quizzes/tugas for this instructor
-        $totalQuizzes = DB::table('quizzes')
+        // Get total programs created by this instructor
+        $totalPrograms = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
+            ->where('status', 'approved')
             ->count();
         
-        // Get total submissions/responses for quizzes created by this instructor
+        // Get total students enrolled in instructor's programs
+        $totalStudents = DB::table('enrollments')
+            ->join('data_programs', 'enrollments.program_id', '=', 'data_programs.id')
+            ->where(function($query) use ($userId, $trainerId) {
+                $query->where('data_programs.instructor_id', $userId);
+                if ($trainerId) {
+                    $query->orWhere('data_programs.instructor_id', $trainerId);
+                }
+            })
+            ->where('enrollments.status', 'active')
+            ->distinct('enrollments.student_id')
+            ->count('enrollments.student_id');
+
+        // Get total quizzes/tugas for this instructor
+        // Assuming instructor_id in quizzes refers to users.id or data_trainers.id
+        // We will check both or assume users.id based on program logic.
+        // If quizzes uses data_trainers, we might need that lookup back.
+        // Let's assume it uses users.id for consistency with new system, 
+        // OR we try to find the trainer ID just in case.
+
+        $totalQuizzes = DB::table('quizzes')
+            ->where(function($query) use ($userId, $trainerId) {
+                $query->where('instructor_id', $userId);
+                if ($trainerId) {
+                    $query->orWhere('instructor_id', $trainerId);
+                }
+            })
+            ->count();
+        
+        // Get total submissions
         $quizIds = DB::table('quizzes')
-            ->where('instructor_id', $trainerId)
+            ->where(function($query) use ($userId, $trainerId) {
+                $query->where('instructor_id', $userId);
+                if ($trainerId) {
+                    $query->orWhere('instructor_id', $trainerId);
+                }
+            })
             ->pluck('id')
             ->toArray();
         
@@ -94,14 +78,11 @@ class DashboardController extends Controller
                 ->count();
         }
 
-        // Get recent programs with details
-        // First get distinct program IDs with their latest schedule created_at
-        $recentPrograms = DB::table('schedules')
-            ->where('id_trainer', $trainerId)
-            ->where('ket', 'Aktif')
-            ->join('data_programs', 'schedules.id_program', '=', 'data_programs.id')
-            ->select('data_programs.id', 'data_programs.program as title', 'schedules.ket as status', DB::raw('MAX(schedules.created_at) as created_at'))
-            ->groupBy('data_programs.id', 'data_programs.program', 'schedules.ket')
+        // Get recent programs
+        $recentPrograms = DB::table('program_approvals')
+            ->where('instructor_id', $trainerId)
+            ->where('status', 'approved')
+            ->select('id', 'title as program', 'status', 'created_at')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

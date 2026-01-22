@@ -1,17 +1,17 @@
-<aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0 border-r border-slate-100 dark:border-gray-700 transition-colors duration-200">
+<aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:flex flex-col flex-shrink-0 border-r border-slate-100 dark:border-gray-700 transition-colors duration-200">
     <div class="flex flex-col h-full">
 
         {{-- Logo Section --}}
-        <div class="flex items-center justify-center px-6 py-6 border-b border-slate-100 dark:border-gray-700">
+        <div class="flex items-center justify-center h-16 px-6 border-b border-slate-100 dark:border-gray-700">
             <a href="{{ route('instructor.dashboard') }}" class="flex items-center group">
                 <img src="{{ asset('assets/elearning/client/img/logo.png') }}"
-                    class="w-auto h-10 object-contain transition-all duration-300 ease-in-out hover:scale-105 dark:brightness-110"
-                    alt="main_logo" />
+                    class="w-auto h-8 md:h-10 object-contain transition-all duration-300 ease-in-out hover:scale-105"
+                    alt="Sukarobot Logo" />
             </a>
         </div>
 
         {{-- Navigation Menu --}}
-        <nav class="flex-1 px-4 py-6 overflow-y-auto">
+        <nav class="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar">
             <ul class="space-y-2">
                 {{-- Dashboard --}}
                 <li>
@@ -43,7 +43,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
-                        Program Saya
+                        Pengajuan Program 
                     </a>
                 </li>
 
@@ -65,6 +65,20 @@
                 </li>
             </ul>
         </nav>
+
+        {{-- Logout Section (Optional for Sidebar, but good to have) --}}
+        <div class="p-4 border-t border-slate-100 dark:border-gray-700">
+             <form method="POST" action="{{ route('logout') }}" data-turbo="false">
+                @csrf
+                <button type="submit" 
+                        class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Logout
+                </button>
+            </form>
+        </div>
 
     </div>
 </aside>

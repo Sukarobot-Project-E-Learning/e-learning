@@ -1,5 +1,16 @@
 <!DOCTYPE html>
-<html :class="{ 'dark': dark }" x-data="data()" lang="en">
+<html :class="{ 'dark': dark }" x-data="{ 
+    dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+    isSideMenuOpen: false,
+    toggleSideMenu() {
+        this.isSideMenuOpen = !this.isSideMenuOpen
+    },
+    closeSideMenu() {
+        this.isSideMenuOpen = false
+    }
+}" 
+@dark-mode-updated.window="dark = $event.detail"
+lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,12 +22,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Apply dark mode immediately to prevent flash
-        if (localStorage.getItem('darkMode') === 'true' || 
-            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
-        
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -33,12 +38,19 @@
         };
     </script>
     <!-- App CSS & JS via Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/instructor.css', 'resources/js/instructor.js'])
 
     <!-- Alpine.js x-cloak -->
     <style>
         [x-cloak] {
             display: none !important;
+        }
+        
+        /* Turbo Progress Bar */
+        .turbo-progress-bar {
+            height: 3px;
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            background-image: linear-gradient(to right, #3b82f6, #f97316); /* Blue to Orange */
         }
         
         /* Loading Screen Styles - Only shown when ?welcome=1 parameter is present */
@@ -119,9 +131,15 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     @stack('styles')
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
-<body>
-    <!-- Instructor Loading Screen - Only shows when coming from client pages -->
+<body class="bg-gray-50 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 antialiased"
+      @toggle-mobile-sidebar.window="toggleSideMenu">
+
+      <!-- Instructor Loading Screen - Only shows when coming from client pages -->
     <div id="instructor-loading-screen">
         <!-- Decorative Background Elements -->
         <div class="loading-decoration blue" style="width: 300px; height: 300px; top: -100px; right: -100px; filter: blur(60px);"></div>
@@ -140,7 +158,7 @@
             <!-- Welcome Text -->
             <div class="text-center space-y-2">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800">
-                    Selamat Datang, Instruktur!
+                    Selamat Datang, {{ Auth::user()->name }}!
                 </h2>
                 <p class="text-gray-500 text-sm loading-subtitle">
                     Menyiapkan dashboard Anda...
@@ -181,33 +199,39 @@
                     }, 1200);
                 });
             }
+
+            // Ensure loader hides on Turbo navigation (just in case)
+            document.addEventListener("turbo:load", function() {
+                const loadingScreen = document.getElementById('instructor-loading-screen');
+                if (loadingScreen && loadingScreen.style.display !== 'none' && !showWelcome) {
+                    loadingScreen.style.display = 'none';
+                }
+            });
         })();
     </script>
 
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
-
+    <div class="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
+        
         <!-- Desktop Sidebar -->
         @include('instructor.layouts.sidebar')
 
         <!-- Mobile Sidebar -->
         @include('instructor.layouts.mobile-sidebar')
 
-        <div class="flex flex-col flex-1 w-full">
-
+        <div class="flex flex-col flex-1 w-full h-full overflow-hidden relative">
+            
             <!-- Header/Navbar -->
             @include('instructor.layouts.header')
 
             <!-- Main Content -->
-            <main class="h-full overflow-y-auto">
-                <div class="container px-6 mx-auto grid">
+            <main class="flex-1 h-full overflow-y-auto overflow-x-hidden">
+                <div class="container mx-auto max-w-7xl">
                     @yield('content')
                 </div>
             </main>
-
         </div>
     </div>
 
     @stack('scripts')
 </body>
 </html>
-

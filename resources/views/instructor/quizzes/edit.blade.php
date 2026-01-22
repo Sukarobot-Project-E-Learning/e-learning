@@ -1,47 +1,23 @@
 @extends('instructor.layouts.app')
 
-@section('title', 'Buat Tugas/Postest')
+@section('title', 'Edit Tugas/Postest')
 
 @section('content')
     <div class="container px-6 mx-auto" x-data="quizForm()">
-        
-        {{-- Flash Messages --}}
-        @if (session('success'))
-            <div class="mt-6 p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
-                <span class="font-medium">Berhasil!</span> {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="mt-6 p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-                <span class="font-medium">Gagal!</span> {{ session('error') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="mt-6 p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-                <span class="font-medium">Terdapat kesalahan!</span>
-                <ul class="mt-1 list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <!-- Page Header -->
         <div class="my-6">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Buat tugas atau postest baru untuk program Anda.</p>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Perbarui tugas atau postest ini.</p>
                 </div>
             </div>
         </div>
 
         <!-- Form Card -->
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="quizForm" action="{{ route('instructor.quizzes.store') }}" method="POST">
+            <form id="quizForm" action="{{ route('instructor.quizzes.update', $quiz->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="px-6 py-6 space-y-6">
                     <!-- Judul Tugas/Postest -->
                     <div>
@@ -93,7 +69,7 @@
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Pertanyaan</h3>
                             <button type="button"
                                     @click="addQuestion()"
-                                    class="inline-flex items-center px-2 py-1 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
@@ -252,7 +228,7 @@
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            Simpan
+                            Simpan Perubahan
                         </button>
                     </div>
                 </div>
@@ -265,11 +241,19 @@
         function quizForm() {
             return {
                 formData: {
-                    title: '',
-                    program_id: '',
-                    description: ''
+                    title: '{{ $quiz->title }}',
+                    program_id: '{{ $quiz->program_id }}',
+                    description: {!! json_encode($quiz->description ?? '') !!}
                 },
-                questions: [],
+                questions: {!! json_encode($questions->map(function($q) {
+                    return [
+                        'text' => $q->question,
+                        'type' => $q->type,
+                        'options' => $q->options,
+                        'correct_answer' => $q->type === 'multiple_choice' ? ($q->correct_answer_index ?? '') : $q->correct_answer,
+                        'points' => $q->points
+                    ];
+                })) !!},
 
                 addQuestion() {
                     this.questions.push({
@@ -318,7 +302,7 @@
                             return;
                         }
 
-                        if ((q.type === 'multiple_choice' || q.type === 'true_false') && !q.correct_answer) {
+                        if ((q.type === 'multiple_choice' || q.type === 'true_false') && (q.correct_answer === '' || q.correct_answer === null)) {
                             alert(`Pertanyaan ${i + 1}: Harap pilih jawaban yang benar`);
                             return;
                         }

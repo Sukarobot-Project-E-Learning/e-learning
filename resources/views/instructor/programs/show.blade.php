@@ -8,7 +8,6 @@
         <div class="my-6">
             <div class="flex items-start justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Detail Program</h2>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         Program ini sudah disetujui dan tidak dapat diedit.
                     </p>
@@ -120,7 +119,7 @@
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Tools yang Digunakan</h3>
                     <div class="flex flex-wrap gap-2">
                         @foreach($submission->tools as $tool)
-                            <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-sm dark:bg-purple-900 dark:text-purple-300">{{ $tool }}</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm dark:bg-blue-900 dark:text-blue-300">{{ $tool }}</span>
                         @endforeach
                     </div>
                 </div>
@@ -146,7 +145,7 @@
                         @foreach($submission->materials as $index => $material)
                             <div class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                                 <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-sm font-semibold text-purple-600 dark:text-purple-400">Hari {{ $index + 1 }}</span>
+                                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">Hari {{ $index + 1 }}</span>
                                     @if(!empty($material['duration']))
                                         @php
                                             $durationParts = explode(':', $material['duration']);

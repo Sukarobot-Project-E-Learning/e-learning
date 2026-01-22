@@ -1,0 +1,214 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+/* ============================ ADMIN CUSTOM STYLES ============================ */
+/* DASHBOARD */
+.dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --orange-primary: #F97316;
+    --orange-secondary: #FB923C;
+    --orange-light: #FED7AA;
+    --orange-dark: #EA580C;
+}
+
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #F97316, #FB923C);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(249, 115, 22, 0.1), 0 10px 10px -5px rgba(249, 115, 22, 0.04);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.chart-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+.dark .chart-card {
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(31, 41, 55, 0.9) 100%);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.star-filled {
+    color: #F97316;
+}
+
+.star-empty {
+    color: #D1D5DB;
+}
+
+.progress-bar {
+    transition: width 1s ease-in-out;
+}
+
+@keyframes pulse-orange {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse-orange {
+    animation: pulse-orange 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.tab-button {
+    transition: all 0.2s ease;
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.3);
+}
+
+.tab-button:not(.active):hover {
+    background-color: rgba(249, 115, 22, 0.1);
+}
+
+/* SIDEBAR */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #fdba74;
+    border-radius: 20px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: #f97316;
+}
+
+.nav-glow {
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+.gradient-border {
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%);
+}
+
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.8);
+    }
+}
+
+.active-pulse {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer-divider {
+    background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.3), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+/* MOBILE SIDEBAR */
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(249, 115, 22, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(249, 115, 22, 0.6);
+    }
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@supports not (backdrop-filter: blur(12px)) {
+    .backdrop-blur-md {
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .dark .backdrop-blur-md {
+        background-color: rgba(31, 41, 55, 0.95);
+    }
+}
+
+ul::-webkit-scrollbar {
+    width: 4px;
+}
+
+ul::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+ul::-webkit-scrollbar-thumb {
+    background: rgba(249, 115, 22, 0.3);
+    border-radius: 2px;
+}
+
+ul::-webkit-scrollbar-thumb:hover {
+    background: rgba(249, 115, 22, 0.5);
+}
+
+/* Hide elements with x-cloak until Alpine initializes */
+[x-cloak] {
+    display: none !important;
+}

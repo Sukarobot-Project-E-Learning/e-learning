@@ -37,11 +37,12 @@ Route::prefix('instructor')->name('instructor.')->group(function () {
         if (auth()->check() && auth()->user()->role === 'instructor') {
             return redirect()->route('instructor.dashboard');
         }
-        return redirect()->route('instructor.login');
+        return redirect()->route('login');
     });
 
-    Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showInstructorLoginForm'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'instructorLogin']);
+    Route::get('/login', function () {
+        return redirect()->route('login');
+    })->name('login');    
 });
 
 // User Login Routes (Public)
