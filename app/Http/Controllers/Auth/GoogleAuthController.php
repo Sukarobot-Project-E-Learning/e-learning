@@ -143,7 +143,7 @@ class GoogleAuthController extends Controller
                 } elseif ($user->role === 'instructor') {
                     return redirect()->route('instructor.dashboard');
                 } else {
-                    return redirect()->route('client.dashboard');
+                    return redirect()->route('client.dashboard.program');
                 }
             } else {
                 // User doesn't exist - Register

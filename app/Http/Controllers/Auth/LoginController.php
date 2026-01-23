@@ -282,7 +282,7 @@ class LoginController extends Controller
                 ->update(['last_login_at' => now()]);
 
             // Don't regenerate session to preserve other guard sessions
-            return redirect()->intended(route('client.dashboard'));
+            return redirect()->intended(route('client.dashboard.program'));
         }
 
         return back()->withErrors([
