@@ -84,8 +84,11 @@ jobs:
           mirror --reverse --only-newer --verbose --parallel=2 routes/ routes/;
           mirror --reverse --only-newer --verbose --parallel=2 database/migrations/ database/migrations/;
 
-          # Sync public folder but exclude server-managed files
-          mirror --reverse --only-newer --verbose --parallel=2 --exclude='index.php' --exclude='.htaccess' public/ public/;
+          # Sync Vite build assets (with --delete to replace old hashed files)
+          mirror --reverse --delete --verbose --parallel=2 public/build/ public/build/;
+
+          # Sync public folder but exclude server-managed files and build (already synced above)
+          mirror --reverse --only-newer --verbose --parallel=2 --exclude='index.php' --exclude='.htaccess' --exclude='build/' public/ public/;
 
           # Sync storage/app/public for uploaded files (avatars, images, etc)
           mirror --reverse --only-newer --verbose --parallel=2 storage/app/public/ storage/app/public/;
