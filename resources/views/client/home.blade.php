@@ -91,7 +91,7 @@
             <div class="relative" data-aos="fade-left" data-aos-duration="1000">
                 <div
                     class="relative z-10 bg-white p-4 rounded-3xl shadow-2xl transform rotate-2 hover:rotate-0 transition-all duration-500">
-                    <img src="{{ asset('assets/elearning/client/img/ilustrator.jpeg') }}" alt="Learning Illustration"
+                    <img src="{{ asset('assets/elearning/client/img/hero.jpg') }}" alt="Learning Illustration"
                         class="w-full rounded-2xl object-cover h-[400px] lg:h-[500px]">
 
                     <!-- Floating Card -->
