@@ -119,7 +119,9 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password">
                             Password <span class="text-red-500">*</span>
                         </label>
-                        <input type="password" name="password" id="password" required x-model="password" @input="validate" placeholder="Masukkan password" class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500"> <p x-show="passwordError" x-text="passwordError" class="text-red-500 text-sm mt-1"></p>
+                        <input type="password" name="password" id="password" required minlength="8" x-model="password" @input="validate" placeholder="Masukkan password" class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-show="!passwordError">Password minimal 8 karakter</p>
+                        <p x-show="passwordError" x-text="passwordError" class="text-red-500 text-xs mt-1"></p>
                     </div>
 
                     <!-- Confirm Password -->
