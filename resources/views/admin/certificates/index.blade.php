@@ -270,7 +270,7 @@ function certificateTable() {
             return String(text).replace(regex, '<span class="search-highlight">$1</span>');
         },
         getImageUrl(image) {
-            if (!image) return '';
+            if (!image || typeof image !== 'string') return '';
             if (image.startsWith('http')) return image;
             if (image.startsWith('images/')) return '/' + image;
             return '/storage/' + image;
