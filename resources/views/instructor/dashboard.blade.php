@@ -167,7 +167,7 @@
                 </a>
 
                 <!-- Action Card 3 - Edit Profile -->
-                <a href="{{ route('client.dashboard') }}" class="group relative block bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-lg dark:shadow-slate-900/50 border border-gray-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-900 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 overflow-hidden sm:col-span-2 lg:col-span-1">
+                <a href="{{ route('client.dashboard') }}" data-turbo="false" class="group relative block bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-lg dark:shadow-slate-900/50 border border-gray-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-900 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 overflow-hidden sm:col-span-2 lg:col-span-1">
                     
                     <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-600/0 group-hover:from-emerald-500/5 group-hover:to-emerald-600/10 dark:group-hover:from-emerald-500/10 dark:group-hover:to-emerald-600/20 transition-all duration-300"></div>
                     
