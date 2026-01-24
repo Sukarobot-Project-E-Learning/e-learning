@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Admin\CertificateController;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -73,7 +75,144 @@ class UserController extends Controller
 
     public function certificate()
     {
-        return view('client.dashboard.certificate');
+        $user = Auth::user();
+
+        // Get approved program proofs for this user
+        $proofs = DB::table('program_proofs')
+            ->join('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
+            ->select(
+                'program_proofs.id as proof_id',
+                'program_proofs.program_id',
+                'program_proofs.student_id',
+                'program_proofs.updated_at as approved_at',
+                'data_programs.program as program_name'
+            )
+            ->where('program_proofs.student_id', $user->id)
+            ->where('program_proofs.status', 'accepted')
+            ->get();
+
+        $certificates = [];
+
+        foreach ($proofs as $proof) {
+            // Check if certificate exists
+            $certificate = DB::table('certificates')
+                ->where('user_id', $user->id)
+                ->where('program_id', $proof->program_id)
+                ->first();
+
+            // If not exists, try to generate it (Lazy Generation)
+            if (!$certificate) {
+                // Check if template exists
+                if (CertificateController::hasTemplateForProgram($proof->program_id)) {
+                    $template = CertificateController::getTemplateForProgram($proof->program_id);
+                    
+                    // Generate
+                    $result = CertificateController::generateCertificateForUser(
+                        $template->id,
+                        $proof->program_id,
+                        $user->id,
+                        $proof->proof_id
+                    );
+
+                    if ($result['success']) {
+                        // Fetch newly generated certificate
+                        $certificate = DB::table('certificates')
+                            ->where('id', $result['certificate_id'])
+                            ->first();
+                    }
+                }
+            }
+
+            // If we have a certificate (existing or newly generated)
+            if ($certificate) {
+                $certificates[] = (object) [
+                    'id' => $certificate->id,
+                    'program_name' => $proof->program_name,
+                    'issued_at' => is_string($certificate->issued_at) ? \Carbon\Carbon::parse($certificate->issued_at) : $certificate->issued_at,
+                    'certificate_number' => $certificate->certificate_number
+                ];
+            }
+        }
+
+        return view('client.dashboard.certificate', compact('certificates'));
+    }
+
+    public function downloadCertificate($id)
+    {
+        $user = Auth::user();
+        
+        $certificate = DB::table('certificates')
+            ->where('id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$certificate) {
+            return back()->with('error', 'Sertifikat tidak ditemukan.');
+        }
+
+        try {
+            // Get file path
+            // stored path is like "storage/certificates/generated/filename.png"
+            // or relative path depending on how it was saved.
+            // Based on CertificateController::renderCertificateImage:
+            // return 'storage/certificates/generated/' . $fileName;
+            
+            // We need absolute path for file_get_contents
+            // If it starts with storage/, we assume it's in public/storage linked to storage/app/public
+            
+            $path = $certificate->certificate_file;
+            $localPath = '';
+
+            if (str_starts_with($path, 'storage/')) {
+                // It is in public/storage
+                $localPath = public_path($path);
+            } else {
+                // Assume relative to storage/app/public ?
+                $localPath = storage_path('app/public/' . $path);
+            }
+
+            if (!file_exists($localPath)) {
+                // Try fallback logic
+                if (file_exists(public_path($path))) {
+                    $localPath = public_path($path);
+                } else {
+                    return back()->with('error', 'File sertifikat fisik tidak ditemukan.');
+                }
+            }
+
+            $imageContent = file_get_contents($localPath);
+            $base64Image = base64_encode($imageContent);
+            
+            // Detect mime type
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($imageContent);
+
+            // Create HTML for PDF
+            $html = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    @page { margin: 0; size: A4 landscape; }
+                    body { margin: 0; padding: 0; }
+                    img { width: 100%; height: 100%; object-fit: contain; display: block; }
+                </style>
+            </head>
+            <body>
+                <img src="data:' . $mimeType . ';base64,' . $base64Image . '" />
+            </body>
+            </html>';
+
+            $pdf = Pdf::loadHTML($html);
+            $pdf->setPaper('a4', 'landscape');
+
+            $filename = 'Sertifikat_' . str_replace(' ', '_', $user->name) . '_' . date('Ymd') . '.pdf';
+
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengunduh sertifikat: ' . $e->getMessage());
+        }
     }
 
     public function transaction()

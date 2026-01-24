@@ -236,6 +236,7 @@ Route::name('client.')->group(function () {
         Route::get('/', [UserDashboardController::class, 'profile'])->name('dashboard');
         Route::get('/program', [UserDashboardController::class, 'program'])->name('dashboard.program');
         Route::get('/sertifikat', [UserDashboardController::class, 'certificate'])->name('dashboard.certificate');
+        Route::get('/sertifikat/{id}/download', [UserDashboardController::class, 'downloadCertificate'])->name('dashboard.certificate.download');
         Route::get('/transaksi', [UserDashboardController::class, 'transaction'])->name('dashboard.transaction');
         Route::get('/voucher', [UserDashboardController::class, 'voucher'])->name('dashboard.voucher');
 
