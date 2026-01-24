@@ -572,27 +572,8 @@ class CertificateController extends Controller
             </html>';
 
             // Generate PDF using DOMPDF
-            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class) && !class_exists(\Dompdf\Dompdf::class)) {
-                // If DOMPDF not installed, return image download instead
-                return response($imageContent)
-                    ->header('Content-Type', $mimeType)
-                    ->header('Content-Disposition', 'attachment; filename="sertifikat_' . date('Y-m-d_His') . '.png"');
-            }
-            
-            // Try using Barryvdh facade first
-            if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
-            } else {
-                // Fallback to direct Dompdf usage
-                $dompdf = new \Dompdf\Dompdf();
-                $dompdf->loadHtml($html);
-                $dompdf->setPaper('a4', 'landscape');
-                $dompdf->render();
-                return response($dompdf->output())
-                    ->header('Content-Type', 'application/pdf')
-                    ->header('Content-Disposition', 'attachment; filename="sertifikat_' . date('Y-m-d_His') . '.pdf"');
-            }
-            
+            $pdf = app('dompdf.wrapper');
+            $pdf->loadHTML($html);
             $pdf->setPaper('a4', 'landscape');
             
             // Download the PDF
