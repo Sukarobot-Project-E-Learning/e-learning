@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Admin\CertificateController;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -203,7 +202,7 @@ class UserController extends Controller
             </body>
             </html>';
 
-            $pdf = Pdf::loadHTML($html);
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
             $pdf->setPaper('a4', 'landscape');
 
             $filename = 'Sertifikat_' . str_replace(' ', '_', $user->name) . '_' . date('Ymd') . '.pdf';
