@@ -572,8 +572,7 @@ class CertificateController extends Controller
             </html>';
 
             // Generate PDF using DOMPDF
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadHTML($html);
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
             $pdf->setPaper('a4', 'landscape');
             
             // Download the PDF
