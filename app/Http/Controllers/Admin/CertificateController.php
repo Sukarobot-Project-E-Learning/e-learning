@@ -571,14 +571,18 @@ class CertificateController extends Controller
             </body>
             </html>';
 
-            // Generate PDF using DOMPDF
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
-            $pdf->setPaper('a4', 'landscape');
+            // Generate PDF using DOMPDF directly (bypass Laravel wrapper issues)
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('a4', 'landscape');
+            $dompdf->render();
             
             // Download the PDF
             $filename = 'sertifikat_' . date('Y-m-d_His') . '.pdf';
             
-            return $pdf->download($filename);
+            return response($dompdf->output())
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         } catch (\Exception $e) {
             \Log::error('PDF generation failed: ' . $e->getMessage());
