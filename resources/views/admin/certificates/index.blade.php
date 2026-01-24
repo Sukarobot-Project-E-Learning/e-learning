@@ -70,7 +70,7 @@
     <!-- Mobile Card View -->
     <div class="block lg:hidden space-y-3 mb-6">
         <template x-for="(template, index) in templates" :key="template.id">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-start gap-3">
                     <template x-if="template.template_path">
                         <img :src="getImageUrl(template.template_path)" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getImageUrl(template.template_path), '_blank')">
@@ -127,7 +127,7 @@
                 </thead>
                 <tbody class="divide-y divide-orange-100 dark:divide-gray-700">
                     <template x-for="(template, index) in templates" :key="template.id">
-                        <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150" :style="'animation-delay:' + (index * 50) + 'ms'">
+                        <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-6 py-4"><div class="font-semibold text-gray-800 dark:text-white" x-html="highlightText(template.program_name)"></div></td>
                             <td class="px-6 py-4 text-sm"><code class="px-2 py-1 text-xs bg-gray-100 dark:bg-white rounded" x-text="template.number_prefix"></code></td>
                             <td class="px-6 py-4">
