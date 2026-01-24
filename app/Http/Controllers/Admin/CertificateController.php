@@ -61,14 +61,20 @@ class CertificateController extends Controller
                 ->where('template_id', $template->id)
                 ->count();
             
+            // Generate URL for template image if exists (for admin preview)
+            $templateUrl = null;
+            if ($template->template_path) {
+                // Use a secure route to serve private images
+                $templateUrl = route('admin.certificates.template-image', ['id' => $template->id]);
+            }
+            
             return [
                 'id' => $template->id,
                 'program_name' => $template->program_name ?? 'N/A',
                 'program_id' => $template->program_id,
                 'number_prefix' => $template->number_prefix,
                 'description' => $template->description,
-                // Template path is private, don't expose URL
-                'template_path' => $template->template_path ? true : false, // Just indicate if exists
+                'template_path' => $templateUrl, // Return URL for display
                 'is_active' => $template->is_active,
                 'certificates_count' => $certificatesCount,
                 'created_at' => $template->created_at ? date('d F Y', strtotime($template->created_at)) : '-'
@@ -299,6 +305,31 @@ class CertificateController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus template'], 500);
         }
+    }
+
+    /**
+     * Serve template image from private storage (admin only)
+     */
+    public function templateImage($id)
+    {
+        $template = DB::table('certificate_templates')->where('id', $id)->first();
+        
+        if (!$template || !$template->template_path) {
+            abort(404, 'Template image not found');
+        }
+        
+        $path = storage_path('app/private/' . $template->template_path);
+        
+        if (!file_exists($path)) {
+            abort(404, 'Image file not found');
+        }
+        
+        $mimeType = mime_content_type($path);
+        
+        return response()->file($path, [
+            'Content-Type' => $mimeType,
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
     }
 
     /**
@@ -541,7 +572,27 @@ class CertificateController extends Controller
             </html>';
 
             // Generate PDF using DOMPDF
-            $pdf = \PDF::loadHTML($html);
+            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class) && !class_exists(\Dompdf\Dompdf::class)) {
+                // If DOMPDF not installed, return image download instead
+                return response($imageContent)
+                    ->header('Content-Type', $mimeType)
+                    ->header('Content-Disposition', 'attachment; filename="sertifikat_' . date('Y-m-d_His') . '.png"');
+            }
+            
+            // Try using Barryvdh facade first
+            if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+            } else {
+                // Fallback to direct Dompdf usage
+                $dompdf = new \Dompdf\Dompdf();
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('a4', 'landscape');
+                $dompdf->render();
+                return response($dompdf->output())
+                    ->header('Content-Type', 'application/pdf')
+                    ->header('Content-Disposition', 'attachment; filename="sertifikat_' . date('Y-m-d_His') . '.pdf"');
+            }
+            
             $pdf->setPaper('a4', 'landscape');
             
             // Download the PDF

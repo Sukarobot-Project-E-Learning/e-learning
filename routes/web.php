@@ -135,6 +135,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::post('certificates/upload-template', [\App\Http\Controllers\Admin\CertificateController::class, 'uploadTemplate'])->name('certificates.upload-template');
     Route::post('certificates/delete-temp', [\App\Http\Controllers\Admin\CertificateController::class, 'deleteTempTemplate'])->name('certificates.delete-temp');
     Route::get('certificates/download-pdf', [\App\Http\Controllers\Admin\CertificateController::class, 'downloadPdf'])->name('certificates.download-pdf');
+    Route::get('certificates/{id}/template-image', [\App\Http\Controllers\Admin\CertificateController::class, 'templateImage'])->name('certificates.template-image');
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
 
     // Promo Management

@@ -25,7 +25,7 @@
     <form id="templateForm" action="{{ route('admin.certificates.update', $template->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <input type="hidden" name="cloudinary_public_id" id="cloudinaryPublicId" value="{{ $template->cloudinary_public_id ?? '' }}">
+        <input type="hidden" name="file_path" id="filePath" value="{{ $template->template_path ?? '' }}">
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
@@ -155,13 +155,13 @@
 
             </div>
 
-            <!-- Right Column: Cloudinary Preview -->
+            <!-- Right Column: Preview -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Priview</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">📸 Hasil Preview</h3>
                     <div class="flex gap-2">
-                        <button type="button" id="refreshPreviewBtn" onclick="generateCloudinaryPreview()"
-                            class="{{ $template->cloudinary_public_id ? '' : 'hidden' }} inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors cursor-pointer">
+                        <button type="button" id="refreshPreviewBtn" onclick="generatePreview()"
+                            class="{{ $template->template_path ? '' : 'hidden' }} inline-flex items-center px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors cursor-pointer">
                             🔄 Refresh Preview
                         </button>
                         <a id="downloadPdfBtn" href="#" target="_blank"
@@ -176,8 +176,8 @@
 
                 <!-- Preview Container -->
                 <div id="previewContainer" class="border border-gray-300 rounded-lg overflow-hidden bg-gray-50 min-h-64">
-                    @if($template->cloudinary_public_id || $template->template_path)
-                    <img id="previewImage" src="{{ $template->template_path ? asset($template->template_path) : '' }}" alt="Preview" class="w-full h-auto">
+                    @if($template->template_path)
+                    <img id="previewImage" src="{{ route('admin.certificates.template-image', $template->id) }}" alt="Preview" class="w-full h-auto">
                     @else
                     <img id="previewImage" src="" alt="Preview" class="w-full h-auto" style="display: none;">
                     <div id="uploadPrompt" class="flex flex-col items-center justify-center h-64 text-gray-500">
@@ -213,18 +213,18 @@
 </div>
 
 <script>
-    var cloudinaryPublicId = '{{ $template->cloudinary_public_id ?? "" }}';
+    var filePath = '{{ $template->template_path ?? "" }}';
     var imageWidth = 1920;
     var imageHeight = 1357;
     var refreshTimeout = null;
 
     // Auto-refresh with debounce when values change
     function autoRefreshPreview() {
-        if (!cloudinaryPublicId) return;
+        if (!filePath) return;
         
         if (refreshTimeout) clearTimeout(refreshTimeout);
         refreshTimeout = setTimeout(function() {
-            generateCloudinaryPreview();
+            generatePreview();
         }, 500);
     }
 
@@ -246,7 +246,7 @@
 
     function handleImageUpload(input) {
         if (input.files && input.files[0]) {
-            uploadToCloudinary(input.files[0]);
+            uploadTemplate(input.files[0]);
         }
     }
 
@@ -264,9 +264,10 @@
         el.classList.remove('hidden');
     }
 
-    function uploadToCloudinary(file) {
+    function uploadTemplate(file) {
         var formData = new FormData();
         formData.append('blanko', file);
+        formData.append('previous_file_path', filePath);
         formData.append('_token', '{{ csrf_token() }}');
 
         showStatus('Mengupload blanko...', 'info');
@@ -278,8 +279,8 @@
         .then(function(response) { return response.json(); })
         .then(function(data) {
             if (data.success) {
-                cloudinaryPublicId = data.public_id;
-                document.getElementById('cloudinaryPublicId').value = data.public_id;
+                filePath = data.file_path;
+                document.getElementById('filePath').value = data.file_path;
                 imageWidth = data.width;
                 imageHeight = data.height;
                 
@@ -290,21 +291,21 @@
                 // Show refresh button
                 document.getElementById('refreshPreviewBtn').classList.remove('hidden');
                 
-                // Auto-generate preview with text overlay
+                // Auto-generate preview
                 showStatus('Upload berhasil! Generating preview...', 'success');
-                generateCloudinaryPreview();
+                generatePreview();
             } else {
                 showStatus('Gagal upload: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(function(error) {
             console.error('Upload error:', error);
-            showStatus('Gagal upload ke Cloudinary', 'error');
+            showStatus('Gagal upload file', 'error');
         });
     }
 
-    function generateCloudinaryPreview() {
-        if (!cloudinaryPublicId) {
+    function generatePreview() {
+        if (!filePath) {
             showStatus('Silakan upload blanko terlebih dahulu', 'error');
             return;
         }
@@ -312,7 +313,7 @@
         showStatus('Generating preview...', 'info');
 
         var formData = {
-            public_id: cloudinaryPublicId,
+            file_path: filePath,
             name_x: document.getElementById('name_x').value,
             name_y: document.getElementById('name_y').value,
             name_font_size: document.getElementById('name_font_size').value,
@@ -327,8 +328,6 @@
             date_font_size: document.getElementById('date_font_size').value,
             description: document.getElementById('descriptionInput').value || 'Deskripsi sertifikat',
             number_prefix: document.getElementById('numberPrefixInput').value || 'B-1/PT.STG',
-            image_width: imageWidth,
-            image_height: imageHeight,
             _token: '{{ csrf_token() }}'
         };
 
