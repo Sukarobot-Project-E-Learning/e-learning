@@ -160,17 +160,19 @@ class UserController extends Controller
             // If it starts with storage/, we assume it's in public/storage linked to storage/app/public
             
             $path = $certificate->certificate_file;
-            $localPath = '';
+            $localPath = null;
 
-            if (str_starts_with($path, 'storage/')) {
-                // It is in public/storage
-                $localPath = public_path($path);
-            } else {
-                // Assume relative to storage/app/public ?
-                $localPath = storage_path('app/public/' . $path);
+            if (!empty($path)) {
+                if (str_starts_with($path, 'storage/')) {
+                    // It is in public/storage
+                    $localPath = public_path($path);
+                } else {
+                    // Assume relative to storage/app/public ?
+                    $localPath = storage_path('app/public/' . $path);
+                }
             }
 
-            if (!file_exists($localPath)) {
+            if (!$localPath || !file_exists($localPath)) {
                 // Try fallback logic
                 if (file_exists(public_path($path))) {
                     $localPath = public_path($path);
