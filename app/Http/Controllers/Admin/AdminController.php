@@ -178,11 +178,11 @@ class AdminController extends Controller
         try {
             // Check if this is the last admin
             $adminCount = DB::table('users')->where('role', 'admin')->count();
-            
+
             if ($adminCount <= 1) {
                 return redirect()->back()->with('error', 'Tidak dapat menghapus admin terakhir. Sistem harus memiliki minimal 1 admin.');
             }
-            
+
             $admin = DB::table('users')->where('id', $id)->where('role', 'admin')->first();
             if ($admin && $admin->avatar && file_exists(public_path($admin->avatar))) {
                 unlink(public_path($admin->avatar));

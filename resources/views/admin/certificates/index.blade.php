@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Template Sertifikat')
 
@@ -70,7 +70,7 @@
     <!-- Mobile Card View -->
     <div class="block lg:hidden space-y-3 mb-6">
         <template x-for="(template, index) in templates" :key="template.id">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4" :style="'animation-delay:' + (index * 50) + 'ms'">
                 <div class="flex items-start gap-3">
                     <template x-if="template.template_path">
                         <img :src="getImageUrl(template.template_path)" class="w-16 h-12 rounded-lg object-cover border-2 border-orange-200 cursor-pointer" @click="window.open(getImageUrl(template.template_path), '_blank')">

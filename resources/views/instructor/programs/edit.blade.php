@@ -1,466 +1,794 @@
-@extends('instructor.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Edit Pengajuan Program')
 
 @section('content')
 
-    <div class="container px-6 mx-auto">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+        <div class="container px-4 sm:px-6 mx-auto max-w-4xl">
 
-        <!-- Page Header -->
-        <div class="my-6">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        @if($submission->status === 'rejected')
-                            <span class="text-red-600">Program ini ditolak. Silakan perbaiki dan ajukan ulang.</span>
-                        @else
-                            Perbarui data pengajuan program Anda.
-                        @endif
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Status Badge -->
-        @if($submission->status === 'rejected')
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
-            <div class="flex items-start gap-3">
-                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                </svg>
-                <div>
-                    <p class="text-sm font-medium text-red-800 dark:text-red-200">Program Ditolak</p>
-                    @if($submission->rejection_reason)
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-300">Alasan: {{ $submission->rejection_reason }}</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @elseif($submission->status === 'pending')
-        <div class="mb-6">
-            <span class="px-3 py-1.5 text-sm font-semibold text-yellow-700 bg-yellow-100 rounded-full">
-                ⏳ Menunggu Persetujuan
-            </span>
-        </div>
-        @endif
-
-        <!-- Form Card -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="programForm" action="{{ route('instructor.programs.update', $submission->id) }}" method="POST" enctype="multipart/form-data"
+            <!-- Form Card with Progress Header -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden"
                 x-data="programForm()">
-                @csrf
-                @method('PUT')
-                <div class="px-6 py-6 space-y-6">
+                <!-- Progress Header -->
+                <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
 
-                    <!-- Informasi Dasar -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Informasi Dasar</h3>
-                        <div class="space-y-4">
-
-                            <!-- Judul Program -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Judul Program <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="title" required placeholder="Masukkan judul program"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('title', $submission->title) }}">
-                            </div>
-
-                            <!-- Kategori -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Kategori <span class="text-red-500">*</span>
-                                </label>
-                                <select name="category" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Kategori</option>
-                                    <option value="kursus" {{ old('category', $submission->category) == 'kursus' ? 'selected' : '' }}>Kursus</option>
-                                    <option value="pelatihan" {{ old('category', $submission->category) == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
-                                    <option value="sertifikasi" {{ old('category', $submission->category) == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                                    <option value="outing-class" {{ old('category', $submission->category) == 'outing-class' ? 'selected' : '' }}>Outing Class</option>
-                                    <option value="outboard" {{ old('category', $submission->category) == 'outboard' ? 'selected' : '' }}>Outboard</option>
-                                </select>
-                            </div>
-
-                            <!-- Jenis Pelaksanaan -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Jenis Pelaksanaan <span class="text-red-500">*</span>
-                                </label>
-                                <select name="type" required x-model="type"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Jenis</option>
-                                    <option value="online" {{ old('type', $submission->type) == 'online' ? 'selected' : '' }}>Online</option>
-                                    <option value="offline" {{ old('type', $submission->type) == 'offline' ? 'selected' : '' }}>Offline</option>
-                                </select>
-                            </div>
-
-                            <!-- Deskripsi -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Deskripsi <span class="text-red-500">*</span>
-                                </label>
-                                <textarea name="description" rows="4" required placeholder="Masukkan deskripsi program"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('description', $submission->description) }}</textarea>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Detail Program -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Detail Program</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <!-- Kuota -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Kuota Peserta <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" name="available_slots" required min="1" placeholder="Contoh: 50"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('available_slots', $submission->available_slots) }}">
-                            </div>
-
-                            <!-- Harga -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Harga (Rp) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" name="price" required min="0" step="0.01" placeholder="Contoh: 350000"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('price', $submission->price) }}">
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Tools yang Digunakan (Dynamic) -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tools yang Digunakan</h3>
-                            <button type="button" @click="addTool()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah Tool
-                            </button>
-                        </div>
-                        <div class="space-y-2">
-                            <template x-for="(tool, index) in tools" :key="index">
-                                <div class="flex gap-2">
-                                    <input type="text" :name="'tools[' + index + ']'" x-model="tools[index]"
-                                        placeholder="Contoh: VS Code"
-                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <button type="button" @click="removeTool(index)"
-                                        class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
+                    <!-- Step Indicators -->
+                    <div class="flex items-center justify-center gap-2 sm:gap-3">
+                        <template x-for="step in totalSteps" :key="step">
+                            <div class="flex items-center">
+                                <div class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300"
+                                    :class="currentStep >= step ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'">
+                                    <span x-text="step"></span>
                                 </div>
-                            </template>
-                            <div x-show="tools.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada tools. Klik "Tambah Tool" untuk menambahkan.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kamu Akan Mendapatkan (Dynamic) -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Kamu Akan Mendapatkan</h3>
-                            <button type="button" @click="addBenefit()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah
-                            </button>
-                        </div>
-                        <div class="space-y-2">
-                            <template x-for="(benefit, index) in benefits" :key="index">
-                                <div class="flex gap-2">
-                                    <input type="text" :name="'benefits[' + index + ']'" x-model="benefits[index]"
-                                        placeholder="Contoh: Sertifikat"
-                                        class="flex-1 px-4 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <button type="button" @click="removeBenefit(index)"
-                                        class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
+                                <div x-show="step < totalSteps"
+                                    class="w-6 sm:w-12 h-1 mx-1 sm:mx-2 rounded-full transition-all duration-300"
+                                    :class="currentStep > step ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'">
                                 </div>
-                            </template>
-                            <div x-show="benefits.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada benefit. Klik "Tambah" untuk menambahkan.
                             </div>
-                        </div>
+                        </template>
                     </div>
 
-                    <!-- Lokasi (Offline Only) -->
-                    <div x-show="type === 'offline'" x-transition
-                        class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Lokasi Pelaksanaan</h3>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Provinsi <span x-show="type === 'offline'" class="text-red-500">*</span>
-                                </label>
-                                <input type="hidden" name="province" id="province_text" :required="type === 'offline'" value="{{ old('province', $submission->province) }}">
-                                <select id="province" :required="type === 'offline'"
-                                    onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Provinsi</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Kabupaten/Kota <span x-show="type === 'offline'" class="text-red-500">*</span>
-                                </label>
-                                <input type="hidden" name="city" id="city_text" :required="type === 'offline'" value="{{ old('city', $submission->city) }}">
-                                <select id="city" :required="type === 'offline'"
-                                    onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Kabupaten/Kota</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Kecamatan <span x-show="type === 'offline'" class="text-red-500">*</span>
-                                </label>
-                                <input type="hidden" name="district" id="district_text" :required="type === 'offline'" value="{{ old('district', $submission->district) }}">
-                                <select id="district" :required="type === 'offline'"
-                                    onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Kecamatan</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Kelurahan/Desa <span x-show="type === 'offline'" class="text-red-500">*</span>
-                                </label>
-                                <input type="hidden" name="village" id="village_text" :required="type === 'offline'" value="{{ old('village', $submission->village) }}">
-                                <select id="village" :required="type === 'offline'"
-                                    onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                    <option value="">Pilih Kelurahan/Desa</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Alamat Lengkap <span x-show="type === 'offline'" class="text-red-500">*</span>
-                            </label>
-                            <textarea name="full_address" rows="3" :required="type === 'offline'"
-                                placeholder="Masukkan alamat lengkap"
-                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ old('full_address', $submission->full_address) }}</textarea>
-                        </div>
+                    <!-- Step Labels (Hidden on Mobile) -->
+                    <div class="hidden sm:flex justify-between mt-3 px-2 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="w-20 text-center"
+                            :class="currentStep >= 1 ? 'text-blue-600 dark:text-blue-400 font-medium' : ''"></span>
+                        <span class="w-20 text-center"
+                            :class="currentStep >= 2 ? 'text-blue-600 dark:text-blue-400 font-medium' : ''"></span>
+                        <span class="w-20 text-center"
+                            :class="currentStep >= 3 ? 'text-blue-600 dark:text-blue-400 font-medium' : ''"></span>
+                        <span class="w-20 text-center"
+                            :class="currentStep >= 4 ? 'text-blue-600 dark:text-blue-400 font-medium' : ''"></span>
+                        <span class="w-20 text-center"
+                            :class="currentStep >= 5 ? 'text-blue-600 dark:text-blue-400 font-medium' : ''"></span>
                     </div>
+                </div>
+                <form id="programForm" action="{{ route('instructor.programs.update', $submission->id) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
 
-                    <!-- Jadwal Pelaksanaan -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Jadwal Pelaksanaan</h3>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Tanggal Mulai <span class="text-red-500">*</span>
-                                </label>
-                                <input type="date" name="start_date" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('start_date', $submission->start_date) }}">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Waktu Mulai <span class="text-red-500">*</span>
-                                </label>
-                                <input type="time" name="start_time" required
-                                    @change="updateAllMaterialDurations()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('start_time', $submission->start_time) }}">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Tanggal Berakhir <span class="text-red-500">*</span>
-                                </label>
-                                <input type="date" name="end_date" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('end_date', $submission->end_date) }}">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Waktu Berakhir <span class="text-red-500">*</span>
-                                </label>
-                                <input type="time" name="end_time" required
-                                    @change="updateAllMaterialDurations()"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    value="{{ old('end_time', $submission->end_time) }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Materi Pembelajaran (Dynamic) -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Materi Pembelajaran</h3>
-                            <button type="button" @click="addMaterial()"
-                                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah Hari
-                            </button>
-                        </div>
-                        <div class="space-y-6">
-                            <template x-for="(material, index) in materials" :key="index">
+                    <!-- Step 1: Informasi Dasar -->
+                    <div x-show="currentStep === 1" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="p-5 sm:p-8">
+                            <div class="flex items-center gap-3 mb-6">
                                 <div
-                                    class="p-4 border border-gray-200 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400"
-                                            x-text="'Hari ' + (index + 1)"></span>
-                                        <button type="button" @click="removeMaterial(index)"
-                                            class="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded dark:hover:bg-red-900">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="space-y-3">
-                                        <!-- Judul -->
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Judul Materi</label>
-                                            <input type="text" :name="'materials[' + index + '][title]'"
-                                                x-model="materials[index].title" placeholder="Contoh: Hari 1: Analisis SWOT"
-                                                class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                                        </div>
-                                        <!-- Durasi -->
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi <span class="text-gray-400">(otomatis terisi)</span></label>
-                                            <div class="flex items-center gap-2">
-                                                <input type="number" x-model="materials[index].duration_hours" min="0" max="23"
-                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                                    placeholder="0">
-                                                <span class="text-sm text-gray-600 dark:text-gray-400">Jam</span>
-                                                <input type="number" x-model="materials[index].duration_minutes" min="0" max="59"
-                                                    class="block w-16 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                                    placeholder="0">
-                                                <span class="text-sm text-gray-600 dark:text-gray-400">Menit</span>
-                                                <input type="hidden" :name="'materials[' + index + '][duration]'" 
-                                                    :value="(materials[index].duration_hours || 0) + ':' + (materials[index].duration_minutes || 0)">
-                                            </div>
-                                        </div>
-                                        <!-- Deskripsi -->
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Detail Aktivitas</label>
-                                            <textarea :name="'materials[' + index + '][description]'"
-                                                x-model="materials[index].description" rows="4" placeholder="Contoh:
-Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
-
-• Pembukaan & Pengenalan Materi
-• Presentasi Strategi Digital" class="block w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                            <div x-show="materials.length === 0" class="text-sm text-gray-500 italic">
-                                Belum ada materi. Klik "Tambah Hari" untuk menambahkan.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gambar Program -->
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Gambar Program</h3>
-                        
-                        @if($submission->image)
-                        <div class="mb-4">
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Gambar saat ini:</p>
-                            @php
-                                $submissionEditImageUrl = str_starts_with($submission->image, 'images/') 
-                                    ? asset($submission->image) 
-                                    : asset('storage/' . $submission->image);
-                            @endphp
-                            <img src="{{ $submissionEditImageUrl }}" alt="Current Image" class="max-w-xs rounded-lg shadow">
-                        </div>
-                        @endif
-                        
-                        <div class="flex items-center justify-center w-full">
-                            <label for="image"
-                                class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800 dark:border-gray-600"
-                                x-data="{ imagePreview: null }">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!imagePreview">
-                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Informasi Dasar</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Isi detail dasar program Anda</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-5">
+                                <!-- Judul Program -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Judul Program <span class="text-orange-500">*</span>
+                                    </label>
+                                    <input type="text" name="title" required placeholder="Masukkan judul program"
+                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                        value="{{ old('title', $submission->title) }}">
+                                    @error('title')
+                                        <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Kategori & Jenis Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Kategori <span class="text-orange-500">*</span>
+                                        </label>
+                                        <select name="category" required
+                                            class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                            style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                            <option value="">Pilih Kategori</option>
+                                            <option value="kursus" {{ old('category', $submission->category) == 'kursus' ? 'selected' : '' }}>Kursus
+                                            </option>
+                                            <option value="pelatihan" {{ old('category', $submission->category) == 'pelatihan' ? 'selected' : '' }}>
+                                                Pelatihan</option>
+                                            <option value="sertifikasi" {{ old('category', $submission->category) == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi
+                                            </option>
+                                            <option value="outing-class" {{ old('category', $submission->category) == 'outing-class' ? 'selected' : '' }}>Outing Class
+                                            </option>
+                                            <option value="outboard" {{ old('category', $submission->category) == 'outboard' ? 'selected' : '' }}>
+                                                Outboard</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Jenis Pelaksanaan <span class="text-orange-500">*</span>
+                                        </label>
+                                        <select name="type" required x-model="type"
+                                            class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                            style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                            <option value="">Pilih Jenis</option>
+                                            <option value="online" {{ old('type', $submission->type) == 'online' ? 'selected' : '' }}>🌐 Online
+                                            </option>
+                                            <option value="offline" {{ old('type', $submission->type) == 'offline' ? 'selected' : '' }}>📍
+                                                Offline</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Deskripsi -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Deskripsi <span class="text-orange-500">*</span>
+                                    </label>
+                                    <textarea name="description" rows="4" required
+                                        placeholder="Jelaskan tentang program Anda secara singkat..."
+                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none">{{ old('description', $submission->description) }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Detail Program -->
+                    <div x-show="currentStep === 2" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="p-5 sm:p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div
+                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30">
+                                    <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
                                         </path>
                                     </svg>
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">Klik untuk upload gambar baru</span>
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, JPEG (MAX. 2MB)</p>
                                 </div>
-                                <div x-show="imagePreview" class="relative w-full h-full p-4">
-                                    <img :src="imagePreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
-                                    <button type="button"
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Detail Program</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Kuota, harga, dan benefit</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Kuota & Harga -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Kuota Peserta <span class="text-orange-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <input type="number" name="available_slots" required min="1" placeholder="50"
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                                value="{{ old('available_slots', $submission->available_slots) }}">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Harga <span class="text-orange-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <span class="text-sm font-medium text-gray-500">Rp</span>
+                                            </div>
+                                            <input type="number" name="price" required min="0" step="0.01"
+                                                placeholder="350000"
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                                value="{{ old('price', $submission->price) }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tools Section -->
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 sm:p-5">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                                </path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Tools yang
+                                                Digunakan</span>
+                                        </div>
+                                        <button type="button" @click="addTool()"
+                                            class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 active:scale-95 transition-all shadow-lg shadow-blue-500/25">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            <span class="hidden sm:inline">Tambah</span>
+                                        </button>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <template x-for="(tool, index) in tools" :key="index">
+                                            <div class="flex gap-2 animate-fade-in">
+                                                <input type="text" :name="'tools[' + index + ']'" x-model="tools[index]"
+                                                    placeholder="Contoh: VS Code, Figma, Zoom..."
+                                                    class="flex-1 px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                                <button type="button" @click="removeTool(index)"
+                                                    class="flex items-center justify-center w-12 h-12 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-95 transition-all">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <div x-show="tools.length === 0" class="py-8 text-center">
+                                            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                                </path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                            <p class="text-sm text-gray-400 dark:text-gray-500">Belum ada tools ditambahkan
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Benefits Section -->
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 sm:p-5">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
+                                                </path>
+                                            </svg>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Kamu Akan
+                                                Mendapatkan</span>
+                                        </div>
+                                        <button type="button" @click="addBenefit()"
+                                            class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/25">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            <span class="hidden sm:inline">Tambah</span>
+                                        </button>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <template x-for="(benefit, index) in benefits" :key="index">
+                                            <div class="flex gap-2 animate-fade-in">
+                                                <input type="text" :name="'benefits[' + index + ']'"
+                                                    x-model="benefits[index]"
+                                                    placeholder="Contoh: Sertifikat, E-book, Akses Selamanya..."
+                                                    class="flex-1 px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                                <button type="button" @click="removeBenefit(index)"
+                                                    class="flex items-center justify-center w-12 h-12 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-95 transition-all">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <div x-show="benefits.length === 0" class="py-8 text-center">
+                                            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
+                                                </path>
+                                            </svg>
+                                            <p class="text-sm text-gray-400 dark:text-gray-500">Belum ada benefit
+                                                ditambahkan</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Jadwal & Lokasi -->
+                    <div x-show="currentStep === 3" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="p-5 sm:p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div
+                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Jadwal Pelaksanaan</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Tentukan waktu program</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Date & Time Grid -->
+                                <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Tanggal Mulai <span class="text-orange-500">*</span>
+                                        </label>
+                                        <input type="date" name="start_date" required
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                            value="{{ old('start_date', $submission->start_date) }}">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Waktu Mulai <span class="text-orange-500">*</span>
+                                        </label>
+                                        <input type="time" name="start_time" required @change="updateAllMaterialDurations()"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                            value="{{ old('start_time', $submission->start_time) }}">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Tanggal Berakhir <span class="text-orange-500">*</span>
+                                        </label>
+                                        <input type="date" name="end_date" required
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                            value="{{ old('end_date', $submission->end_date) }}">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Waktu Berakhir <span class="text-orange-500">*</span>
+                                        </label>
+                                        <input type="time" name="end_time" required @change="updateAllMaterialDurations()"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                            value="{{ old('end_time', $submission->end_time) }}">
+                                    </div>
+                                </div>
+
+                                <!-- Lokasi (Offline Only) -->
+                                <div x-show="type === 'offline'" x-transition class="space-y-4">
+                                    <div class="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-white">Lokasi
+                                            Pelaksanaan</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Provinsi <span class="text-orange-500">*</span>
+                                            </label>
+                                            <input type="hidden" name="province" id="province_text"
+                                                :required="type === 'offline'">
+                                            <select id="province" :required="type === 'offline'"
+                                                onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                                style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                                <option value="">Pilih Provinsi</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Kabupaten/Kota <span class="text-orange-500">*</span>
+                                            </label>
+                                            <input type="hidden" name="city" id="city_text" :required="type === 'offline'">
+                                            <select id="city" :required="type === 'offline'"
+                                                onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                                style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                                <option value="">Pilih Kabupaten/Kota</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Kecamatan <span class="text-orange-500">*</span>
+                                            </label>
+                                            <input type="hidden" name="district" id="district_text"
+                                                :required="type === 'offline'">
+                                            <select id="district" :required="type === 'offline'"
+                                                onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                                style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                                <option value="">Pilih Kecamatan</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Kelurahan/Desa <span class="text-orange-500">*</span>
+                                            </label>
+                                            <input type="hidden" name="village" id="village_text"
+                                                :required="type === 'offline'">
+                                            <select id="village" :required="type === 'offline'"
+                                                onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                                style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                                <option value="">Pilih Kelurahan/Desa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Alamat Lengkap <span class="text-orange-500">*</span>
+                                        </label>
+                                        <textarea name="full_address" rows="3" :required="type === 'offline'"
+                                            placeholder="Masukkan alamat lengkap tempat pelaksanaan..."
+                                            class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none">{{ old('full_address', $submission->full_address) }}</textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Link Zoom (Online Only) -->
+                                <div x-show="type === 'online'" x-transition class="space-y-4">
+                                    <div class="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-white">Link Meeting
+                                            Online</span>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Link Zoom/Google Meet <span class="text-blue-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <input type="url" name="zoom_link" :required="type === 'online'"
+                                                placeholder="https://zoom.us/j/xxxxxxxxxx atau https://meet.google.com/xxx-xxxx-xxx"
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+                                                value="{{ old('zoom_link', $submission->zoom_link) }}">
+                                        </div>
+                                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                            💡 Masukkan link Zoom, Google Meet, atau platform meeting online lainnya
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Materi Pembelajaran -->
+                    <div x-show="currentStep === 4" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="p-5 sm:p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30">
+                                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Materi Pembelajaran
+                                        </h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Susun materi per hari</p>
+                                    </div>
+                                </div>
+                                <button type="button" @click="addMaterial()"
+                                    class="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-orange-500 rounded-xl hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/25">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <span class="hidden sm:inline">Tambah Hari</span>
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <template x-for="(material, index) in materials" :key="index">
+                                    <div
+                                        class="bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 animate-fade-in">
+                                        <!-- Material Header -->
+                                        <div
+                                            class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg">
+                                                    <span class="text-sm font-bold text-white" x-text="index + 1"></span>
+                                                </div>
+                                                <span class="text-sm font-semibold text-white"
+                                                    x-text="'Hari ' + (index + 1)"></span>
+                                            </div>
+                                            <button type="button" @click="removeMaterial(index)"
+                                                class="flex items-center justify-center w-8 h-8 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <!-- Material Content -->
+                                        <div class="p-4 space-y-4">
+                                            <div>
+                                                <label
+                                                    class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">Judul
+                                                    Materi</label>
+                                                <input type="text" :name="'materials[' + index + '][title]'"
+                                                    x-model="materials[index].title"
+                                                    placeholder="Contoh: Hari 1: Analisis SWOT"
+                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                                                    Durasi <span class="text-gray-400 normal-case">(otomatis dari
+                                                        jadwal)</span>
+                                                </label>
+                                                <div class="flex items-center gap-2">
+                                                    <div
+                                                        class="flex items-center gap-2 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">
+                                                        <input type="number" x-model="materials[index].duration_hours"
+                                                            min="0" max="23"
+                                                            class="w-12 text-center text-sm text-gray-900 dark:text-white bg-transparent border-0 focus:ring-0 p-0"
+                                                            placeholder="0">
+                                                        <span class="text-xs text-gray-500">jam</span>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-center gap-2 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2">
+                                                        <input type="number" x-model="materials[index].duration_minutes"
+                                                            min="0" max="59"
+                                                            class="w-12 text-center text-sm text-gray-900 dark:text-white bg-transparent border-0 focus:ring-0 p-0"
+                                                            placeholder="0">
+                                                        <span class="text-xs text-gray-500">menit</span>
+                                                    </div>
+                                                    <input type="hidden" :name="'materials[' + index + '][duration]'"
+                                                        :value="(materials[index].duration_hours || 0) + ':' + (materials[index].duration_minutes || 0)">
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">Detail
+                                                    Aktivitas</label>
+                                                <textarea :name="'materials[' + index + '][description]'"
+                                                    x-model="materials[index].description" rows="4"
+                                                    placeholder="Contoh:&#10;• Pembukaan & Pengenalan Materi&#10;• Presentasi Strategi Digital&#10;• Praktik Pembuatan Kampanye&#10;• Evaluasi & Tanya Jawab"
+                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div x-show="materials.length === 0"
+                                    class="py-12 text-center bg-gray-50 dark:bg-gray-900 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+                                    <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                        </path>
+                                    </svg>
+                                    <p class="text-gray-500 dark:text-gray-400 mb-2">Belum ada materi pembelajaran</p>
+                                    <p class="text-sm text-gray-400 dark:text-gray-500">Klik "Tambah Hari" untuk mulai
+                                        menyusun materi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Gambar Program -->
+                    <div x-show="currentStep === 5" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="p-5 sm:p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div
+                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Gambar Program</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Upload gambar thumbnail</p>
+                                </div>
+                            </div>
+
+                            <div
+                                x-data="{ imagePreview: '{{ $submission->image ? asset('storage/' . $submission->image) : '' }}' }">
+                                <label for="image"
+                                    class="relative flex flex-col items-center justify-center w-full h-64 sm:h-80 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-2xl cursor-pointer bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors overflow-hidden group">
+
+                                    <!-- Upload State -->
+                                    <div class="flex flex-col items-center justify-center py-6" x-show="!imagePreview">
+                                        <div
+                                            class="flex items-center justify-center w-16 h-16 mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <span class="font-semibold text-blue-500">Klik untuk upload</span> atau drag &
+                                            drop
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500">PNG, JPG, JPEG (MAX. 2MB)</p>
+                                    </div>
+
+                                    <!-- Preview State -->
+                                    <div x-show="imagePreview" class="absolute inset-0 p-4">
+                                        <img :src="imagePreview" alt="Preview"
+                                            class="w-full h-full object-contain rounded-xl">
+                                    </div>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" x-show="imagePreview"
                                         @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''"
-                                        class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                        class="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
+                                        Hapus
                                     </button>
+
+                                    <input id="image" name="image" type="file" class="hidden" accept="image/*"
+                                        x-ref="imageInput"
+                                        @change="let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
+                                </label>
+                            </div>
+
+                            <!-- Summary Preview -->
+                            <div
+                                class="mt-8 p-5 bg-gradient-to-br from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Siap untuk
+                                        disimpan!</span>
                                 </div>
-                                <input id="image" name="image" type="file" class="hidden" accept="image/*"
-                                    x-ref="imageInput"
-                                    @change="let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
-                            </label>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Program Anda akan diperbarui dan dikirim ulang untuk direview oleh admin.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Form Actions (Bottom) -->
-                    <div class="pt-6 mt-6 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-4">
-                        <a href="{{ route('instructor.programs.index') }}"
-                            class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
-                            Kembali
-                        </a>
-                        <button type="submit"
-                            class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-600/30">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Simpan & Ajukan Ulang
-                        </button>
+                    <!-- Navigation Footer -->
+                    <div
+                        class="sticky bottom-0 px-5 sm:px-8 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between gap-4">
+                            <!-- Back Button -->
+                            <button type="button" x-show="currentStep > 1" @click="currentStep--"
+                                class="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span class="hidden sm:inline">Kembali</span>
+                            </button>
+
+                            <!-- Cancel Link (Step 1 only) -->
+                            <a href="{{ route('instructor.programs.index') }}" x-show="currentStep === 1"
+                                class="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span class="hidden sm:inline">Batal</span>
+                            </a>
+
+                            <div class="flex-1"></div>
+
+                            <!-- Step Indicator Mobile -->
+                            <span class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
+                                x-text="'Step ' + currentStep + '/5'"></span>
+
+                            <!-- Next/Submit Button -->
+                            <button type="button" x-show="currentStep < 5" @click="currentStep++"
+                                class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-blue-500 rounded-xl hover:bg-blue-600 active:scale-95 transition-all shadow-lg shadow-blue-500/30">
+                                <span>Lanjut</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
+
+                            <button type="submit" x-show="currentStep === 5"
+                                class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all shadow-lg shadow-orange-500/30">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Simpan & Ajukan Ulang</span>
+                            </button>
+                        </div>
                     </div>
 
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
 
+        </div>
     </div>
+
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+        }
+    </style>
 
     @push('scripts')
         <script src="{{ asset('assets/elearning/region-selector.js') }}?v={{ time() }}"></script>
         <script>
             function programForm() {
                 return {
+                    currentStep: 1,
+                    totalSteps: 5,
                     type: '{{ old("type", $submission->type) }}' || '',
                     tools: {!! json_encode($submission->tools ?? []) !!},
                     materials: [],
@@ -494,11 +822,11 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
 
                     addMaterial() {
                         const duration = this.getCalculatedDuration();
-                        this.materials.push({ 
-                            title: '', 
-                            duration_hours: duration.hours, 
-                            duration_minutes: duration.minutes, 
-                            description: '' 
+                        this.materials.push({
+                            title: '',
+                            duration_hours: duration.hours,
+                            duration_minutes: duration.minutes,
+                            description: ''
                         });
                     },
                     removeMaterial(index) {
@@ -508,17 +836,17 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                     getCalculatedDuration() {
                         const startTime = document.querySelector('input[name="start_time"]')?.value;
                         const endTime = document.querySelector('input[name="end_time"]')?.value;
-                        
+
                         if (startTime && endTime) {
                             const start = startTime.split(':');
                             const end = endTime.split(':');
-                            
+
                             const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1]);
                             const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1]);
-                            
+
                             let diffMinutes = endMinutes - startMinutes;
                             if (diffMinutes < 0) diffMinutes += 24 * 60;
-                            
+
                             return {
                                 hours: Math.floor(diffMinutes / 60),
                                 minutes: diffMinutes % 60
@@ -543,6 +871,109 @@ Belajar menganalisis kekuatan, kelemahan, peluang, dan ancaman bisnis.
                     }
                 }
             }
+        </script>
+
+        <!-- Inline SweetAlert Validation Scripts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Session flash message handling
+                @if(session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                @endif
+
+                @if(session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                @endif
+
+                @if($errors->any())
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        html: '<ul style="text-align: left; padding-left: 20px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                @endif
+
+                                // Form validation before submit
+                                const form = document.getElementById('programForm');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        const title = form.querySelector('input[name="title"]');
+                        const category = form.querySelector('select[name="category"]');
+                        const type = form.querySelector('select[name="type"]');
+                        const description = form.querySelector('textarea[name="description"]');
+                        const slots = form.querySelector('input[name="available_slots"]');
+                        const price = form.querySelector('input[name="price"]');
+                        const startDate = form.querySelector('input[name="start_date"]');
+                        const endDate = form.querySelector('input[name="end_date"]');
+
+                        let errors = [];
+
+                        if (!title || !title.value.trim()) {
+                            errors.push('Judul program harus diisi');
+                        }
+                        if (!category || !category.value) {
+                            errors.push('Kategori harus dipilih');
+                        }
+                        if (!type || !type.value) {
+                            errors.push('Jenis pelaksanaan harus dipilih');
+                        }
+                        if (!description || !description.value.trim()) {
+                            errors.push('Deskripsi harus diisi');
+                        }
+                        if (!slots || !slots.value || parseInt(slots.value) < 1) {
+                            errors.push('Kuota peserta harus diisi minimal 1');
+                        }
+                        if (!price || price.value === '') {
+                            errors.push('Harga harus diisi');
+                        }
+                        if (!startDate || !startDate.value) {
+                            errors.push('Tanggal mulai harus diisi');
+                        }
+                        if (!endDate || !endDate.value) {
+                            errors.push('Tanggal berakhir harus diisi');
+                        }
+
+                        // Check offline location fields
+                        if (type && type.value === 'offline') {
+                            const province = form.querySelector('input[name="province"]');
+                            const city = form.querySelector('input[name="city"]');
+                            const district = form.querySelector('input[name="district"]');
+                            const village = form.querySelector('input[name="village"]');
+                            const fullAddress = form.querySelector('textarea[name="full_address"]');
+
+                            if (!province || !province.value) errors.push('Provinsi harus dipilih');
+                            if (!city || !city.value) errors.push('Kabupaten/Kota harus dipilih');
+                            if (!district || !district.value) errors.push('Kecamatan harus dipilih');
+                            if (!village || !village.value) errors.push('Kelurahan/Desa harus dipilih');
+                            if (!fullAddress || !fullAddress.value.trim()) errors.push('Alamat lengkap harus diisi');
+                        }
+
+                        if (errors.length > 0) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                html: '<ul style="text-align: left; padding-left: 20px;">' + errors.map(err => '<li>' + err + '</li>').join('') + '</ul>',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                            return false;
+                        }
+                    });
+                }
+            });
         </script>
     @endpush
 

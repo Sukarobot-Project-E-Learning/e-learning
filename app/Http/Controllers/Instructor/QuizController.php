@@ -18,33 +18,35 @@ class QuizController extends Controller
             $trainer = DB::table('data_trainers')
                 ->where('email', $user->email)
                 ->first();
-            
+
             if ($trainer) {
                 return $trainer->id;
             }
         }
-        
-        // Fallback or explicit check if needed
+
         return null;
     }
 
     /**
      * Display a listing of the resource.
+     * Supports both regular page load and AJAX requests for dynamic filtering
      */
     public function index(Request $request)
     {
         $trainerId = $this->getTrainerId();
 
         if (!$trainerId) {
-            // Return empty paginated collection
-            $quizzes = new \Illuminate\Pagination\LengthAwarePaginator(
-                collect([]),
-                0,
-                5,
-                1,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-            return view('instructor.quizzes.index', compact('quizzes'));
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'data' => [],
+                    'stats' => ['published' => 0, 'draft' => 0],
+                    'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0]
+                ]);
+            }
+
+            return view('instructor.quizzes.index', [
+                'quizzes' => collect([])
+            ]);
         }
 
         // Base query
@@ -56,62 +58,89 @@ class QuizController extends Controller
             )
             ->where('quizzes.instructor_id', $trainerId);
 
-        // Apply Search
+        // Get stats for all quizzes (before filtering)
+        $allQuizzes = DB::table('quizzes')
+            ->where('instructor_id', $trainerId)
+            ->get();
+
+        $stats = [
+            'published' => $allQuizzes->where('status', 'published')->count(),
+            'draft' => $allQuizzes->where('status', 'draft')->count(),
+            'total' => $allQuizzes->count(),
+        ];
+
+        // Apply search filter if provided
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('quizzes.title', 'like', "%{$search}%")
-                  ->orWhere('data_programs.program', 'like', "%{$search}%");
+            $searchTerm = '%' . $request->search . '%';
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('quizzes.title', 'LIKE', $searchTerm)
+                    ->orWhere('data_programs.program', 'LIKE', $searchTerm);
             });
         }
 
-        // Apply Sorting
-        $sort = $request->get('sort', 'created_at');
-        $direction = $request->get('direction', 'desc');
-        
-        // Map sort columns to DB columns
-        $sortMap = [
-            'title' => 'quizzes.title',
-            'program' => 'data_programs.program',
-            'created_at' => 'quizzes.created_at',
-        ];
+        // Apply sorting
+        $sortColumn = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
 
-        if (array_key_exists($sort, $sortMap)) {
-            $query->orderBy($sortMap[$sort], $direction === 'asc' ? 'asc' : 'desc');
-        } else {
-            $query->orderBy('quizzes.created_at', 'desc');
+        // Validate sort column to prevent SQL injection
+        $allowedColumns = ['title', 'created_at', 'status'];
+        if (!in_array($sortColumn, $allowedColumns)) {
+            $sortColumn = 'created_at';
         }
 
-        // Pagination
-        $perPage = $request->integer('per_page', 5);
-        if ($perPage < 1 || $perPage > 100) $perPage = 5;
+        $query->orderBy('quizzes.' . $sortColumn, $sortDirection === 'asc' ? 'asc' : 'desc');
 
-        $quizzes = $query->paginate($perPage)->withQueryString();
+        // Handle AJAX request for dynamic table updates
+        if ($request->ajax() || $request->wantsJson()) {
+            $perPage = min((int) $request->get('per_page', 10), 100);
+            $quizzes = $query->paginate($perPage);
 
-        // Transform data (append counts and formatted dates)
-        $quizzes->getCollection()->transform(function($quiz) {
-            // Get total questions count
+            // Transform data
+            $data = collect($quizzes->items())->map(function ($quiz) {
+                $quiz->total_questions = DB::table('quiz_questions')
+                    ->where('quiz_id', $quiz->id)
+                    ->count();
+                $quiz->total_responses = DB::table('quiz_responses')
+                    ->where('quiz_id', $quiz->id)
+                    ->count();
+                $quiz->program = $quiz->program_name ?? 'N/A';
+                $quiz->type = $quiz->type ?? 'Postest';
+                $quiz->status = $quiz->status ?? 'draft';
+                return $quiz;
+            });
+
+            return response()->json([
+                'data' => $data,
+                'stats' => $stats,
+                'pagination' => [
+                    'current_page' => $quizzes->currentPage(),
+                    'last_page' => $quizzes->lastPage(),
+                    'per_page' => $quizzes->perPage(),
+                    'total' => $quizzes->total(),
+                    'from' => $quizzes->firstItem(),
+                    'to' => $quizzes->lastItem(),
+                ]
+            ]);
+        }
+
+        // Regular page load - get all data for client-side filtering
+        $quizzes = $query->get();
+
+        // Transform data
+        $quizzes = $quizzes->map(function ($quiz) {
             $quiz->total_questions = DB::table('quiz_questions')
                 ->where('quiz_id', $quiz->id)
                 ->count();
-
-            // Get total responses count
             $quiz->total_responses = DB::table('quiz_responses')
                 ->where('quiz_id', $quiz->id)
                 ->count();
-
             $quiz->program = $quiz->program_name ?? 'N/A';
             $quiz->type = $quiz->type ?? 'Postest';
             $quiz->status = $quiz->status ?? 'draft';
-            
-            // Add formatted dates
-            $quiz->formatted_created_at = $quiz->created_at ? date('d M Y', strtotime($quiz->created_at)) : '-';
-            $quiz->time_ago = $quiz->created_at ? \Carbon\Carbon::parse($quiz->created_at)->diffForHumans() : '';
-
             return $quiz;
         });
 
-        return view('instructor.quizzes.index', compact('quizzes'));
+        return view('instructor.quizzes.index', compact('quizzes', 'stats'));
     }
 
     /**
@@ -119,7 +148,6 @@ class QuizController extends Controller
      */
     public function create()
     {
-        // Get programs for dropdown
         $trainerId = $this->getTrainerId();
         $programs = DB::table('data_programs')
             ->where('instructor_id', $trainerId)
@@ -159,22 +187,14 @@ class QuizController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
                 'status' => 'published',
-                'type' => 'Postest', // Default or from input
+                'type' => 'Postest',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             foreach ($request->questions as $q) {
-                // Ensure correct answer is set for non-essay
                 $correctAnswer = $q['correct_answer'] ?? null;
                 if ($q['type'] === 'multiple_choice' && is_numeric($correctAnswer)) {
-                    // Store the index or the value? Usually store the value if options are strings.
-                    // But the UI sends index. Let's store the text value if possible, or just the index.
-                    // If the UI sends index, we need to make sure we store what the frontend expects.
-                    // Looking at create.blade.php: value="optIndex". So it sends 0, 1, 2...
-                    // But if options change, index might be wrong. Ideally store the text.
-                    // However, let's stick to what's simple. 
-                    // Actually, let's store the text value of the option.
                     $options = $q['options'] ?? [];
                     if (isset($options[$correctAnswer])) {
                         $correctAnswer = $options[$correctAnswer];
@@ -209,8 +229,10 @@ class QuizController extends Controller
     {
         $trainerId = $this->getTrainerId();
         $quiz = DB::table('quizzes')
-            ->where('id', $id)
-            ->where('instructor_id', $trainerId)
+            ->leftJoin('data_programs', 'quizzes.program_id', '=', 'data_programs.id')
+            ->select('quizzes.*', 'data_programs.program as program_name')
+            ->where('quizzes.id', $id)
+            ->where('quizzes.instructor_id', $trainerId)
             ->first();
 
         if (!$quiz) {
@@ -218,8 +240,7 @@ class QuizController extends Controller
         }
 
         $questions = DB::table('quiz_questions')->where('quiz_id', $id)->get();
-        
-        // Transform options
+
         foreach ($questions as $q) {
             $q->options = json_decode($q->options ?? '[]', true);
         }
@@ -245,8 +266,7 @@ class QuizController extends Controller
         $questions = DB::table('quiz_questions')->where('quiz_id', $id)->get();
         foreach ($questions as $q) {
             $q->options = json_decode($q->options ?? '[]', true);
-            
-            // Reverse correct answer to index for multiple choice if possible
+
             if ($q->type === 'multiple_choice' && $q->options && $q->correct_answer) {
                 $index = array_search($q->correct_answer, $q->options);
                 if ($index !== false) {
@@ -299,7 +319,6 @@ class QuizController extends Controller
                 'updated_at' => now(),
             ]);
 
-            // Replace questions (simplest approach)
             DB::table('quiz_questions')->where('quiz_id', $id)->delete();
 
             foreach ($request->questions as $q) {
@@ -350,9 +369,9 @@ class QuizController extends Controller
         DB::beginTransaction();
         try {
             DB::table('quiz_questions')->where('quiz_id', $id)->delete();
-            DB::table('quiz_responses')->where('quiz_id', $id)->delete(); // Assuming no other dependencies
+            DB::table('quiz_responses')->where('quiz_id', $id)->delete();
             DB::table('quizzes')->where('id', $id)->delete();
-            
+
             DB::commit();
             return redirect()->route('instructor.quizzes.index')->with('success', 'Tugas/Postest berhasil dihapus');
         } catch (\Exception $e) {

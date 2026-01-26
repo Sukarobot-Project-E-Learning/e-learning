@@ -47,7 +47,7 @@ class ArticleController extends Controller
             ->withQueryString();
 
         // Transform data after pagination
-        $articles->getCollection()->transform(function($article) {
+        $articles->getCollection()->transform(function ($article) {
             return [
                 'id' => $article->id,
                 'title' => $article->title ?? 'N/A',
@@ -80,7 +80,7 @@ class ArticleController extends Controller
             ->distinct()
             ->pluck('category')
             ->toArray();
-            
+
         return view('admin.articles.create', compact('categories'));
     }
 
@@ -138,7 +138,7 @@ class ArticleController extends Controller
 
             return redirect()->route('admin.articles.index')
                 ->with('success', 'Artikel berhasil ditambahkan');
-                
+
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -152,7 +152,7 @@ class ArticleController extends Controller
     public function edit($id)
     {
         $articleModel = Article::findOrFail($id);
-        
+
         // Get existing categories from articles table
         $categories = DB::table('articles')
             ->whereNotNull('category')
@@ -160,7 +160,7 @@ class ArticleController extends Controller
             ->distinct()
             ->pluck('category')
             ->toArray();
-        
+
         $article = [
             'id' => $articleModel->id,
             'status' => $articleModel->is_published ? 'Publish' : 'Draft',
@@ -242,7 +242,7 @@ class ArticleController extends Controller
 
             return redirect()->route('admin.articles.index')
                 ->with('success', 'Artikel berhasil diperbarui');
-                
+
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -257,15 +257,15 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::findOrFail($id);
-            
+
             // Delete image file
             if ($article->image && file_exists(public_path($article->image))) {
                 unlink(public_path($article->image));
             }
-            
+
             // Delete article
             $article->delete();
-            
+
             return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus artikel: ' . $e->getMessage()], 500);
@@ -280,29 +280,29 @@ class ArticleController extends Controller
         try {
             if ($request->hasFile('upload')) {
                 $image = $request->file('upload');
-                
+
                 // Validate image
                 $request->validate([
                     'upload' => 'required|image|mimes:jpeg,jpg,png,gif|max:5120'
                 ]);
-                
+
                 // Generate filename
                 $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                
+
                 // Save to public/images/articles/content
                 $image->move(public_path('images/articles/content'), $filename);
-                
+
                 // Generate URL
                 $url = asset('images/articles/content/' . $filename);
-                
+
                 // Return success response for CKEditor
                 return response()->json([
                     'url' => $url
                 ]);
             }
-            
+
             return response()->json(['error' => 'No file uploaded'], 400);
-            
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

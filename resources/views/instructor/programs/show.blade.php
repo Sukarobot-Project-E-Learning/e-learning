@@ -1,4 +1,4 @@
-@extends('instructor.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Detail Program')
 
