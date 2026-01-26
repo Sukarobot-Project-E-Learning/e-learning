@@ -172,12 +172,56 @@ class UserController extends Controller
                 }
             }
 
-            if (!$localPath || !file_exists($localPath)) {
+            if (!$localPath || !is_file($localPath)) {
                 // Try fallback logic
-                if (file_exists(public_path($path))) {
+                if (file_exists(public_path($path)) && is_file(public_path($path))) {
                     $localPath = public_path($path);
                 } else {
-                    return back()->with('error', 'File sertifikat fisik tidak ditemukan.');
+                    // SELF-HEALING: File missing, regenerate it
+                    // 1. Get necessary data before deleting
+                    $programId = $certificate->program_id;
+                    $userId = $certificate->user_id;
+                    $proofId = $certificate->proof_id;
+                    $templateId = $certificate->template_id;
+                    
+                    // 2. Delete existing record
+                    DB::table('certificates')->where('id', $certificate->id)->delete();
+                    
+                    // 3. Regenerate
+                    $result = CertificateController::generateCertificateForUser(
+                        $templateId,
+                        $programId,
+                        $userId,
+                        $proofId
+                    );
+                    
+                    if ($result['success']) {
+                        // 4. Update local variables
+                        $certificate = DB::table('certificates')
+                            ->where('id', $result['certificate_id'])
+                            ->first();
+                            
+                        $path = $certificate->certificate_file;
+                        
+                        // Check if path is valid after regeneration
+                        if (empty($path)) {
+                             return back()->with('error', 'Gagal membuat ulang sertifikat: Template sertifikat mungkin hilang.');
+                        }
+
+                        // Re-determine local path
+                        if (str_starts_with($path, 'storage/')) {
+                            $localPath = public_path($path);
+                        } else {
+                            $localPath = storage_path('app/public/' . $path);
+                        }
+                        
+                        // Verify again
+                        if (!is_file($localPath)) {
+                             return back()->with('error', 'Gagal membuat ulang sertifikat: File tetap tidak ditemukan.');
+                        }
+                    } else {
+                        return back()->with('error', 'Gagal membuat ulang sertifikat: ' . $result['message']);
+                    }
                 }
             }
 
