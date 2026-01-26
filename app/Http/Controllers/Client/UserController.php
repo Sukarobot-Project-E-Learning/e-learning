@@ -264,6 +264,12 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
+        // Auto-delete paid transactions older than 30 days
+        Transaction::where('student_id', $user->id)
+            ->where('status', 'paid')
+            ->where('payment_date', '<', \Carbon\Carbon::now()->subDays(30))
+            ->delete();
+
         // Get all transactions for the user with program details
         $transactions = Transaction::where('student_id', $user->id)
             ->with(['program' => function($query) {
@@ -413,6 +419,28 @@ class UserController extends Controller
         }
 
         return back()->with('error', 'Gagal mengupload gambar.');
+    }
+
+    public function deleteAvatar()
+    {
+        $user = Auth::user();
+
+        if ($user->avatar) {
+            // Delete from storage
+            if (Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            } elseif (file_exists(public_path($user->avatar))) {
+                unlink(public_path($user->avatar));
+            }
+
+            // Update database
+            $user->avatar = null;
+            $user->save();
+
+            return back()->with('success', 'Foto profil berhasil dihapus.');
+        }
+
+        return back()->with('error', 'Anda belum memasang foto profil.');
     }
 
     /**
