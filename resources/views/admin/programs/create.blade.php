@@ -693,13 +693,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Siap untuk
-                                        diajukan!</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Program Anda akan di
+                                        simpan dan akan di publikasikan ke halaman client.</span>
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Program Anda akan dikirim untuk direview oleh admin. Anda akan menerima notifikasi
-                                    setelah program disetujui.
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -750,7 +746,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                <span>Ajukan Program</span>
+                                <span>Simpan Program</span>
                             </button>
                         </div>
                     </div>
@@ -884,8 +880,8 @@
                     });
                 @endif
 
-                        // Form validation before submit
-                        const form = document.getElementById('programForm');
+                                // Form validation before submit
+                                const form = document.getElementById('programForm');
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         const program = form.querySelector('input[name="program"]');

@@ -796,7 +796,7 @@
 
                     init() {
                         // Parse existing materials and convert duration to hours/minutes
-                        const existingMaterials = {!! json_encode($program->materials ?? []) !!};
+                        const existingMaterials = {!! json_encode($program->learning_materials ?? []) !!};
                         this.materials = existingMaterials.map(m => {
                             let hours = 0, minutes = 0;
                             if (m.duration) {
@@ -906,8 +906,8 @@
                     });
                 @endif
 
-                                            // Form validation before submit
-                                            const form = document.getElementById('programForm');
+                                                    // Form validation before submit
+                                                    const form = document.getElementById('programForm');
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         const program = form.querySelector('input[name="program"]');

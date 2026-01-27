@@ -21,7 +21,7 @@ class ProgramController extends Controller
             $trainer = DB::table('data_trainers')
                 ->where('email', $user->email)
                 ->first();
-            
+
             if ($trainer) {
                 return $trainer->id;
             }
@@ -45,7 +45,7 @@ class ProgramController extends Controller
                     'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0]
                 ]);
             }
-            
+
             return view('instructor.programs.index', [
                 'submissions' => new LengthAwarePaginator([], 0, 10)
             ]);
@@ -59,7 +59,7 @@ class ProgramController extends Controller
         $allSubmissions = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
             ->get();
-        
+
         $stats = [
             'pending' => $allSubmissions->where('status', 'pending')->count(),
             'approved' => $allSubmissions->where('status', 'approved')->count(),
@@ -69,10 +69,10 @@ class ProgramController extends Controller
         // Apply search filter if provided
         if ($request->filled('search')) {
             $searchTerm = '%' . $request->search . '%';
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'LIKE', $searchTerm)
-                  ->orWhere('category', 'LIKE', $searchTerm)
-                  ->orWhere('type', 'LIKE', $searchTerm);
+                    ->orWhere('category', 'LIKE', $searchTerm)
+                    ->orWhere('type', 'LIKE', $searchTerm);
             });
         }
 
@@ -84,13 +84,13 @@ class ProgramController extends Controller
         // Apply sorting
         $sortColumn = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
-        
+
         // Validate sort column to prevent SQL injection
         $allowedColumns = ['title', 'category', 'type', 'created_at', 'status'];
         if (!in_array($sortColumn, $allowedColumns)) {
             $sortColumn = 'created_at';
         }
-        
+
         $query->orderBy($sortColumn, $sortDirection === 'asc' ? 'asc' : 'desc');
 
         // Get per page value
@@ -99,7 +99,7 @@ class ProgramController extends Controller
         // Handle AJAX request for dynamic table updates
         if ($request->ajax() || $request->wantsJson()) {
             $submissions = $query->paginate($perPage);
-            
+
             return response()->json([
                 'data' => $submissions->items(),
                 'stats' => $stats,
@@ -146,6 +146,7 @@ class ProgramController extends Controller
             'district' => 'nullable|string|max:255',
             'village' => 'nullable|string|max:255',
             'full_address' => 'nullable|string',
+            'zoom_link' => 'nullable|url',
             'start_date' => 'nullable|date',
             'start_time' => 'nullable',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -200,6 +201,7 @@ class ProgramController extends Controller
             'start_time' => $validated['start_time'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
             'end_time' => $validated['end_time'] ?? null,
+            'zoom_link' => $validated['type'] === 'online' ? ($validated['zoom_link'] ?? null) : null,
             'image' => $imagePath,
             'tools' => json_encode($validated['tools'] ?? []),
             'materials' => json_encode($validated['materials'] ?? []),
@@ -219,7 +221,7 @@ class ProgramController extends Controller
     public function show($id)
     {
         $trainerId = $this->getTrainerId();
-        
+
         $submission = DB::table('program_approvals')
             ->where('id', $id)
             ->where('instructor_id', $trainerId)
@@ -244,7 +246,7 @@ class ProgramController extends Controller
     public function edit($id)
     {
         $trainerId = $this->getTrainerId();
-        
+
         $submission = DB::table('program_approvals')
             ->where('id', $id)
             ->where('instructor_id', $trainerId)
@@ -275,7 +277,7 @@ class ProgramController extends Controller
     public function update(Request $request, $id)
     {
         $trainerId = $this->getTrainerId();
-        
+
         $submission = DB::table('program_approvals')
             ->where('id', $id)
             ->where('instructor_id', $trainerId)
@@ -305,6 +307,7 @@ class ProgramController extends Controller
             'district' => 'nullable|string|max:255',
             'village' => 'nullable|string|max:255',
             'full_address' => 'nullable|string',
+            'zoom_link' => 'nullable|url',
             'start_date' => 'nullable|date',
             'start_time' => 'nullable',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -337,7 +340,7 @@ class ProgramController extends Controller
                     @unlink(public_path($submission->image));
                 }
             }
-            
+
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('programs', $imageName, 'public');
@@ -362,6 +365,7 @@ class ProgramController extends Controller
                 'start_time' => $validated['start_time'] ?? null,
                 'end_date' => $validated['end_date'] ?? null,
                 'end_time' => $validated['end_time'] ?? null,
+                'zoom_link' => $validated['type'] === 'online' ? ($validated['zoom_link'] ?? null) : null,
                 'image' => $imagePath,
                 'tools' => json_encode($validated['tools'] ?? []),
                 'materials' => json_encode($validated['materials'] ?? []),
@@ -381,7 +385,7 @@ class ProgramController extends Controller
     public function destroy(Request $request, $id)
     {
         $trainerId = $this->getTrainerId();
-        
+
         $submission = DB::table('program_approvals')
             ->where('id', $id)
             ->where('instructor_id', $trainerId)
@@ -423,37 +427,37 @@ class ProgramController extends Controller
         return redirect()->route('instructor.programs.index')
             ->with('success', 'Pengajuan program berhasil dihapus.');
     }
-    
+
     /**
      * Export submissions to CSV
      */
     public function export(Request $request)
     {
         $trainerId = $this->getTrainerId();
-        
+
         if (!$trainerId) {
             return redirect()->route('instructor.programs.index')
                 ->with('error', 'Instruktur tidak ditemukan.');
         }
-        
+
         $submissions = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         $filename = 'pengajuan_program_' . date('Y-m-d_His') . '.csv';
-        
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
-        
-        $callback = function() use ($submissions) {
+
+        $callback = function () use ($submissions) {
             $file = fopen('php://output', 'w');
-            
+
             // Add BOM for Excel UTF-8 compatibility
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
             // Header row
             fputcsv($file, [
                 'ID',
@@ -466,7 +470,7 @@ class ProgramController extends Controller
                 'Tanggal Pengajuan',
                 'Tanggal Update'
             ]);
-            
+
             // Data rows
             foreach ($submissions as $submission) {
                 fputcsv($file, [
@@ -481,10 +485,10 @@ class ProgramController extends Controller
                     $submission->updated_at
                 ]);
             }
-            
+
             fclose($file);
         };
-        
+
         return response()->stream($callback, 200, $headers);
     }
 }
