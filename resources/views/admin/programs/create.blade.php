@@ -726,10 +726,6 @@
 
                             <div class="flex-1"></div>
 
-                            <!-- Step Indicator Mobile -->
-                            <span class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
-                                x-text="'Step ' + currentStep + '/5'"></span>
-
                             <!-- Next/Submit Button -->
                             <button type="button" x-show="currentStep < 5" @click="currentStep++"
                                 class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-orange-500 rounded-xl hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/30">
@@ -880,8 +876,8 @@
                     });
                 @endif
 
-                                // Form validation before submit
-                                const form = document.getElementById('programForm');
+                                                        // Form validation before submit
+                                                        const form = document.getElementById('programForm');
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         const program = form.querySelector('input[name="program"]');
@@ -892,6 +888,8 @@
                         const price = form.querySelector('input[name="price"]');
                         const startDate = form.querySelector('input[name="start_date"]');
                         const endDate = form.querySelector('input[name="end_date"]');
+                        const startTime = form.querySelector('input[name="start_time"]');
+                        const endTime = form.querySelector('input[name="end_time"]');
 
                         let errors = [];
 
@@ -913,11 +911,40 @@
                         if (!price || price.value === '') {
                             errors.push('Harga harus diisi');
                         }
+
+                        // Schedule validation
                         if (!startDate || !startDate.value) {
                             errors.push('Tanggal mulai harus diisi');
                         }
                         if (!endDate || !endDate.value) {
                             errors.push('Tanggal berakhir harus diisi');
+                        }
+                        if (!startTime || !startTime.value) {
+                            errors.push('Jam mulai harus diisi');
+                        }
+                        if (!endTime || !endTime.value) {
+                            errors.push('Jam selesai harus diisi');
+                        }
+
+                        // Validate date order (end_date must be >= start_date)
+                        if (startDate && endDate && startDate.value && endDate.value) {
+                            const start = new Date(startDate.value);
+                            const end = new Date(endDate.value);
+                            if (end < start) {
+                                errors.push('Tanggal selesai harus sama atau setelah tanggal mulai');
+                            }
+
+                            // If same date, validate time order (end_time must be > start_time)
+                            if (start.getTime() === end.getTime() && startTime && endTime && startTime.value && endTime.value) {
+                                const startTimeVal = startTime.value.split(':');
+                                const endTimeVal = endTime.value.split(':');
+                                const startMinutes = parseInt(startTimeVal[0]) * 60 + parseInt(startTimeVal[1]);
+                                const endMinutes = parseInt(endTimeVal[0]) * 60 + parseInt(endTimeVal[1]);
+
+                                if (endMinutes <= startMinutes) {
+                                    errors.push('Jam selesai harus lebih besar dari jam mulai jika tanggal sama');
+                                }
+                            }
                         }
 
                         // Check offline location fields

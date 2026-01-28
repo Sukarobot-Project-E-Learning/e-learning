@@ -24,7 +24,7 @@ class TransactionController extends Controller
         $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
         // Map sort keys to actual column names
-        $sortColumn = match($sortKey) {
+        $sortColumn = match ($sortKey) {
             'student_name' => 'users.name',
             'program_name' => 'data_programs.program',
             default => 'transactions.' . $sortKey
@@ -55,7 +55,7 @@ class TransactionController extends Controller
             ->withQueryString();
 
         // Transform data after pagination
-        $transactions->getCollection()->transform(function($transaction) {
+        $transactions->getCollection()->transform(function ($transaction) {
             // Format status
             $statusMap = [
                 'pending' => 'Menunggu',
@@ -71,8 +71,8 @@ class TransactionController extends Controller
                 'name' => $transaction->student_name ?? 'N/A',
                 'program' => $transaction->program_name ?? 'N/A',
                 'proof' => $transaction->payment_proof,
-                'date' => $transaction->payment_date 
-                    ? date('d F Y', strtotime($transaction->payment_date)) 
+                'date' => $transaction->payment_date
+                    ? date('d F Y', strtotime($transaction->payment_date))
                     : ($transaction->created_at ? date('d F Y', strtotime($transaction->created_at)) : '-'),
                 'nominal' => 'Rp. ' . number_format($transaction->amount, 0, ',', '.'),
                 'amount_raw' => $transaction->amount,
@@ -90,13 +90,77 @@ class TransactionController extends Controller
     }
 
     /**
-     * Export transactions to Excel
+     * Export transactions to Excel/CSV
      */
     public function export()
     {
-        // TODO: Implement Excel export
-        return redirect()->route('admin.transactions.index')
-            ->with('success', 'Transaksi berhasil diekspor');
+        // Get all transactions data
+        $transactions = DB::table('transactions')
+            ->leftJoin('users', 'transactions.student_id', '=', 'users.id')
+            ->leftJoin('data_programs', 'transactions.program_id', '=', 'data_programs.id')
+            ->select(
+                'transactions.*',
+                'users.name as student_name',
+                'data_programs.program as program_name'
+            )
+            ->orderBy('transactions.created_at', 'desc')
+            ->get();
+
+        // Format status mapping
+        $statusMap = [
+            'pending' => 'Menunggu',
+            'paid' => 'Lunas',
+            'failed' => 'Gagal',
+            'refunded' => 'Dikembalikan',
+            'cancelled' => 'Dibatalkan'
+        ];
+
+        // Transform data
+        $exportData = $transactions->map(function ($transaction) use ($statusMap) {
+            return [
+                'Kode Transaksi' => $transaction->transaction_code ?? '-',
+                'Nama Siswa' => $transaction->student_name ?? 'N/A',
+                'Program' => $transaction->program_name ?? 'N/A',
+                'Tanggal Pembayaran' => $transaction->payment_date
+                    ? date('d/m/Y', strtotime($transaction->payment_date))
+                    : ($transaction->created_at ? date('d/m/Y', strtotime($transaction->created_at)) : '-'),
+                'Nominal' => $transaction->amount ?? 0,
+                'Status' => $statusMap[$transaction->status] ?? $transaction->status,
+                'Tanggal Dibuat' => $transaction->created_at ? date('d/m/Y H:i', strtotime($transaction->created_at)) : '-'
+            ];
+        });
+
+        // Generate CSV
+        $filename = 'transaksi_' . date('Y-m-d_His') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $callback = function () use ($exportData) {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for Excel UTF-8 compatibility
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Add headers
+            if ($exportData->isNotEmpty()) {
+                fputcsv($file, array_keys($exportData->first()), ';');
+            }
+
+            // Add data rows
+            foreach ($exportData as $row) {
+                fputcsv($file, $row, ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

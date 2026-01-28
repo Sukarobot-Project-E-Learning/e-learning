@@ -47,18 +47,18 @@ class ReportController extends Controller
             ->withQueryString();
 
         // Transform data after pagination
-        $reports->getCollection()->transform(function($report) {
+        $reports->getCollection()->transform(function ($report) {
             // Get schedule for this program
             $schedule = DB::table('schedules')
                 ->where('id_program', $report->id)
                 ->where('ket', 'Aktif')
                 ->first();
-            
+
             $scheduleText = '-';
             if ($schedule) {
                 $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
-                $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai 
-                    ? date('d/m/Y', strtotime($schedule->tanggal_selesai)) 
+                $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
+                    ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
                     : '';
                 $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
             }
@@ -91,13 +91,81 @@ class ReportController extends Controller
     }
 
     /**
-     * Export reports to Excel
+     * Export reports to Excel/CSV
      */
     public function export()
     {
-        // TODO: Implement Excel export
-        return redirect()->route('admin.reports.index')
-            ->with('success', 'Laporan berhasil diekspor');
+        // Get all reports data
+        $reports = DB::table('data_programs')
+            ->select(
+                'data_programs.id',
+                'data_programs.program as title',
+                'data_programs.created_at'
+            )
+            ->orderBy('data_programs.created_at', 'desc')
+            ->get();
+
+        // Transform data
+        $exportData = $reports->map(function ($report) {
+            // Get schedule for this program
+            $schedule = DB::table('schedules')
+                ->where('id_program', $report->id)
+                ->where('ket', 'Aktif')
+                ->first();
+
+            $scheduleText = '-';
+            if ($schedule) {
+                $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
+                $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
+                    ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
+                    : '';
+                $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
+            }
+
+            // Get total certified users for this program
+            $totalCertified = DB::table('certificates')
+                ->where('program_id', $report->id)
+                ->count();
+
+            return [
+                'Judul Program' => $report->title ?? 'N/A',
+                'Jadwal' => $scheduleText,
+                'Total User Tersertifikasi' => $totalCertified,
+                'Tanggal Dibuat' => $report->created_at ? date('d/m/Y H:i', strtotime($report->created_at)) : '-'
+            ];
+        });
+
+        // Generate CSV
+        $filename = 'laporan_program_' . date('Y-m-d_His') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $callback = function () use ($exportData) {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for Excel UTF-8 compatibility
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Add headers
+            if ($exportData->isNotEmpty()) {
+                fputcsv($file, array_keys($exportData->first()), ';');
+            }
+
+            // Add data rows
+            foreach ($exportData as $row) {
+                fputcsv($file, $row, ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

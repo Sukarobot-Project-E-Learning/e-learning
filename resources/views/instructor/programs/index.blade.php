@@ -20,7 +20,7 @@
                         </div>
 
                         <!-- Desktop CTA Button -->
-                        <a href="{{ route('instructor.programs.create') }}"
+                        <a href="{{ route('instructor.programs.create') }}" data-turbo="false"
                             class="hidden md:inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 text-sm font-semibold text-blue-600 transition-all duration-200 bg-white rounded-xl hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 shadow-lg hover:shadow-xl dark:bg-slate-800 dark:via-slate-900 dark:to-slate-950 dark:hover:bg-slate-700/50 dark:text-white dark:hover:text-white">
                             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
@@ -262,10 +262,10 @@
                                         <span
                                             class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg"
                                             :class="{
-                                                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400': submission.type === 'online',
-                                                    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400': submission.type === 'offline',
-                                                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400': submission.type === 'video'
-                                                }">
+                                                                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400': submission.type === 'online',
+                                                                    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400': submission.type === 'offline',
+                                                                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400': submission.type === 'video'
+                                                                }">
                                             <svg x-show="submission.type === 'online'" class="w-3.5 h-3.5" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -301,15 +301,15 @@
                                         <span
                                             class="status-badge inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full"
                                             :class="{
-                                                    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400': submission.status === 'pending',
-                                                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': submission.status === 'approved',
-                                                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': submission.status === 'rejected'
-                                                }">
+                                                                    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400': submission.status === 'pending',
+                                                                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': submission.status === 'approved',
+                                                                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': submission.status === 'rejected'
+                                                                }">
                                             <span class="w-1.5 h-1.5 rounded-full" :class="{
-                                                    'bg-yellow-500': submission.status === 'pending',
-                                                    'bg-green-500': submission.status === 'approved',
-                                                    'bg-red-500': submission.status === 'rejected'
-                                                }"></span>
+                                                                    'bg-yellow-500': submission.status === 'pending',
+                                                                    'bg-green-500': submission.status === 'approved',
+                                                                    'bg-red-500': submission.status === 'rejected'
+                                                                }"></span>
                                             <span x-text="getStatusLabel(submission.status)"></span>
                                         </span>
                                     </td>
@@ -423,15 +423,15 @@
                                 <span
                                     class="status-badge flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full"
                                     :class="{
-                                            'bg-yellow-100 text-yellow-700': submission.status === 'pending',
-                                            'bg-green-100 text-green-700': submission.status === 'approved',
-                                            'bg-red-100 text-red-700': submission.status === 'rejected'
-                                        }">
+                                                            'bg-yellow-100 text-yellow-700': submission.status === 'pending',
+                                                            'bg-green-100 text-green-700': submission.status === 'approved',
+                                                            'bg-red-100 text-red-700': submission.status === 'rejected'
+                                                        }">
                                     <span class="w-1.5 h-1.5 rounded-full" :class="{
-                                            'bg-yellow-500': submission.status === 'pending',
-                                            'bg-green-500': submission.status === 'approved',
-                                            'bg-red-500': submission.status === 'rejected'
-                                        }"></span>
+                                                            'bg-yellow-500': submission.status === 'pending',
+                                                            'bg-green-500': submission.status === 'approved',
+                                                            'bg-red-500': submission.status === 'rejected'
+                                                        }"></span>
                                     <span x-text="getStatusLabel(submission.status)"></span>
                                 </span>
                             </div>
@@ -452,10 +452,10 @@
                                     x-html="highlightSearch(submission.category || '-')"></span>
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg"
                                     :class="{
-                                            'bg-blue-100 text-blue-700': submission.type === 'online',
-                                            'bg-orange-100 text-orange-700': submission.type === 'offline',
-                                            'bg-blue-100 text-blue-700': submission.type === 'video'
-                                        }">
+                                                            'bg-blue-100 text-blue-700': submission.type === 'online',
+                                                            'bg-orange-100 text-orange-700': submission.type === 'offline',
+                                                            'bg-blue-100 text-blue-700': submission.type === 'video'
+                                                        }">
                                     <svg x-show="submission.type === 'online'" class="w-3 h-3" fill="none"
                                         stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -496,7 +496,7 @@
                                 </template>
                                 <template x-if="submission.status !== 'approved'">
                                     <div class="flex items-center gap-2 w-full">
-                                        <a :href="'/instructor/programs/' + submission.id + '/edit'"
+                                        <a :href="'/instructor/programs/' + submission.id + '/edit'" data-turbo="false"
                                             class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -575,8 +575,8 @@
                         <button @click="goToPage(page)"
                             class="pagination-btn min-w-[40px] h-10 text-sm font-medium rounded-lg transition-all duration-200"
                             :class="page === currentPage 
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                                    : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400'"
+                                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
+                                                    : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400'"
                             x-text="page"></button>
                     </template>
 
@@ -600,7 +600,7 @@
             </div>
 
             <!-- Mobile FAB -->
-            <a href="{{ route('instructor.programs.create') }}"
+            <a href="{{ route('instructor.programs.create') }}" data-turbo="false"
                 class="md:hidden btn-float inline-flex items-center justify-center w-14 h-14 text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

@@ -733,10 +733,6 @@
 
                             <div class="flex-1"></div>
 
-                            <!-- Step Indicator Mobile -->
-                            <span class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
-                                x-text="'Step ' + currentStep + '/5'"></span>
-
                             <!-- Next/Submit Button -->
                             <button type="button" x-show="currentStep < 5" @click="currentStep++"
                                 class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-blue-500 rounded-xl hover:bg-blue-600 active:scale-95 transition-all shadow-lg shadow-blue-500/30">
@@ -906,8 +902,8 @@
                     });
                 @endif
 
-                                // Form validation before submit
-                                const form = document.getElementById('programForm');
+                                        // Form validation before submit
+                                        const form = document.getElementById('programForm');
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         const title = form.querySelector('input[name="title"]');

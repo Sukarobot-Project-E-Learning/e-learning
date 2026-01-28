@@ -730,10 +730,6 @@
 
                             <div class="flex-1"></div>
 
-                            <!-- Step Indicator Mobile -->
-                            <span class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
-                                x-text="'Step ' + currentStep + '/5'"></span>
-
                             <!-- Next/Submit Button -->
                             <button type="button" x-show="currentStep < 5" @click="currentStep++"
                                 class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-blue-500 rounded-xl hover:bg-blue-600 active:scale-95 transition-all shadow-lg shadow-blue-500/30">
@@ -849,6 +845,148 @@
                     }
                 }
             }
+        </script>
+
+        <!-- Inline SweetAlert Validation Scripts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Session flash message handling
+                @if(session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                @endif
+
+                @if(session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#3B82F6'
+                    });
+                @endif
+
+                @if($errors->any())
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        html: '<ul style="text-align: left; padding-left: 20px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                        confirmButtonColor: '#3B82F6'
+                    });
+                @endif
+
+                                // Form validation before submit
+                                const form = document.getElementById('programForm');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        const title = form.querySelector('input[name="title"]');
+                        const category = form.querySelector('select[name="category"]');
+                        const type = form.querySelector('select[name="type"]');
+                        const description = form.querySelector('textarea[name="description"]');
+                        const availableSlots = form.querySelector('input[name="available_slots"]');
+                        const price = form.querySelector('input[name="price"]');
+                        const startDate = form.querySelector('input[name="start_date"]');
+                        const endDate = form.querySelector('input[name="end_date"]');
+                        const startTime = form.querySelector('input[name="start_time"]');
+                        const endTime = form.querySelector('input[name="end_time"]');
+
+                        let errors = [];
+
+                        if (!title || !title.value.trim()) {
+                            errors.push('Judul program harus diisi');
+                        }
+                        if (!category || !category.value) {
+                            errors.push('Kategori harus dipilih');
+                        }
+                        if (!type || !type.value) {
+                            errors.push('Jenis pelaksanaan harus dipilih');
+                        }
+                        if (!description || !description.value.trim()) {
+                            errors.push('Deskripsi harus diisi');
+                        }
+                        if (!availableSlots || !availableSlots.value || parseInt(availableSlots.value) < 1) {
+                            errors.push('Kuota peserta harus diisi minimal 1');
+                        }
+                        if (!price || price.value === '') {
+                            errors.push('Harga harus diisi');
+                        }
+
+                        // Schedule validation
+                        if (!startDate || !startDate.value) {
+                            errors.push('Tanggal mulai harus diisi');
+                        }
+                        if (!endDate || !endDate.value) {
+                            errors.push('Tanggal berakhir harus diisi');
+                        }
+                        if (!startTime || !startTime.value) {
+                            errors.push('Jam mulai harus diisi');
+                        }
+                        if (!endTime || !endTime.value) {
+                            errors.push('Jam selesai harus diisi');
+                        }
+
+                        // Validate date order (end_date must be >= start_date)
+                        if (startDate && endDate && startDate.value && endDate.value) {
+                            const start = new Date(startDate.value);
+                            const end = new Date(endDate.value);
+                            if (end < start) {
+                                errors.push('Tanggal selesai harus sama atau setelah tanggal mulai');
+                            }
+
+                            // If same date, validate time order (end_time must be > start_time)
+                            if (start.getTime() === end.getTime() && startTime && endTime && startTime.value && endTime.value) {
+                                const startTimeVal = startTime.value.split(':');
+                                const endTimeVal = endTime.value.split(':');
+                                const startMinutes = parseInt(startTimeVal[0]) * 60 + parseInt(startTimeVal[1]);
+                                const endMinutes = parseInt(endTimeVal[0]) * 60 + parseInt(endTimeVal[1]);
+
+                                if (endMinutes <= startMinutes) {
+                                    errors.push('Jam selesai harus lebih besar dari jam mulai jika tanggal sama');
+                                }
+                            }
+                        }
+
+                        // Check offline location fields
+                        if (type && type.value === 'offline') {
+                            const province = form.querySelector('input[name="province"]');
+                            const city = form.querySelector('input[name="city"]');
+                            const district = form.querySelector('input[name="district"]');
+                            const village = form.querySelector('input[name="village"]');
+                            const fullAddress = form.querySelector('textarea[name="full_address"]');
+
+                            if (!province || !province.value) errors.push('Provinsi harus dipilih');
+                            if (!city || !city.value) errors.push('Kabupaten/Kota harus dipilih');
+                            if (!district || !district.value) errors.push('Kecamatan harus dipilih');
+                            if (!village || !village.value) errors.push('Kelurahan/Desa harus dipilih');
+                            if (!fullAddress || !fullAddress.value.trim()) errors.push('Alamat lengkap harus diisi');
+                        }
+
+                        // Check online zoom link
+                        if (type && type.value === 'online') {
+                            const zoomLink = form.querySelector('input[name="zoom_link"]');
+                            if (!zoomLink || !zoomLink.value.trim()) {
+                                errors.push('Link Zoom harus diisi untuk program online');
+                            }
+                        }
+
+                        if (errors.length > 0) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                html: '<ul style="text-align: left; padding-left: 20px;">' + errors.map(err => '<li>' + err + '</li>').join('') + '</ul>',
+                                confirmButtonColor: '#3B82F6'
+                            });
+                            return false;
+                        }
+                    });
+                }
+            });
         </script>
     @endpush
 

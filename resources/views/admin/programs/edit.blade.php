@@ -43,8 +43,9 @@
                             :class="currentStep >= 5 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
                     </div>
                 </div>
-                <form id="programForm" action="{{ route('admin.programs.update', $program->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                <form id="programForm" action="{{ route('admin.programs.update', [
+        'program' => $program->id
+    ]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -697,12 +698,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Siap untuk
-                                        disimpan!</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Program Anda akan
+                                        diperbarui.</span>
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Program Anda akan diperbarui dan dikirim ulang untuk direview oleh admin.
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -733,10 +731,6 @@
 
                             <div class="flex-1"></div>
 
-                            <!-- Step Indicator Mobile -->
-                            <span class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
-                                x-text="'Step ' + currentStep + '/5'"></span>
-
                             <!-- Next/Submit Button -->
                             <button type="button" x-show="currentStep < 5" @click="currentStep++"
                                 class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-orange-500 rounded-xl hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/30">
@@ -753,7 +747,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                <span>Simpan & Ajukan Ulang</span>
+                                <span>Simpan</span>
                             </button>
                         </div>
                     </div>
@@ -906,8 +900,8 @@
                     });
                 @endif
 
-                                                    // Form validation before submit
-                                                    const form = document.getElementById('programForm');
+                                                                                                                                                    // Form validation before submit
+                                                                                                                                                    const form = document.getElementById('programForm');
                 if (form) {
                     form.addEventListener('submit', function (e) {
                         const program = form.querySelector('input[name="program"]');
