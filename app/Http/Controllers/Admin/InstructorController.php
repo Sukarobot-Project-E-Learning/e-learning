@@ -398,6 +398,11 @@ class InstructorController extends Controller
                 unlink(public_path($user->avatar));
             }
 
+            // Hapus data di tabel data_trainers jika email cocok
+            if ($user) {
+                DB::table('data_trainers')->where('email', $user->email)->delete();
+            }
+
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['success' => true, 'message' => 'Instruktur berhasil dihapus']);
         } catch (\Exception $e) {

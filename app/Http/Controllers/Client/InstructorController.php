@@ -14,7 +14,9 @@ class InstructorController extends Controller
             $join->on('users.email', '=', \Illuminate\Support\Facades\DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
         })
             ->where('data_trainers.status_trainer', 'Aktif')
+            ->where('users.role', 'instructor')
             ->select(
+                'users.email', // Add email for unique filtering
                 'users.name as nama',
                 'users.avatar',
                 'users.job as jabatan',
@@ -24,6 +26,8 @@ class InstructorController extends Controller
                 'data_trainers.foto'
             )
             ->get()
+            ->unique('email') // Filter unique instructors by email
+            ->values() // Reset keys to ensure JSON array, not object
             ->map(function ($instructor) {
                 // Determine photo to use: instructor-specific photo > user avatar > default
                 $photo = null;
