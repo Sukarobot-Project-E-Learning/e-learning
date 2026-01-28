@@ -27,7 +27,7 @@ class InstructorController extends Controller
         $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
         // Get instructors from users table with role='instructor'
-        $query = DB::table('users')
+        $query = \App\Models\User::query()
             ->where('role', 'instructor')
             ->when($request->filled('search'), function ($query) use ($request) {
                 $s = $request->input('search');

@@ -25,7 +25,7 @@ class UserController extends Controller
         }
         $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
-        $query = DB::table('users')
+        $query = \App\Models\User::query()
             ->where('role', 'user')
             ->when($request->filled('search'), function ($query) use ($request) {
                 $s = $request->input('search');

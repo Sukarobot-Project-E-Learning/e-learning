@@ -97,7 +97,8 @@
                     <div class="flex items-start gap-3">
                         <template x-if="user.avatar">
                             <img :src="getAvatarUrl(user.avatar)"
-                                class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 cursor-pointer"
+                                class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 cursor-pointer shrink-0"
+                                style="width: 3rem; height: 3rem; min-width: 3rem; object-fit: cover;"
                                 @click="window.open(getAvatarUrl(user.avatar), '_blank')">
                         </template>
                         <template x-if="!user.avatar">
@@ -186,7 +187,8 @@
                                     x-html="highlightText(user.phone || '-')"></td>
                                 <td class="px-6 py-4">
                                     <template x-if="user.avatar"><img :src="getAvatarUrl(user.avatar)"
-                                            class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110"
+                                            class="w-12 h-12 rounded-full object-cover border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer hover:scale-110 shrink-0"
+                                            style="width: 3rem; height: 3rem; min-width: 3rem; object-fit: cover;"
                                             @click="window.open(getAvatarUrl(user.avatar), '_blank')"></template>
                                     <template x-if="!user.avatar">
                                         <div

@@ -15,12 +15,11 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = DB::table('users')
-            ->where('role', 'admin')
+        $users = \App\Models\User::where('role', 'admin')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-
-        return view('admin.admins.index', compact('admins'));
+        
+        return view('admin.admins.index', compact('users'));
     }
 
     /**

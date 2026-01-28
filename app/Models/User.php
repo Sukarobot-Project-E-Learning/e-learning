@@ -60,26 +60,37 @@ class User extends Authenticatable
 
     /**
      * Get the user's avatar URL.
+     * Overrides the raw avatar attribute.
      *
      * @return string
      */
-    public function getAvatarUrlAttribute(): string
+    public function getAvatarAttribute($value): string
     {
-        if ($this->avatar && trim($this->avatar) !== '') {
-            // Check if it's an old path (images/)
-            if (str_starts_with($this->avatar, 'images/')) {
-                if (file_exists(public_path($this->avatar))) {
-                    return asset($this->avatar);
-                }
-            } 
-            // New storage path
-            else {
-                if (Storage::disk('public')->exists($this->avatar)) {
-                    return asset('storage/' . $this->avatar);
-                }
-            }
+        $defaultAvatar = asset('assets/elearning/client/img/default-avatar.jpeg');
+
+        if (!$value) {
+            return $defaultAvatar;
         }
 
-        return asset('assets/elearning/client/img/default-avatar.jpeg');
+        // If it's a valid URL, return it directly
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        // Check availability in various locations
+        if (file_exists(public_path($value))) {
+            return asset($value);
+        }
+
+        if (file_exists(public_path('storage/' . $value))) {
+            return asset('storage/' . $value);
+        }
+
+        if (file_exists(storage_path('app/public/' . $value))) {
+            return asset('storage/' . $value);
+        }
+
+        // If file physically missing, return default
+        return $defaultAvatar;
     }
 }
