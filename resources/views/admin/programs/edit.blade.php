@@ -9,7 +9,44 @@
 
             <!-- Form Card with Progress Header -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden"
-                x-data="programForm()">
+                x-data="programForm({
+                    isAdmin: true,
+                    data: {
+                        title: {{ Js::from(old('program', $program->program)) }},
+                        instructor_id: {{ Js::from(old('instructor_id', $program->instructor_id)) }},
+                        category: {{ Js::from(old('category', $program->category)) }},
+                        type: {{ Js::from(old('type', $program->type)) }},
+                        description: {{ Js::from(old('description', $program->description)) }},
+                        quota: {{ Js::from(old('quota', $program->quota)) }},
+                        price: {{ Js::from(old('price', $program->price)) }},
+                        start_date: {{ Js::from(old('start_date', $program->start_date)) }},
+                        start_time: {{ Js::from(old('start_time', $program->start_time)) }},
+                        end_date: {{ Js::from(old('end_date', $program->end_date)) }},
+                        end_time: {{ Js::from(old('end_time', $program->end_time)) }},
+                        province: {{ Js::from(old('province', $program->province)) }},
+                        city: {{ Js::from(old('city', $program->city)) }},
+                        district: {{ Js::from(old('district', $program->district)) }},
+                        village: {{ Js::from(old('village', $program->village)) }},
+                        full_address: {{ Js::from(old('full_address', $program->full_address)) }},
+                        zoom_link: {{ Js::from(old('zoom_link', $program->zoom_link)) }},
+                        tools: {{ Js::from(old('tools', $program->tools ?? [])) }},
+                        materials: {{ Js::from(old('materials', $program->learning_materials ?? [])) }}.map(m => {
+                            let h = 0, min = 0;
+                            if (m.duration) {
+                                const parts = String(m.duration).split(':');
+                                h = parseInt(parts[0]) || 0;
+                                min = parseInt(parts[1]) || 0;
+                            }
+                            return {
+                                title: m.title || '',
+                                duration_hours: h,
+                                duration_minutes: min,
+                                description: m.description || ''
+                            };
+                        }),
+                        benefits: {{ Js::from(old('benefits', $program->benefits ?? [])) }}
+                    }
+                })">
                 <!-- Progress Header -->
                 <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
 
@@ -75,10 +112,38 @@
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Judul Program <span class="text-orange-500">*</span>
                                     </label>
-                                    <input type="text" name="program" required placeholder="Masukkan judul program"
-                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                        value="{{ old('program', $program->program) }}">
+                                    <input type="text" name="program" required placeholder="Masukkan judul program" x-model="title"
+                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                    <span class="text-red-500 text-sm mt-1" x-text="errors.title" x-show="errors.title"></span>
                                     @error('program')
+                                        <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Instruktur -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Instruktur <span class="text-orange-500">*</span>
+                                    </label>
+                                    <select name="instructor_id" required x-model="instructor_id"
+                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
+                                        style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
+                                        <option value="">Pilih Instruktur</option>
+                                        @foreach(\App\Models\User::where('role', 'instructor')->get() as $instructor)
+                                            <option value="{{ $instructor->id }}" {{ old('instructor_id', $program->instructor_id) == $instructor->id ? 'selected' : '' }}>
+                                                {{ $instructor->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-red-500 text-sm mt-1" x-text="errors.instructor_id" x-show="errors.instructor_id"></span>
+                                    @error('instructor_id')
                                         <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
@@ -96,7 +161,7 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Kategori <span class="text-orange-500">*</span>
                                         </label>
-                                        <select name="category" required
+                                        <select name="category" required x-model="category"
                                             class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                             style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                             <option value="">Pilih Kategori</option>
@@ -111,6 +176,7 @@
                                             <option value="outboard" {{ old('category', $program->category) == 'outboard' ? 'selected' : '' }}>
                                                 Outboard</option>
                                         </select>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.category" x-show="errors.category"></span>
                                     </div>
 
                                     <div>
@@ -126,6 +192,7 @@
                                             <option value="offline" {{ old('type', $program->type) == 'offline' ? 'selected' : '' }}>📍
                                                 Offline</option>
                                         </select>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.type" x-show="errors.type"></span>
                                     </div>
                                 </div>
 
@@ -134,9 +201,10 @@
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Deskripsi <span class="text-orange-500">*</span>
                                     </label>
-                                    <textarea name="description" rows="4" required
+                                    <textarea name="description" rows="4" required x-model="description"
                                         placeholder="Jelaskan tentang program Anda secara singkat..."
                                         class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors resize-none">{{ old('description', $program->description) }}</textarea>
+                                    <span class="text-red-500 text-sm mt-1" x-text="errors.description" x-show="errors.description"></span>
                                 </div>
                             </div>
                         </div>
@@ -180,10 +248,10 @@
                                                     </path>
                                                 </svg>
                                             </div>
-                                            <input type="number" name="quota" required min="1" placeholder="50"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                                value="{{ old('quota', $program->quota) }}">
+                                            <input type="number" name="quota" required min="1" placeholder="50" x-model="quota"
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
                                         </div>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.quota" x-show="errors.quota"></span>
                                     </div>
 
                                     <div>
@@ -195,11 +263,11 @@
                                                 class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <span class="text-sm font-medium text-gray-500">Rp</span>
                                             </div>
-                                            <input type="number" name="price" required min="0" step="0.01"
+                                            <input type="number" name="price" required min="0" step="0.01" x-model="price"
                                                 placeholder="350000"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                                value="{{ old('price', $program->price) }}">
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
                                         </div>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.price" x-show="errors.price"></span>
                                     </div>
                                 </div>
 
@@ -341,36 +409,36 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Tanggal Mulai <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="date" name="start_date" required
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                            value="{{ old('start_date', $program->start_date) }}">
+                                        <input type="date" name="start_date" required x-model="start_date"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.start_date" x-show="errors.start_date"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Waktu Mulai <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="time" name="start_time" required @change="updateAllMaterialDurations()"
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                            value="{{ old('start_time', $program->start_time) }}">
+                                        <input type="time" name="start_time" required x-model="start_time"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.start_time" x-show="errors.start_time"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Tanggal Berakhir <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="date" name="end_date" required
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                            value="{{ old('end_date', $program->end_date) }}">
+                                        <input type="date" name="end_date" required x-model="end_date"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.end_date" x-show="errors.end_date"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Waktu Berakhir <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="time" name="end_time" required @change="updateAllMaterialDurations()"
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                            value="{{ old('end_time', $program->end_time) }}">
+                                        <input type="time" name="end_time" required x-model="end_time"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.end_time" x-show="errors.end_time"></span>
                                     </div>
                                 </div>
 
@@ -394,55 +462,59 @@
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Provinsi <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="province" id="province_text"
+                                            <input type="hidden" name="province" id="province_text" x-model="province"
                                                 :required="type === 'offline'">
                                             <select id="province" :required="type === 'offline'"
-                                                onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('province_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Provinsi</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.province" x-show="errors.province"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kabupaten/Kota <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="city" id="city_text" :required="type === 'offline'">
+                                            <input type="hidden" name="city" id="city_text" :required="type === 'offline'" x-model="city">
                                             <select id="city" :required="type === 'offline'"
-                                                onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('city_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kabupaten/Kota</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.city" x-show="errors.city"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kecamatan <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="district" id="district_text"
+                                            <input type="hidden" name="district" id="district_text" x-model="district"
                                                 :required="type === 'offline'">
                                             <select id="district" :required="type === 'offline'"
-                                                onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('district_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kecamatan</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.district" x-show="errors.district"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kelurahan/Desa <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="village" id="village_text"
+                                            <input type="hidden" name="village" id="village_text" x-model="village"
                                                 :required="type === 'offline'">
                                             <select id="village" :required="type === 'offline'"
-                                                onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('village_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kelurahan/Desa</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.village" x-show="errors.village"></span>
                                         </div>
                                     </div>
 
@@ -450,9 +522,10 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Alamat Lengkap <span class="text-orange-500">*</span>
                                         </label>
-                                        <textarea name="full_address" rows="3" :required="type === 'offline'"
+                                        <textarea name="full_address" rows="3" :required="type === 'offline'" x-model="full_address"
                                             placeholder="Masukkan alamat lengkap tempat pelaksanaan..."
                                             class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors resize-none">{{ old('full_address', $program->full_address) }}</textarea>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.full_address" x-show="errors.full_address"></span>
                                     </div>
                                 </div>
 
@@ -483,14 +556,14 @@
                                                     </path>
                                                 </svg>
                                             </div>
-                                            <input type="url" name="zoom_link" :required="type === 'online'"
+                                            <input type="url" name="zoom_link" :required="type === 'online'" x-model="zoom_link"
                                                 placeholder="https://zoom.us/j/xxxxxxxxxx atau https://meet.google.com/xxx-xxxx-xxx"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
-                                                value="{{ old('zoom_link', $program->zoom_link) }}">
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
                                         </div>
                                         <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                             💡 Masukkan link Zoom, Google Meet, atau platform meeting online lainnya
                                         </p>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.zoom_link" x-show="errors.zoom_link"></span>
                                     </div>
                                 </div>
                             </div>
@@ -685,8 +758,9 @@
 
                                     <input id="image" name="image" type="file" class="hidden" accept="image/*"
                                         x-ref="imageInput"
-                                        @change="let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
+                                        @change="validateImage($event); let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
                                 </label>
+                                <span class="text-red-500 text-sm mt-1" x-text="errors.image" x-show="errors.image"></span>
                             </div>
 
                             <!-- Summary Preview -->
@@ -710,7 +784,7 @@
                         class="sticky bottom-0 px-5 sm:px-8 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between gap-4">
                             <!-- Back Button -->
-                            <button type="button" x-show="currentStep > 1" @click="currentStep--"
+                            <button type="button" x-show="currentStep > 1" @click="prevStep()"
                                 class="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -732,7 +806,7 @@
                             <div class="flex-1"></div>
 
                             <!-- Next/Submit Button -->
-                            <button type="button" x-show="currentStep < 5" @click="currentStep++"
+                            <button type="button" x-show="currentStep < 5" @click="nextStep()"
                                 class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-orange-500 rounded-xl hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/30">
                                 <span>Lanjut</span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -778,94 +852,7 @@
 
     @push('scripts')
         <script src="{{ asset('assets/elearning/region-selector.js') }}?v={{ time() }}"></script>
-        <script>
-            function programForm() {
-                return {
-                    currentStep: 1,
-                    totalSteps: 5,
-                    type: '{{ old("type", $program->type) }}' || '',
-                    tools: {!! json_encode($program->tools ?? []) !!},
-                    materials: [],
-                    benefits: {!! json_encode($program->benefits ?? []) !!},
-
-                    init() {
-                        // Parse existing materials and convert duration to hours/minutes
-                        const existingMaterials = {!! json_encode($program->learning_materials ?? []) !!};
-                        this.materials = existingMaterials.map(m => {
-                            let hours = 0, minutes = 0;
-                            if (m.duration) {
-                                const parts = String(m.duration).split(':');
-                                hours = parseInt(parts[0]) || 0;
-                                minutes = parseInt(parts[1]) || 0;
-                            }
-                            return {
-                                title: m.title || '',
-                                duration_hours: hours,
-                                duration_minutes: minutes,
-                                description: m.description || ''
-                            };
-                        });
-                    },
-
-                    addTool() {
-                        this.tools.push('');
-                    },
-                    removeTool(index) {
-                        this.tools.splice(index, 1);
-                    },
-
-                    addMaterial() {
-                        const duration = this.getCalculatedDuration();
-                        this.materials.push({
-                            title: '',
-                            duration_hours: duration.hours,
-                            duration_minutes: duration.minutes,
-                            description: ''
-                        });
-                    },
-                    removeMaterial(index) {
-                        this.materials.splice(index, 1);
-                    },
-
-                    getCalculatedDuration() {
-                        const startTime = document.querySelector('input[name="start_time"]')?.value;
-                        const endTime = document.querySelector('input[name="end_time"]')?.value;
-
-                        if (startTime && endTime) {
-                            const start = startTime.split(':');
-                            const end = endTime.split(':');
-
-                            const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1]);
-                            const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1]);
-
-                            let diffMinutes = endMinutes - startMinutes;
-                            if (diffMinutes < 0) diffMinutes += 24 * 60;
-
-                            return {
-                                hours: Math.floor(diffMinutes / 60),
-                                minutes: diffMinutes % 60
-                            };
-                        }
-                        return { hours: '', minutes: '' };
-                    },
-
-                    updateAllMaterialDurations() {
-                        const duration = this.getCalculatedDuration();
-                        this.materials.forEach((material) => {
-                            material.duration_hours = duration.hours;
-                            material.duration_minutes = duration.minutes;
-                        });
-                    },
-
-                    addBenefit() {
-                        this.benefits.push('');
-                    },
-                    removeBenefit(index) {
-                        this.benefits.splice(index, 1);
-                    }
-                }
-            }
-        </script>
+        <script src="{{ asset('assets/elearning/js/program-form.js') }}?v={{ time() }}"></script>
 
         <!-- Inline SweetAlert Validation Scripts -->
         <script>
@@ -899,82 +886,6 @@
                         confirmButtonColor: '#f97316'
                     });
                 @endif
-
-                                                                                                                                                    // Form validation before submit
-                                                                                                                                                    const form = document.getElementById('programForm');
-                if (form) {
-                    form.addEventListener('submit', function (e) {
-                        const program = form.querySelector('input[name="program"]');
-                        const category = form.querySelector('select[name="category"]');
-                        const type = form.querySelector('select[name="type"]');
-                        const description = form.querySelector('textarea[name="description"]');
-                        const quota = form.querySelector('input[name="quota"]');
-                        const price = form.querySelector('input[name="price"]');
-                        const startDate = form.querySelector('input[name="start_date"]');
-                        const endDate = form.querySelector('input[name="end_date"]');
-
-                        let errors = [];
-
-                        if (!program || !program.value.trim()) {
-                            errors.push('Judul program harus diisi');
-                        }
-                        if (!category || !category.value) {
-                            errors.push('Kategori harus dipilih');
-                        }
-                        if (!type || !type.value) {
-                            errors.push('Jenis pelaksanaan harus dipilih');
-                        }
-                        if (!description || !description.value.trim()) {
-                            errors.push('Deskripsi harus diisi');
-                        }
-                        if (!quota || !quota.value || parseInt(quota.value) < 1) {
-                            errors.push('Kuota peserta harus diisi minimal 1');
-                        }
-                        if (!price || price.value === '') {
-                            errors.push('Harga harus diisi');
-                        }
-                        if (!startDate || !startDate.value) {
-                            errors.push('Tanggal mulai harus diisi');
-                        }
-                        if (!endDate || !endDate.value) {
-                            errors.push('Tanggal berakhir harus diisi');
-                        }
-
-                        // Check offline location fields
-                        if (type && type.value === 'offline') {
-                            const province = form.querySelector('input[name="province"]');
-                            const city = form.querySelector('input[name="city"]');
-                            const district = form.querySelector('input[name="district"]');
-                            const village = form.querySelector('input[name="village"]');
-                            const fullAddress = form.querySelector('textarea[name="full_address"]');
-
-                            if (!province || !province.value) errors.push('Provinsi harus dipilih');
-                            if (!city || !city.value) errors.push('Kabupaten/Kota harus dipilih');
-                            if (!district || !district.value) errors.push('Kecamatan harus dipilih');
-                            if (!village || !village.value) errors.push('Kelurahan/Desa harus dipilih');
-                            if (!fullAddress || !fullAddress.value.trim()) errors.push('Alamat lengkap harus diisi');
-                        }
-
-                        // Check online zoom link
-                        if (type && type.value === 'online') {
-                            const zoomLink = form.querySelector('input[name="zoom_link"]');
-                            if (!zoomLink || !zoomLink.value.trim()) {
-                                errors.push('Link Zoom harus diisi untuk program online');
-                            }
-                        }
-
-                        if (errors.length > 0) {
-                            e.preventDefault();
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                html: '<ul style="text-align: left; padding-left: 20px;">' + errors.map(err => '<li>' + err + '</li>').join('') + '</ul>',
-                                confirmButtonColor: '#f97316'
-                            });
-                            return false;
-                        }
-                    });
-                }
             });
         </script>
     @endpush

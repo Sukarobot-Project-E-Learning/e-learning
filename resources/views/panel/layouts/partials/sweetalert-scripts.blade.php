@@ -122,8 +122,12 @@
         }
     };
 
-    // Auto-show session flash messages
-    document.addEventListener('DOMContentLoaded', function () {
+    // Turbo Hygiene: Handle Flash Messages & Cache Cleanup
+    document.addEventListener('turbo:load', function () {
+        // 1. Preview Guard: Do not show alerts during preview rendering
+        if (document.documentElement.hasAttribute("data-turbo-preview")) return;
+
+        // Flash Messages
         @if(session('success'))
             SwalConfig.successToast('Berhasil!', '{{ session('success') }}');
         @endif
@@ -132,11 +136,21 @@
             SwalConfig.errorToast('Gagal!', '{{ session('error') }}');
         @endif
 
-            @if($errors->any())
-                const errorMessages = @json($errors->all());
-                SwalConfig.validationError(errorMessages);
-            @endif
-    });
+        @if($errors->any())
+            const errorMessages = @json($errors->all());
+            SwalConfig.validationError(errorMessages);
+        @endif
+    }, { once: true }); // Ensure listener fires only once for this specific page load
+
+    // 2. Cache Cleaner: Close SweetAlerts before Turbo caches the page
+    if (!window.hasSwalCacheListener) {
+        document.addEventListener('turbo:before-cache', () => {
+            if (Swal.isVisible()) {
+                Swal.close();
+            }
+        });
+        window.hasSwalCacheListener = true;
+    }
 
     // Helper function for delete forms
     function confirmDeleteForm(form, itemName = 'data ini') {

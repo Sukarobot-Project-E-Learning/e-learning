@@ -332,7 +332,7 @@
                                             </template>
                                             <template x-if="submission.status !== 'approved'">
                                                 <div class="flex items-center gap-2">
-                                                    <a :href="'/instructor/programs/' + submission.id + '/edit'"
+                                                    <a :href="'/instructor/programs/' + submission.id + '/edit'" data-turbo="false"
                                                         class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">

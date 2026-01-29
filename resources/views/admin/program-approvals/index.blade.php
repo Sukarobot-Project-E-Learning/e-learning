@@ -36,13 +36,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="mb-4 px-4 py-3 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900/30 dark:border-green-600 dark:text-green-400">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-    <div class="mb-4 px-4 py-3 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900/30 dark:border-red-600 dark:text-red-400">{{ session('error') }}</div>
-    @endif
-
     <!-- Search & Filter Bar -->
     <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-orange-100 dark:border-gray-700">
         <div class="flex flex-col md:flex-row gap-4">

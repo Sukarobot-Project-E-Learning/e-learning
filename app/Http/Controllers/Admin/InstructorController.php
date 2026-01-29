@@ -86,7 +86,17 @@ class InstructorController extends Controller
      */
     public function create()
     {
-        return view('admin.instructors.create');
+        $defaults = ['Web Programming', 'Digital Marketing', 'Microsoft Office', 'Design Grafis'];
+        $existing = DB::table('data_trainers')
+            ->distinct()
+            ->pluck('keahlian')
+            ->filter()
+            ->toArray();
+        
+        $expertiseOptions = array_values(array_unique(array_merge($defaults, $existing)));
+        sort($expertiseOptions);
+
+        return view('admin.instructors.create', compact('expertiseOptions'));
     }
 
     /**
@@ -166,11 +176,16 @@ class InstructorController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'password' => 'required|string|min:8|confirmed',
                 'status' => 'nullable|string|in:Aktif,Non-Aktif',
-                'expertise' => 'nullable|string|max:255',
+                'expertise' => 'required|string|max:100',
                 'job' => 'nullable|string|max:255',
                 'experience' => 'nullable|string|max:255',
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
+
+            // Normalisasi data expertise (Title Case)
+            if (!empty($validated['expertise'])) {
+                $validated['expertise'] = ucwords(strtolower($validated['expertise']));
+            }
 
             $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 
@@ -262,7 +277,12 @@ class InstructorController extends Controller
             'photo' => $user->avatar ?? null,
         ];
 
-        return view('admin.instructors.edit', ['instructor' => (object)$instructorData]);
+        $defaults = ['Web Programming', 'Digital Marketing', 'Microsoft Office', 'Design Grafis'];                                         
+        $existing = DB::table('data_trainers')->distinct()->pluck('keahlian')->filter()->toArray();                                        
+        $expertiseOptions = array_unique(array_merge($defaults, $existing));                                                               
+        sort($expertiseOptions);                                                                                                           
+                                                                                                                                            
+        return view('admin.instructors.edit', ['instructor' => (object)$instructorData, 'expertiseOptions' => $expertiseOptions]);
     }
 
     /**
@@ -284,12 +304,17 @@ class InstructorController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'password' => 'nullable|string|min:8|confirmed',
                 'status' => 'nullable|string|in:Aktif,Non-Aktif',
-                'expertise' => 'nullable|string|max:255', // data_trainers.keahlian
+                'expertise' => 'required|string|max:100', // data_trainers.keahlian
                 'job' => 'nullable|string|max:255', // users.job
                 'experience' => 'nullable|string|max:255', // data_trainers.pengalaman
                 'bio' => 'nullable|string', // data_trainers.bio
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
+
+            // Normalisasi data expertise (Title Case)
+            if (!empty($validated['expertise'])) {
+                $validated['expertise'] = ucwords(strtolower($validated['expertise']));
+            }
 
             $isActive = ($validated['status'] ?? 'Aktif') === 'Aktif';
 

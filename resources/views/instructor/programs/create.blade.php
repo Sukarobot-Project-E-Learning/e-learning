@@ -9,7 +9,30 @@
 
             <!-- Form Card with Progress Header -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden"
-                x-data="programForm()">
+                x-data="programForm({
+                    isAdmin: false,
+                    data: {
+                        title: {{ Js::from(old('title')) }},
+                        category: {{ Js::from(old('category')) }},
+                        type: {{ Js::from(old('type')) }},
+                        description: {{ Js::from(old('description')) }},
+                        quota: {{ Js::from(old('available_slots')) }},
+                        price: {{ Js::from(old('price')) }},
+                        start_date: {{ Js::from(old('start_date')) }},
+                        start_time: {{ Js::from(old('start_time')) }},
+                        end_date: {{ Js::from(old('end_date')) }},
+                        end_time: {{ Js::from(old('end_time')) }},
+                        province: {{ Js::from(old('province')) }},
+                        city: {{ Js::from(old('city')) }},
+                        district: {{ Js::from(old('district')) }},
+                        village: {{ Js::from(old('village')) }},
+                        full_address: {{ Js::from(old('full_address')) }},
+                        zoom_link: {{ Js::from(old('zoom_link')) }},
+                        tools: {{ Js::from(old('tools', [])) }},
+                        materials: {{ Js::from(old('materials', [])) }},
+                        benefits: {{ Js::from(old('benefits', [])) }}
+                    }
+                })">
                 <!-- Progress Header -->
                 <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
 
@@ -74,8 +97,9 @@
                                         Judul Program <span class="text-orange-500">*</span>
                                     </label>
                                     <input type="text" name="title" required placeholder="Masukkan judul program"
-                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                        value="{{ old('title') }}">
+                                        x-model="title"
+                                        class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                    <span class="text-red-500 text-sm mt-1" x-text="errors.title" x-show="errors.title"></span>
                                     @error('title')
                                         <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -94,19 +118,17 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Kategori <span class="text-orange-500">*</span>
                                         </label>
-                                        <select name="category" required
+                                        <select name="category" required x-model="category"
                                             class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                             style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                             <option value="">Pilih Kategori</option>
-                                            <option value="kursus" {{ old('category') == 'kursus' ? 'selected' : '' }}>Kursus
-                                            </option>
-                                            <option value="pelatihan" {{ old('category') == 'pelatihan' ? 'selected' : '' }}>
-                                                Pelatihan</option>
-                                            <option value="sertifikasi" {{ old('category') == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                                            <option value="outing-class" {{ old('category') == 'outing-class' ? 'selected' : '' }}>Outing Class</option>
-                                            <option value="outboard" {{ old('category') == 'outboard' ? 'selected' : '' }}>
-                                                Outboard</option>
+                                            <option value="kursus">Kursus</option>
+                                            <option value="pelatihan">Pelatihan</option>
+                                            <option value="sertifikasi">Sertifikasi</option>
+                                            <option value="outing-class">Outing Class</option>
+                                            <option value="outboard">Outboard</option>
                                         </select>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.category" x-show="errors.category"></span>
                                     </div>
 
                                     <div>
@@ -117,11 +139,10 @@
                                             class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                             style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                             <option value="">Pilih Jenis</option>
-                                            <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>🌐 Online
-                                            </option>
-                                            <option value="offline" {{ old('type') == 'offline' ? 'selected' : '' }}>📍
-                                                Offline</option>
+                                            <option value="online">🌐 Online</option>
+                                            <option value="offline">📍 Offline</option>
                                         </select>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.type" x-show="errors.type"></span>
                                     </div>
                                 </div>
 
@@ -130,9 +151,10 @@
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Deskripsi <span class="text-orange-500">*</span>
                                     </label>
-                                    <textarea name="description" rows="4" required
+                                    <textarea name="description" rows="4" required x-model="description"
                                         placeholder="Jelaskan tentang program Anda secara singkat..."
                                         class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none">{{ old('description') }}</textarea>
+                                    <span class="text-red-500 text-sm mt-1" x-text="errors.description" x-show="errors.description"></span>
                                 </div>
                             </div>
                         </div>
@@ -176,10 +198,10 @@
                                                     </path>
                                                 </svg>
                                             </div>
-                                            <input type="number" name="available_slots" required min="1" placeholder="50"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                                value="{{ old('available_slots') }}">
+                                            <input type="number" name="available_slots" required min="1" placeholder="50" x-model="quota"
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
                                         </div>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.quota" x-show="errors.quota"></span>
                                     </div>
 
                                     <div>
@@ -191,11 +213,11 @@
                                                 class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <span class="text-sm font-medium text-gray-500">Rp</span>
                                             </div>
-                                            <input type="number" name="price" required min="0" step="0.01"
+                                            <input type="number" name="price" required min="0" step="0.01" x-model="price"
                                                 placeholder="350000"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                                value="{{ old('price') }}">
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
                                         </div>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.price" x-show="errors.price"></span>
                                     </div>
                                 </div>
 
@@ -337,36 +359,36 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Tanggal Mulai <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="date" name="start_date" required
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                            value="{{ old('start_date') }}">
+                                        <input type="date" name="start_date" required x-model="start_date"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.start_date" x-show="errors.start_date"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Waktu Mulai <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="time" name="start_time" required @change="updateAllMaterialDurations()"
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                            value="{{ old('start_time') }}">
+                                        <input type="time" name="start_time" required x-model="start_time"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.start_time" x-show="errors.start_time"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Tanggal Berakhir <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="date" name="end_date" required
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                            value="{{ old('end_date') }}">
+                                        <input type="date" name="end_date" required x-model="end_date"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.end_date" x-show="errors.end_date"></span>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Waktu Berakhir <span class="text-orange-500">*</span>
                                         </label>
-                                        <input type="time" name="end_time" required @change="updateAllMaterialDurations()"
-                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                            value="{{ old('end_time') }}">
+                                        <input type="time" name="end_time" required x-model="end_time"
+                                            class="block w-full px-3 sm:px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.end_time" x-show="errors.end_time"></span>
                                     </div>
                                 </div>
 
@@ -390,55 +412,59 @@
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Provinsi <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="province" id="province_text"
+                                            <input type="hidden" name="province" id="province_text" x-model="province"
                                                 :required="type === 'offline'">
                                             <select id="province" :required="type === 'offline'"
-                                                onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('province_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('province_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Provinsi</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.province" x-show="errors.province"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kabupaten/Kota <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="city" id="city_text" :required="type === 'offline'">
+                                            <input type="hidden" name="city" id="city_text" :required="type === 'offline'" x-model="city">
                                             <select id="city" :required="type === 'offline'"
-                                                onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('city_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('city_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kabupaten/Kota</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.city" x-show="errors.city"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kecamatan <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="district" id="district_text"
+                                            <input type="hidden" name="district" id="district_text" x-model="district"
                                                 :required="type === 'offline'">
                                             <select id="district" :required="type === 'offline'"
-                                                onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('district_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('district_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kecamatan</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.district" x-show="errors.district"></span>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Kelurahan/Desa <span class="text-orange-500">*</span>
                                             </label>
-                                            <input type="hidden" name="village" id="village_text"
+                                            <input type="hidden" name="village" id="village_text" x-model="village"
                                                 :required="type === 'offline'">
                                             <select id="village" :required="type === 'offline'"
-                                                onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim()"
+                                                onchange="document.getElementById('village_text').value = this.options[this.selectedIndex].textContent.trim(); document.getElementById('village_text').dispatchEvent(new Event('input'))"
                                                 class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors appearance-none bg-no-repeat bg-right"
                                                 style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-position: right 1rem center; background-size: 1.25rem;">
                                                 <option value="">Pilih Kelurahan/Desa</option>
                                             </select>
+                                            <span class="text-red-500 text-sm mt-1" x-text="errors.village" x-show="errors.village"></span>
                                         </div>
                                     </div>
 
@@ -446,16 +472,17 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Alamat Lengkap <span class="text-orange-500">*</span>
                                         </label>
-                                        <textarea name="full_address" rows="3" :required="type === 'offline'"
+                                        <textarea name="full_address" rows="3" :required="type === 'offline'" x-model="full_address"
                                             placeholder="Masukkan alamat lengkap tempat pelaksanaan..."
                                             class="block w-full px-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none">{{ old('full_address') }}</textarea>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.full_address" x-show="errors.full_address"></span>
                                     </div>
                                 </div>
 
                                 <!-- Link Zoom (Online Only) -->
                                 <div x-show="type === 'online'" x-transition class="space-y-4">
                                     <div class="flex items-center gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+                                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -467,7 +494,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Link Zoom/Google Meet <span class="text-blue-500">*</span>
+                                            Link Zoom/Google Meet <span class="text-orange-500">*</span>
                                         </label>
                                         <div class="relative">
                                             <div
@@ -479,14 +506,14 @@
                                                     </path>
                                                 </svg>
                                             </div>
-                                            <input type="url" name="zoom_link" :required="type === 'online'"
+                                            <input type="url" name="zoom_link" :required="type === 'online'" x-model="zoom_link"
                                                 placeholder="https://zoom.us/j/xxxxxxxxxx atau https://meet.google.com/xxx-xxxx-xxx"
-                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
-                                                value="{{ old('zoom_link') }}">
+                                                class="block w-full pl-12 pr-4 py-3.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
                                         </div>
                                         <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                             💡 Masukkan link Zoom, Google Meet, atau platform meeting online lainnya
                                         </p>
+                                        <span class="text-red-500 text-sm mt-1" x-text="errors.zoom_link" x-show="errors.zoom_link"></span>
                                     </div>
                                 </div>
                             </div>
@@ -531,7 +558,7 @@
                                         class="bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 animate-fade-in">
                                         <!-- Material Header -->
                                         <div
-                                            class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                                            class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700">
                                             <div class="flex items-center gap-3">
                                                 <div
                                                     class="flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg">
@@ -558,7 +585,7 @@
                                                 <input type="text" :name="'materials[' + index + '][title]'"
                                                     x-model="materials[index].title"
                                                     placeholder="Contoh: Hari 1: Analisis SWOT"
-                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors">
+                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors">
                                             </div>
 
                                             <div>
@@ -596,7 +623,7 @@
                                                 <textarea :name="'materials[' + index + '][description]'"
                                                     x-model="materials[index].description" rows="4"
                                                     placeholder="Contoh:&#10;• Pembukaan & Pengenalan Materi&#10;• Presentasi Strategi Digital&#10;• Praktik Pembuatan Kampanye&#10;• Evaluasi & Tanya Jawab"
-                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none"></textarea>
+                                                    class="block w-full px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors resize-none"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -625,9 +652,9 @@
                         <div class="p-5 sm:p-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div
-                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30">
-                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
+                                    class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30">
+                                    <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                         </path>
@@ -646,8 +673,8 @@
                                     <!-- Upload State -->
                                     <div class="flex flex-col items-center justify-center py-6" x-show="!imagePreview">
                                         <div
-                                            class="flex items-center justify-center w-16 h-16 mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
-                                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor"
+                                            class="flex items-center justify-center w-16 h-16 mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                                            <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
@@ -655,7 +682,7 @@
                                             </svg>
                                         </div>
                                         <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
-                                            <span class="font-semibold text-blue-500">Klik untuk upload</span> atau drag &
+                                            <span class="font-semibold text-orange-500">Klik untuk upload</span> atau drag &
                                             drop
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-500">PNG, JPG, JPEG (MAX. 2MB)</p>
@@ -680,26 +707,23 @@
 
                                     <input id="image" name="image" type="file" class="hidden" accept="image/*"
                                         x-ref="imageInput"
-                                        @change="let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
+                                        @change="validateImage($event); let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
                                 </label>
+                                <span class="text-red-500 text-sm mt-1" x-text="errors.image" x-show="errors.image"></span>
                             </div>
 
                             <!-- Summary Preview -->
                             <div
                                 class="mt-8 p-5 bg-gradient-to-br from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
                                 <div class="flex items-center gap-2 mb-4">
-                                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+                                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Siap untuk
-                                        diajukan!</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Program Anda akan di
+                                        simpan dan akan di publikasikan ke halaman client.</span>
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Program Anda akan dikirim untuk direview oleh admin. Anda akan menerima notifikasi
-                                    setelah program disetujui.
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -709,7 +733,7 @@
                         class="sticky bottom-0 px-5 sm:px-8 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between gap-4">
                             <!-- Back Button -->
-                            <button type="button" x-show="currentStep > 1" @click="currentStep--"
+                            <button type="button" x-show="currentStep > 1" @click="prevStep()"
                                 class="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -731,8 +755,8 @@
                             <div class="flex-1"></div>
 
                             <!-- Next/Submit Button -->
-                            <button type="button" x-show="currentStep < 5" @click="currentStep++"
-                                class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-blue-500 rounded-xl hover:bg-blue-600 active:scale-95 transition-all shadow-lg shadow-blue-500/30">
+                            <button type="button" x-show="currentStep < 5" @click="nextStep()"
+                                class="flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-white bg-orange-500 rounded-xl hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange-500/30">
                                 <span>Lanjut</span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
@@ -777,75 +801,7 @@
 
     @push('scripts')
         <script src="{{ asset('assets/elearning/region-selector.js') }}?v={{ time() }}"></script>
-        <script>
-            function programForm() {
-                return {
-                    currentStep: 1,
-                    totalSteps: 5,
-                    type: '{{ old("type") }}' || '',
-                    tools: [],
-                    materials: [],
-                    benefits: [],
-
-                    addTool() {
-                        this.tools.push('');
-                    },
-                    removeTool(index) {
-                        this.tools.splice(index, 1);
-                    },
-
-                    addMaterial() {
-                        const duration = this.getCalculatedDuration();
-                        this.materials.push({
-                            title: '',
-                            duration_hours: duration.hours,
-                            duration_minutes: duration.minutes,
-                            description: ''
-                        });
-                    },
-                    removeMaterial(index) {
-                        this.materials.splice(index, 1);
-                    },
-
-                    getCalculatedDuration() {
-                        const startTime = document.querySelector('input[name="start_time"]')?.value;
-                        const endTime = document.querySelector('input[name="end_time"]')?.value;
-
-                        if (startTime && endTime) {
-                            const start = startTime.split(':');
-                            const end = endTime.split(':');
-
-                            const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1]);
-                            const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1]);
-
-                            let diffMinutes = endMinutes - startMinutes;
-                            if (diffMinutes < 0) diffMinutes += 24 * 60;
-
-                            return {
-                                hours: Math.floor(diffMinutes / 60),
-                                minutes: diffMinutes % 60
-                            };
-                        }
-                        return { hours: '', minutes: '' };
-                    },
-
-                    updateAllMaterialDurations() {
-                        const duration = this.getCalculatedDuration();
-                        this.materials.forEach((material) => {
-                            material.duration_hours = duration.hours;
-                            material.duration_minutes = duration.minutes;
-                        });
-                    },
-
-                    addBenefit() {
-                        this.benefits.push('');
-                    },
-                    removeBenefit(index) {
-                        this.benefits.splice(index, 1);
-                    }
-                }
-            }
-        </script>
+        <script src="{{ asset('assets/elearning/js/program-form.js') }}?v={{ time() }}"></script>
 
         <!-- Inline SweetAlert Validation Scripts -->
         <script>
@@ -879,113 +835,6 @@
                         confirmButtonColor: '#3B82F6'
                     });
                 @endif
-
-                                // Form validation before submit
-                                const form = document.getElementById('programForm');
-                if (form) {
-                    form.addEventListener('submit', function (e) {
-                        const title = form.querySelector('input[name="title"]');
-                        const category = form.querySelector('select[name="category"]');
-                        const type = form.querySelector('select[name="type"]');
-                        const description = form.querySelector('textarea[name="description"]');
-                        const availableSlots = form.querySelector('input[name="available_slots"]');
-                        const price = form.querySelector('input[name="price"]');
-                        const startDate = form.querySelector('input[name="start_date"]');
-                        const endDate = form.querySelector('input[name="end_date"]');
-                        const startTime = form.querySelector('input[name="start_time"]');
-                        const endTime = form.querySelector('input[name="end_time"]');
-
-                        let errors = [];
-
-                        if (!title || !title.value.trim()) {
-                            errors.push('Judul program harus diisi');
-                        }
-                        if (!category || !category.value) {
-                            errors.push('Kategori harus dipilih');
-                        }
-                        if (!type || !type.value) {
-                            errors.push('Jenis pelaksanaan harus dipilih');
-                        }
-                        if (!description || !description.value.trim()) {
-                            errors.push('Deskripsi harus diisi');
-                        }
-                        if (!availableSlots || !availableSlots.value || parseInt(availableSlots.value) < 1) {
-                            errors.push('Kuota peserta harus diisi minimal 1');
-                        }
-                        if (!price || price.value === '') {
-                            errors.push('Harga harus diisi');
-                        }
-
-                        // Schedule validation
-                        if (!startDate || !startDate.value) {
-                            errors.push('Tanggal mulai harus diisi');
-                        }
-                        if (!endDate || !endDate.value) {
-                            errors.push('Tanggal berakhir harus diisi');
-                        }
-                        if (!startTime || !startTime.value) {
-                            errors.push('Jam mulai harus diisi');
-                        }
-                        if (!endTime || !endTime.value) {
-                            errors.push('Jam selesai harus diisi');
-                        }
-
-                        // Validate date order (end_date must be >= start_date)
-                        if (startDate && endDate && startDate.value && endDate.value) {
-                            const start = new Date(startDate.value);
-                            const end = new Date(endDate.value);
-                            if (end < start) {
-                                errors.push('Tanggal selesai harus sama atau setelah tanggal mulai');
-                            }
-
-                            // If same date, validate time order (end_time must be > start_time)
-                            if (start.getTime() === end.getTime() && startTime && endTime && startTime.value && endTime.value) {
-                                const startTimeVal = startTime.value.split(':');
-                                const endTimeVal = endTime.value.split(':');
-                                const startMinutes = parseInt(startTimeVal[0]) * 60 + parseInt(startTimeVal[1]);
-                                const endMinutes = parseInt(endTimeVal[0]) * 60 + parseInt(endTimeVal[1]);
-
-                                if (endMinutes <= startMinutes) {
-                                    errors.push('Jam selesai harus lebih besar dari jam mulai jika tanggal sama');
-                                }
-                            }
-                        }
-
-                        // Check offline location fields
-                        if (type && type.value === 'offline') {
-                            const province = form.querySelector('input[name="province"]');
-                            const city = form.querySelector('input[name="city"]');
-                            const district = form.querySelector('input[name="district"]');
-                            const village = form.querySelector('input[name="village"]');
-                            const fullAddress = form.querySelector('textarea[name="full_address"]');
-
-                            if (!province || !province.value) errors.push('Provinsi harus dipilih');
-                            if (!city || !city.value) errors.push('Kabupaten/Kota harus dipilih');
-                            if (!district || !district.value) errors.push('Kecamatan harus dipilih');
-                            if (!village || !village.value) errors.push('Kelurahan/Desa harus dipilih');
-                            if (!fullAddress || !fullAddress.value.trim()) errors.push('Alamat lengkap harus diisi');
-                        }
-
-                        // Check online zoom link
-                        if (type && type.value === 'online') {
-                            const zoomLink = form.querySelector('input[name="zoom_link"]');
-                            if (!zoomLink || !zoomLink.value.trim()) {
-                                errors.push('Link Zoom harus diisi untuk program online');
-                            }
-                        }
-
-                        if (errors.length > 0) {
-                            e.preventDefault();
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                html: '<ul style="text-align: left; padding-left: 20px;">' + errors.map(err => '<li>' + err + '</li>').join('') + '</ul>',
-                                confirmButtonColor: '#3B82F6'
-                            });
-                            return false;
-                        }
-                    });
-                }
             });
         </script>
     @endpush

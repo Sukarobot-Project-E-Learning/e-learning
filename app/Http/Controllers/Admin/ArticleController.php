@@ -95,7 +95,7 @@ class ArticleController extends Controller
             'category' => 'required|string|max:100',
             'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
             'excerpt' => 'nullable|string',
             'meta_title' => 'nullable|string|max:60',
             'meta_description' => 'nullable|string|max:160',
@@ -105,6 +105,7 @@ class ArticleController extends Controller
             'category.required' => 'Kategori artikel harus diisi',
             'content.required' => 'Konten artikel harus diisi',
             'status.required' => 'Status artikel harus dipilih',
+            'image.required' => 'Gambar artikel harus diunggah',
             'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG',
             'image.max' => 'Ukuran gambar maksimal 5MB',
@@ -172,7 +173,7 @@ class ArticleController extends Controller
             'meta_title' => $articleModel->meta_title,
             'meta_description' => $articleModel->meta_description,
             'meta_keywords' => $articleModel->meta_keywords,
-            'image' => $articleModel->image ? asset($articleModel->image) : null
+            'image' => $articleModel->image ? (str_starts_with($articleModel->image, 'images/') ? asset($articleModel->image) : asset('storage/' . $articleModel->image)) : null    
         ];
 
         return view('admin.articles.edit', compact('article', 'categories'));
@@ -191,7 +192,7 @@ class ArticleController extends Controller
             'category' => 'required|string|max:100',
             'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
             'excerpt' => 'nullable|string',
             'meta_title' => 'nullable|string|max:60',
             'meta_description' => 'nullable|string|max:160',
@@ -201,6 +202,7 @@ class ArticleController extends Controller
             'category.required' => 'Kategori artikel harus diisi',
             'content.required' => 'Konten artikel harus diisi',
             'status.required' => 'Status artikel harus dipilih',
+            'image.required' => 'Gambar artikel harus diunggah',
             'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG',
             'image.max' => 'Ukuran gambar maksimal 5MB',

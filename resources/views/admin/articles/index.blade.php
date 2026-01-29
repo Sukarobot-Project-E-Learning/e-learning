@@ -310,8 +310,10 @@
         </a>
     </div>
 
-    <script>
-        function articleTable() {
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function articleTable() {
             return {
                 articles: @json($articles->items()),
                 search: '{{ request("search") }}',
@@ -385,4 +387,34 @@
             }
         }
     </script>
+<script>
+function showSessionAlerts() {
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#f97316'
+        });
+    @endif
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showSessionAlerts);
+} else {
+    showSessionAlerts();
+}
+</script>
+@endpush
 @endsection

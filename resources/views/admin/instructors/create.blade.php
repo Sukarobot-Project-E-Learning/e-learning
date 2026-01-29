@@ -79,15 +79,80 @@
                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
                     </div>
 
-                    <!-- Expertise -->
-                    <div class="mb-2">
+                    <div class="mb-2" x-data="expertiseSelector()">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="expertise">
                             Keahlian <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="expertise" id="expertise" required
-                               placeholder="Masukkan keahlian instruktur"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+
+                        <!-- Dropdown -->
+                        <select x-show="!showExpertiseCustom"
+                                x-model="expertise"
+                                :name="!showExpertiseCustom ? 'expertise' : ''"
+                                class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
+                            <option value="">Pilih Keahlian</option>
+                            @foreach($expertiseOptions as $option)
+                                <option value="{{ $option }}" {{ old('expertise', '') == $option ? 'selected' : '' }}>
+                                    {{ $option }}
+                                </option>
+                            @endforeach
+                            <option value="__other__">➕ Tambah Keahlian Baru...</option>
+                        </select>
+
+                        <!-- Custom Input -->
+                        <div x-show="showExpertiseCustom" class="relative" style="display: none;">
+                            <input type="text"
+                                x-model="expertise"
+                                :name="showExpertiseCustom ? 'expertise' : ''"
+                                placeholder="Masukkan keahlian baru..."
+                                class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
+                            
+                            <button type="button" 
+                                    @click="cancelCustom()"
+                                    class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-red-500"
+                                    title="Batal">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        @error('expertise')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    <script>
+                    function expertiseSelector() {
+                        return {
+                            expertise: '{{ old('expertise', '') }}',
+                            originalExpertise: '{{ old('expertise', '') }}',
+                            showExpertiseCustom: false,
+                            defaultOptions: @json($expertiseOptions),
+                            
+                            init() {
+                                // Check if current expertise is not in the default options
+                                if (this.expertise && !this.defaultOptions.includes(this.expertise)) {
+                                    this.showExpertiseCustom = true;
+                                }
+
+                                // Watch for changes to show custom input
+                                this.$watch('expertise', value => {
+                                    if (value === '__other__') {
+                                        this.showExpertiseCustom = true;
+                                        this.expertise = '';
+                                    }
+                                });
+                            },
+
+                            cancelCustom() {
+                                this.showExpertiseCustom = false;
+                                this.expertise = this.originalExpertise && this.defaultOptions.includes(this.originalExpertise) 
+                                    ? this.originalExpertise 
+                                    : '';
+                            }
+                        }
+                    }
+                    </script>
 
                     <!-- Job -->
                     <div class="mb-2">

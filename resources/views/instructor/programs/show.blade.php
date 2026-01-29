@@ -177,7 +177,7 @@
                             ? asset($submission->image) 
                             : asset('storage/' . $submission->image);
                     @endphp
-                    <img src="{{ $submissionImageUrl }}" alt="Program Image" class="max-w-md rounded-lg shadow">
+                    <img src="{{ $submissionImageUrl }}" alt="Program Image" class="mt-2 rounded-lg max-w-full h-auto max-h-64 object-cover">
                 </div>
                 @endif
 
