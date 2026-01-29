@@ -2,17 +2,8 @@ name: Deploy E-Learning to VPS
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
-    inputs:
-      deployment_type:
-        description: 'Deployment type'
-        required: true
-        default: 'incremental'
-        type: choice
-        options:
-        - incremental
-        - full
 
 jobs:
   deploy:
@@ -20,90 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 2  # Get last 2 commits for diff
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-    - name: Determine deployment mode
-      id: deploy_mode
-      run: |
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          DEPLOY_TYPE="${{ github.event.inputs.deployment_type }}"
-        else
-          DEPLOY_TYPE="incremental"
-        fi
-        echo "deployment_type=$DEPLOY_TYPE" >> $GITHUB_OUTPUT
-        echo "🚀 Deployment mode: $DEPLOY_TYPE"
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-
-    - name: Install NPM Dependencies
-      run: npm ci
-
-    - name: Build Vite Assets
-      run: |
-        npm run build
-        echo "✅ Vite build completed - assets ready in public/build/"
-
-    - name: Smart Laravel E-Learning Sync
-      id: sync_deploy
-      uses: nick-fields/retry@v2
-      with:
-        timeout_minutes: 10
-        max_attempts: 3
-        retry_wait_seconds: 20
-        command: |
-          # Install lftp for smart sync
-          sudo apt-get update && sudo apt-get install -y lftp
-
-          echo "🎓 E-Learning Smart Sync - Only sync changed Laravel files..."
-          echo "📋 Will sync: app/, config/, resources/, routes/, public/ (excluding server files)"
-          echo "⚡ Excluding: vendor/, .env, storage/logs (server managed)"
-          echo "✅ Safe deployment - only application code"
-
-          # Smart Laravel folder sync via SSH/SFTP
-          lftp -e "
-          set sftp:auto-confirm yes;
-          set net:timeout 60;
-          set net:max-retries 3;
-          set net:reconnect-interval-base 5;
-          open sftp://${{ secrets.VPS_USERNAME }}:${{ secrets.VPS_PASSWORD }}@${{ secrets.VPS_HOST }};
-          cd /var/www/e-learning/;
-          lcd ./;
-
-          echo 'Starting E-Learning smart sync...';
-
-          # Sync core Laravel folders (only newer files)
-          mirror --reverse --only-newer --verbose --parallel=2 app/ app/;
-          mirror --reverse --only-newer --verbose --parallel=2 config/ config/;
-          mirror --reverse --only-newer --verbose --parallel=2 resources/ resources/;
-          mirror --reverse --only-newer --verbose --parallel=2 routes/ routes/;
-          mirror --reverse --only-newer --verbose --parallel=2 database/migrations/ database/migrations/;
-
-          # Sync Vite build assets (with --delete to replace old hashed files)
-          mirror --reverse --delete --verbose --parallel=2 public/build/ public/build/;
-
-          # Sync public folder but exclude server-managed files and build (already synced above)
-          mirror --reverse --only-newer --verbose --parallel=2 --exclude='index.php' --exclude='.htaccess' --exclude='build/' public/ public/;
-
-          # Sync storage/app/public for uploaded files (avatars, images, etc)
-          mirror --reverse --only-newer --verbose --parallel=2 storage/app/public/ storage/app/public/;
-
-          # Sync storage/app/private for sensitive documents (KTP, CV, NPWP - admin only)
-          mirror --reverse --only-newer --verbose --parallel=2 storage/app/private/ storage/app/private/;
-
-          # Clear bootstrap cache
-          mirror --reverse --delete --verbose --parallel=1 bootstrap/cache/ bootstrap/cache/;
-
-          echo '✅ E-Learning sync completed!';
-          quit
-          "
-
-    - name: Run Laravel Commands via SSH
+    - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.VPS_HOST }}
@@ -113,36 +24,31 @@ jobs:
         script: |
           cd /var/www/e-learning
 
-          echo "🔧 Setting proper permissions first..."
+          echo "🎓 E-Learning Deployment Started..."
+          echo "📦 Pulling latest changes from Git..."
 
-          # Set proper permissions BEFORE running artisan commands
+          # Pull latest changes (only changed files)
+          git pull origin main
+
+          echo "📦 Installing NPM dependencies..."
+          npm ci
+
+          echo "🔨 Building Vite assets..."
+          npm run build
+
+          echo "🔧 Setting permissions..."
           sudo chown -R www-data:www-data /var/www/e-learning
           sudo chmod -R 755 /var/www/e-learning
           sudo chmod -R 775 /var/www/e-learning/storage
           sudo chmod -R 775 /var/www/e-learning/bootstrap/cache
 
-          echo "🔧 Running Laravel optimization commands..."
-
-          # Create storage symlink (important for uploaded files)
+          echo "� Creating storage symlink..."
           sudo -u www-data php artisan storage:link --force 2>/dev/null || echo "Storage link already exists"
 
-          # Clear all caches
-          sudo -u www-data php artisan config:clear
-          sudo -u www-data php artisan route:clear
-          sudo -u www-data php artisan view:clear
-
-          # Cache for production
+          echo "🧹 Clearing and optimizing caches..."
+          sudo -u www-data php artisan optimize:clear
           sudo -u www-data php artisan config:cache
           sudo -u www-data php artisan route:cache
           sudo -u www-data php artisan view:cache
 
-          echo "✅ E-Learning optimization completed!"
-
-    - name: Deployment Summary
-      if: always()
-      run: |
-        echo "✅ E-Learning deployment completed!"
-        echo "🔄 Only changed Laravel files were synced"
-        echo "🧹 Caches cleared and optimized"
-        echo "🎯 Server synchronized with Git repository"
-
+          echo "✅ E-Learning deployment completed!"
