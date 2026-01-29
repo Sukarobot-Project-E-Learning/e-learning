@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;  
+use Illuminate\Support\Facades\Log;   
 use Illuminate\Support\Str;
 
 class ProgramController extends Controller
@@ -221,7 +224,81 @@ class ProgramController extends Controller
         $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
         $program->benefits = json_decode($program->benefits, true) ?? [];
 
-        return view('admin.programs.edit', compact('program'));
+        // Prepare location data for pre-population (if offline)
+        $locationData = null;
+        if ($program->type === 'offline') {
+            $locationData = $this->getLocationIds($program);
+        }
+
+        return view('admin.programs.edit', compact('program', 'locationData'));
+    }
+
+    // Add this helper method to find IDs from names
+    private function getLocationIds($program)
+    {
+        try {
+            $locationIds = [
+                'province_id' => null,
+                'city_id' => null,
+                'district_id' => null,
+                'village_id' => null,
+            ];
+
+            // Get provinces and find matching ID
+            $provinces = Cache::remember('provinces', 3600, function () {
+                $response = Http::get('https://gilarya.github.io/data-indonesia/provinsi.json');
+                return $response->successful() ? $response->json() : [];
+            });
+
+            $province = collect($provinces)->firstWhere('nama', $program->province);
+            if (!$province) return $locationIds;
+            
+            $locationIds['province_id'] = $province['id'];
+
+            // Get cities and find matching ID
+            $cities = Cache::remember("cities_{$province['id']}", 3600, function () use ($province) {
+                $response = Http::get("https://gilarya.github.io/data-indonesia/kabupaten/{$province['id']}.json");
+                return $response->successful() ? $response->json() : [];
+            });
+
+            $city = collect($cities)->firstWhere('nama', $program->city);
+            if (!$city) return $locationIds;
+            
+            $locationIds['city_id'] = $city['id'];
+
+            // Get districts and find matching ID
+            $districts = Cache::remember("districts_{$city['id']}", 3600, function () use ($city) {
+                $response = Http::get("https://gilarya.github.io/data-indonesia/kecamatan/{$city['id']}.json");
+                return $response->successful() ? $response->json() : [];
+            });
+
+            $district = collect($districts)->firstWhere('nama', $program->district);
+            if (!$district) return $locationIds;
+            
+            $locationIds['district_id'] = $district['id'];
+
+            // Get villages and find matching ID
+            $villages = Cache::remember("villages_{$district['id']}", 3600, function () use ($district) {
+                $response = Http::get("https://gilarya.github.io/data-indonesia/kelurahan/{$district['id']}.json");
+                return $response->successful() ? $response->json() : [];
+            });
+
+            $village = collect($villages)->firstWhere('nama', $program->village);
+            if ($village) {
+                $locationIds['village_id'] = $village['id'];
+            }
+
+            return $locationIds;
+
+        } catch (\Exception $e) {
+            \Log::error('Error getting location IDs: ' . $e->getMessage());
+            return [
+                'province_id' => null,
+                'city_id' => null,
+                'district_id' => null,
+                'village_id' => null,
+            ];
+        }
     }
 
     /**
@@ -243,7 +320,6 @@ class ProgramController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'instructor_id' => 'nullable|exists:users,id',
-
             'quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'start_time' => 'required',

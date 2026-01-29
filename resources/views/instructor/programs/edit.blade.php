@@ -830,41 +830,39 @@
     @push('scripts')
         <script src="{{ asset('assets/elearning/region-selector.js') }}?v={{ time() }}"></script>
         <script src="{{ asset('assets/elearning/js/program-form.js') }}?v={{ time() }}"></script>
-
-        <!-- Inline SweetAlert Validation Scripts -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Session flash message handling
-                @if(session('success'))
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: '{{ session('success') }}',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    });
-                @endif
-
-                @if(session('error'))
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: '{{ session('error') }}',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                @endif
-
-                @if($errors->any())
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validasi Gagal',
-                        html: '<ul style="text-align: left; padding-left: 20px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                @endif
-            });
-        </script>
+            <!-- Pre-populate locations for edit mode -->
+    @if(isset($locationData) && $submission->type === 'offline')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for RegionSelector to initialize
+            setTimeout(function() {
+                if (window.regionSelector) {
+                    @if($locationData['province_id'])
+                        window.regionSelector.setSelectedProvince('{{ $locationData['province_id'] }}');
+                        
+                        setTimeout(() => {
+                            @if($locationData['city_id'])
+                                window.regionSelector.setSelectedCity('{{ $locationData['city_id'] }}');
+                                
+                                setTimeout(() => {
+                                    @if($locationData['district_id'])
+                                        window.regionSelector.setSelectedDistrict('{{ $locationData['district_id'] }}');
+                                        
+                                        setTimeout(() => {
+                                            @if($locationData['village_id'])
+                                                window.regionSelector.setSelectedVillage('{{ $locationData['village_id'] }}');
+                                            @endif
+                                        }, 500);
+                                    @endif
+                                }, 500);
+                            @endif
+                        }, 500);
+                    @endif
+                }
+            }, 1000);
+        });
+    </script>
+    @endif
     @endpush
 
 @endsection
