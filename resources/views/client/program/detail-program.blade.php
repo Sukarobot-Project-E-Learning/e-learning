@@ -209,15 +209,44 @@
               <p class="text-3xl font-bold text-green-600">GRATIS</p>
             @endif
           </div>
+          
+          @php
+              $now = \Carbon\Carbon::now();
+              $startDate = \Carbon\Carbon::parse($program->start_date);
+              $endDate = \Carbon\Carbon::parse($program->end_date);
+              $isRunning = $now->between($startDate, $endDate);
+              $isFinished = $now->gt($endDate);
+              $isUpcoming = $now->lt($startDate);
+              $isSoldOut = $program->available_slots <= 0;
+          @endphp
+
           <div class="flex flex-col gap-3 mb-8">
-            <a href="{{ route('client.pembayaran', ['programSlug' => $program->slug]) }}"
-              class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30 text-center">
-              Beli Kelas Sekarang
-            </a>
-            <button
-              class="w-full border-2 border-gray-200 text-gray-700 py-3.5 rounded-xl font-bold hover:border-blue-600 hover:text-blue-600 transition-colors">
-              Tukar Voucher
-            </button>
+            @if($isSoldOut)
+                 <button disabled
+                  class="w-full bg-red-400 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
+                  Kuota Habis
+                </button>
+            @elseif($isFinished)
+                <button disabled
+                  class="w-full bg-gray-400 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
+                  Program Selesai
+                </button>
+            @elseif($isRunning)
+                 <button disabled
+                  class="w-full bg-blue-300 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
+                  Pendaftaran Ditutup (Sedang Berjalan)
+                </button>
+            @else
+                {{-- Program Available --}}
+                <a href="{{ route('client.pembayaran', ['programSlug' => $program->slug]) }}"
+                  class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30 text-center">
+                  Beli Kelas Sekarang
+                </a>
+                <button
+                  class="w-full border-2 border-gray-200 text-gray-700 py-3.5 rounded-xl font-bold hover:border-blue-600 hover:text-blue-600 transition-colors">
+                  Tukar Voucher
+                </button>
+            @endif
           </div>
         @endif
 

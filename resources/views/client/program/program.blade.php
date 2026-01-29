@@ -163,6 +163,11 @@
                                 $programImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
                                     ? asset($program->image) 
                                     : ($program->image ? asset('storage/' . $program->image) : 'https://picsum.photos/400/250?random=' . $program->id);
+                                $now = \Carbon\Carbon::now();
+                                $startDate = \Carbon\Carbon::parse($program->start_date);
+                                $endDate = \Carbon\Carbon::parse($program->end_date);
+                                $isRunning = $now->between($startDate, $endDate);
+                                $isFinished = $now->gt($endDate);
                             @endphp
                             <img src="{{ $programImageUrl }}"
                                 class="w-full h-52 object-cover transform group-hover:scale-105 transition duration-500"
@@ -172,6 +177,16 @@
                                     <span
                                         class="bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">Kuota
                                         Habis</span>
+                                </div>
+                            @elseif($isFinished)
+                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                                    <span
+                                        class="bg-gray-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">Selesai</span>
+                                </div>
+                            @elseif($isRunning)
+                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                                    <span
+                                        class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">Sedang Berjalan</span>
                                 </div>
                             @endif
                             <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 z-20 shadow-sm">
