@@ -213,25 +213,48 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function updateFileName(input, labelId) {
             const label = document.getElementById(labelId);
-            if (input.files && input.files.length > 0) {
-                label.textContent = input.files[0].name;
+            const file = input.files[0];
+            
+            if (file) {
+                // Validation: Max 2MB
+                if (file.size > 2 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file maksimal adalah 2MB.',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                    
+                    // Reset input
+                    input.value = '';
+                    
+                    // Reset label
+                    resetLabel(label, labelId);
+                    return;
+                }
+
+                label.textContent = file.name;
                 label.classList.add('text-gray-900');
                 label.classList.remove('text-gray-500');
             } else {
-                if (labelId === 'cv-label') label.textContent = 'PDF atau DOC';
-                if (labelId === 'ktp-label') label.textContent = 'JPG atau PNG';
-                if (labelId === 'npwp-label') label.textContent = 'JPG atau PNG';
-                label.classList.add('text-gray-500');
-                label.classList.remove('text-gray-900');
+                resetLabel(label, labelId);
             }
+        }
+
+        function resetLabel(label, labelId) {
+            if (labelId === 'cv-label') label.textContent = 'PDF atau DOC';
+            if (labelId === 'ktp-label') label.textContent = 'JPG atau PNG';
+            if (labelId === 'npwp-label') label.textContent = 'JPG atau PNG';
+            label.classList.add('text-gray-500');
+            label.classList.remove('text-gray-900');
         }
     </script>
 
     @if(session('success'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
                 icon: 'success',
