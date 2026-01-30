@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const jumlahKelas = document.querySelector(".jumlah-kelas");
     const navItems = document.querySelectorAll(".nav-item");
 
+    const searchInput = document.getElementById("program-search-input");
+
     if (!container) return;
 
     let cards = Array.from(container.querySelectorAll(".kelas-card"));
@@ -64,10 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Store original index for sorting
     cards.forEach((c, i) => (c.dataset.origIndex = i));
 
-    const updateJumlahKelas = (count) => {
+    const updateJumlahKelas = (count, searchTerm = '') => {
         if (jumlahKelas) {
             const categoryText = categoryNames[activeCategory] || 'program';
-            jumlahKelas.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full inline-block"></span> Menampilkan ${count} ${categoryText}`;
+            let text = `Menampilkan ${count} ${categoryText}`;
+            if (searchTerm) {
+                text += ` (hasil pencarian "${searchTerm}")`;
+            }
+            jumlahKelas.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full inline-block"></span> ${text}`;
         }
     };
 
@@ -95,12 +101,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return cardCategory === normalize(activeCategory);
     }
 
+    function matchesSearch(card, term) {
+        if (!term) return true;
+        const title = normalize(card.querySelector('h3')?.innerText || "");
+        const description = normalize(card.querySelector('p.text-gray-600')?.innerText || "");
+        // Also search in instructor name if desired, but sticking to title/desc for consistency
+        return title.includes(term) || description.includes(term);
+    }
+
     function applySortAndFilter() {
         const sortValue = sortSelect ? sortSelect.value : "newest";
+        const searchTerm = searchInput ? normalize(searchInput.value) : "";
 
-        // Filter by category and availability
+        // Filter by category, availability, and search
         let visibleCards = cards.filter(c => {
             if (!matchesCategory(c)) return false;
+            if (!matchesSearch(c, searchTerm)) return false;
 
             if (sortValue === 'available') {
                 const isRunning = c.dataset.isRunning === 'true';
@@ -144,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        updateJumlahKelas(visibleCards.length);
+        updateJumlahKelas(visibleCards.length, searchTerm ? searchInput.value : '');
     }
 
     // Tab Click Handlers
@@ -168,6 +184,16 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             btn.classList.remove("text-gray-500", "font-medium");
             btn.classList.add("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
+            btn.classList.add("text-gray-500", "font-medium"); // This line seems redundant/wrong logic in original provided snippet, fixing highlighting here
+            // Correct highlighting logic:
+
+            navItems.forEach(b => {
+                b.classList.remove("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
+                b.classList.add("text-gray-500", "font-medium");
+            });
+            btn.classList.remove("text-gray-500", "font-medium");
+            btn.classList.add("text-blue-600", "border-b-2", "border-blue-600", "font-bold");
+
 
             // Apply filter instantly
             applySortAndFilter();
@@ -178,6 +204,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sort change handler
     if (sortSelect) {
         sortSelect.addEventListener("change", applySortAndFilter);
+    }
+
+    // Search input handler
+    if (searchInput) {
+        searchInput.addEventListener("input", applySortAndFilter);
     }
 
     // Handle browser back/forward

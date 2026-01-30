@@ -248,45 +248,5 @@
 <link rel="stylesheet" href="{{ asset('assets/elearning/client/css/program/program.css') }}">
 <script src="{{ asset('assets/elearning/client/js/program/program.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('program-search-input');
-        const programCards = document.querySelectorAll('.kelas-card');
-        const countDisplay = document.querySelector('.jumlah-kelas');
-        const originalCountText = countDisplay ? countDisplay.innerText : '';
-
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase().trim();
-                let visibleCount = 0;
-
-                programCards.forEach(card => {
-                    // Only filter currently visible cards (if filtered by category via JS in the future, 
-                    // this logic might need adjustment, but for now PHP handles category)
-                    // Note: If we had client-side category filtering too, we'd need to check that status.
-                    // Assuming current page load is category-filtered by PHP.
-                    
-                    const title = card.querySelector('h3').innerText.toLowerCase();
-                    const description = card.querySelector('p.text-gray-600').innerText.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                        card.classList.remove('hidden');
-                        visibleCount++;
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-
-                // Update count text
-                if (countDisplay) {
-                    if (searchTerm === '') {
-                        // Restore original text logic (or reload page if complex)
-                         // Ideally we parse the original count or just say "Menampilkan X program"
-                         countDisplay.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full"></span> Menampilkan ${visibleCount} program`;
-                    } else {
-                        countDisplay.innerHTML = `<span class="w-2 h-8 bg-blue-600 rounded-full"></span> Menampilkan ${visibleCount} program (hasil pencarian "${e.target.value}")`;
-                    }
-                }
-            });
-        }
-    });
+    // Inline script removed - logic moved to program.js
 </script>
