@@ -91,10 +91,22 @@
             <label class="block text-gray-900 font-medium mb-2" for="skills">
                 Keahlian (Skills)
             </label>
-            <input type="text" name="skills" id="skills"
-                class="w-full rounded-xl border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-3 px-4 text-gray-700 placeholder-gray-400"
-                placeholder="Contoh: Web Development, Data Science, Digital Marketing..."
-                value="{{ old('skills') }}">
+            <div class="relative">
+                <select name="skills" id="skills"
+                    class="w-full rounded-xl border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-3 px-4 text-gray-700 appearance-none bg-white">
+                    <option value="" disabled {{ old('skills') ? '' : 'selected' }}>Pilih Keahlian...</option>
+                    @foreach($expertiseOptions as $option)
+                        <option value="{{ $option }}" {{ old('skills') == $option ? 'selected' : '' }}>
+                            {{ $option }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
             @error('skills')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror

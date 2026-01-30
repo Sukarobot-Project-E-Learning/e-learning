@@ -30,7 +30,18 @@ class BecomeInstructorController extends Controller
              // return redirect()->route('client.dashboard')->with('info', 'Anda sudah terdaftar sebagai instruktur.');
         }
 
-        return view('client.dashboard.become-instructor', compact('existingApplication'));
+        // Get available skills from data_trainers table
+        $defaults = ['Web Programming', 'Digital Marketing', 'Microsoft Office', 'Design Grafis'];
+        $existing = DB::table('data_trainers')
+            ->distinct()
+            ->pluck('keahlian')
+            ->filter()
+            ->toArray();
+        
+        $expertiseOptions = array_values(array_unique(array_merge($defaults, $existing)));
+        sort($expertiseOptions);
+
+        return view('client.dashboard.become-instructor', compact('existingApplication', 'expertiseOptions'));
     }
 
     /**
