@@ -246,8 +246,8 @@ Route::name('client.')->group(function () {
         Route::get('/check-username', [UserDashboardController::class, 'checkUsername'])->name('check-username');
         Route::get('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'create'])->name('program.proof');
         Route::post('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'store'])->name('program.proof.store');
-        Route::get('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'create'])->name('dashboard.become-instructor');
-        Route::post('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'store'])->name('dashboard.become-instructor.store');
+        Route::get('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'create'])->name('program.proof');
+        Route::post('/program/{slug}/proof', [\App\Http\Controllers\Client\ProgramProofController::class, 'store'])->name('program.proof.store');
     });
 
 
@@ -260,6 +260,10 @@ Route::name('client.')->group(function () {
             ->name('payment.create');
         Route::get('/payment/finish', [\App\Http\Controllers\Client\PaymentController::class, 'finish'])
             ->name('payment.finish');
+
+        // Become Instructor Routes
+        Route::get('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'create'])->name('become-instructor');
+        Route::post('/become-instructor', [\App\Http\Controllers\Client\BecomeInstructorController::class, 'store'])->name('become-instructor.store');
     });
 
     // Resume payment API (requires auth)

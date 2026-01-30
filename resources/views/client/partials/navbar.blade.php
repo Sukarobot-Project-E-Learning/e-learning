@@ -59,7 +59,7 @@
                                 <a href="{{ route('instructor.dashboard') }}?welcome=1" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Dashboard Instruktur</a>
                             @else
                                 <a href="{{ route('client.dashboard') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Profil Saya</a>
-                                <a href="{{ route('client.dashboard.become-instructor') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Menjadi Instruktur</a>
+                                <a href="{{ route('client.become-instructor') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50">Menjadi Instruktur</a>
                             @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -126,7 +126,7 @@
                     @if(Auth::user()->role === 'instructor')
                         <a href="{{ route('instructor.dashboard') }}?welcome=1" class="w-full bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-50 transition-colors mb-3">Dashboard Instruktur</a>
                     @else
-                        <a href="{{ route('client.dashboard.become-instructor') }}" class="w-full bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-50 transition-colors mb-3">Menjadi Instruktur</a>
+                        <a href="{{ route('client.become-instructor') }}" class="w-full bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-center block hover:bg-blue-50 transition-colors mb-3">Menjadi Instruktur</a>
                     @endif
                     
                     <form method="POST" action="{{ route('logout') }}">

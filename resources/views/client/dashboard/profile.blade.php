@@ -41,7 +41,7 @@
                           </div>
                       </div>
                       <div class="ml-4 flex-shrink-0">
-                          <a href="{{ route('client.become-instructor.create') }}" class="font-medium text-red-600 hover:text-red-500 underline transition duration-150 ease-in-out">
+                          <a href="{{ route('client.become-instructor') }}" class="font-medium text-red-600 hover:text-red-500 underline transition duration-150 ease-in-out">
                               Ajukan Ulang
                           </a>
                       </div>

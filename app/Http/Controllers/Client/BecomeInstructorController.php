@@ -105,6 +105,6 @@ class BecomeInstructorController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('client.dashboard.become-instructor')->with('success', 'Pengajuan menjadi instruktur berhasil dikirim. Kami akan meninjau data Anda.');
+        return redirect()->route('client.become-instructor')->with('success', 'Pengajuan menjadi instruktur berhasil dikirim. Kami akan meninjau data Anda.');
     }
 }
