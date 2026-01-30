@@ -179,6 +179,7 @@ class InstructorController extends Controller
                 'expertise' => 'required|string|max:100',
                 'job' => 'nullable|string|max:255',
                 'experience' => 'nullable|string|max:255',
+                'bio' => 'nullable|string|max:1000',
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
@@ -237,6 +238,8 @@ class InstructorController extends Controller
                     'email' => $validated['email'],
                     'telephone' => $validated['phone'] ?? null,
                     'keahlian' => $validated['expertise'] ?? null,
+                    'pengalaman' => $validated['experience'] ?? null,
+                    'bio' => $validated['bio'] ?? null,
                     'status_trainer' => $isActive ? 'Aktif' : 'Tidak Aktif',
                     'created_at' => now(),
                     'updated_at' => now(),
