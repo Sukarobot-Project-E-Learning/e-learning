@@ -29,6 +29,8 @@
                         village: {{ Js::from(old('village')) }},
                         full_address: {{ Js::from(old('full_address')) }},
                         zoom_link: {{ Js::from(old('zoom_link')) }},
+                        image: null,
+                        image_url: null,
                         tools: {{ Js::from(old('tools', [])) }},
                         materials: {{ Js::from(old('materials', [])) }},
                         benefits: {{ Js::from(old('benefits', [])) }}
@@ -68,7 +70,7 @@
                     </div>
                 </div>
                 <form id="programForm" action="{{ route('admin.programs.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" @submit.prevent="if(validateStep(currentStep)) $el.submit()">
                     @csrf
 
                     <!-- Step 1: Informasi Dasar -->

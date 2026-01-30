@@ -8,81 +8,82 @@
         <div class="container px-4 sm:px-6 mx-auto max-w-4xl">
 
             <!-- Form Card with Progress Header -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden"
-                x-data="programForm({
-                    isAdmin: true,
-                    data: {
-                        title: {{ Js::from(old('program', $program->program)) }},
-                        instructor_id: {{ Js::from(old('instructor_id', $program->instructor_id)) }},
-                        category: {{ Js::from(old('category', $program->category)) }},
-                        type: {{ Js::from(old('type', $program->type)) }},
-                        description: {{ Js::from(old('description', $program->description)) }},
-                        quota: {{ Js::from(old('quota', $program->quota)) }},
-                        price: {{ Js::from(old('price', $program->price)) }},
-                        start_date: {{ Js::from(old('start_date', $program->start_date)) }},
-                        start_time: {{ Js::from(old('start_time', $program->start_time)) }},
-                        end_date: {{ Js::from(old('end_date', $program->end_date)) }},
-                        end_time: {{ Js::from(old('end_time', $program->end_time)) }},
-                        province: {{ Js::from(old('province', $program->province)) }},
-                        city: {{ Js::from(old('city', $program->city)) }},
-                        district: {{ Js::from(old('district', $program->district)) }},
-                        village: {{ Js::from(old('village', $program->village)) }},
-                        full_address: {{ Js::from(old('full_address', $program->full_address)) }},
-                        zoom_link: {{ Js::from(old('zoom_link', $program->zoom_link)) }},
-                        tools: {{ Js::from(old('tools', $program->tools ?? [])) }},
-                        materials: {{ Js::from(old('materials', $program->learning_materials ?? [])) }}.map(m => {
-                            let h = 0, min = 0;
-                            if (m.duration) {
-                                const parts = String(m.duration).split(':');
-                                h = parseInt(parts[0]) || 0;
-                                min = parseInt(parts[1]) || 0;
-                            }
-                            return {
-                                title: m.title || '',
-                                duration_hours: h,
-                                duration_minutes: min,
-                                description: m.description || ''
-                            };
-                        }),
-                        benefits: {{ Js::from(old('benefits', $program->benefits ?? [])) }}
-                    }
-                })">
-                <!-- Progress Header -->
-                <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-
-                    <!-- Step Indicators -->
-                    <div class="flex items-center justify-center gap-2 sm:gap-3">
-                        <template x-for="step in totalSteps" :key="step">
-                            <div class="flex items-center">
-                                <div class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300"
-                                    :class="currentStep >= step ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'">
-                                    <span x-text="step"></span>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden"
+                            x-data="programForm({
+                                isAdmin: true,
+                                data: {
+                                    title: {{ Js::from(old('program', $program->program)) }},
+                                    instructor_id: {{ Js::from(old('instructor_id', $program->instructor_id)) }},
+                                    category: {{ Js::from(old('category', $program->category)) }},
+                                    type: {{ Js::from(old('type', $program->type)) }},
+                                    description: {{ Js::from(old('description', $program->description)) }},
+                                    quota: {{ Js::from(old('quota', $program->quota)) }},
+                                    price: {{ Js::from(old('price', $program->price)) }},
+                                    start_date: {{ Js::from(old('start_date', $program->start_date)) }},
+                                    start_time: {{ Js::from(old('start_time', $program->start_time)) }},
+                                    end_date: {{ Js::from(old('end_date', $program->end_date)) }},
+                                    end_time: {{ Js::from(old('end_time', $program->end_time)) }},
+                                    province: {{ Js::from(old('province', $program->province)) }},
+                                    city: {{ Js::from(old('city', $program->city)) }},
+                                    district: {{ Js::from(old('district', $program->district)) }},
+                                    village: {{ Js::from(old('village', $program->village)) }},
+                                    full_address: {{ Js::from(old('full_address', $program->full_address)) }},
+                                    zoom_link: {{ Js::from(old('zoom_link', $program->zoom_link)) }},
+                                    image: {{ Js::from($program->image) }},
+                                    image_url: {{ Js::from($program->image ? asset('storage/' . $program->image) : null) }},
+                                    tools: {{ Js::from(old('tools', $program->tools ?? [])) }},
+                                    materials: {{ Js::from(old('materials', $program->learning_materials ?? [])) }}.map(m => {
+                                        let h = 0, min = 0;
+                                        if (m.duration) {
+                                            const parts = String(m.duration).split(':');
+                                            h = parseInt(parts[0]) || 0;
+                                            min = parseInt(parts[1]) || 0;
+                                        }
+                                        return {
+                                            title: m.title || '',
+                                            duration_hours: h,
+                                            duration_minutes: min,
+                                            description: m.description || ''
+                                        };
+                                    }),
+                                    benefits: {{ Js::from(old('benefits', $program->benefits ?? [])) }}
+                                }
+                            })">
+                            <!-- Progress Header -->
+                            <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+            
+                                <!-- Step Indicators -->
+                                <div class="flex items-center justify-center gap-2 sm:gap-3">
+                                    <template x-for="step in totalSteps" :key="step">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300"
+                                                :class="currentStep >= step ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'">
+                                                <span x-text="step"></span>
+                                            </div>
+                                            <div x-show="step < totalSteps"
+                                                class="w-6 sm:w-12 h-1 mx-1 sm:mx-2 rounded-full transition-all duration-300"
+                                                :class="currentStep > step ? 'bg-orange-500' : 'bg-gray-200 dark:bg-gray-700'">
+                                            </div>
+                                        </div>
+                                    </template>
                                 </div>
-                                <div x-show="step < totalSteps"
-                                    class="w-6 sm:w-12 h-1 mx-1 sm:mx-2 rounded-full transition-all duration-300"
-                                    :class="currentStep > step ? 'bg-orange-500' : 'bg-gray-200 dark:bg-gray-700'">
+            
+                                <!-- Step Labels (Hidden on Mobile) -->
+                                <div class="hidden sm:flex justify-between mt-3 px-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <span class="w-20 text-center"
+                                        :class="currentStep >= 1 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
+                                    <span class="w-20 text-center"
+                                        :class="currentStep >= 2 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
+                                    <span class="w-20 text-center"
+                                        :class="currentStep >= 3 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
+                                    <span class="w-20 text-center"
+                                        :class="currentStep >= 4 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
+                                    <span class="w-20 text-center"
+                                        :class="currentStep >= 5 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
                                 </div>
                             </div>
-                        </template>
-                    </div>
-
-                    <!-- Step Labels (Hidden on Mobile) -->
-                    <div class="hidden sm:flex justify-between mt-3 px-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span class="w-20 text-center"
-                            :class="currentStep >= 1 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
-                        <span class="w-20 text-center"
-                            :class="currentStep >= 2 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
-                        <span class="w-20 text-center"
-                            :class="currentStep >= 3 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
-                        <span class="w-20 text-center"
-                            :class="currentStep >= 4 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
-                        <span class="w-20 text-center"
-                            :class="currentStep >= 5 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''"></span>
-                    </div>
-                </div>
-                <form id="programForm" action="{{ route('admin.programs.update', [
-        'program' => $program->id
-    ]) }}" method="POST" enctype="multipart/form-data">
+                            <form id="programForm" action="{{ route('admin.programs.update', $program->id) }}" method="POST"
+                                enctype="multipart/form-data" @submit.prevent="if(validateStep(currentStep)) $el.submit()">
                     @csrf
                     @method('PUT')
 
@@ -747,7 +748,7 @@
 
                                     <!-- Remove Button -->
                                     <button type="button" x-show="imagePreview"
-                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''"
+                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''; image = null; existingImage = null"
                                         class="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -772,8 +773,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Program Anda akan
-                                        diperbarui.</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Program Anda akan diperbarui.</span>
                                 </div>
                             </div>
                         </div>

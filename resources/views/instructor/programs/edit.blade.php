@@ -28,6 +28,8 @@
                         village: {{ Js::from(old('village', $submission->village)) }},
                         full_address: {{ Js::from(old('full_address', $submission->full_address)) }},
                         zoom_link: {{ Js::from(old('zoom_link', $submission->zoom_link)) }},
+                        image: {{ Js::from($submission->image) }},
+                        image_url: {{ Js::from($submission->image ? asset('storage/' . $submission->image) : null) }},
                         tools: {{ Js::from(old('tools', $submission->tools ?? [])) }},
                         materials: {{ Js::from(old('materials', $submission->materials ?? [])) }}.map(m => {
                             let h = 0, min = 0;
@@ -80,7 +82,7 @@
                     </div>
                 </div>
                 <form id="programForm" action="{{ route('instructor.programs.update', $submission->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" @submit.prevent="if(validateStep(currentStep)) $el.submit()">
                     @csrf
                     @method('PUT')
 
@@ -721,7 +723,7 @@
 
                                     <!-- Remove Button -->
                                     <button type="button" x-show="imagePreview"
-                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''"
+                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''; image = null; existingImage = null"
                                         class="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <form id="programForm" action="{{ route('instructor.programs.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" @submit.prevent="if(validateStep(currentStep)) $el.submit()">
                     @csrf
 
                     <!-- Step 1: Informasi Dasar -->
@@ -666,7 +666,7 @@
                                 </div>
                             </div>
 
-                            <div x-data="{ imagePreview: null }">
+                            <div>
                                 <label for="image"
                                     class="relative flex flex-col items-center justify-center w-full h-64 sm:h-80 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-2xl cursor-pointer bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors overflow-hidden group">
 
@@ -696,7 +696,7 @@
 
                                     <!-- Remove Button -->
                                     <button type="button" x-show="imagePreview"
-                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''"
+                                        @click.stop.prevent="imagePreview = null; $refs.imageInput.value = ''; image = null;"
                                         class="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 shadow-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -707,7 +707,7 @@
 
                                     <input id="image" name="image" type="file" class="hidden" accept="image/*"
                                         x-ref="imageInput"
-                                        @change="validateImage($event); let file = $event.target.files[0]; if (file) { let reader = new FileReader(); reader.onload = (e) => { imagePreview = e.target.result }; reader.readAsDataURL(file); }">
+                                        @change="validateImage($event)">
                                 </label>
                                 <span class="text-red-500 text-sm mt-1" x-text="errors.image" x-show="errors.image"></span>
                             </div>

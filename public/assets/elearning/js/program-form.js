@@ -11,6 +11,7 @@ function programForm(config = {}) {
         type: config.data?.type || '',
         description: config.data?.description || '',
         
+        
         // Quota (Admin: quota, Instructor: available_slots)
         quota: config.data?.quota || '', 
         
@@ -28,6 +29,10 @@ function programForm(config = {}) {
         full_address: config.data?.full_address || '',
         
         zoom_link: config.data?.zoom_link || '',
+        
+        image: null,
+        imagePreview: config.data?.image_url || null,
+        existingImage: config.data?.image || null,
         
         tools: config.data?.tools || [],
         materials: config.data?.materials || [],
@@ -125,6 +130,18 @@ function programForm(config = {}) {
                  }
             }
 
+            if (step === 4) {
+                // Materials validation can be added here if needed
+                isValid = true;
+            }
+
+            if (step === 5) {
+                if (!this.image && !this.existingImage) {
+                    this.errors.image = "Gambar program wajib diunggah.";
+                    isValid = false;
+                }
+            }
+
             return isValid;
         },
 
@@ -202,17 +219,30 @@ function programForm(config = {}) {
                  if (file.size > 2 * 1024 * 1024) {
                      this.errors.image = "Ukuran gambar maksimal 2MB.";
                      event.target.value = ''; 
-                     // Dispatch custom event if we want to clear preview in parent scope, 
-                     // but simply clearing input prevents submission.
+                     this.image = null;
+                     this.imagePreview = null;
                      return;
                  }
                  const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
                  if (!validTypes.includes(file.type)) {
                      this.errors.image = "Format gambar harus jpeg, png, jpg, gif, atau webp.";
                      event.target.value = '';
+                     this.image = null;
+                     this.imagePreview = null;
                      return;
                  }
                  this.errors.image = null;
+                 this.image = file;
+
+                 // Set preview
+                 const reader = new FileReader();
+                 reader.onload = (e) => {
+                     this.imagePreview = e.target.result;
+                 };
+                 reader.readAsDataURL(file);
+             } else {
+                 this.image = null;
+                 this.imagePreview = null;
              }
         }
     };
