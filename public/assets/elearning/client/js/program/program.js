@@ -103,7 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!matchesCategory(c)) return false;
 
             if (sortValue === 'available') {
-                return getSlots(c) > 0;
+                const isRunning = c.dataset.isRunning === 'true';
+                const isFinished = c.dataset.isFinished === 'true';
+                const slots = getSlots(c);
+
+                // Tersedia = Punya slot AND Tidak Sedang Berjalan AND Tidak Selesai (Upcoming)
+                return slots > 0 && !isRunning && !isFinished;
             }
             return true;
         });
@@ -116,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (sortValue === 'oldest') {
                 return da - db;
             } else {
-                return db - da;
+                return db - da; // newest or available (default latest)
             }
         });
 
@@ -125,10 +130,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Show visible cards
         container.innerHTML = "";
-        visibleCards.forEach(c => {
-            container.appendChild(c);
-            c.classList.remove("hidden");
-        });
+
+        if (visibleCards.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-500 text-lg">Belum ada program tersedia</p>
+                </div>
+            `;
+        } else {
+            visibleCards.forEach(c => {
+                container.appendChild(c);
+                c.classList.remove("hidden");
+            });
+        }
 
         updateJumlahKelas(visibleCards.length);
     }
