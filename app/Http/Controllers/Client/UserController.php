@@ -323,8 +323,12 @@ class UserController extends Controller
             'new_password_confirmation' => 'nullable|same:new_password',
         ];
         
-        // For non-SSO users, require current password to change password
-        if (!$isSsoUser) {
+        // Check for password update requirement
+        // Manual users OR SSO users who have already set a password must provide current password
+        $hasSetPassword = $user->password_updated_at !== null;
+        $requiresCurrentPassword = !$isSsoUser || $hasSetPassword;
+        
+        if ($requiresCurrentPassword) {
             $rules['current_password'] = 'nullable|required_with:new_password';
         }
         
@@ -370,16 +374,17 @@ class UserController extends Controller
 
         // Update password
         if (!empty($validated['new_password'])) {
-            // For SSO users, no need to check current password
-            if ($isSsoUser) {
-                $user->password = Hash::make($validated['new_password']);
-            } else {
-                // For non-SSO users, verify current password
+            $requiresCurrentPassword = (!$isSsoUser || ($user->password_updated_at !== null));
+
+            // Verify current password if required
+            if ($requiresCurrentPassword) {
                 if (!Hash::check($validated['current_password'], $user->password)) {
                     return back()->with('error', 'Kata sandi saat ini salah.')->withInput();
                 }
-                $user->password = Hash::make($validated['new_password']);
             }
+
+            $user->password = Hash::make($validated['new_password']);
+            $user->password_updated_at = now();
         }
 
         $user->save();

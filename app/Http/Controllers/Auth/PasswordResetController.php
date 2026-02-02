@@ -155,6 +155,7 @@ class PasswordResetController extends Controller
             ->where('email', $request->email)
             ->update([
                 'password' => Hash::make($request->password),
+                'password_updated_at' => now(),
                 'updated_at' => now(),
             ]);
 

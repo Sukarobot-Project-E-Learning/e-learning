@@ -103,7 +103,7 @@
           <!-- Security Section -->
           <div>
             <h2 class="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">
-              @if($user->provider === 'google')
+              @if($user->provider === 'google' && !$user->password_updated_at)
                 Buat Kata Sandi (Opsional)
                 <span class="text-sm font-normal text-gray-500 block mt-1">Anda login via Google. Buat password untuk login manual.</span>
               @else
@@ -111,8 +111,8 @@
               @endif
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              @if($user->provider !== 'google')
-              <!-- TextField: Kata Sandi Lama (hanya untuk non-SSO) -->
+              @if($user->provider !== 'google' || $user->password_updated_at)
+              <!-- TextField: Kata Sandi Lama (hanya untuk non-SSO atau SSO yang sudah set password) -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="currentPassword">Kata Sandi Saat Ini</label>
                 <div class="relative">
@@ -137,8 +137,8 @@
                 </div>
                 <p id="newPasswordError" class="text-red-500 text-sm mt-1 hidden"></p>
               </div>
-              @if($user->provider !== 'google')
-              <!-- ruang kosong (hanya jika non-SSO agar layout seimbang) -->
+              @if(!($user->provider !== 'google' || $user->password_updated_at))
+              <!-- ruang kosong (hanya jika field lama tidak ada agar layout seimbang) -->
               <div class="flex flex-col"></div>
               @endif
               <!-- TextField: Konfirmasi Kata Sandi Baru -->
