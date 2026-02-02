@@ -137,10 +137,7 @@
                 </div>
                 <p id="newPasswordError" class="text-red-500 text-sm mt-1 hidden"></p>
               </div>
-              @if(!($user->provider !== 'google' || $user->password_updated_at))
-              <!-- ruang kosong (hanya jika field lama tidak ada agar layout seimbang) -->
-              <div class="flex flex-col"></div>
-              @endif
+
               <!-- TextField: Konfirmasi Kata Sandi Baru -->
               <div class="flex flex-col">
                 <label class="text-[#111318] text-base font-medium leading-normal pb-2" for="newPasswordConfirmation">Konfirmasi Kata Sandi Baru</label>
