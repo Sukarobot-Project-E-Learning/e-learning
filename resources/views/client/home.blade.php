@@ -217,7 +217,7 @@
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" data-aos="fade-up">
                 <!-- Category 1 -->
-                <a href="{{ url('/program#filter=kursus') }}"
+                <a href="{{ url('/program?category=kursus') }}"
                     class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                     <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">
                         <div
@@ -237,7 +237,7 @@
                 </a>
 
                 <!-- Category 2 -->
-                <a href="{{ url('/program#filter=pelatihan') }}"
+                <a href="{{ url('/program?category=pelatihan') }}"
                     class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                     <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">
                         <div
@@ -258,7 +258,7 @@
                 </a>
 
                 <!-- Category 3 -->
-                <a href="{{ url('/program#filter=sertifikasi') }}"
+                <a href="{{ url('/program?category=sertifikasi') }}"
                     class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                     <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">
                         <div
@@ -278,7 +278,7 @@
                 </a>
 
                 <!-- Category 4 -->
-                <a href="{{ url('/program#filter=outingclass') }}"
+                <a href="{{ url('/program?category=outing-class') }}"
                     class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                     <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">
                         <div
@@ -299,7 +299,7 @@
                 </a>
 
                 <!-- Category 5 -->
-                <a href="{{ url('/program#filter=outboard') }}"
+                <a href="{{ url('/program?category=outboard') }}"
                     class="group category-card bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 text-center relative overflow-hidden h-48 flex flex-col items-center justify-center">
                     <div class="category-content transition-all duration-300 transform group-hover:-translate-y-2">
                         <div
@@ -604,12 +604,12 @@
 
     <!-- Competition Section -->
     <section id="event" class="py-20 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-8 lg:px-12 relative">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl font-bold text-gray-900">Kompetisi Robotik</h2>
-                <p class="text-gray-600 mt-2">Tunjukkan bakatmu dan raih prestasi di tingkat nasional</p>
-            </div>
+        <div class="text-center mb-12" data-aos="fade-up">
+            <h2 class="text-3xl font-bold text-gray-900">Kompetisi Robotik</h2>
+            <p class="text-gray-600 mt-2">Tunjukkan bakatmu dan raih prestasi di tingkat nasional</p>
+        </div>
 
+        <div class="max-w-7xl mx-auto px-8 lg:px-12 relative">
             <div class="swiper mySwiper pb-12" data-aos="fade-up" data-aos-delay="200">
                 <div class="swiper-wrapper">
                     <!-- SRC Card -->
@@ -631,18 +631,7 @@
                                     teknologi dan robot, tetapi juga tentang kolaborasi, inovasi dan semangat untuk belajar.
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
                                 </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex -space-x-2">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/men/1.jpg" alt="User">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/women/2.jpg" alt="User">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/men/3.jpg" alt="User">
-                                        <div
-                                            class="w-10 h-10 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">
-                                            +500</div>
-                                    </div>
+                                <div class="flex items-center">
                                     <a href="https://src.sukarobot.com/"
                                         class="px-8 py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-lg hover:shadow-orange-500/30">
                                         Daftar Sekarang
@@ -710,92 +699,9 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section id="alumni" class="py-20 bg-gray-50 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl font-bold text-gray-900">Apa Kata Mereka?</h2>
-                <p class="text-gray-600 mt-2">Cerita sukses dari alumni yang telah belajar di Sukarobot</p>
-            </div>
-
-            <div class="relative">
-                <div class="swiper testimonialSwiper pb-12 px-4">
-                    <div class="swiper-wrapper">
-                        @for ($i = 1; $i <= 5; $i++)
-                            <!-- Testimonial {{ $i }} -->
-                            <div class="swiper-slide h-auto">
-                                <div
-                                    class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col items-center text-center hover:shadow-lg transition-all duration-300">
-                                    <div class="relative w-24 h-24 mb-6">
-                                        <div class="absolute inset-0 bg-blue-100 rounded-full scale-110 animate-pulse"></div>
-                                        <img src="https://randomuser.me/api/portraits/{{ $i % 2 == 0 ? 'men' : 'women' }}/{{ rand(10, 90) }}.jpg"
-                                                            alt="User"
-                                                            class="relative w-full h-full rounded-full object-cover ring-4 ring-white shadow-md">
-                                    </div>
-                                    <h4 class="font-bold text-xl text-gray-900 mb-1">
-                                        {{ ['Dewi Sartika', 'Rizky Pratama', 'Sinta Nurhaliza', 'Budi Santoso', 'Ayu Lestari'][$i - 1] }}
-                                    </h4>
-                                    <p class="text-sm text-blue-600 font-semibold mb-6">
-                                        {{ ['Software Engineer', 'Mahasiswa Teknik', 'Guru SD', 'Freelancer', 'UI/UX Designer'][$i - 1] }}
-                                    </p>
-
-                                    <p class="text-gray-600 italic leading-relaxed flex-grow mb-6">
-                                        "{{ [
-                                'Belajar di Sukarobot benar-benar membuka wawasan saya tentang dunia IoT. Materinya sangat terstruktur.',
-                                'Sertifikasi dari Sukarobot sangat membantu saya saat melamar magang. Kurikulumnya relevan.',
-                                'Panduan yang sangat jelas dan mudah diikuti untuk pemula seperti saya.',
-                                'Instrukturnya sangat berpengalaman dan ramah dalam menjawab pertanyaan.',
-                                'Platform belajar robotik terbaik yang pernah saya coba. Sangat recommended!'
-                            ][$i - 1] }}"
-                                    </p>
-
-                                    <div class="flex text-yellow-400 gap-1">
-                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                                            <path
-                                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                                            <path
-                                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                                            <path
-                                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                                                            <path
-                                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                            </div>
-                        @endfor
-                    </div>
-                </div>`
-
-                <!-- Navigation Buttons -->
-                <button
-                    class="testi-prev absolute top-1/2 -left-4 lg:-left-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
-                <button
-                    class="testi-next absolute top-1/2 -right-4 lg:-right-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
 
     <!-- Instructors Section -->
-    <section id="instructor" class="py-20 bg-white relative overflow-hidden">
+    <section id="instructor" class="py-20 bg-gray-50 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-14" data-aos="fade-up">
                 <h2 class="text-3xl font-bold text-gray-900">Instruktur & Pengajar Terbaik</h2>
@@ -950,10 +856,29 @@
 
                 <!-- Right Form -->
                 <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100" data-aos="fade-left">
-                    <form class="space-y-6">
+                    @if(session('success'))
+                        <div class="mb-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-100 flex items-center gap-3">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 flex items-center gap-3">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('client.contact.send') }}" method="POST" class="space-y-6">
+                        @csrf
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap</label>
-                            <input type="text"
+                            <input type="text" name="name" required
                                 class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                                 placeholder="Masukkan nama Anda">
                         </div>
@@ -961,13 +886,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                                <input type="email"
+                                <input type="email" name="email" required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                                     placeholder="alamat@email.com">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Nomor HP</label>
-                                <input type="tel"
+                                <input type="tel" name="phone" required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                                     placeholder="0812xxxx">
                             </div>
@@ -975,7 +900,7 @@
 
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Pertanyaan</label>
-                            <textarea rows="4"
+                            <textarea rows="4" name="message" required
                                 class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                                 placeholder="Tuliskan pertanyaan Anda disini..."></textarea>
                         </div>

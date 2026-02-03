@@ -177,6 +177,7 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
 Route::name('client.')->group(function () {
     // Home & Public Pages
     Route::get('/', [\App\Http\Controllers\Client\HomeController::class, 'index'])->name('home');
+    Route::post('/contact', [\App\Http\Controllers\Client\HomeController::class, 'sendContact'])->name('contact.send');
 
     Route::get('/tentang', function () {
         return view('client.about.tentang');

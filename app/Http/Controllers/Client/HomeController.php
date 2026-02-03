@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMessage;
 
 class HomeController extends Controller
 {
@@ -76,5 +79,34 @@ class HomeController extends Controller
         });
 
         return view('client.home', compact('popularPrograms', 'instructors'));
+    }
+
+    /**
+     * Handle contact form submission
+     */
+    public function sendContact(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'message' => 'required|string',
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'message' => $request->message,
+        ];
+
+        try {
+            // Send email to specific address for testing
+            Mail::to('sudahdigunakan07@gmail.com')->send(new ContactMessage($data));
+
+            return back()->with('success', 'Pesan Anda berhasil dikirim! Kami akan segera menghubungi Anda.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Maaf, terjadi kesalahan saat mengirim pesan. Silakan coba lagi nanti. ' . $e->getMessage());
+        }
     }
 }
