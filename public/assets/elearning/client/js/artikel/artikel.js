@@ -178,6 +178,15 @@ document.addEventListener('DOMContentLoaded', function () {
             titleEl.textContent = a.title || 'Untitled';
           }
 
+          // Set excerpt
+          const excerptEl = node.querySelector('[data-excerpt]');
+          if (excerptEl) {
+            // Strip HTML tags if any (basic approach)
+            const div = document.createElement('div');
+            div.innerHTML = a.excerpt || '';
+            excerptEl.textContent = div.textContent || div.innerText || '';
+          }
+
           // Set date
           const dateEl = node.querySelector('[data-date]');
           if (dateEl) {

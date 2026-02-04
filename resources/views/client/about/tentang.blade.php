@@ -35,7 +35,7 @@
             <p class="text-lg">Sukarobot adalah platform pembelajaran teknologi dan robotika yang didedikasikan untuk semua kalangan.</p>
             
             <div class="my-8 relative rounded-2xl overflow-hidden shadow-lg group">
-              <img src="{{ asset('assets/elearning/client/img/logo.png') }}" alt="Foto Tentang Kami" class="w-full h-64 object-cover transform group-hover:scale-105 transition duration-700"
+              <img src="{{ asset('assets/elearning/client/img/logo.png') }}" alt="Foto Tentang Kami" class="w-full h-auto transform group-hover:scale-105 transition duration-700"
               onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             </div>
