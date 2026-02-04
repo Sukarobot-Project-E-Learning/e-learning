@@ -856,14 +856,14 @@
 
                 <!-- Right Form -->
                 <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100" data-aos="fade-left">
-                    @if(session('success'))
+                    {{-- @if(session('success'))
                         <div class="mb-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-100 flex items-center gap-3">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                             {{ session('success') }}
                         </div>
-                    @endif
+                    @endif --}}
 
                     @if(session('error'))
                         <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 flex items-center gap-3">
@@ -874,7 +874,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('client.contact.send') }}" method="POST" class="space-y-6">
+                    <form id="contactForm" action="{{ route('client.contact.send') }}" method="POST" class="space-y-6">
                         @csrf
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap</label>
@@ -884,13 +884,13 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+                            {{-- <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
                                 <input type="email" name="email" required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                                     placeholder="alamat@email.com">
-                            </div>
-                            <div>
+                            </div> --}}
+                            <div class="md:col-span-2">
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Nomor HP</label>
                                 <input type="tel" name="phone" required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
@@ -914,6 +914,45 @@
             </div>
         </div>
     </section>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check session success
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Berhasil mengirim pertanyaan',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            @endif
+
+            // Handle form submission
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    @if(!auth()->check())
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Login Diperlukan',
+                            text: 'Silahkan login terlebih dahulu untuk mengajukan pertanyaan',
+                            confirmButtonText: 'Login Sekarang',
+                            showCancelButton: true,
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ route('login') }}";
+                            }
+                        });
+                    @endif
+                });
+            }
+        });
+    </script>
 
     <script src="{{ asset('assets/elearning/client/js/home.js') }}"></script>
 

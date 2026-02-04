@@ -86,16 +86,20 @@ class HomeController extends Controller
      */
     public function sendContact(Request $request)
     {
+        if (!auth()->check()) {
+            return back()->with('error', 'Silahkan login terlebih dahulu untuk mengirim pesan.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            // 'email' => 'required|email|max:255', // Email taken from auth
             'phone' => 'required|string|max:20',
             'message' => 'required|string',
         ]);
 
         $data = [
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => auth()->user()->email,
             'phone' => $request->phone,
             'message' => $request->message,
         ];
