@@ -1,0 +1,292 @@
+/**
+ * Admin Forms - Common Styles
+ * 
+ * Reusable form styling for admin panel
+ * Uses orange theme colors (Tailwind orange-500: #f97316)
+ */
+
+/* ==================== FORM LAYOUT ==================== */
+
+.admin-form {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6;
+}
+
+.admin-form-card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden;
+}
+
+.admin-form-header {
+    @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700;
+}
+
+.admin-form-body {
+    @apply p-6 space-y-6;
+}
+
+.admin-form-footer {
+    @apply px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4;
+}
+
+/* ==================== FORM FIELDS ==================== */
+
+.form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+}
+
+.form-label-required::after {
+    content: " *";
+    @apply text-red-500;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    @apply block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg;
+    @apply focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40;
+    @apply dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+    @apply opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800;
+}
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-300;
+}
+
+.form-error {
+    @apply text-red-500 text-sm mt-1;
+}
+
+.form-help {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+}
+
+/* ==================== IMAGE UPLOAD ==================== */
+
+.image-upload-container {
+    @apply mb-4;
+}
+
+/* Upload area */
+.upload-area {
+    @apply flex flex-col items-center justify-center w-full h-32;
+    @apply border-2 border-gray-300 border-dashed rounded-lg cursor-pointer;
+    @apply bg-gray-50 hover:bg-gray-100;
+    @apply dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-800 dark:hover:border-gray-500;
+    transition: all 0.2s ease;
+}
+
+.upload-area.drag-over {
+    @apply border-orange-400 bg-orange-50 dark:bg-orange-900/20;
+}
+
+.upload-area:hover {
+    @apply border-gray-400;
+}
+
+/* Preview area */
+.preview-area {
+    @apply border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700;
+}
+
+.preview-container {
+    @apply relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 mb-3 flex items-center justify-center;
+    height: 200px;
+}
+
+.preview-image {
+    @apply max-h-full select-none;
+    cursor: grab;
+    transition: transform 0.1s ease;
+}
+
+.preview-image:active {
+    cursor: grabbing;
+}
+
+/* Circle overlay for avatar preview */
+.circle-overlay {
+    @apply absolute inset-0 flex items-center justify-center pointer-events-none;
+}
+
+.circle-overlay-inner {
+    @apply w-32 h-32 rounded-full border-4 border-white dark:border-gray-300 shadow-lg;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+/* Zoom controls */
+.zoom-controls {
+    @apply flex items-center justify-between gap-4;
+}
+
+.zoom-slider-wrapper {
+    @apply flex items-center gap-3 flex-1;
+}
+
+.zoom-slider {
+    @apply flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600;
+    accent-color: #f97316;
+}
+
+.zoom-slider::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 rounded-full cursor-pointer;
+    background: #f97316;
+}
+
+.zoom-slider::-moz-range-thumb {
+    @apply w-4 h-4 rounded-full border-0 cursor-pointer;
+    background: #f97316;
+}
+
+.zoom-text {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-200 min-w-[50px] text-center;
+}
+
+.zoom-label {
+    @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+/* ==================== DYNAMIC SELECT ==================== */
+
+.dynamic-select-container {
+    @apply relative;
+}
+
+.select-wrapper,
+.input-wrapper {
+    transition: opacity 0.2s ease;
+}
+
+.select-wrapper.hidden,
+.input-wrapper.hidden {
+    @apply hidden;
+}
+
+.input-with-button {
+    @apply flex gap-2;
+}
+
+.input-with-button .form-input {
+    @apply flex-1;
+}
+
+.back-to-select-btn {
+    @apply px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg;
+    @apply hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500;
+    transition: all 0.2s ease;
+}
+
+/* ==================== BUTTONS ==================== */
+
+.btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg;
+    @apply transition-colors duration-150 cursor-pointer;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+}
+
+.btn-primary {
+    @apply text-white bg-orange-600 border border-transparent;
+    @apply hover:bg-orange-700 active:bg-orange-800;
+    @apply focus:ring-orange-500;
+}
+
+.btn-secondary {
+    @apply text-gray-700 bg-white border border-gray-300;
+    @apply hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600;
+    @apply focus:ring-gray-300;
+}
+
+.btn-danger {
+    @apply text-white bg-red-600 border border-transparent;
+    @apply hover:bg-red-700 active:bg-red-800;
+    @apply focus:ring-red-500;
+}
+
+.btn-icon {
+    @apply p-2 rounded-lg bg-gray-200 dark:bg-gray-600;
+    @apply hover:bg-gray-300 dark:hover:bg-gray-500;
+    transition: all 0.2s ease;
+}
+
+.btn-link {
+    @apply text-sm font-medium;
+    @apply text-red-500 hover:text-red-700;
+}
+
+/* ==================== FORM GRID ==================== */
+
+.form-row {
+    @apply grid grid-cols-1 gap-6;
+}
+
+.form-row-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-6;
+}
+
+.form-row-3 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* ==================== FORM SECTIONS ==================== */
+
+.form-section {
+    @apply space-y-6;
+}
+
+.form-section-title {
+    @apply text-lg font-semibold text-gray-800 dark:text-white mb-4;
+}
+
+.form-section-description {
+    @apply text-sm text-gray-500 dark:text-gray-400 mb-6;
+}
+
+.form-divider {
+    @apply border-t border-gray-200 dark:border-gray-700 my-6;
+}
+
+/* ==================== PASSWORD FIELD ==================== */
+
+.password-wrapper {
+    @apply relative;
+}
+
+.password-toggle {
+    @apply absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-400 hover:text-gray-600;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* ==================== DARK MODE SPECIFIC ==================== */
+
+@media (prefers-color-scheme: dark) {
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+        color: #6b7280;
+    }
+}

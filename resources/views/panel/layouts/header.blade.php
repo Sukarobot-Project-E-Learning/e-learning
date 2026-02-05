@@ -36,36 +36,18 @@
     }
 @endphp
 
-<header
-    class="z-40 bg-white dark:bg-gray-800 border-b border-slate-100 dark:border-gray-700 transition-colors duration-200"
-    x-data="headerComponent()" x-init="initHeader()" @keydown.escape="closeAll()" @scroll.window="handleScroll()">
+<header id="panel-header"
+    class="z-40 bg-white dark:bg-gray-800 border-b border-slate-100 dark:border-gray-700 transition-colors duration-200">
     {{-- Top Bar --}}
     <div class="flex items-center justify-between h-16 px-6">
 
         {{-- Left Section: Mobile Menu Button + Dark Mode Toggle + Navigation (Instructor only) --}}
         <div class="flex items-center space-x-4">
             {{-- Mobile hamburger button --}}
-            <button @click="$dispatch('toggle-mobile-sidebar')"
+            <button id="mobile-sidebar-btn"
                 class="p-2.5 text-slate-500 dark:text-gray-400 rounded-xl md:hidden hover:bg-slate-100 dark:hover:bg-gray-700 hover:text-slate-700 dark:hover:text-gray-200 focus:outline-none focus:ring-2 {{ $primaryRing }} transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
-            {{-- Dark/Light Mode Toggle --}}
-            <button @click="toggleDarkMode()"
-                class="relative p-2.5 {{ $primaryColor }} rounded-xl {{ $primaryHoverBg }} focus:outline-none focus:ring-2 {{ $primaryRing }} transition-all duration-300 group">
-                {{-- Sun Icon (Light Mode) --}}
-                <svg x-show="!isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                {{-- Moon Icon (Dark Mode) --}}
-                <svg x-show="isDarkMode" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </button>
 
@@ -85,23 +67,17 @@
                     </a>
 
                     {{-- Kompetisi Dropdown --}}
-                    <div class="relative" @mouseenter="kompetisiOpen = true" @mouseleave="kompetisiOpen = false">
-                        <button
+                    <div class="relative">
+                        <button id="kompetisi-dropdown"
                             class="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200">
                             Kompetisi
-                            <svg class="w-4 h-4 ml-1 transition-transform duration-200"
-                                :class="kompetisiOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                            <svg class="w-4 h-4 ml-1 chevron-icon" fill="none" stroke="currentColor"
                                 stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                        <div x-show="kompetisiOpen" x-cloak x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 -translate-y-2"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 -translate-y-2"
-                            class="absolute left-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-slate-100 dark:border-gray-700 py-2 z-50">
+                        <div id="kompetisi-menu"
+                            class="hidden dropdown-menu absolute left-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-slate-100 dark:border-gray-700 py-2 z-50">
                             <a href="https://brc.sukarobot.com/"
                                 class="block px-4 py-2 text-sm font-medium text-slate-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">BRC</a>
                             <a href="https://src.sukarobot.com/"
@@ -110,23 +86,17 @@
                     </div>
 
                     {{-- Tentang Sukarobot Dropdown --}}
-                    <div class="relative" @mouseenter="tentangOpen = true" @mouseleave="tentangOpen = false">
-                        <button
+                    <div class="relative">
+                        <button id="tentang-dropdown"
                             class="flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200">
                             Tentang Sukarobot
-                            <svg class="w-4 h-4 ml-1 transition-transform duration-200"
-                                :class="tentangOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2"
+                            <svg class="w-4 h-4 ml-1 chevron-icon" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                        <div x-show="tentangOpen" x-cloak x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 -translate-y-2"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 -translate-y-2"
-                            class="absolute left-0 mt-1 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-slate-100 dark:border-gray-700 py-2 z-50">
+                        <div id="tentang-menu"
+                            class="hidden dropdown-menu absolute left-0 mt-1 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-slate-100 dark:border-gray-700 py-2 z-50">
                             <a href="{{ url('/instruktur') }}" data-turbo="false"
                                 class="block px-4 py-2 text-sm font-medium text-slate-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">Instruktur</a>
                             <a href="{{ url('/tentang') }}" data-turbo="false"
@@ -147,9 +117,9 @@
 
         {{-- Right Section: Profile Dropdown --}}
         {{-- Desktop Profile Dropdown (hover-based) --}}
-        <div class="hidden md:block relative" @mouseenter="profileOpen = true" @mouseleave="profileOpen = false">
+        <div class="hidden md:block relative">
 
-            <button
+            <button id="desktop-profile-trigger"
                 class="flex items-center space-x-3 p-1.5 pr-4 rounded-xl hover:bg-slate-50 dark:hover:bg-gray-700 focus:outline-none transition-all duration-200 group">
                 {{-- Avatar --}}
                 <div class="relative">
@@ -169,19 +139,15 @@
                 </div>
 
                 {{-- Chevron --}}
-                <svg class="w-4 h-4 text-slate-400 dark:text-gray-500 transition-transform duration-200"
-                    :class="profileOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2"
+                <svg class="w-4 h-4 text-slate-400 dark:text-gray-500 chevron-icon" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
             {{-- Desktop Dropdown Menu --}}
-            <div x-show="profileOpen" x-cloak x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-                class="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-gray-700 overflow-hidden z-50">
+            <div id="desktop-profile-menu"
+                class="hidden dropdown-menu absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-gray-700 overflow-hidden z-50">
 
                 {{-- User Info Header --}}
                 <div class="px-5 py-4 bg-gradient-to-r {{ $headerGradient }}">
@@ -234,8 +200,8 @@
         </div>
 
         {{-- Mobile Profile Dropdown (click-based) --}}
-        <div class="md:hidden relative" x-data="{ mobileProfileOpen: false }">
-            <button @click="mobileProfileOpen = !mobileProfileOpen" type="button"
+        <div class="md:hidden relative">
+            <button id="mobile-profile-trigger" type="button"
                 class="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-gray-700 focus:outline-none transition-all duration-200">
                 {{-- Avatar --}}
                 <div class="relative">
@@ -249,19 +215,15 @@
                 </div>
 
                 {{-- Chevron --}}
-                <svg class="w-4 h-4 text-slate-400 dark:text-gray-500 transition-transform duration-200"
-                    :class="mobileProfileOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2"
+                <svg class="w-4 h-4 text-slate-400 dark:text-gray-500 chevron-icon" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
             {{-- Mobile Dropdown Menu --}}
-            <div x-show="mobileProfileOpen" x-cloak @click.outside="mobileProfileOpen = false"
-                x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                class="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-gray-700 overflow-hidden z-50 origin-top-right">
+            <div id="mobile-profile-menu"
+                class="hidden dropdown-menu-mobile absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-gray-700 overflow-hidden z-50">
 
                 {{-- User Info Header --}}
                 <div class="px-5 py-4 bg-gradient-to-r {{ $headerGradient }}">
@@ -278,7 +240,7 @@
                 {{-- Account Section --}}
                 <div class="py-2 border-b border-slate-100 dark:border-gray-700">
                     <a href="{{ $role === 'admin' ? route('admin.admins.edit', $user->id) : route('client.dashboard') }}"
-                        data-turbo="false" @click="mobileProfileOpen = false"
+                        data-turbo="false"
                         class="flex items-center px-5 py-3 text-sm font-medium text-slate-700 dark:text-gray-300 {{ $primaryHoverBg }} {{ $role === 'admin' ? 'hover:text-orange-600' : 'hover:text-blue-700' }} dark:hover:text-blue-400 transition-colors duration-150 group">
                         <div
                             class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-gray-700 flex items-center justify-center mr-3 {{ $role === 'admin' ? 'group-hover:bg-orange-100' : 'group-hover:bg-blue-100' }} dark:group-hover:bg-gray-600 transition-colors">
@@ -315,72 +277,3 @@
     </div>
 
 </header>
-
-@push('scripts')
-    <script>
-        function headerComponent() {
-            return {
-                // ============================================
-                // STATE
-                // ============================================
-                isDarkMode: false,
-                profileOpen: false,
-                kompetisiOpen: false,
-                tentangOpen: false,
-                titleBarHidden: false,
-                lastScrollY: 0,
-                scrollThreshold: 50,
-
-                // ============================================
-                // INITIALIZATION
-                // ============================================
-                initHeader() {
-                    // Initialize dark mode from localStorage
-                    const darkMode = localStorage.getItem('darkMode') === 'true';
-                    this.isDarkMode = darkMode;
-
-                    // Apply dark mode class to document
-                    if (darkMode) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-
-                    // Initialize scroll position
-                    this.lastScrollY = window.scrollY;
-                },
-
-                // ============================================
-                // METHODS
-                // ============================================
-
-                /**
-                 * Toggle dark mode and persist to localStorage
-                 */
-                toggleDarkMode() {
-                    this.isDarkMode = !this.isDarkMode;
-                    localStorage.setItem('darkMode', this.isDarkMode);
-
-                    // Sync with root html scope
-                    window.dispatchEvent(new CustomEvent('dark-mode-updated', { detail: this.isDarkMode }));
-
-                    // Fallback class toggle
-                    if (this.isDarkMode) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-                },
-
-                /**
-                 * Close all dropdowns
-                 */
-                closeAll() {
-                    this.profileOpen = false;
-                    this.kompetisiOpen = false;
-                    this.tentangOpen = false;
-                }
-            };
-        }
-    </script>
-@endpush

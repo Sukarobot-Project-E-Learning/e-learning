@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -13,13 +14,46 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = \App\Models\User::where('role', 'admin')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        
-        return view('admin.admins.index', compact('users'));
+        $query = DB::table('users')
+            ->where('role', 'admin')
+            ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at');
+
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'avatar', 'label' => 'Foto', 'type' => 'avatar'],
+                ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+                ['key' => 'phone', 'label' => 'Telepon'],
+                ['key' => 'is_active', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['name', 'email', 'phone'],
+            'sortable' => ['name', 'email', 'is_active', 'created_at'],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.admins',
+            'routeParam' => 'id',
+            'title' => 'Admin Management',
+            'entity' => 'admin',
+            'createLabel' => 'Tambah Admin',
+            'searchPlaceholder' => 'Cari nama, email, telepon...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'is_active',
+                'options' => [
+                    '' => 'Semua Status',
+                    'active' => 'Aktif',
+                    'inactive' => 'Tidak Aktif',
+                ]
+            ],
+        ], $request);
+
+        if ($request->wantsJson()) {
+            return response()->json($data);
+        }
+
+        return view('admin.admins.index', compact('data'));
     }
 
     /**
@@ -172,13 +206,16 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             // Check if this is the last admin
             $adminCount = DB::table('users')->where('role', 'admin')->count();
 
             if ($adminCount <= 1) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Tidak dapat menghapus admin terakhir.']);
+                }
                 return redirect()->back()->with('error', 'Tidak dapat menghapus admin terakhir. Sistem harus memiliki minimal 1 admin.');
             }
 
@@ -187,8 +224,15 @@ class AdminController extends Controller
                 unlink(public_path($admin->avatar));
             }
             DB::table('users')->where('id', $id)->delete();
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Admin berhasil dihapus']);
+            }
             return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil dihapus');
         } catch (\Exception $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus admin: ' . $e->getMessage()]);
+            }
             return redirect()->back()->with('error', 'Gagal menghapus admin: ' . $e->getMessage());
         }
     }

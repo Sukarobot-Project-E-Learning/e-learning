@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\CertificateController;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,71 +16,93 @@ class ProgramProofController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['student_name', 'program_title', 'status', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('program_proofs')
             ->leftJoin('users', 'program_proofs.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
             ->leftJoin('schedules', 'program_proofs.schedule_id', '=', 'schedules.id')
             ->leftJoin('certificate_templates', 'program_proofs.program_id', '=', 'certificate_templates.program_id')
             ->select(
-                'program_proofs.*',
+                'program_proofs.id',
+                'program_proofs.program_id',
+                'program_proofs.student_id',
+                'program_proofs.documentation',
+                'program_proofs.status',
+                'program_proofs.created_at',
                 'users.name as student_name',
                 'data_programs.program as program_title',
                 DB::raw("CONCAT(DATE_FORMAT(schedules.tanggal_mulai, '%d %M %Y'), IF(schedules.tanggal_selesai IS NOT NULL AND schedules.tanggal_selesai != schedules.tanggal_mulai, CONCAT(' - ', DATE_FORMAT(schedules.tanggal_selesai, '%d %M %Y')), '')) as schedule"),
                 DB::raw('IF(certificate_templates.id IS NOT NULL, 1, 0) as has_certificate_template')
-            )
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('users.name', 'like', '%' . $s . '%')
-                        ->orWhere('data_programs.program', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('program_proofs.status', $request->input('status'));
-            });
+            );
 
-        // Handle sorting for joined columns
-        $orderColumn = match($sortKey) {
-            'student_name' => 'users.name',
-            'program_title' => 'data_programs.program',
-            default => 'program_proofs.' . $sortKey
-        };
-
-        $proofs = $query->orderBy($orderColumn, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        // Transform data after pagination
-        $proofs->getCollection()->transform(function($proof) {
-            return [
-                'id' => $proof->id,
-                'name' => $proof->student_name ?? 'N/A',
-                'program_title' => $proof->program_title ?? 'N/A',
-                'program_id' => $proof->program_id,
-                'student_id' => $proof->student_id,
-                'schedule' => $proof->schedule ?? '-',
-                'documentation' => $proof->documentation ? asset('storage/' . $proof->documentation) : null,
-                'status' => $proof->status,
-                'created_at' => $proof->created_at,
-                'has_certificate_template' => $proof->has_certificate_template ?? 0
-            ];
-        });
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama Peserta', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'program_title', 'label' => 'Program', 'sortable' => true],
+                ['key' => 'schedule', 'label' => 'Jadwal'],
+                ['key' => 'documentation', 'label' => 'Dokumentasi', 'type' => 'image'],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'type' => 'badge'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['users.name', 'data_programs.program'],
+            'sortable' => ['student_name', 'program_title', 'status', 'created_at'],
+            'sortColumns' => [
+                'name' => 'users.name',
+                'program_title' => 'data_programs.program',
+                'status' => 'program_proofs.status',
+                'created_at' => 'program_proofs.created_at',
+            ],
+            'actions' => ['view'],
+            'route' => 'admin.program-proofs',
+            'routeParam' => 'id',
+            'title' => 'Bukti Program Management',
+            'entity' => 'bukti program',
+            'showCreate' => false,
+            'searchPlaceholder' => 'Cari nama peserta, program...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'program_proofs.status',
+                'options' => [
+                    '' => 'Semua Status',
+                    'pending' => 'Menunggu',
+                    'approved' => 'Disetujui',
+                    'rejected' => 'Ditolak',
+                ]
+            ],
+            'badgeClasses' => [
+                'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                'approved' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+                'Menunggu' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                'Disetujui' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'Ditolak' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+            ],
+            'transformer' => function($proof) {
+                $statusMap = [
+                    'pending' => 'Menunggu',
+                    'approved' => 'Disetujui',
+                    'rejected' => 'Ditolak',
+                ];
+                return [
+                    'id' => $proof->id,
+                    'name' => $proof->student_name ?? 'N/A',
+                    'program_title' => $proof->program_title ?? 'N/A',
+                    'program_id' => $proof->program_id,
+                    'student_id' => $proof->student_id,
+                    'schedule' => $proof->schedule ?? '-',
+                    'documentation' => $proof->documentation ? asset('storage/' . $proof->documentation) : null,
+                    'status' => $statusMap[$proof->status] ?? $proof->status,
+                    'status_raw' => $proof->status,
+                    'created_at' => $proof->created_at,
+                    'has_certificate_template' => $proof->has_certificate_template ?? 0
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($proofs);
+            return response()->json($data);
         }
 
-        return view('admin.program-proofs.index', compact('proofs'));
+        return view('admin.program-proofs.index', compact('data'));
     }
 
     /**

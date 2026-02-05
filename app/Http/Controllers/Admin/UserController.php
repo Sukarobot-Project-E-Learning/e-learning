@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,40 +16,38 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = \App\Models\User::query()
             ->where('role', 'user')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('name', 'like', '%' . $s . '%')
-                        ->orWhere('email', 'like', '%' . $s . '%')
-                        ->orWhere('phone', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('is_active', $request->input('status') === 'active' ? 1 : 0);
-            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at');
 
-        $users = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $config = [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+                ['key' => 'phone', 'label' => 'Telepon', 'sortable' => true],
+                ['key' => 'avatar', 'label' => 'Foto', 'sortable' => false, 'type' => 'avatar'],
+                ['key' => 'is_active', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Action', 'sortable' => false, 'type' => 'actions'],
+            ],
+            'searchable' => ['name', 'email', 'phone'],
+            'sortable' => ['name', 'email', 'phone', 'is_active', 'created_at'],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.users',
+            'routeParam' => 'id',
+            'title' => 'User Management',
+            'entity' => 'user',
+            'createLabel' => 'Tambah User',
+        ];
+
+        $dataTableService = app(DataTableService::class);
 
         if ($request->wantsJson()) {
-            return response()->json($users);
+            return response()->json($dataTableService->json($query, $config, $request));
         }
 
-        return view('admin.users.index', compact('users'));
+        $data = $dataTableService->make($query, $config, $request);
+
+        return view('admin.users.index', compact('data'));
     }
 
     /**
@@ -248,40 +247,38 @@ class UserController extends Controller
      */
     public function indexAdmins(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
-        $query = DB::table('users')
+        $query = \App\Models\User::query()
             ->where('role', 'admin')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('name', 'like', '%' . $s . '%')
-                        ->orWhere('email', 'like', '%' . $s . '%')
-                        ->orWhere('phone', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('is_active', $request->input('status') === 'active' ? 1 : 0);
-            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at');
 
-        $users = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $config = [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+                ['key' => 'phone', 'label' => 'Telepon', 'sortable' => true],
+                ['key' => 'avatar', 'label' => 'Foto', 'sortable' => false, 'type' => 'avatar'],
+                ['key' => 'is_active', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Action', 'sortable' => false, 'type' => 'actions'],
+            ],
+            'searchable' => ['name', 'email', 'phone'],
+            'sortable' => ['name', 'email', 'phone', 'is_active', 'created_at'],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.admins',
+            'routeParam' => 'id',
+            'title' => 'Admin Management',
+            'entity' => 'admin',
+            'createLabel' => 'Tambah Admin',
+        ];
+
+        $dataTableService = app(DataTableService::class);
 
         if ($request->wantsJson()) {
-            return response()->json($users);
+            return response()->json($dataTableService->json($query, $config, $request));
         }
 
-        return view('admin.admins.index', compact('users'));
+        $data = $dataTableService->make($query, $config, $request);
+
+        return view('admin.admins.index', compact('data'));
     }
 
     /**

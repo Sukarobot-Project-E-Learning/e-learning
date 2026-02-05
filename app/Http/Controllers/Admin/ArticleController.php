@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -17,55 +18,74 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['title', 'category', 'created_at', 'is_published', 'views'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('articles')
             ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->select('articles.*', 'users.name as author_name')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('articles.title', 'like', '%' . $s . '%')
-                        ->orWhere('articles.category', 'like', '%' . $s . '%')
-                        ->orWhere('users.name', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('articles.is_published', $request->input('status') === 'published' ? 1 : 0);
-            });
+            ->select(
+                'articles.id',
+                'articles.title',
+                'articles.category',
+                'articles.image',
+                'articles.is_published',
+                'articles.views',
+                'articles.created_at',
+                'users.name as author_name'
+            );
 
-        $articles = $query->orderBy('articles.' . $sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        // Transform data after pagination
-        $articles->getCollection()->transform(function ($article) {
-            return [
-                'id' => $article->id,
-                'title' => $article->title ?? 'N/A',
-                'category' => $article->category ?? '-',
-                'date' => $article->created_at ? date('d F Y', strtotime($article->created_at)) : '-',
-                'image' => $article->image ? (str_starts_with($article->image, 'images/') ? asset($article->image) : asset('storage/' . $article->image)) : null,
-                'status' => $article->is_published ? 'Aktif' : 'Draft',
-                'is_published' => $article->is_published,
-                'views' => $article->views ?? 0,
-                'author' => $article->author_name ?? 'Admin'
-            ];
-        });
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'title', 'label' => 'Judul', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'image', 'label' => 'Gambar', 'type' => 'image'],
+                ['key' => 'category', 'label' => 'Kategori', 'sortable' => true],
+                ['key' => 'author_name', 'label' => 'Penulis'],
+                ['key' => 'views', 'label' => 'Views', 'sortable' => true],
+                ['key' => 'status', 'label' => 'Status', 'type' => 'badge'],
+                ['key' => 'date', 'label' => 'Tanggal', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['articles.title', 'articles.category', 'users.name'],
+            'sortable' => ['title', 'category', 'created_at', 'is_published', 'views'],
+            'sortColumns' => [
+                'title' => 'articles.title',
+                'category' => 'articles.category',
+                'created_at' => 'articles.created_at',
+                'is_published' => 'articles.is_published',
+                'views' => 'articles.views',
+            ],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.articles',
+            'title' => 'Artikel Management',
+            'entity' => 'artikel',
+            'createLabel' => 'Tambah Artikel',
+            'searchPlaceholder' => 'Cari judul, kategori, penulis...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'articles.is_published',
+                'options' => [
+                    '' => 'Semua Status',
+                    'published' => 'Aktif',
+                    'draft' => 'Draft',
+                ]
+            ],
+            'transformer' => function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title ?? 'N/A',
+                    'category' => $article->category ?? '-',
+                    'date' => $article->created_at ? date('d F Y', strtotime($article->created_at)) : '-',
+                    'image' => $article->image ? (str_starts_with($article->image, 'images/') ? $article->image : $article->image) : null,
+                    'status' => $article->is_published ? 'Aktif' : 'Draft',
+                    'is_published' => $article->is_published,
+                    'views' => $article->views ?? 0,
+                    'author_name' => $article->author_name ?? 'Admin'
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($articles);
+            return response()->json($data);
         }
 
-        return view('admin.articles.index', compact('articles'));
+        return view('admin.articles.index', compact('data'));
     }
 
     /**

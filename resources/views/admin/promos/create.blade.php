@@ -4,165 +4,66 @@
 
 @section('content')
 
-    <div class="container px-6 mx-auto">
-
-        <!-- Page Header -->
-        <div class="my-6">
-            <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Tambah Promo</h2>
-                <!-- Button moved to bottom -->
-            </div>
-        </div>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+    <div class="container px-4 sm:px-6 mx-auto max-w-3xl">
 
         <!-- Form Card -->
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
             <form id="promoForm" action="{{ route('admin.promos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="px-6 py-6 space-y-6">
 
-                    <!-- Unggah Poster -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Unggah Poster <span class="text-red-500">*</span>
-                        </label>
-                        <div class="flex items-center justify-center w-full">
-                            <label for="poster" 
-                                   class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ imagePreview: null }"
-                                   @dragover.prevent
-                                   @drop.prevent="
-                                       let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           let reader = new FileReader();
-                                           reader.onload = (e) => { imagePreview = e.target.result };
-                                           reader.readAsDataURL(file);
-                                           $refs.posterInput.files = $event.dataTransfer.files;
-                                       }
-                                   ">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!imagePreview">
-                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk JPG, JPEG, PNG.
-                                    </p>
-                                </div>
-                                <div x-show="imagePreview" class="relative w-full h-full p-4">
-                                    <img :src="imagePreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
-                                    <button type="button" 
-                                            @click.stop.prevent="imagePreview = null; $refs.posterInput.value = ''"
-                                            class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <input id="poster" 
-                                       name="poster" 
-                                       type="file" 
-                                       class="hidden" 
-                                       accept="image/jpeg,image/jpg,image/png"
-                                       x-ref="posterInput"
-                                       required
-                                       @change="
-                                           let file = $event.target.files[0];
-                                           if (file) {
-                                               let reader = new FileReader();
-                                               reader.onload = (e) => { imagePreview = e.target.result };
-                                               reader.readAsDataURL(file);
-                                           }
-                                       ">
-                            </label>
-                        </div>
-                    </div>
+                <!-- Section 1: Poster -->
+                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Poster Promo',
+                        'subtitle' => 'Upload gambar poster promo',
+                        'color' => 'orange',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'
+                    ])
 
-                    <!-- Unggah Carousel -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Unggah Carousel <span class="text-red-500">*</span>
-                        </label>
-                        <div class="flex items-center justify-center w-full">
-                            <label for="carousel" 
-                                   class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   x-data="{ imagePreview: null }"
-                                   @dragover.prevent
-                                   @drop.prevent="
-                                       let file = $event.dataTransfer.files[0];
-                                       if (file && file.type.startsWith('image/')) {
-                                           let reader = new FileReader();
-                                           reader.onload = (e) => { imagePreview = e.target.result };
-                                           reader.readAsDataURL(file);
-                                           $refs.carouselInput.files = $event.dataTransfer.files;
-                                       }
-                                   ">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!imagePreview">
-                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="font-semibold">Seret dan lepas berkas, atau</span> 
-                                        <span class="text-orange-600 hover:text-orange-700 dark:text-orange-400">Telusuri</span>
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        Unggah berkas dalam bentuk JPG, JPEG, PNG.
-                                    </p>
-                                </div>
-                                <div x-show="imagePreview" class="relative w-full h-full p-4">
-                                    <img :src="imagePreview" alt="Preview" class="w-full h-full object-contain rounded-lg">
-                                    <button type="button" 
-                                            @click.stop.prevent="imagePreview = null; $refs.carouselInput.value = ''"
-                                            class="absolute top-6 right-6 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <input id="carousel" 
-                                       name="carousel" 
-                                       type="file" 
-                                       class="hidden" 
-                                       accept="image/jpeg,image/jpg,image/png"
-                                       x-ref="carouselInput"
-                                       required
-                                       @change="
-                                           let file = $event.target.files[0];
-                                           if (file) {
-                                               let reader = new FileReader();
-                                               reader.onload = (e) => { imagePreview = e.target.result };
-                                               reader.readAsDataURL(file);
-                                           }
-                                       ">
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="flex flex-row justify-end items-end mt-6" style="gap: 16px;">
-                        <a href="{{ route('admin.promos.index') }}"
-                           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                            </svg>
-                            Kembali
-                        </a>
-                        <button type="submit" 
-                                form="promoForm"
-                                class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange cursor-pointer">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Simpan Promo</span>
-                        </button>
-                    </div>
+                    @include('panel.partials.forms.image-upload-simple', [
+                        'name' => 'poster',
+                        'label' => 'Upload Poster',
+                        'required' => true,
+                        'maxSize' => 5,
+                        'aspectHint' => 'Ukuran rekomendasi untuk poster'
+                    ])
                 </div>
+
+                <!-- Section 2: Carousel -->
+                <div class="p-5 sm:p-8">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Carousel Promo',
+                        'subtitle' => 'Upload gambar untuk carousel',
+                        'color' => 'blue',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>'
+                    ])
+
+                    @include('panel.partials.forms.image-upload-simple', [
+                        'name' => 'carousel',
+                        'label' => 'Upload Carousel',
+                        'required' => true,
+                        'maxSize' => 5,
+                        'aspectHint' => 'Ukuran rekomendasi untuk carousel'
+                    ])
+                </div>
+
             </form>
+
+            <!-- Action Buttons -->
+            @include('panel.partials.forms.action-buttons', [
+                'backUrl' => route('admin.promos.index'),
+                'formId' => 'promoForm',
+                'submitText' => 'Simpan Promo'
+            ])
         </div>
 
     </div>
+</div>
 
 @endsection
+
+@push('scripts')
+<script src="{{ asset('assets/elearning/admin/js/components/simple-image-upload.js') }}?v={{ time() }}"></script>
+@endpush
 

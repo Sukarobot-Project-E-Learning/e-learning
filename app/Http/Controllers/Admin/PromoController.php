@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,47 +14,51 @@ class PromoController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['title', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('promos')
-            ->select('id', 'title', 'poster_image', 'carousel_image', 'is_active', 'created_at')
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $s = $request->input('search');
-                $q->where('title', 'like', '%' . $s . '%');
-            })
-            ->when($request->filled('status'), function ($q) use ($request) {
-                $q->where('is_active', $request->input('status') === 'active' ? 1 : 0);
-            });
+            ->select('id', 'title', 'poster_image', 'carousel_image', 'is_active', 'created_at');
 
-        $promos = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        // Transform data after pagination
-        $promos->getCollection()->transform(function($promo) {
-            return [
-                'id' => $promo->id,
-                'title' => $promo->title ?? 'N/A',
-                'poster' => $promo->poster_image,
-                'carousel' => $promo->carousel_image,
-                'is_active' => $promo->is_active,
-                'status' => $promo->is_active ? 'Aktif' : 'Non-Aktif'
-            ];
-        });
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'title', 'label' => 'Judul Promo', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'poster', 'label' => 'Poster', 'type' => 'image'],
+                ['key' => 'carousel', 'label' => 'Carousel', 'type' => 'image'],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['title'],
+            'sortable' => ['title', 'is_active', 'created_at'],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.promos',
+            'title' => 'Promo Management',
+            'entity' => 'promo',
+            'createLabel' => 'Tambah Promo',
+            'searchPlaceholder' => 'Cari judul promo...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'is_active',
+                'options' => [
+                    '' => 'Semua Status',
+                    'active' => 'Aktif',
+                    'inactive' => 'Non-Aktif',
+                ]
+            ],
+            'transformer' => function($promo) {
+                return [
+                    'id' => $promo->id,
+                    'title' => $promo->title ?? 'N/A',
+                    'poster' => $promo->poster_image,
+                    'carousel' => $promo->carousel_image,
+                    'is_active' => $promo->is_active,
+                    'status' => $promo->is_active ? 'Aktif' : 'Non-Aktif'
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($promos);
+            return response()->json($data);
         }
 
-        return view('admin.promos.index', compact('promos'));
+        return view('admin.promos.index', compact('data'));
     }
 
     /**

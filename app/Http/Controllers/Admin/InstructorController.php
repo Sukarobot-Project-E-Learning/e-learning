@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,67 +17,56 @@ class InstructorController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['name', 'email', 'phone', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
-        // Get instructors from users table with role='instructor'
         $query = \App\Models\User::query()
             ->where('role', 'instructor')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('name', 'like', '%' . $s . '%')
-                        ->orWhere('email', 'like', '%' . $s . '%')
-                        ->orWhere('phone', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $status = $request->input('status');
-                if ($status === 'active') {
-                     $query->where('is_active', 1);
-                } elseif ($status === 'inactive') {
-                     $query->where('is_active', 0);
-                }
-            })
             ->select('id', 'name', 'email', 'phone', 'avatar', 'is_active', 'created_at', 'last_login_at');
 
-        $instructors = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $config = [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+                ['key' => 'avatar', 'label' => 'Foto', 'sortable' => false, 'type' => 'avatar'],
+                ['key' => 'expertise', 'label' => 'Keahlian', 'sortable' => false],
+                ['key' => 'is_active', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Action', 'sortable' => false, 'type' => 'actions'],
+            ],
+            'searchable' => ['name', 'email', 'phone'],
+            'sortable' => ['name', 'email', 'phone', 'is_active', 'created_at'],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.instructors',
+            'routeParam' => 'id',
+            'title' => 'Instruktur Management',
+            'entity' => 'instruktur',
+            'createLabel' => 'Tambah Instruktur',
+            'transformer' => function($user) {
+                $trainer = DB::table('data_trainers')
+                    ->where('email', $user->email)
+                    ->first();
 
-        // Transform data after pagination
-        $instructors->getCollection()->transform(function($user) {
-            // Check if instructor has data in data_trainers table
-            $trainer = DB::table('data_trainers')
-                ->where('email', $user->email)
-                ->first();
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email ?? '-',
+                    'phone' => $user->phone ?? '-',
+                    'avatar' => $user->avatar,
+                    'expertise' => $trainer->keahlian ?? '-',
+                    'status' => $user->is_active ? 'Aktif' : 'Tidak Aktif',
+                    'is_active' => $user->is_active,
+                    'created_at' => $user->created_at ? date('Y-m-d', strtotime($user->created_at)) : '-',
+                    'has_trainer_data' => $trainer ? true : false
+                ];
+            },
+        ];
 
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email ?? '-',
-                'phone' => $user->phone ?? '-',
-                'avatar' => $user->avatar,
-                'expertise' => $trainer->keahlian ?? '-',
-                'status' => $user->is_active ? 'Aktif' : 'Tidak Aktif',
-                'is_active' => $user->is_active,
-                'created_at' => $user->created_at ? date('Y-m-d', strtotime($user->created_at)) : '-',
-                'has_trainer_data' => $trainer ? true : false
-            ];
-        });
+        $dataTableService = app(DataTableService::class);
 
         if ($request->wantsJson()) {
-            return response()->json($instructors);
+            return response()->json($dataTableService->json($query, $config, $request));
         }
 
-        return view('admin.instructors.index', compact('instructors'));
+        $data = $dataTableService->make($query, $config, $request);
+
+        return view('admin.instructors.index', compact('data'));
     }
 
 
@@ -93,8 +83,11 @@ class InstructorController extends Controller
             ->filter()
             ->toArray();
         
-        $expertiseOptions = array_values(array_unique(array_merge($defaults, $existing)));
-        sort($expertiseOptions);
+        $merged = array_values(array_unique(array_merge($defaults, $existing)));
+        sort($merged);
+        
+        // Use associative array so value equals label (not numeric index)
+        $expertiseOptions = array_combine($merged, $merged);
 
         return view('admin.instructors.create', compact('expertiseOptions'));
     }
@@ -281,9 +274,12 @@ class InstructorController extends Controller
         ];
 
         $defaults = ['Web Programming', 'Digital Marketing', 'Microsoft Office', 'Design Grafis'];                                         
-        $existing = DB::table('data_trainers')->distinct()->pluck('keahlian')->filter()->toArray();                                        
-        $expertiseOptions = array_unique(array_merge($defaults, $existing));                                                               
-        sort($expertiseOptions);                                                                                                           
+        $existing = DB::table('data_trainers')->distinct()->pluck('keahlian')->filter()->toArray();
+        $merged = array_values(array_unique(array_merge($defaults, $existing)));
+        sort($merged);
+        
+        // Use associative array so value equals label (not numeric index)
+        $expertiseOptions = array_combine($merged, $merged);
                                                                                                                                             
         return view('admin.instructors.edit', ['instructor' => (object)$instructorData, 'expertiseOptions' => $expertiseOptions]);
     }

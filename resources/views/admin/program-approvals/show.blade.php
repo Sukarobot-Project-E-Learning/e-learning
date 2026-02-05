@@ -241,12 +241,7 @@
     </div>
 
     @push('scripts')
-        <script>
-            document.addEventListener('turbo:load', function () {
-                initProgramApprovalAlerts();
-            });
-            
-            // Fallback for initial load
+        <script>            
             document.addEventListener('DOMContentLoaded', function () {
                 initProgramApprovalAlerts();
             });

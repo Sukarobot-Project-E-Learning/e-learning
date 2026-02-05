@@ -1,0 +1,92 @@
+/**
+ * Instructor Panel Component Styles
+ * CSS transitions and animations for header dropdowns and sidebar
+ * Replaces Alpine.js x-transition directives
+ */
+
+/* ============================================
+   DROPDOWN TRANSITIONS
+   ============================================ */
+
+/* Base dropdown state (hidden) */
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+    pointer-events: none;
+}
+
+/* Mobile dropdown uses scale */
+.dropdown-menu-mobile {
+    opacity: 0;
+    transform: scale(0.95);
+    transform-origin: top right;
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+    pointer-events: none;
+}
+
+/* Active dropdown state (visible) */
+.dropdown-menu.dropdown-active,
+.dropdown-menu-mobile.dropdown-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Chevron rotation transition */
+.chevron-icon {
+    transition: transform 200ms ease;
+}
+
+/* ============================================
+   SIDEBAR EXPANDABLE SECTIONS
+   ============================================ */
+
+/* Expandable content transition */
+.sidebar-expandable-content {
+    overflow: hidden;
+    transition: height 200ms ease-out;
+}
+
+/* Expanded state */
+.sidebar-expandable-content.sidebar-expanded {
+    /* Height is set dynamically by JS */
+}
+
+/* Expand chevron */
+.expand-chevron {
+    transition: transform 200ms ease;
+}
+
+/* ============================================
+   MOBILE SIDEBAR OVERLAY
+   ============================================ */
+
+/* Overlay base state */
+#mobile-sidebar-overlay {
+    opacity: 0;
+    transition: opacity 150ms ease-in-out;
+}
+
+/* Overlay active state */
+#mobile-sidebar-overlay.sidebar-overlay-active {
+    opacity: 1;
+}
+
+/* Mobile sidebar slide transition */
+#mobile-sidebar {
+    transition: transform 300ms ease-in-out;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Prevent content flash before JS loads */
+[data-no-flash] {
+    visibility: hidden;
+}
+
+[data-no-flash].initialized {
+    visibility: visible;
+}

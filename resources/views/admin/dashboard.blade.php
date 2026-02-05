@@ -469,18 +469,6 @@
 
 @push('scripts')
     <script>
-        // Dark mode detection
-        const isDarkMode = () => document.documentElement.classList.contains('dark') ||
-            window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        // Theme colors
-        const getThemeColors = () => ({
-            text: isDarkMode() ? '#E5E7EB' : '#374151',
-            grid: isDarkMode() ? '#374151' : '#E5E7EB',
-            tooltip: isDarkMode() ? 'dark' : 'light',
-            background: isDarkMode() ? '#1F2937' : '#FFFFFF'
-        });
-
         // Chart data from backend
         const chartDataByYear = @json($chartData ?? []);
         const availableYears = chartDataByYear && Object.keys(chartDataByYear).length > 0

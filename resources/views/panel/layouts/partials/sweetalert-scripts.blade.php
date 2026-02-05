@@ -2,7 +2,6 @@
 @php
     $role = request()->is('admin*') ? 'admin' : 'instructor';
     $primaryColor = $role === 'admin' ? '#F97316' : '#3B82F6';
-    $primaryDarkColor = $role === 'admin' ? '#EA580C' : '#2563EB';
 @endphp
 
 <script>
@@ -11,41 +10,23 @@
         role: '{{ $role }}',
         primaryColor: '{{ $primaryColor }}',
 
-        // Success Toast (for create/update)
-        successToast: function (title, text = '') {
+        // Success Alert
+        success: function (title, text = '') {
             return Swal.fire({
                 icon: 'success',
                 title: title,
                 text: text,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#FFFFFF',
-                color: document.documentElement.classList.contains('dark') ? '#F3F4F6' : '#111827',
-                customClass: {
-                    popup: 'rounded-xl shadow-lg'
-                }
+                confirmButtonColor: this.primaryColor
             });
         },
 
-        // Error Toast
-        errorToast: function (title, text = '') {
+        // Error Alert
+        error: function (title, text = '') {
             return Swal.fire({
                 icon: 'error',
                 title: title,
                 text: text,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#FFFFFF',
-                color: document.documentElement.classList.contains('dark') ? '#F3F4F6' : '#111827',
-                customClass: {
-                    popup: 'rounded-xl shadow-lg'
-                }
+                confirmButtonColor: this.primaryColor
             });
         },
 
@@ -53,104 +34,72 @@
         confirmDelete: function (itemName = 'data ini') {
             return Swal.fire({
                 title: 'Konfirmasi Hapus',
-                html: `<p class="text-gray-600 dark:text-gray-400">Apakah Anda yakin ingin menghapus <strong>${itemName}</strong>?</p><p class="text-sm text-red-500 mt-2">Tindakan ini tidak dapat dibatalkan.</p>`,
+                text: `Apakah Anda yakin ingin menghapus ${itemName}? Tindakan ini tidak dapat dibatalkan.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#EF4444',
                 cancelButtonColor: '#6B7280',
-                confirmButtonText: '<i class="mr-1">🗑️</i> Ya, Hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true,
-                focusCancel: true,
-                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#FFFFFF',
-                color: document.documentElement.classList.contains('dark') ? '#F3F4F6' : '#111827',
-                customClass: {
-                    popup: 'rounded-2xl shadow-2xl',
-                    confirmButton: 'rounded-xl px-5 py-2.5 font-medium shadow-lg',
-                    cancelButton: 'rounded-xl px-5 py-2.5 font-medium'
-                }
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
             });
         },
 
         // Generic Confirmation
         confirm: function (title, text, confirmText = 'Ya, Lanjutkan') {
-            const primaryColor = this.role === 'admin' ? '#F97316' : '#3B82F6';
             return Swal.fire({
                 title: title,
                 text: text,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: primaryColor,
+                confirmButtonColor: this.primaryColor,
                 cancelButtonColor: '#6B7280',
                 confirmButtonText: confirmText,
-                cancelButtonText: 'Batal',
-                reverseButtons: true,
-                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#FFFFFF',
-                color: document.documentElement.classList.contains('dark') ? '#F3F4F6' : '#111827',
-                customClass: {
-                    popup: 'rounded-2xl shadow-2xl',
-                    confirmButton: 'rounded-xl px-5 py-2.5 font-medium shadow-lg',
-                    cancelButton: 'rounded-xl px-5 py-2.5 font-medium'
-                }
+                cancelButtonText: 'Batal'
             });
         },
 
         // Validation Error Alert
         validationError: function (errors) {
-            let errorList = '';
+            let errorText = '';
             if (Array.isArray(errors)) {
-                errorList = '<ul class="text-left text-sm space-y-1 mt-3">' +
-                    errors.map(e => `<li class="flex items-start gap-2"><span class="text-red-500">•</span>${e}</li>`).join('') +
-                    '</ul>';
+                errorText = errors.join('\n• ');
+                errorText = '• ' + errorText;
             } else if (typeof errors === 'string') {
-                errorList = `<p class="text-sm mt-2">${errors}</p>`;
+                errorText = errors;
             }
 
             return Swal.fire({
                 title: 'Validasi Gagal',
-                html: `<p class="text-gray-600 dark:text-gray-400">Mohon periksa kembali data yang Anda masukkan:</p>${errorList}`,
+                text: `Mohon periksa kembali data yang Anda masukkan:\n\n${errorText}`,
                 icon: 'error',
-                confirmButtonColor: this.role === 'admin' ? '#F97316' : '#3B82F6',
-                confirmButtonText: 'Perbaiki',
-                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#FFFFFF',
-                color: document.documentElement.classList.contains('dark') ? '#F3F4F6' : '#111827',
-                customClass: {
-                    popup: 'rounded-2xl shadow-2xl',
-                    confirmButton: 'rounded-xl px-5 py-2.5 font-medium shadow-lg'
-                }
+                confirmButtonColor: this.primaryColor,
+                confirmButtonText: 'Perbaiki'
             });
         }
     };
 
-    // Turbo Hygiene: Handle Flash Messages & Cache Cleanup
-    document.addEventListener('turbo:load', function () {
-        // 1. Preview Guard: Do not show alerts during preview rendering
-        if (document.documentElement.hasAttribute("data-turbo-preview")) return;
-
+    // Handle Flash Messages on Page Load
+    @php
+        $isProgramForm = request()->is('*/programs/create') || request()->is('*/programs/*/edit');
+    @endphp
+    
+    @unless($isProgramForm)
+    document.addEventListener('DOMContentLoaded', function () {
         // Flash Messages
         @if(session('success'))
-            SwalConfig.successToast('Berhasil!', '{{ session('success') }}');
+            SwalConfig.success('Berhasil!', '{{ session('success') }}');
         @endif
 
         @if(session('error'))
-            SwalConfig.errorToast('Gagal!', '{{ session('error') }}');
+            SwalConfig.error('Gagal!', '{{ session('error') }}');
         @endif
 
         @if($errors->any())
             const errorMessages = @json($errors->all());
             SwalConfig.validationError(errorMessages);
         @endif
-    }, { once: true }); // Ensure listener fires only once for this specific page load
-
-    // 2. Cache Cleaner: Close SweetAlerts before Turbo caches the page
-    if (!window.hasSwalCacheListener) {
-        document.addEventListener('turbo:before-cache', () => {
-            if (Swal.isVisible()) {
-                Swal.close();
-            }
-        });
-        window.hasSwalCacheListener = true;
-    }
+    });
+    @endunless
 
     // Helper function for delete forms
     function confirmDeleteForm(form, itemName = 'data ini') {

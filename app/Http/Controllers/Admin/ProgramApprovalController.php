@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,47 +15,95 @@ class ProgramApprovalController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['title', 'instructor_name', 'category', 'status', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('program_approvals')
             ->leftJoin('data_trainers', 'program_approvals.instructor_id', '=', 'data_trainers.id')
             ->select(
-                'program_approvals.*',
+                'program_approvals.id',
+                'program_approvals.title',
+                'program_approvals.category',
+                'program_approvals.status',
+                'program_approvals.created_at',
                 'data_trainers.nama as instructor_name',
                 'data_trainers.email as instructor_email'
-            )
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('program_approvals.title', 'like', '%' . $s . '%')
-                        ->orWhere('data_trainers.nama', 'like', '%' . $s . '%')
-                        ->orWhere('program_approvals.category', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('program_approvals.status', $request->input('status'));
-            });
+            );
 
-        // Handle sorting for joined column
-        $orderColumn = $sortKey === 'instructor_name' ? 'data_trainers.nama' : 'program_approvals.' . $sortKey;
-        
-        $approvals = $query->orderBy($orderColumn, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'title', 'label' => 'Judul Program', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'instructor_name', 'label' => 'Instruktur', 'sortable' => true],
+                ['key' => 'category', 'label' => 'Kategori', 'sortable' => true],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'type' => 'badge'],
+                ['key' => 'date', 'label' => 'Tanggal', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['program_approvals.title', 'data_trainers.nama', 'program_approvals.category'],
+            'sortable' => ['title', 'instructor_name', 'category', 'status', 'created_at'],
+            'sortColumns' => [
+                'title' => 'program_approvals.title',
+                'instructor_name' => 'data_trainers.nama',
+                'category' => 'program_approvals.category',
+                'status' => 'program_approvals.status',
+                'created_at' => 'program_approvals.created_at',
+            ],
+            'actions' => ['view'],
+            'route' => 'admin.program-approvals',
+            'routeParam' => 'id',
+            'title' => 'Persetujuan Program',
+            'entity' => 'persetujuan program',
+            'showCreate' => false,
+            'searchPlaceholder' => 'Cari judul, instruktur, kategori...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'program_approvals.status',
+                'options' => [
+                    '' => 'Semua Status',
+                    'pending' => 'Menunggu',
+                    'approved' => 'Disetujui',
+                    'rejected' => 'Ditolak',
+                ]
+            ],
+            'badgeClasses' => [
+                'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                'approved' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+                'Menunggu' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                'Disetujui' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'Ditolak' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+            ],
+            'bulkActions' => [
+                'route' => 'admin.program-approvals.bulk-update',
+                'options' => [
+                    '' => 'Pilih Status',
+                    'approved' => 'Setujui',
+                    'rejected' => 'Tolak',
+                ],
+                'requiresRejectionReason' => true,
+            ],
+            'transformer' => function($approval) {
+                $statusMap = [
+                    'pending' => 'Menunggu',
+                    'approved' => 'Disetujui',
+                    'rejected' => 'Ditolak',
+                ];
+                return [
+                    'id' => $approval->id,
+                    'title' => $approval->title ?? 'N/A',
+                    'instructor_name' => $approval->instructor_name ?? 'N/A',
+                    'instructor_email' => $approval->instructor_email,
+                    'category' => $approval->category ?? '-',
+                    'status' => $statusMap[$approval->status] ?? ucfirst($approval->status),
+                    'status_raw' => $approval->status,
+                    'date' => $approval->created_at ? date('d F Y', strtotime($approval->created_at)) : '-',
+                    'created_at' => $approval->created_at
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($approvals);
+            return response()->json($data);
         }
 
-        return view('admin.program-approvals.index', compact('approvals'));
+        return view('admin.program-approvals.index', compact('data'));
     }
 
     /**

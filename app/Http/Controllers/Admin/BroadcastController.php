@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,41 +14,42 @@ class BroadcastController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['message', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('broadcasts')
-            ->select('id', 'message', 'created_at')
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $s = $request->input('search');
-                $q->where('message', 'like', '%' . $s . '%');
-            });
+            ->select('id', 'message', 'created_at');
 
-        $broadcasts = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        // Transform data after pagination
-        $broadcasts->getCollection()->transform(function($broadcast) {
-            return [
-                'id' => $broadcast->id,
-                'message' => $broadcast->message ?? 'N/A',
-                'created_at' => $broadcast->created_at
-            ];
-        });
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'message', 'label' => 'Pesan', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'date', 'label' => 'Tanggal', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['message'],
+            'sortable' => ['message', 'created_at'],
+            'sortColumns' => [
+                'date' => 'created_at',
+            ],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.broadcasts',
+            'title' => 'Broadcast Management',
+            'entity' => 'broadcast',
+            'createLabel' => 'Tambah Broadcast',
+            'searchPlaceholder' => 'Cari pesan broadcast...',
+            'showFilter' => false,
+            'transformer' => function($broadcast) {
+                return [
+                    'id' => $broadcast->id,
+                    'message' => $broadcast->message ?? 'N/A',
+                    'date' => $broadcast->created_at ? date('d F Y H:i', strtotime($broadcast->created_at)) : '-',
+                    'created_at' => $broadcast->created_at
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($broadcasts);
+            return response()->json($data);
         }
 
-        return view('admin.broadcasts.index', compact('broadcasts'));
+        return view('admin.broadcasts.index', compact('data'));
     }
 
     /**

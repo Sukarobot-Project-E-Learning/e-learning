@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,16 +17,6 @@ class CertificateController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['program_name', 'number_prefix', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('certificate_templates')
             ->leftJoin('data_programs', 'certificate_templates.program_id', '=', 'data_programs.id')
             ->select(
@@ -37,55 +28,77 @@ class CertificateController extends Controller
                 'certificate_templates.is_active',
                 'certificate_templates.created_at',
                 'data_programs.program as program_name'
-            )
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $s = $request->input('search');
-                $q->where(function ($query) use ($s) {
-                    $query->where('data_programs.program', 'like', '%' . $s . '%')
-                        ->orWhere('certificate_templates.number_prefix', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($q) use ($request) {
-                $q->where('certificate_templates.is_active', $request->input('status') === 'active' ? 1 : 0);
-            });
+            );
 
-        // Handle sorting by program_name which comes from joined table
-        $sortColumn = $sortKey === 'program_name' ? 'data_programs.program' : 'certificate_templates.' . $sortKey;
-
-        $templates = $query->orderBy($sortColumn, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        $templates->getCollection()->transform(function($template) {
-            $certificatesCount = DB::table('certificates')
-                ->where('template_id', $template->id)
-                ->count();
-            
-            // Generate URL for template image if exists (for admin preview)
-            $templateUrl = null;
-            if ($template->template_path) {
-                // Use a secure route to serve private images
-                $templateUrl = route('admin.certificates.template-image', ['id' => $template->id]);
-            }
-            
-            return [
-                'id' => $template->id,
-                'program_name' => $template->program_name ?? 'N/A',
-                'program_id' => $template->program_id,
-                'number_prefix' => $template->number_prefix,
-                'description' => $template->description,
-                'template_path' => $templateUrl, // Return URL for display
-                'is_active' => $template->is_active,
-                'certificates_count' => $certificatesCount,
-                'created_at' => $template->created_at ? date('d F Y', strtotime($template->created_at)) : '-'
-            ];
-        });
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'program_name', 'label' => 'Program', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'template_path', 'label' => 'Template', 'type' => 'image'],
+                ['key' => 'number_prefix', 'label' => 'Prefix Nomor', 'sortable' => true],
+                ['key' => 'certificates_count', 'label' => 'Sertifikat'],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['data_programs.program', 'certificate_templates.number_prefix'],
+            'sortable' => ['program_name', 'number_prefix', 'is_active', 'created_at'],
+            'sortColumns' => [
+                'program_name' => 'data_programs.program',
+                'number_prefix' => 'certificate_templates.number_prefix',
+                'is_active' => 'certificate_templates.is_active',
+                'created_at' => 'certificate_templates.created_at',
+            ],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.certificates',
+            'title' => 'Sertifikat Management',
+            'entity' => 'sertifikat',
+            'createLabel' => 'Tambah Template',
+            'searchPlaceholder' => 'Cari program, prefix...',
+            'description' => '<strong>Cara Kerja</strong><br>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                    <li>Buat template sertifikat untuk setiap program</li>
+                    <li>Upload blanko (gambar kosong sertifikat) dan isi prefix nomor</li>
+                    <li>Ketika user mengirim bukti program dan Anda setujui, sertifikat akan otomatis di-generate</li>
+                    <li>Nama penerima diambil otomatis dari nama user yang mengirim bukti</li>
+                </ul>',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'certificate_templates.is_active',
+                'options' => [
+                    '' => 'Semua Status',
+                    'active' => 'Aktif',
+                    'inactive' => 'Non-Aktif',
+                ]
+            ],
+            'transformer' => function($template) {
+                $certificatesCount = DB::table('certificates')
+                    ->where('template_id', $template->id)
+                    ->count();
+                
+                $templateUrl = null;
+                if ($template->template_path) {
+                    $templateUrl = route('admin.certificates.template-image', ['id' => $template->id]);
+                }
+                
+                return [
+                    'id' => $template->id,
+                    'program_name' => $template->program_name ?? 'N/A',
+                    'program_id' => $template->program_id,
+                    'number_prefix' => $template->number_prefix,
+                    'description' => $template->description,
+                    'template_path' => $templateUrl,
+                    'is_active' => $template->is_active,
+                    'status' => $template->is_active ? 'Aktif' : 'Non-Aktif',
+                    'certificates_count' => $certificatesCount,
+                    'created_at' => $template->created_at ? date('d F Y', strtotime($template->created_at)) : '-'
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($templates);
+            return response()->json($data);
         }
 
-        return view('admin.certificates.index', compact('templates'));
+        return view('admin.certificates.index', compact('data'));
     }
 
     /**

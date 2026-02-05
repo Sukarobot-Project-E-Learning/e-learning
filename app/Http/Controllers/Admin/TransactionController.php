@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,80 +14,103 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['student_name', 'program_name', 'payment_date', 'amount', 'status', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
-        // Map sort keys to actual column names
-        $sortColumn = match ($sortKey) {
-            'student_name' => 'users.name',
-            'program_name' => 'data_programs.program',
-            default => 'transactions.' . $sortKey
-        };
-
         $query = DB::table('transactions')
             ->leftJoin('users', 'transactions.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'transactions.program_id', '=', 'data_programs.id')
             ->select(
-                'transactions.*',
+                'transactions.id',
+                'transactions.transaction_code',
+                'transactions.amount',
+                'transactions.status',
+                'transactions.payment_date',
+                'transactions.payment_proof',
+                'transactions.created_at',
                 'users.name as student_name',
                 'data_programs.program as program_name'
-            )
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('users.name', 'like', '%' . $s . '%')
-                        ->orWhere('data_programs.program', 'like', '%' . $s . '%')
-                        ->orWhere('transactions.transaction_code', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('transactions.status', $request->input('status'));
-            });
+            );
 
-        $transactions = $query->orderBy($sortColumn, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'transaction_code', 'label' => 'Kode Transaksi', 'type' => 'primary'],
+                ['key' => 'name', 'label' => 'Nama Siswa', 'sortable' => true],
+                ['key' => 'program', 'label' => 'Program', 'sortable' => true],
+                ['key' => 'nominal', 'label' => 'Nominal', 'sortable' => true, 'type' => 'currency'],
+                ['key' => 'date', 'label' => 'Tanggal', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'status', 'label' => 'Status', 'type' => 'badge'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['users.name', 'data_programs.program', 'transactions.transaction_code'],
+            'sortable' => ['student_name', 'program_name', 'payment_date', 'amount', 'status', 'created_at'],
+            'sortColumns' => [
+                'name' => 'users.name',
+                'program' => 'data_programs.program',
+                'nominal' => 'transactions.amount',
+                'date' => 'transactions.payment_date',
+                'status' => 'transactions.status',
+            ],
+            'actions' => ['view'],
+            'route' => 'admin.transactions',
+            'routeParam' => 'id',
+            'title' => 'Transaksi Management',
+            'entity' => 'transaksi',
+            'showCreate' => false,
+            'searchPlaceholder' => 'Cari nama, program, kode transaksi...',
+            'headerAction' => [
+                'label' => 'Export',
+                'url' => route('admin.transactions.export'),
+                'icon' => 'fa-download',
+            ],
+            'filter' => [
+                'key' => 'status',
+                'column' => 'transactions.status',
+                'options' => [
+                    '' => 'Semua Status',
+                    'pending' => 'Menunggu',
+                    'paid' => 'Lunas',
+                    'failed' => 'Gagal',
+                    'refunded' => 'Dikembalikan',
+                    'cancelled' => 'Dibatalkan',
+                ]
+            ],
+            'badgeClasses' => [
+                'Lunas' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'Menunggu' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                'Gagal' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+                'Dikembalikan' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+                'Dibatalkan' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+            ],
+            'transformer' => function ($transaction) {
+                $statusMap = [
+                    'pending' => 'Menunggu',
+                    'paid' => 'Lunas',
+                    'failed' => 'Gagal',
+                    'refunded' => 'Dikembalikan',
+                    'cancelled' => 'Dibatalkan'
+                ];
+                $statusLabel = $statusMap[$transaction->status] ?? $transaction->status;
 
-        // Transform data after pagination
-        $transactions->getCollection()->transform(function ($transaction) {
-            // Format status
-            $statusMap = [
-                'pending' => 'Menunggu',
-                'paid' => 'Lunas',
-                'failed' => 'Gagal',
-                'refunded' => 'Dikembalikan',
-                'cancelled' => 'Dibatalkan'
-            ];
-            $statusLabel = $statusMap[$transaction->status] ?? $transaction->status;
-
-            return [
-                'id' => $transaction->id,
-                'name' => $transaction->student_name ?? 'N/A',
-                'program' => $transaction->program_name ?? 'N/A',
-                'proof' => $transaction->payment_proof,
-                'date' => $transaction->payment_date
-                    ? date('d F Y', strtotime($transaction->payment_date))
-                    : ($transaction->created_at ? date('d F Y', strtotime($transaction->created_at)) : '-'),
-                'nominal' => 'Rp. ' . number_format($transaction->amount, 0, ',', '.'),
-                'amount_raw' => $transaction->amount,
-                'status' => $statusLabel,
-                'status_raw' => $transaction->status,
-                'transaction_code' => $transaction->transaction_code ?? '-'
-            ];
-        });
+                return [
+                    'id' => $transaction->id,
+                    'transaction_code' => $transaction->transaction_code ?? '-',
+                    'name' => $transaction->student_name ?? 'N/A',
+                    'program' => $transaction->program_name ?? 'N/A',
+                    'proof' => $transaction->payment_proof,
+                    'date' => $transaction->payment_date
+                        ? date('d F Y', strtotime($transaction->payment_date))
+                        : ($transaction->created_at ? date('d F Y', strtotime($transaction->created_at)) : '-'),
+                    'nominal' => $transaction->amount ?? 0,
+                    'amount_raw' => $transaction->amount,
+                    'status' => $statusLabel,
+                    'status_raw' => $transaction->status,
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($transactions);
+            return response()->json($data);
         }
 
-        return view('admin.transactions.index', compact('transactions'));
+        return view('admin.transactions.index', compact('data'));
     }
 
     /**

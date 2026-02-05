@@ -4,298 +4,201 @@
 
 @section('content')
 
-    <div class="container px-6 mx-auto">
+@php
+    $avatarUrl = null;
+    if (!empty($admin->avatar)) {
+        $avatarUrl = str_starts_with($admin->avatar, 'images/') 
+            ? asset($admin->avatar) 
+            : asset('storage/' . $admin->avatar);
+    }
+@endphp
 
-        <!-- Page Header -->
-        <div class="my-6">
-            <div class="flex items-start justify-between">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Edit Admin</h2>
-
-            </div>
-        </div>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+    <div class="container px-4 sm:px-6 mx-auto max-w-3xl">
 
         <!-- Form Card -->
-        <div class="w-full mb-8 p-6 overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800">
-            <form id="adminForm" action="{{ route('admin.admins.update', $admin->id) }}" method="POST" enctype="multipart/form-data">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
+            <form id="adminForm" data-admin-form action="{{ route('admin.admins.update', $admin->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="space-y-6">
 
-                    <!-- Status -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="status">
-                            Status <span class="text-red-500">*</span>
-                        </label>
-                        <div class="relative">
-                            <select name="status" id="status" required
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300">
-                                <option value="aktif" {{ (isset($admin) && $admin->is_active) ? 'selected' : '' }}>Aktif</option>
-                                <option value="non-aktif" {{ (isset($admin) && !$admin->is_active) ? 'selected' : '' }}>Non-Aktif</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Section 1: Account Information -->
+                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Informasi Akun Admin',
+                        'subtitle' => 'Detail dasar akun administrator',
+                        'color' => 'orange',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>'
+                    ])
 
-                    <!-- Name -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="name">
-                            Nama <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="name" id="name" required
-                               value="{{ $admin->name ?? '' }}"
-                               placeholder="Masukkan nama"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                    </div>
+                    <div class="space-y-5">
+                        <!-- Status -->
+                        @include('panel.partials.forms.select', [
+                            'name' => 'status',
+                            'label' => 'Status',
+                            'required' => true,
+                            'value' => old('status', $admin->is_active ? 'aktif' : 'non-aktif'),
+                            'options' => [
+                                'aktif' => '✅ Aktif',
+                                'non-aktif' => '❌ Non-Aktif'
+                            ]
+                        ])
 
-                    <!-- Username -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="username">
-                            Username <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="username" id="username" required
-                               value="{{ $admin->username ?? '' }}"
-                               placeholder="Masukkan username"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                    </div>
+                        <!-- Nama & Username Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('panel.partials.forms.input-text', [
+                                'name' => 'name',
+                                'label' => 'Nama Lengkap',
+                                'required' => true,
+                                'value' => old('name', $admin->name),
+                                'placeholder' => 'Masukkan nama admin'
+                            ])
 
-                    <!-- Email -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="email">
-                            Email <span class="text-red-500">*</span>
-                        </label>
-                        <input type="email" name="email" id="email" required
-                               value="{{ $admin->email ?? '' }}"
-                               placeholder="Masukkan email"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="phone">
-                            Nomor Telepon <span class="text-red-500">*</span>
-                        </label>
-                        <input type="tel" name="phone" id="phone" required
-                               value="{{ $admin->phone ?? '' }}"
-                               placeholder="Masukkan nomor telepon"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                    </div>
-
-                    <!-- Password -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password">
-                            Password <span class="text-gray-500 text-xs">(Kosongkan jika tidak ingin mengubah)</span>
-                        </label>
-                        <input type="password" name="password" id="password" minlength="8"
-                               placeholder="Masukkan password baru"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Password minimal 8 karakter</p>
-                    </div>
-
-                    <!-- Confirm Password -->
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password_confirmation">
-                            Konfirmasi Password
-                        </label>
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                               placeholder="Konfirmasi password baru"
-                               class="block w-full px-4 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:border-orange-400 focus:outline-none focus:ring focus:ring-orange-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-orange-300 dark:placeholder-gray-500">
-                    </div>
-
-                    <!-- Photo Upload with Cropper -->
-                    <div class="mb-2" x-data="imageUploader()">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Upload Foto
-                        </label>
-                        
-                        <!-- Preview Area dengan kontrol -->
-                        <div x-show="previewUrl" x-cloak class="mb-4">
-                            <div class="border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
-                                <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 mb-3 flex items-center justify-center" 
-                                     style="height: 200px;" x-ref="previewContainer" @wheel.prevent="handleZoom($event)">
-                                    <img x-ref="previewImage" x-bind:src="previewUrl" alt="Preview" class="max-h-full cursor-move select-none"
-                                         x-bind:style="'transform: scale(' + zoom + ') translate(' + posX + 'px, ' + posY + 'px);'"
-                                         @mousedown.prevent="startDrag($event)" @mousemove="onDrag($event)" @mouseup="stopDrag()" @mouseleave="stopDrag()"
-                                         @touchstart.prevent="startDrag($event.touches[0])" @touchmove="onDrag($event.touches[0])" @touchend="stopDrag()"
-                                         @load="onImageLoad()" draggable="false">
-                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div class="w-32 h-32 rounded-full border-4 border-white dark:border-gray-300 shadow-lg" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between gap-4">
-                                    <div class="flex items-center gap-3 flex-1">
-                                        <span class="text-sm text-gray-500">-</span>
-                                        <input type="range" min="10" max="300" x-bind:value="Math.round(zoom * 100)" @input="setZoom($event.target.value / 100)"
-                                               class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600 accent-orange-500">
-                                        <span class="text-sm text-gray-500">+</span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200 min-w-[50px] text-center" x-text="Math.round(zoom * 100) + '%'"></span>
-                                        <button type="button" @click="resetPosition()" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors" title="Reset">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                        </button>
-                                    </div>
-                                    <button type="button" @click="clearImage()" class="text-sm text-red-500 hover:text-red-700 font-medium">Hapus Foto</button>
-                                </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Scroll untuk zoom, drag untuk geser.</p>
-                            </div>
+                            @include('panel.partials.forms.input-text', [
+                                'name' => 'username',
+                                'label' => 'Username',
+                                'required' => true,
+                                'value' => old('username', $admin->username),
+                                'placeholder' => 'Masukkan username'
+                            ])
                         </div>
 
-                        {{-- Preview foto yang sudah ada --}}
-                        @if($admin->avatar)
-                        @php
-                            $avatarUrl = str_starts_with($admin->avatar, 'images/') 
-                                ? asset($admin->avatar) 
-                                : asset('storage/' . $admin->avatar);
-                        @endphp
-                        <div class="mb-4 flex items-center gap-4" x-show="!previewUrl">
-                            <div class="relative">
-                                <img src="{{ $avatarUrl }}" alt="Foto {{ $admin->name }}" class="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-600">
-                            </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
-                                <p class="font-medium text-gray-700 dark:text-gray-300">Foto saat ini</p>
-                                <p>Pilih file baru untuk mengganti foto</p>
-                            </div>
-                        </div>
-                        @endif
+                        <!-- Email & Phone Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('panel.partials.forms.input-text', [
+                                'name' => 'email',
+                                'type' => 'email',
+                                'label' => 'Email',
+                                'required' => true,
+                                'value' => old('email', $admin->email),
+                                'placeholder' => 'admin@example.com',
+                                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>'
+                            ])
 
-                        <div class="flex items-center justify-center w-full" x-show="!previewUrl">
-                            <label for="photo" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
-                                   @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @drop.prevent="handleDrop($event)"
-                                   :class="{'border-orange-400 bg-orange-50 dark:bg-orange-900/20': isDragging}">
-                                <div class="flex flex-col items-center justify-center pt-2 pb-3">
-                                    <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Seret dan lepas berkas, atau</span> <span class="text-orange-600">Telusuri</span></p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">JPG, JPEG, PNG (Maks. 2MB)</p>
-                                </div>
-                                <input id="photo" type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" x-ref="photoInput" @change="handleFileSelect($event)">
-                            </label>
+                            @include('panel.partials.forms.input-text', [
+                                'name' => 'phone',
+                                'type' => 'tel',
+                                'label' => 'Nomor Telepon',
+                                'required' => true,
+                                'value' => old('phone', $admin->phone),
+                                'placeholder' => '08xxxxxxxxxx',
+                                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>'
+                            ])
                         </div>
-                        <input type="hidden" name="cropped_photo" x-ref="croppedPhotoInput">
-                        <canvas x-ref="cropCanvas" style="display: none;"></canvas>
                     </div>
+                </div>
 
+                <!-- Section 2: Security -->
+                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Keamanan',
+                        'subtitle' => 'Ubah password administrator (opsional)',
+                        'color' => 'red',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>'
+                    ])
+
+                    <div class="space-y-5">
+                        @include('panel.partials.forms.input-password', [
+                            'name' => 'password',
+                            'label' => 'Password Baru',
+                            'labelHint' => '(Kosongkan jika tidak ingin mengubah)',
+                            'placeholder' => 'Masukkan password baru',
+                            'help' => 'Password minimal 8 karakter'
+                        ])
+
+                        @include('panel.partials.forms.input-password', [
+                            'name' => 'password_confirmation',
+                            'label' => 'Konfirmasi Password Baru',
+                            'placeholder' => 'Konfirmasi password baru'
+                        ])
+                    </div>
+                </div>
+
+                <!-- Section 3: Profile Photo -->
+                <div class="p-5 sm:p-8">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Foto Profil',
+                        'subtitle' => 'Upload foto untuk profil admin',
+                        'color' => 'purple',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'
+                    ])
+
+                    @include('panel.partials.forms.image-cropper', [
+                        'name' => 'cropped_photo',
+                        'id' => 'photo',
+                        'maxSize' => 2,
+                        'currentImage' => $avatarUrl,
+                        'currentImageAlt' => 'Foto ' . $admin->name
+                    ])
                 </div>
 
             </form>
 
-            <div class="flex flex-row justify-end items-end mt-6" style="gap: 16px;">
-                <a href="{{ route('admin.admins.index') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
-                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Kembali
-                </a>
-                <button type="submit"
-                        form="adminForm"
-                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-orange-600 border border-transparent rounded-lg active:bg-orange-600 hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange cursor-pointer">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Simpan Perubahan
-                </button>
-            </div>
+            <!-- Action Buttons -->
+            @include('panel.partials.forms.action-buttons', [
+                'backUrl' => route('admin.admins.index'),
+                'formId' => 'adminForm',
+                'submitText' => 'Simpan Perubahan'
+            ])
         </div>
 
     </div>
-
-@push('scripts')
-<script>
-    // Form Validation
-    document.getElementById('adminForm').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password_confirmation').value;
-        const photoInput = document.getElementById('photo');
-        
-        // Password Validation (only if password is being changed)
-        if (password && password.length > 0) {
-            if (password.length < 8) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Password minimal harus 8 karakter!'
-                });
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Konfirmasi password tidak cocok!'
-                });
-                return;
-            }
-        }
-
-        // Photo Validation Removed (Handled by Alpine.js instant validation)
-    });
-
-    // Image Uploader Function
-    function imageUploader() {
-        return {
-            previewUrl: null, zoom: 1, posX: 0, posY: 0, isDragging: false, isMoving: false, startX: 0, startY: 0, originalImage: null, circleSize: 128,
-            handleFileSelect(event) { const file = event.target.files[0]; if (file) this.processFile(file); },
-            handleDrop(event) { this.isDragging = false; const file = event.dataTransfer.files[0]; if (file) { const dt = new DataTransfer(); dt.items.add(file); this.$refs.photoInput.files = dt.files; this.processFile(file); } },
-            processFile(file) {
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']; const maxSize = 2 * 1024 * 1024;
-                if (!allowedTypes.includes(file.type)) { Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Format file tidak sesuai.' }); this.$refs.photoInput.value = ''; return; }
-                if (file.size > maxSize) { Swal.fire({ icon: 'error', title: 'Upload Gagal', text: 'Ukuran file melebihi 2MB.' }); this.$refs.photoInput.value = ''; return; }
-                const reader = new FileReader(); reader.onload = (e) => { this.previewUrl = e.target.result; this.resetPosition(); this.originalImage = new Image(); this.originalImage.src = e.target.result; }; reader.readAsDataURL(file);
-            },
-            onImageLoad() { this.$nextTick(() => this.updateCroppedImage()); },
-            setZoom(value) { this.zoom = Math.max(0.1, Math.min(3, value)); this.updateCroppedImage(); },
-            handleZoom(event) { if (event.deltaY < 0) this.zoom = Math.min(3, this.zoom + 0.05); else this.zoom = Math.max(0.1, this.zoom - 0.05); this.updateCroppedImage(); },
-            startDrag(event) { this.isMoving = true; this.startX = event.clientX - this.posX; this.startY = event.clientY - this.posY; },
-            onDrag(event) { if (!this.isMoving) return; this.posX = event.clientX - this.startX; this.posY = event.clientY - this.startY; },
-            stopDrag() { if (this.isMoving) { this.isMoving = false; this.updateCroppedImage(); } },
-            resetPosition() { this.zoom = 1; this.posX = 0; this.posY = 0; this.$nextTick(() => this.updateCroppedImage()); },
-            clearImage() { this.previewUrl = null; this.originalImage = null; this.$refs.photoInput.value = ''; this.$refs.croppedPhotoInput.value = ''; this.resetPosition(); },
-            updateCroppedImage() {
-                if (!this.originalImage || !this.previewUrl) return;
-                const canvas = this.$refs.cropCanvas; const ctx = canvas.getContext('2d'); const previewImg = this.$refs.previewImage; const container = this.$refs.previewContainer;
-                if (!previewImg || !container) return;
-                const outputSize = 256; canvas.width = outputSize; canvas.height = outputSize;
-                const natW = this.originalImage.width; const natH = this.originalImage.height; const dispW = previewImg.offsetWidth; const dispH = previewImg.offsetHeight;
-                const scaleX = natW / dispW; const scaleY = natH / dispH; const containerCenterX = container.offsetWidth / 2; const containerCenterY = container.offsetHeight / 2;
-                const translateOffsetX = this.posX * this.zoom; const translateOffsetY = this.posY * this.zoom;
-                const circleInDisplayedX = (containerCenterX - containerCenterX - translateOffsetX) / this.zoom + dispW / 2;
-                const circleInDisplayedY = (containerCenterY - containerCenterY - translateOffsetY) / this.zoom + dispH / 2;
-                const circleSizeInDisplayed = this.circleSize / this.zoom;
-                const cropDisplayedX = circleInDisplayedX - circleSizeInDisplayed / 2; const cropDisplayedY = circleInDisplayedY - circleSizeInDisplayed / 2;
-                const srcX = cropDisplayedX * scaleX; const srcY = cropDisplayedY * scaleY; const srcW = circleSizeInDisplayed * scaleX; const srcH = circleSizeInDisplayed * scaleY;
-                ctx.clearRect(0, 0, outputSize, outputSize); ctx.beginPath(); ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
-                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, outputSize, outputSize);
-                try { ctx.drawImage(this.originalImage, srcX, srcY, Math.max(srcW, srcH), Math.max(srcW, srcH), 0, 0, outputSize, outputSize); } catch (e) {}
-                this.$refs.croppedPhotoInput.value = canvas.toDataURL('image/png');
-            }
-        }
-    }
-
-    // Handle success/error messages from session
-    @if(session('success'))
-        Swal.fire({
-            title: "{{ session('success') }}",
-            icon: "success",
-            draggable: true
-        });
-    @endif
-
-    @if(session('error'))
-        Swal.fire({
-            title: "Error!",
-            text: "{{ session('error') }}",
-            icon: "error"
-        });
-    @endif
-</script>
-@endpush
+</div>
 
 @endsection
 
+@push('scripts')
+<script src="{{ asset('assets/elearning/admin/js/components/image-cropper.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('assets/elearning/admin/js/components/password-validator.js') }}?v={{ time() }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Image Cropper
+    const cropperContainers = document.querySelectorAll('[data-image-cropper]');
+    cropperContainers.forEach(container => {
+        new ImageCropper(container);
+    });
+
+    // Initialize Password Validation (optional for edit)
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('password_confirmation');
+    if (passwordInput && confirmInput) {
+        new PasswordValidator(passwordInput, confirmInput, {
+            minLength: 8,
+            required: false
+        });
+    }
+
+    // Form Validation
+    const form = document.getElementById('adminForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password_confirmation').value;
+            
+            // Only validate if password is being changed
+            if (password) {
+                if (password.length < 8) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Password minimal harus 8 karakter!'
+                    });
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Konfirmasi password tidak cocok!'
+                    });
+                    return;
+                }
+            }
+        });
+    }
+});
+</script>
+@endpush

@@ -26,6 +26,11 @@
     $iconInactive = $role === 'admin' ? 'text-orange-600 dark:text-orange-400' : 'text-blue-700 dark:text-blue-400';
 
     $expandedBg = $role === 'admin' ? 'bg-orange-50 dark:bg-gray-700/50 text-orange-700 dark:text-orange-400' : 'bg-blue-50 dark:bg-gray-700/50 text-blue-700 dark:text-blue-400';
+
+    // Check which sections should be initially expanded based on current route
+    $akunExpanded = request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*');
+    $programExpanded = request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*');
+    $promosiExpanded = request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*');
 @endphp
 
 <ul class="space-y-2">
@@ -47,17 +52,14 @@
 
     @if($role === 'admin')
         {{-- Akun (Dropdown) --}}
-        <li
-            x-data="{ expanded: {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? 'true' : 'false' }} }">
-            <button @click="expanded = !expanded" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
-                                        {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*'))
-            ? $expandedBg
-            : $inactiveClass }}">
+        <li>
+            <button data-sidebar-item="akun" data-initial-expanded="{{ $akunExpanded ? 'true' : 'false' }}" class="sidebar-expandable-btn w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
+                                        {{ $akunExpanded ? $expandedBg : $inactiveClass }}">
                 <div class="flex items-center">
                     <div
                         class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 transition-all duration-200
-                                                    {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
-                        <svg class="w-5 h-5 {{ (request()->routeIs('admin.users.*') || request()->routeIs('admin.admins.*') || request()->routeIs('admin.instructors.*') || request()->routeIs('admin.instructor-applications.*')) ? $iconInactive : $iconInactive }}"
+                                                    {{ $akunExpanded ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
+                        <svg class="w-5 h-5 {{ $akunExpanded ? $iconInactive : $iconInactive }}"
                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -65,12 +67,12 @@
                     </div>
                     Akun
                 </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none"
+                <svg class="w-4 h-4 expand-chevron transition-transform duration-200" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
-            <div x-show="expanded" x-cloak x-collapse class="space-y-1 mt-1">
+            <div class="sidebar-expandable-content hidden space-y-1 mt-1">
                 <a href="{{ route('admin.users.index') }}"
                     class="flex items-center pl-16 pr-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.users.*') ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-gray-700/50' : 'text-slate-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-gray-700/30' }}">
                     Users
@@ -91,17 +93,14 @@
         </li>
 
         {{-- Program (Dropdown) --}}
-        <li
-            x-data="{ expanded: {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'true' : 'false' }} }">
-            <button @click="expanded = !expanded" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
-                                        {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*'))
-            ? $expandedBg
-            : $inactiveClass }}">
+        <li>
+            <button data-sidebar-item="program" data-initial-expanded="{{ $programExpanded ? 'true' : 'false' }}" class="sidebar-expandable-btn w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
+                                        {{ $programExpanded ? $expandedBg : $inactiveClass }}">
                 <div class="flex items-center">
                     <div
                         class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 transition-all duration-200
-                                                    {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
-                        <svg class="w-5 h-5 {{ (request()->routeIs('admin.programs.*') || request()->routeIs('admin.program-approvals.*') || request()->routeIs('admin.program-proofs.*') || request()->routeIs('admin.certificates.*')) ? $iconInactive : $iconInactive }}"
+                                                    {{ $programExpanded ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
+                        <svg class="w-5 h-5 {{ $programExpanded ? $iconInactive : $iconInactive }}"
                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -109,12 +108,12 @@
                     </div>
                     Program
                 </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none"
+                <svg class="w-4 h-4 expand-chevron transition-transform duration-200" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
-            <div x-show="expanded" x-cloak x-collapse class="space-y-1 mt-1">
+            <div class="sidebar-expandable-content hidden space-y-1 mt-1">
                 <a href="{{ route('admin.programs.index') }}"
                     class="flex items-center pl-16 pr-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.programs.*') ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-gray-700/50' : 'text-slate-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-gray-700/30' }}">
                     Program
@@ -135,17 +134,14 @@
         </li>
 
         {{-- Promosi (Dropdown) --}}
-        <li
-            x-data="{ expanded: {{ (request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*')) ? 'true' : 'false' }} }">
-            <button @click="expanded = !expanded" class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
-                                        {{ (request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*'))
-            ? $expandedBg
-            : $inactiveClass }}">
+        <li>
+            <button data-sidebar-item="promosi" data-initial-expanded="{{ $promosiExpanded ? 'true' : 'false' }}" class="sidebar-expandable-btn w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
+                                        {{ $promosiExpanded ? $expandedBg : $inactiveClass }}">
                 <div class="flex items-center">
                     <div
                         class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 transition-all duration-200
-                                                    {{ (request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*')) ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
-                        <svg class="w-5 h-5 {{ (request()->routeIs('admin.promos.*') || request()->routeIs('admin.vouchers.*')) ? $iconInactive : $iconInactive }}"
+                                                    {{ $promosiExpanded ? 'bg-orange-100 dark:bg-gray-700' : 'bg-orange-100 dark:bg-gray-700' }}">
+                        <svg class="w-5 h-5 {{ $promosiExpanded ? $iconInactive : $iconInactive }}"
                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
@@ -153,12 +149,12 @@
                     </div>
                     Promosi
                 </div>
-                <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none"
+                <svg class="w-4 h-4 expand-chevron transition-transform duration-200" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
-            <div x-show="expanded" x-cloak x-collapse class="space-y-1 mt-1">
+            <div class="sidebar-expandable-content hidden space-y-1 mt-1">
                 <a href="{{ route('admin.promos.index') }}"
                     class="flex items-center pl-16 pr-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.promos.*') ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-gray-700/50' : 'text-slate-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-gray-700/30' }}">
                     Promo
@@ -329,9 +325,9 @@
             </li>
 
             <!-- Kompetisi -->
-            <li x-data="{ expanded: false }">
-                <button @click="expanded = !expanded"
-                    class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-200">
+            <li>
+                <button data-sidebar-item="kompetisi-mobile" data-initial-expanded="false"
+                    class="sidebar-expandable-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-200">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -339,12 +335,12 @@
                         </svg>
                         Kompetisi
                     </div>
-                    <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none"
+                    <svg class="w-4 h-4 expand-chevron transition-transform duration-200" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                <div x-show="expanded" x-cloak class="pl-12 pr-4 space-y-1">
+                <div class="sidebar-expandable-content hidden pl-12 pr-4 space-y-1">
                     <a href="https://brc.sukarobot.com/" data-turbo="false"
                         class="block py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">BRC</a>
                     <a href="https://src.sukarobot.com/" data-turbo="false"
@@ -353,9 +349,9 @@
             </li>
 
             <!-- Tentang -->
-            <li x-data="{ expanded: false }">
-                <button @click="expanded = !expanded"
-                    class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-200">
+            <li>
+                <button data-sidebar-item="tentang-mobile" data-initial-expanded="false"
+                    class="sidebar-expandable-btn w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-200">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -363,12 +359,12 @@
                         </svg>
                         Tentang Sukarobot
                     </div>
-                    <svg class="w-4 h-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none"
+                    <svg class="w-4 h-4 expand-chevron transition-transform duration-200" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                <div x-show="expanded" x-cloak class="pl-12 pr-4 space-y-1">
+                <div class="sidebar-expandable-content hidden pl-12 pr-4 space-y-1">
                     <a href="{{ url('/instruktur') }}" data-turbo="false"
                         class="block py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Instruktur</a>
                     <a href="{{ url('/tentang') }}" data-turbo="false"

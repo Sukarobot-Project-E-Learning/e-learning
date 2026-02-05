@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,16 +14,6 @@ class VoucherController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['name', 'code', 'discount_value', 'is_active', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('vouchers')
             ->leftJoin('data_programs', 'vouchers.program_id', '=', 'data_programs.id')
             ->select(
@@ -35,46 +26,62 @@ class VoucherController extends Controller
                 'vouchers.is_active',
                 'vouchers.created_at',
                 'data_programs.program as program_name'
-            )
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $s = $request->input('search');
-                $q->where(function ($query) use ($s) {
-                    $query->where('vouchers.name', 'like', '%' . $s . '%')
-                        ->orWhere('vouchers.code', 'like', '%' . $s . '%')
-                        ->orWhere('data_programs.program', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('status'), function ($q) use ($request) {
-                $q->where('vouchers.is_active', $request->input('status') === 'active' ? 1 : 0);
-            });
+            );
 
-        $vouchers = $query->orderBy('vouchers.' . $sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama Voucher', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'code', 'label' => 'Kode', 'sortable' => true],
+                ['key' => 'discount', 'label' => 'Diskon', 'sortable' => true],
+                ['key' => 'program_event', 'label' => 'Program'],
+                ['key' => 'status', 'label' => 'Status', 'type' => 'status'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['vouchers.name', 'vouchers.code', 'data_programs.program'],
+            'sortable' => ['name', 'code', 'discount_value', 'is_active', 'created_at'],
+            'sortColumns' => [
+                'name' => 'vouchers.name',
+                'code' => 'vouchers.code',
+                'discount' => 'vouchers.discount_value',
+            ],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.vouchers',
+            'title' => 'Voucher Management',
+            'entity' => 'voucher',
+            'createLabel' => 'Tambah Voucher',
+            'searchPlaceholder' => 'Cari nama, kode, program...',
+            'filter' => [
+                'key' => 'status',
+                'column' => 'vouchers.is_active',
+                'options' => [
+                    '' => 'Semua Status',
+                    'active' => 'Aktif',
+                    'inactive' => 'Non-Aktif',
+                ]
+            ],
+            'transformer' => function($voucher) {
+                $discount = $voucher->discount_type === 'percentage' 
+                    ? $voucher->discount_value . '%' 
+                    : 'Rp ' . number_format($voucher->discount_value, 0, ',', '.');
 
-        // Transform data after pagination
-        $vouchers->getCollection()->transform(function($voucher) {
-            $discount = $voucher->discount_type === 'percentage' 
-                ? $voucher->discount_value . '%' 
-                : 'Rp ' . number_format($voucher->discount_value, 0, ',', '.');
-
-            return [
-                'id' => $voucher->id,
-                'name' => $voucher->name ?? 'N/A',
-                'discount' => $discount,
-                'discount_value' => $voucher->discount_value,
-                'program_event' => $voucher->program_name ?? 'Semua Program',
-                'code' => $voucher->code ?? 'N/A',
-                'is_active' => $voucher->is_active,
-                'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
-            ];
-        });
+                return [
+                    'id' => $voucher->id,
+                    'name' => $voucher->name ?? 'N/A',
+                    'discount' => $discount,
+                    'discount_value' => $voucher->discount_value,
+                    'program_event' => $voucher->program_name ?? 'Semua Program',
+                    'code' => $voucher->code ?? 'N/A',
+                    'is_active' => $voucher->is_active,
+                    'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($vouchers);
+            return response()->json($data);
         }
 
-        return view('admin.vouchers.index', compact('vouchers'));
+        return view('admin.vouchers.index', compact('data'));
     }
 
     /**

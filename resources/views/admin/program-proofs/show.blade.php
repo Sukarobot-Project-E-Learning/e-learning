@@ -61,7 +61,19 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
                             })
-                            .then(r => r.json())
+                            .then(r => {
+                                if (!r.ok) {
+                                    return r.text().then(text => {
+                                        try {
+                                            const json = JSON.parse(text);
+                                            throw new Error(json.message || 'Terjadi kesalahan server');
+                                        } catch (e) {
+                                            throw new Error('Terjadi kesalahan server: ' + r.status);
+                                        }
+                                    });
+                                }
+                                return r.json();
+                            })
                             .then(data => {
                                 if (data.success) {
                                     Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message || 'Bukti program berhasil diterima.', timer: 2000, showConfirmButton: false })
@@ -70,7 +82,7 @@
                                     Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });
                                 }
                             })
-                            .catch(() => Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan' }));
+                            .catch(err => Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message || 'Terjadi kesalahan' }));
                         }
                     });
                 });
@@ -97,7 +109,19 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
                             })
-                            .then(r => r.json())
+                            .then(r => {
+                                if (!r.ok) {
+                                    return r.text().then(text => {
+                                        try {
+                                            const json = JSON.parse(text);
+                                            throw new Error(json.message || 'Terjadi kesalahan server');
+                                        } catch (e) {
+                                            throw new Error('Terjadi kesalahan server: ' + r.status);
+                                        }
+                                    });
+                                }
+                                return r.json();
+                            })
                             .then(data => {
                                 if (data.success) {
                                     Swal.fire({ icon: 'success', title: 'Ditolak!', text: data.message || 'Bukti program berhasil ditolak.', timer: 2000, showConfirmButton: false })
@@ -106,7 +130,7 @@
                                     Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });
                                 }
                             })
-                            .catch(() => Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan' }));
+                            .catch(err => Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message || 'Terjadi kesalahan' }));
                         }
                     });
                 });
@@ -228,7 +252,7 @@
                             
                             <a href="{{ $docUrl }}" 
                                download 
-                               data-turbo="false"
+                              
                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>

@@ -137,7 +137,7 @@
                                 <span class="font-semibold">{{ $application->name }}</span>
                                 @if($application->avatar)
                                     <a href="{{ route('admin.instructor-applications.download', ['id' => $application->id, 'type' => 'avatar']) }}" 
-                                       data-turbo="false"
+                                      
                                        class="ml-auto px-2 py-1 text-xs text-blue-600 bg-blue-100 rounded hover:bg-blue-200 inline-flex items-center gap-1"
                                        title="Unduh foto profil">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +217,7 @@
                                             </div>
                                         </div>
                                         <a href="{{ route('admin.instructor-applications.download', ['id' => $application->id, 'type' => 'cv']) }}" 
-                                           data-turbo="false"
+                                          
                                            class="px-3 py-1 text-sm text-blue-600 bg-blue-100 rounded hover:bg-blue-200 focus:outline-none inline-flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -251,7 +251,7 @@
                                             </div>
                                         </div>
                                         <a href="{{ route('admin.instructor-applications.download', ['id' => $application->id, 'type' => 'ktp']) }}" 
-                                           data-turbo="false"
+                                          
                                            class="px-3 py-1 text-sm text-orange-600 bg-orange-100 rounded hover:bg-orange-200 focus:outline-none inline-flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -285,7 +285,7 @@
                                             </div>
                                         </div>
                                         <a href="{{ route('admin.instructor-applications.download', ['id' => $application->id, 'type' => 'npwp']) }}" 
-                                           data-turbo="false"
+                                          
                                            class="px-3 py-1 text-sm text-green-600 bg-green-100 rounded hover:bg-green-200 focus:outline-none inline-flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,66 +19,78 @@ class ProgramController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['program', 'category', 'start_date', 'type', 'price', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-
         $query = DB::table('data_programs')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('program', 'like', '%' . $s . '%')
-                        ->orWhere('category', 'like', '%' . $s . '%')
-                        ->orWhere('type', 'like', '%' . $s . '%');
-                });
-            })
-            ->when($request->filled('category'), function ($query) use ($request) {
-                $query->where('category', $request->input('category'));
-            });
+            ->select('id', 'program', 'image', 'category', 'start_date', 'type', 'price', 'quota', 'enrolled_count', 'rating', 'created_at');
 
-        $programs = $query->orderBy($sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        // Get categories for filter
+        $categories = DB::table('data_programs')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category')
+            ->mapWithKeys(fn($cat) => [$cat => ucfirst($cat)])
+            ->toArray();
 
-        $programs->getCollection()->transform(function ($program) {
-            $levelCount = DB::table('data_levels')
-                ->where('id_programs', $program->id)
-                ->count();
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'title', 'label' => 'Program', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'image', 'label' => 'Gambar', 'type' => 'image'],
+                ['key' => 'category', 'label' => 'Kategori', 'sortable' => true],
+                ['key' => 'type', 'label' => 'Tipe', 'sortable' => true],
+                ['key' => 'price', 'label' => 'Harga', 'sortable' => true, 'type' => 'currency'],
+                ['key' => 'start_date', 'label' => 'Tanggal Mulai', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['program', 'category', 'type'],
+            'sortable' => ['program', 'category', 'start_date', 'type', 'price', 'created_at'],
+            'sortColumns' => [
+                'title' => 'program',
+            ],
+            'actions' => ['edit', 'delete'],
+            'route' => 'admin.programs',
+            'title' => 'Program Management',
+            'entity' => 'program',
+            'createLabel' => 'Tambah Program',
+            'searchPlaceholder' => 'Cari program, kategori, tipe...',
+            'filter' => [
+                'key' => 'category',
+                'column' => 'category',
+                'options' => array_merge(['' => 'Semua Kategori'], $categories)
+            ],
+            'transformer' => function ($program) {
+                $levelCount = DB::table('data_levels')
+                    ->where('id_programs', $program->id)
+                    ->count();
 
-            $scheduleCount = DB::table('schedules')
-                ->where('id_program', $program->id)
-                ->where('ket', 'Aktif')
-                ->count();
+                $scheduleCount = DB::table('schedules')
+                    ->where('id_program', $program->id)
+                    ->where('ket', 'Aktif')
+                    ->count();
 
-            return [
-                'id' => $program->id,
-                'title' => $program->program,
-                'image' => $program->image,
-                'category' => ucfirst($program->category ?? '-'),
-                'start_date' => $program->start_date ? date('d F Y', strtotime($program->start_date)) : '-',
-                'start_date_raw' => $program->start_date,
-                'type' => ucfirst($program->type ?? '-'),
-                'price' => $program->price ? 'Rp ' . number_format($program->price, 0, ',', '.') : 'Gratis',
-                'price_raw' => $program->price ?? 0,
-                'level_count' => $levelCount,
-                'schedule_count' => $scheduleCount,
-                'quota' => $program->quota,
-                'enrolled_count' => $program->enrolled_count,
-                'rating' => $program->rating,
-            ];
-        });
+                return [
+                    'id' => $program->id,
+                    'title' => $program->program,
+                    'image' => $program->image,
+                    'category' => ucfirst($program->category ?? '-'),
+                    'start_date' => $program->start_date ? date('d F Y', strtotime($program->start_date)) : '-',
+                    'start_date_raw' => $program->start_date,
+                    'type' => ucfirst($program->type ?? '-'),
+                    'price' => $program->price ?? 0,
+                    'price_raw' => $program->price ?? 0,
+                    'level_count' => $levelCount,
+                    'schedule_count' => $scheduleCount,
+                    'quota' => $program->quota,
+                    'enrolled_count' => $program->enrolled_count,
+                    'rating' => $program->rating,
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($programs);
+            return response()->json($data);
         }
 
-        return view('admin.programs.index', compact('programs'));
+        return view('admin.programs.index', compact('data'));
     }
 
     /**
@@ -85,7 +98,13 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        return view('admin.programs.create');
+        // Get all instructors from data_trainers table
+        $instructors = DB::table('data_trainers')
+            ->select('id', 'nama')
+            ->orderBy('nama')
+            ->get();
+
+        return view('admin.programs.create', compact('instructors'));
     }
 
     /**
@@ -96,11 +115,11 @@ class ProgramController extends Controller
         // Base validation rules
         $rules = [
             'program' => 'required|string|max:255',
-            'category' => 'required|in:kursus,pelatihan,sertifikasi,outing-class,outboard',
+            'category' => 'required|in:Kursus,Pelatihan,Sertifikasi,Outing Class,Outboard',
             'type' => 'required|in:online,offline',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'instructor_id' => 'nullable|exists:users,id',
+            'instructor_id' => 'nullable|exists:data_trainers,id',
 
             'quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
@@ -224,13 +243,19 @@ class ProgramController extends Controller
         $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
         $program->benefits = json_decode($program->benefits, true) ?? [];
 
+        // Get all instructors from data_trainers table
+        $instructors = DB::table('data_trainers')
+            ->select('id', 'nama')
+            ->orderBy('nama')
+            ->get();
+
         // Prepare location data for pre-population (if offline)
         $locationData = null;
         if ($program->type === 'offline') {
             $locationData = $this->getLocationIds($program);
         }
 
-        return view('admin.programs.edit', compact('program', 'locationData'));
+        return view('admin.programs.edit', compact('program', 'instructors', 'locationData'));
     }
 
     // Add this helper method to find IDs from names
@@ -315,11 +340,11 @@ class ProgramController extends Controller
         // Base validation
         $rules = [
             'program' => 'required|string|max:255',
-            'category' => 'required|in:kursus,pelatihan,sertifikasi,outing-class,outboard',
+            'category' => 'required|in:Kursus,Pelatihan,Sertifikasi,Outing Class,Outboard',
             'type' => 'required|in:online,offline',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'instructor_id' => 'nullable|exists:users,id',
+            'instructor_id' => 'nullable|exists:data_trainers,id',
             'quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'start_time' => 'required',

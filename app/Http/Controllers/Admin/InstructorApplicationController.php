@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,38 +15,64 @@ class InstructorApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = (int) $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50]) ? $perPage : 10;
-
-        $sortKey = $request->input('sort', 'created_at');
-        $allowedSorts = ['name', 'email', 'skills', 'created_at'];
-        if (!in_array($sortKey, $allowedSorts)) {
-            $sortKey = 'created_at';
-        }
-        $dir = strtolower($request->input('dir', 'asc')) === 'desc' ? 'desc' : 'asc';
-
         $query = DB::table('instructor_applications')
             ->join('users', 'instructor_applications.user_id', '=', 'users.id')
             ->where('instructor_applications.status', 'pending')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $s = $request->input('search');
-                $query->where(function ($q) use ($s) {
-                    $q->where('users.name', 'like', '%' . $s . '%')
-                        ->orWhere('users.email', 'like', '%' . $s . '%')
-                        ->orWhere('instructor_applications.skills', 'like', '%' . $s . '%');
-                });
-            })
-            ->select('instructor_applications.*', 'users.name', 'users.email', 'users.avatar');
+            ->select(
+                'instructor_applications.id',
+                'instructor_applications.skills',
+                'instructor_applications.status',
+                'instructor_applications.created_at',
+                'users.name',
+                'users.email',
+                'users.avatar'
+            );
 
-        $applications = $query->orderBy($sortKey === 'name' || $sortKey === 'email' ? 'users.' . $sortKey : 'instructor_applications.' . $sortKey, $dir)
-            ->paginate($perPage)
-            ->withQueryString();
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'name', 'label' => 'Nama', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'avatar', 'label' => 'Foto', 'type' => 'avatar'],
+                ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+                ['key' => 'skills', 'label' => 'Keahlian', 'sortable' => true],
+                ['key' => 'date', 'label' => 'Tanggal Pengajuan', 'sortable' => true, 'type' => 'date'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['users.name', 'users.email', 'instructor_applications.skills'],
+            'sortable' => ['name', 'email', 'skills', 'created_at'],
+            'sortColumns' => [
+                'name' => 'users.name',
+                'email' => 'users.email',
+                'skills' => 'instructor_applications.skills',
+                'created_at' => 'instructor_applications.created_at',
+            ],
+            'actions' => ['view'],
+            'route' => 'admin.instructor-applications',
+            'routeParam' => 'id',
+            'title' => 'Pengajuan Instruktur',
+            'entity' => 'pengajuan instruktur',
+            'showCreate' => false,
+            'showFilter' => false,
+            'searchPlaceholder' => 'Cari nama, email, keahlian...',
+            'defaultDir' => 'asc',
+            'transformer' => function($application) {
+                return [
+                    'id' => $application->id,
+                    'name' => $application->name ?? 'N/A',
+                    'email' => $application->email ?? '-',
+                    'avatar' => $application->avatar,
+                    'skills' => $application->skills ?? '-',
+                    'status' => $application->status,
+                    'date' => $application->created_at ? date('d F Y', strtotime($application->created_at)) : '-',
+                    'created_at' => $application->created_at
+                ];
+            },
+        ], $request);
 
         if ($request->wantsJson()) {
-            return response()->json($applications);
+            return response()->json($data);
         }
 
-        return view('admin.instructors.applications', compact('applications'));
+        return view('admin.instructors.applications', compact('data'));
     }
 
     /**
@@ -73,13 +100,16 @@ class InstructorApplicationController extends Controller
     /**
      * Approve an application.
      */
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         try {
             DB::beginTransaction();
 
             $application = DB::table('instructor_applications')->where('id', $id)->first();
             if (!$application) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Pengajuan tidak ditemukan'], 404);
+                }
                 return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
             }
 
@@ -116,21 +146,51 @@ class InstructorApplicationController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.instructor-applications.index')->with('success', 'Pengajuan instruktur disetujui');
+            
+            $message = 'Pengajuan instruktur disetujui';
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $message]);
+            }
+            return redirect()->route('admin.instructor-applications.index')->with('success', $message);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $message = 'Terjadi kesalahan: ' . $e->getMessage();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $message], 500);
+            }
+            return redirect()->back()->with('error', $message);
         }
     }
 
     /**
      * Reject an application.
      */
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        DB::table('instructor_applications')->where('id', $id)->update(['status' => 'rejected', 'updated_at' => now()]);
-        return redirect()->route('admin.instructor-applications.index')->with('success', 'Pengajuan instruktur ditolak');
+        try {
+            $application = DB::table('instructor_applications')->where('id', $id)->first();
+            if (!$application) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Pengajuan tidak ditemukan'], 404);
+                }
+                return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
+            }
+
+            DB::table('instructor_applications')->where('id', $id)->update(['status' => 'rejected', 'updated_at' => now()]);
+            
+            $message = 'Pengajuan instruktur ditolak';
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $message]);
+            }
+            return redirect()->route('admin.instructor-applications.index')->with('success', $message);
+        } catch (\Exception $e) {
+            $message = 'Terjadi kesalahan: ' . $e->getMessage();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $message], 500);
+            }
+            return redirect()->back()->with('error', $message);
+        }
     }
 
     /**
@@ -300,5 +360,7 @@ class InstructorApplicationController extends Controller
 
         return redirect()->back()->with('error', 'File tidak ditemukan');
     }
+
+
 }
 

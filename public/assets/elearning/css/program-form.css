@@ -1,0 +1,256 @@
+/**
+ * Program Form Styles
+ * Custom styles for the multi-step program creation/edit form
+ */
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-slide-in {
+    animation: slide-in-right 0.3s ease-out forwards;
+}
+
+/* ==================== FORM CONTAINER ==================== */
+
+.program-form-container {
+    position: relative;
+}
+
+/* ==================== STEP INDICATORS ==================== */
+
+.step-indicator {
+    position: relative;
+    z-index: 1;
+}
+
+.step-indicator.active {
+    animation: pulse-ring 2s infinite;
+}
+
+.step-line {
+    transition: background-color 0.3s ease;
+}
+
+/* ==================== FORM STEPS ==================== */
+
+.form-step {
+    min-height: 400px;
+}
+
+.form-step.hidden {
+    display: none;
+}
+
+/* ==================== INPUT FOCUS STATES ==================== */
+
+.program-form-container input:focus,
+.program-form-container select:focus,
+.program-form-container textarea:focus {
+    outline: none;
+}
+
+/* Custom focus ring for inputs */
+.program-form-container input:focus-visible,
+.program-form-container select:focus-visible,
+.program-form-container textarea:focus-visible {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+/* Blue theme focus for instructor */
+.program-form-container[data-primary-color="blue"] input:focus-visible,
+.program-form-container[data-primary-color="blue"] select:focus-visible,
+.program-form-container[data-primary-color="blue"] textarea:focus-visible {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ==================== TYPE SELECTOR CARDS ==================== */
+
+.type-option input:checked + .type-card {
+    transform: scale(1.02);
+}
+
+.type-card {
+    transition: all 0.2s ease;
+}
+
+.type-card:hover {
+    transform: translateY(-2px);
+}
+
+/* ==================== DYNAMIC LIST ITEMS ==================== */
+
+.tool-item,
+.benefit-item,
+.material-item {
+    transition: all 0.2s ease;
+}
+
+.tool-item:hover,
+.benefit-item:hover {
+    background-color: rgba(249, 115, 22, 0.02);
+}
+
+.material-item:hover {
+    border-color: rgba(249, 115, 22, 0.3);
+}
+
+/* Remove button hover effect */
+.remove-tool-btn:hover,
+.remove-benefit-btn:hover,
+.remove-material-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ==================== IMAGE UPLOAD AREA ==================== */
+
+#imageUploadArea {
+    transition: all 0.3s ease;
+}
+
+#imageUploadArea:hover {
+    border-color: #f97316;
+    background-color: rgba(249, 115, 22, 0.02);
+}
+
+#imageUploadArea.dragover {
+    border-color: #f97316;
+    background-color: rgba(249, 115, 22, 0.05);
+    transform: scale(1.01);
+}
+
+/* Blue theme for instructor */
+.program-form-container[data-primary-color="blue"] #imageUploadArea:hover,
+.program-form-container[data-primary-color="blue"] #imageUploadArea.dragover {
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* ==================== NAVIGATION BUTTONS ==================== */
+
+#prevStepBtn,
+#nextStepBtn,
+#submitBtn,
+#cancelLink {
+    transition: all 0.2s ease;
+}
+
+#prevStepBtn:hover,
+#cancelLink:hover {
+    transform: translateX(-2px);
+}
+
+#nextStepBtn:hover {
+    transform: translateX(2px);
+}
+
+#submitBtn:hover {
+    transform: scale(1.02);
+}
+
+/* ==================== ERROR MESSAGES ==================== */
+
+.field-error {
+    transition: all 0.2s ease;
+}
+
+.field-error:not(.hidden) {
+    animation: fade-in 0.2s ease-out;
+}
+
+/* ==================== RESPONSIVE ADJUSTMENTS ==================== */
+
+@media (max-width: 640px) {
+    .form-step {
+        min-height: 300px;
+    }
+    
+    .step-indicator {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.75rem;
+    }
+    
+    .step-line {
+        width: 1rem;
+    }
+}
+
+/* ==================== DARK MODE ADJUSTMENTS ==================== */
+
+@media (prefers-color-scheme: dark) {
+    .type-card:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+    
+    .tool-item:hover,
+    .benefit-item:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+}
+
+/* ==================== LOADING STATE ==================== */
+
+.program-form-container.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.program-form-container.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(249, 115, 22, 0.2);
+    border-top-color: #f97316;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

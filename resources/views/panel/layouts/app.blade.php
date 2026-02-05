@@ -1,14 +1,5 @@
 <!DOCTYPE html>
-<html :class="{ 'dark': dark }" x-data="{ 
-    dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches),
-    isSideMenuOpen: false,
-    toggleSideMenu() {
-        this.isSideMenuOpen = !this.isSideMenuOpen
-    },
-    closeSideMenu() {
-        this.isSideMenuOpen = false
-    }
-}" @dark-mode-updated.window="dark = $event.detail" lang="en"
+<html lang="en"
     data-role="{{ request()->is('admin*') ? 'admin' : (request()->is('instructor*') ? 'instructor' : (auth('admin')->check() ? 'admin' : (auth()->check() && auth()->user()->role === 'instructor' ? 'instructor' : 'guest'))) }}">
 
 <head>
@@ -28,7 +19,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
+            darkMode: 'class', // Only use dark mode when 'dark' class is present
             theme: {
                 extend: {
                     colors: {
@@ -43,23 +34,17 @@
         };
     </script>
 
-    <!-- Alpine.js CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Alpine Plugins -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Turbo CDN -->
-    <script type="module">
-        import * as Turbo from 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/+esm';
-        Turbo.start();
-    </script>
-
     <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
 
     <!-- Panel CSS via Vite (only CSS, no JS imports) -->
     @vite(['resources/css/panel.css'])
+
+    <!-- Panel Component CSS (Role-specific) -->
+    @php
+        $cssRole = request()->is('admin*') ? 'admin' : (request()->is('instructor*') ? 'instructor' : (auth('admin')->check() ? 'admin' : 'instructor'));
+    @endphp
+    <link rel="stylesheet" href="{{ asset('assets/elearning/' . $cssRole . '/css/panel.css') }}">
 
     <style>
         /* FAB Fixed Position - Above Mobile Navigation */
@@ -90,11 +75,30 @@
         }
     </style>
 
+    <!-- Ensure Light Mode is Default (remove dark class if present) -->
+    <script>
+        // Force light mode as default - remove dark class from html element
+        (function() {
+            // Remove dark class
+            document.documentElement.classList.remove('dark');
+            
+            // Clear any theme-related localStorage
+            localStorage.removeItem('theme');
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('color-theme');
+            
+            // Override any system preference detection
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // Even if system prefers dark, force light mode
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
     @stack('styles')
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 antialiased"
-    @toggle-mobile-sidebar.window="toggleSideMenu">
+<body class="bg-gray-50 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 antialiased">
 
     @php
         if (request()->is('admin*')) {
@@ -165,14 +169,6 @@
                     }, 1200);
                 });
             }
-
-            // Ensure loader hides on Turbo navigation
-            document.addEventListener("turbo:load", function () {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen && loadingScreen.style.display !== 'none' && !showWelcome) {
-                    loadingScreen.style.display = 'none';
-                }
-            });
         })();
     </script>
 
@@ -200,6 +196,39 @@
 
     {{-- Global SweetAlert2 Configuration --}}
     @include('panel.layouts.partials.sweetalert-scripts')
+
+    {{-- Panel Component Scripts (Vanilla JS - Role-specific) --}}
+    @php
+        $jsRole = request()->is('admin*') ? 'admin' : (request()->is('instructor*') ? 'instructor' : (auth('admin')->check() ? 'admin' : 'instructor'));
+    @endphp
+    <script src="{{ asset('assets/elearning/' . $jsRole . '/js/header.js') }}"></script>
+    <script src="{{ asset('assets/elearning/' . $jsRole . '/js/sidebar.js') }}"></script>
+
+    {{-- Sidebar Scroll Persistence --}}
+    <script>
+        (function() {
+            const sidebarNav = document.getElementById('sidebar-nav');
+            const STORAGE_KEY = 'sidebar-scroll-position';
+            
+            if (sidebarNav) {
+                // Restore scroll position on page load
+                const savedPosition = sessionStorage.getItem(STORAGE_KEY);
+                if (savedPosition) {
+                    sidebarNav.scrollTop = parseInt(savedPosition, 10);
+                }
+                
+                // Save scroll position before navigating away
+                window.addEventListener('beforeunload', function() {
+                    sessionStorage.setItem(STORAGE_KEY, sidebarNav.scrollTop);
+                });
+                
+                // Also save on scroll for immediate persistence
+                sidebarNav.addEventListener('scroll', function() {
+                    sessionStorage.setItem(STORAGE_KEY, sidebarNav.scrollTop);
+                }, { passive: true });
+            }
+        })();
+    </script>
 
     @stack('scripts')
 </body>

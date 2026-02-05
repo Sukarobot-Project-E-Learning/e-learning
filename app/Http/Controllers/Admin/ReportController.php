@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,22 +14,6 @@ class ReportController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input('search', '');
-        $perPage = (int) $request->input('per_page', 10);
-        $sortKey = $request->input('sort', 'created_at');
-        $sortDir = $request->input('dir', 'desc');
-
-        // Validate sort direction
-        $sortDir = in_array(strtolower($sortDir), ['asc', 'desc']) ? strtolower($sortDir) : 'desc';
-
-        // Map sortable columns
-        $sortableColumns = [
-            'title' => 'data_programs.program',
-            'created_at' => 'data_programs.created_at',
-        ];
-        $sortColumn = $sortableColumns[$sortKey] ?? 'data_programs.created_at';
-
-        // Build query
         $query = DB::table('data_programs')
             ->select(
                 'data_programs.id',
@@ -36,58 +21,65 @@ class ReportController extends Controller
                 'data_programs.created_at'
             );
 
-        // Apply search filter
-        if ($search) {
-            $query->where('data_programs.program', 'like', "%{$search}%");
+        $data = app(DataTableService::class)->make($query, [
+            'columns' => [
+                ['key' => 'title', 'label' => 'Program', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'schedule', 'label' => 'Jadwal'],
+                ['key' => 'total_certified_users', 'label' => 'Peserta Bersertifikat'],
+                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
+            ],
+            'searchable' => ['data_programs.program'],
+            'sortable' => ['title', 'created_at'],
+            'sortColumns' => [
+                'title' => 'data_programs.program',
+                'created_at' => 'data_programs.created_at',
+            ],
+            'actions' => [],
+            'route' => 'admin.reports',
+            'routeParam' => 'id',
+            'title' => 'Laporan Management',
+            'entity' => 'laporan',
+            'showCreate' => false,
+            'showFilter' => false,
+            'searchPlaceholder' => 'Cari program...',
+            'headerAction' => [
+                'label' => 'Export',
+                'url' => route('admin.reports.export'),
+                'icon' => 'fa-download',
+            ],
+            'transformer' => function ($report) {
+                $schedule = DB::table('schedules')
+                    ->where('id_program', $report->id)
+                    ->where('ket', 'Aktif')
+                    ->first();
+
+                $scheduleText = '-';
+                if ($schedule) {
+                    $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
+                    $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
+                        ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
+                        : '';
+                    $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
+                }
+
+                $totalCertified = DB::table('certificates')
+                    ->where('program_id', $report->id)
+                    ->count();
+
+                return [
+                    'id' => $report->id,
+                    'title' => $report->title ?? 'N/A',
+                    'schedule' => $scheduleText,
+                    'total_certified_users' => $totalCertified
+                ];
+            },
+        ], $request);
+
+        if ($request->wantsJson()) {
+            return response()->json($data);
         }
 
-        // Apply sorting and pagination
-        $reports = $query->orderBy($sortColumn, $sortDir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        // Transform data after pagination
-        $reports->getCollection()->transform(function ($report) {
-            // Get schedule for this program
-            $schedule = DB::table('schedules')
-                ->where('id_program', $report->id)
-                ->where('ket', 'Aktif')
-                ->first();
-
-            $scheduleText = '-';
-            if ($schedule) {
-                $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
-                $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
-                    ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
-                    : '';
-                $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
-            }
-
-            // Get total certified users for this program
-            $totalCertified = DB::table('certificates')
-                ->where('program_id', $report->id)
-                ->count();
-
-            return [
-                'id' => $report->id,
-                'title' => $report->title ?? 'N/A',
-                'schedule' => $scheduleText,
-                'total_certified_users' => $totalCertified
-            ];
-        });
-
-        // Return JSON for AJAX requests
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'data' => $reports->items(),
-                'current_page' => $reports->currentPage(),
-                'last_page' => $reports->lastPage(),
-                'per_page' => $reports->perPage(),
-                'total' => $reports->total(),
-            ]);
-        }
-
-        return view('admin.reports.index', compact('reports'));
+        return view('admin.reports.index', compact('data'));
     }
 
     /**
