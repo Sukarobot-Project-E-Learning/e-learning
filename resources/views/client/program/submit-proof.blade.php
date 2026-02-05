@@ -100,7 +100,7 @@
                 <div class="relative group">
                     <textarea name="review" rows="6" class="w-full border-2 border-gray-100 rounded-3xl p-5 focus:ring-4 focus:ring-green-100 focus:border-green-500 transition resize-none outline-none text-gray-700 bg-gray-50/50 group-hover:bg-white" placeholder="Ceritakan pengalaman Anda, apa yang Anda pelajari, dan apa yang bisa ditingkatkan dari program ini..." required>{{ old('review') }}</textarea>
                     <div class="absolute bottom-4 right-4 text-xs text-gray-400 bg-white/90 px-2 py-1 rounded-md border border-gray-100 shadow-sm">
-                        <span id="char-count">0</span>/500 karakter
+                        <span id="char-count">0</span>/200 karakter
                     </div>
                 </div>
                 @error('review')
@@ -159,7 +159,7 @@
             <!-- Actions -->
             <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-100">
                 <a href="{{ route('client.dashboard.program') }}" class="px-8 py-3.5 rounded-xl text-gray-500 font-semibold hover:bg-gray-100 transition">Batal</a>
-                <button type="submit" class="px-10 py-3.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 hover:translate-y-[-2px] transition-all shadow-xl shadow-green-600/20 flex items-center gap-2">
+                <button type="submit" disabled class="px-10 py-3.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-xl shadow-green-600/20 flex items-center gap-2 opacity-50 cursor-not-allowed cursor-pointer" id="submit-btn">
                     Kirim Ulasan <i class="fa-solid fa-paper-plane text-sm"></i>
                 </button>
             </div>
@@ -171,13 +171,49 @@
 @section('js')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Star Rating Logic
-    const stars = document.querySelectorAll('.star-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // State variables
+    let currentRating = 0;
+    
+    // Elements
     const ratingInput = document.getElementById('rating-input');
+    const textarea = document.querySelector('textarea[name="review"]');
+    const fileInput = document.getElementById('proof_file');
+    const charCount = document.getElementById('char-count');
+    const charCountDisplay = textarea.nextElementSibling;
+    const maxChars = 200;
+
+    // Error Element
+    const errorMsg = document.createElement('p');
+    errorMsg.className = 'text-red-500 text-sm mt-1 hidden';
+    errorMsg.id = 'client-review-error';
+    textarea.parentElement.parentNode.appendChild(errorMsg);
+
+    // --- Core Validation Function ---
+    function checkFormValidity() {
+        const isRatingValid = currentRating > 0;
+        const reviewLen = textarea.value.length;
+        const isReviewValid = reviewLen > 0 && reviewLen <= maxChars;
+        // Check if file is selected (files property populated)
+        const isFileValid = fileInput.files.length > 0;
+
+        if (isRatingValid && isReviewValid && isFileValid) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.add('hover:translate-y-[-2px]');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.classList.remove('hover:translate-y-[-2px]');
+        }
+    }
+
+    // --- Star Rating Logic ---
+    const stars = document.querySelectorAll('.star-btn');
     const ratingText = document.getElementById('rating-text');
     const ratingLabel = document.getElementById('rating-label');
     const labels = ['Sangat Buruk', 'Buruk', 'Cukup', 'Bagus', 'Sangat Bagus'];
-    let currentRating = 0;
 
     function updateStars(value) {
         stars.forEach((star, index) => {
@@ -198,8 +234,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ratingInput.value = currentRating;
             ratingText.textContent = currentRating + '.0/5.0';
             ratingLabel.textContent = labels[index];
-            ratingLabel.className = 'text-gray-900 text-sm font-medium'; // Highlight label
+            ratingLabel.className = 'text-gray-900 text-sm font-medium';
             updateStars(currentRating);
+            checkFormValidity(); // Check validity on rate
         });
         
         star.addEventListener('mouseenter', () => {
@@ -211,8 +248,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // File Upload Logic
-    const fileInput = document.getElementById('proof_file');
+    // --- Review Validation Logic ---
+    function validateReview() {
+        const len = textarea.value.length;
+        charCount.innerText = len;
+        
+        if (len > maxChars) {
+            // Visual Error State for Textarea
+            charCountDisplay.classList.add('text-red-600', 'border-red-200', 'bg-red-50');
+            charCountDisplay.classList.remove('text-gray-400', 'border-gray-100', 'bg-white/90');
+            
+            textarea.classList.add('border-red-500', 'focus:ring-red-100');
+            textarea.classList.remove('border-gray-100', 'focus:ring-green-100', 'focus:border-green-500');
+            
+            errorMsg.textContent = `Ulasan terlalu panjang! Maksimal ${maxChars} karakter (${len}/${maxChars}).`;
+            errorMsg.classList.remove('hidden');
+        } else {
+            // Normal State
+            charCountDisplay.classList.remove('text-red-600', 'border-red-200', 'bg-red-50');
+            charCountDisplay.classList.add('text-gray-400', 'border-gray-100', 'bg-white/90');
+            
+            textarea.classList.remove('border-red-500', 'focus:ring-red-100');
+            textarea.classList.add('border-gray-100', 'focus:ring-green-100', 'focus:border-green-500');
+            
+            errorMsg.classList.add('hidden');
+        }
+        checkFormValidity(); // Check validity on type
+    }
+
+    textarea.addEventListener('input', validateReview);
+
+    // --- File Upload Logic ---
     const dropzone = document.getElementById('dropzone');
     const filePreview = document.getElementById('file-preview');
     const filenameDisplay = document.getElementById('filename');
@@ -225,6 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = e.target.files[0];
         if (file) {
             handleFile(file);
+        } else {
+            // Handle cancel case
+             checkFormValidity();
         }
     });
 
@@ -259,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 confirmButtonColor: '#16a34a'
             });
             fileInput.value = '';
+            checkFormValidity();
             return;
         }
 
@@ -275,19 +345,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         filePreview.classList.remove('hidden');
+        checkFormValidity(); // Check validity on upload
     }
 
     removeFileBtn.addEventListener('click', () => {
         fileInput.value = '';
         filePreview.classList.add('hidden');
+        checkFormValidity(); // Check validity on remove
     });
 
-    // Char Count
-    const textarea = document.querySelector('textarea[name="review"]');
-    const charCount = document.getElementById('char-count');
-    textarea.addEventListener('input', () => {
-        charCount.innerText = textarea.value.length;
-    });
+    // Initial check
+    validateReview();
 });
 </script>
 @endsection

@@ -56,8 +56,8 @@ class ProgramProofController extends Controller
 
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'review' => 'required|string|max:1000',
-            'proof_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // Max 5MB
+            'review' => 'required|string|max:200',
+            'proof_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048', // Max 2MB
         ]);
 
         // Find active schedule (Approximation)
