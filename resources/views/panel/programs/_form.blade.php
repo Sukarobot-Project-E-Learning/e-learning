@@ -69,14 +69,6 @@
                 </div>
             @endfor
         </div>
-        
-        <div class="hidden sm:flex justify-between mt-3 px-2 text-xs text-gray-500 dark:text-gray-400">
-            <span class="w-20 text-center step-label" data-step="1">Info Dasar</span>
-            <span class="w-20 text-center step-label" data-step="2">Detail</span>
-            <span class="w-20 text-center step-label" data-step="3">Jadwal</span>
-            <span class="w-20 text-center step-label" data-step="4">Materi</span>
-            <span class="w-20 text-center step-label" data-step="5">Gambar</span>
-        </div>
     </div>
 
     <form id="programForm" 
@@ -589,9 +581,6 @@
                             @else
                                 <img src="" alt="Preview" class="max-h-64 mx-auto rounded-xl object-cover">
                             @endif
-                            <button type="button" id="removeImageBtn" class="mt-4 text-red-500 hover:text-red-600 text-sm font-medium">
-                                Hapus Gambar
-                            </button>
                         </div>
                     </div>
                     <p class="field-error text-red-500 text-sm mt-1 {{ $errors->has('image') ? '' : 'hidden' }}" data-field="image">{{ $errors->first('image') }}</p>

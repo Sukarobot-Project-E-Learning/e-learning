@@ -14,21 +14,21 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- Popup Overlay -->
-    <div id="popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <!-- <div id="popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div class="relative bg-white rounded-2xl shadow-xl overflow-hidden
                  w-[85%] max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]
-                 transform transition-all duration-300 scale-90">
+                 transform transition-all duration-300 scale-90"> -->
             <!-- Tombol X -->
-            <button id="closePopup"
+            <!-- <button id="closePopup"
                 class="absolute top-2 right-2 p-1.5 sm:p-2 rounded-full z-1 text-gray-700 font-bold text-lg leading-none hover:bg-gray-200">
                 ✕
-            </button>
+            </button> -->
 
             <!-- Poster -->
-            <img src="{{ asset('assets/elearning/client/img/blog1.jpeg') }}" alt="Poster Event"
+            <!-- <img src="{{ asset('assets/elearning/client/img/blog1.jpeg') }}" alt="Poster Event"
                 class="w-full h-auto rounded-b-2xl object-cover scale-100" />
         </div>
-    </div>
+    </div> -->
 
     <!-- Script -->
 
@@ -312,14 +312,14 @@
                     <h2 class="text-3xl font-bold text-gray-900">Program Terpopuler</h2>
                     <p class="text-gray-600 mt-2">Kelas pilihan yang paling banyak diminati siswa</p>
                 </div>
-                <a href="{{ url('/program') }}"
+                <!-- <a href="{{ url('/program') }}"
                     class="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2">
                     Lihat Semua Program
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
                         </path>
                     </svg>
-                </a>
+                </a> -->
             </div>
 
             <div class="relative">
@@ -495,16 +495,16 @@
 
 
     <!-- Promo/Voucher Section -->
-    <section class="py-16 bg-orange-50">
+    <!-- <section class="py-16 bg-orange-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-12" data-aos="fade-up">
                 <h2 class="text-3xl font-bold text-gray-900">Voucher Diskon Hari Ini</h2>
                 <p class="text-gray-600 mt-2">Gunakan kode voucher di bawah ini untuk mendapatkan potongan harga spesial</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> -->
                 <!-- Voucher 1 -->
-                <div
+                <!-- <div
                     class="bg-white rounded-2xl p-6 shadow-sm border border-orange-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div class="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
                         Terbatas
@@ -528,10 +528,10 @@
                         class="w-full py-2 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors">
                         Klaim Sekarang
                     </button>
-                </div>
+                </div> -->
 
                 <!-- Voucher 2 -->
-                <div
+                <!-- <div
                     class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div class="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
                         Spesial
@@ -555,10 +555,10 @@
                         class="w-full py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">
                         Klaim Sekarang
                     </button>
-                </div>
+                </div> -->
 
                 <!-- Voucher 3 -->
-                <div
+                <!-- <div
                     class="bg-white rounded-2xl p-6 shadow-sm border border-purple-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-4 mb-4">
                         <div
@@ -582,7 +582,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Competition Section -->
     <section id="event" class="py-20 bg-white overflow-hidden">
@@ -641,8 +641,7 @@
                                     BRC merupakan kompetisi tahunan yang luar biasa. Karena kegiatan ini bukan hanya tentang
                                     teknologi dan robot, tetapi juga tentang kolaborasi, inovasi dan semangat untuk belajar.
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
-                                </p>
-                                <div class="flex items-center">
+                                </p>                                
                                     <a href="https://brc.sukarobot.com/"
                                         class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30">
                                         Daftar Sekarang
@@ -750,58 +749,100 @@
         <div class="partner-wrapper relative">
             <!-- Track 1 -->
             <div class="partner-track flex items-center track-left mb-8">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Tesla_Motors_Logo.svg"
+                <img src="/assets/elearning/client/img/nusaputra.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Tesla">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                    alt="Universitas Nusa Putra">
+                <img src="/assets/elearning/client/img/almatuq.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/48/Microsoft_logo.svg"
+                    alt="Madrasah Al-Matuq">
+                <img src="/assets/elearning/client/img/smpkhalifah.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Microsoft">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png"
+                    alt="SMP Khalifah">
+                <img src="/assets/elearning/client/img/attartil.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Apple">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/OpenAI_Logo.svg"
+                    alt="SDIT Qu Attartil">
+                <img src="/assets/elearning/client/img/attakwin.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="OpenAI">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/IBM_logo.svg"
+                    alt="SDIT At Takwin">
+                <img src="/assets/elearning/client/img/islamfathia.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="IBM">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Nvidia_logo.svg"
+                    alt="SD & SMP Islam Fathia">
+                <img src="/assets/elearning/client/img/bpkpenabur.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="NVIDIA">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Intel_logo_%282020%2B%29.svg"
+                    alt="TKK, SDK, SMK BPK Penabur Sukabumi">
+                <img src="/assets/elearning/client/img/mardiwaluya.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Intel">
+                    alt="SD Mardi Waluya Sukabumi">
+                <img src="/assets/elearning/client/img/none.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SD Aisyiyah Sukabumi">
+                <img src="/assets/elearning/client/img/sekolahalamindonesia.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="Sekolah Alam Indonesia Sukabumi">
+                <img src="/assets/elearning/client/img/yuwabhakti.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SD Yuwati Bhakti Sukabumi">
+                <img src="/assets/elearning/client/img/sitadzkia.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SDIT & SMPIT Adzkia Sukabumi">
+                <img src="/assets/elearning/client/img/alumanaa.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMP & SMA Al-Umanaa Sukabumi">
+                <img src="/assets/elearning/client/img/sditinsani.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SDIT Insani Sukabumi">
+                <img src="/assets/elearning/client/img/none.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SDIT Andalusia Sukabumi">
+                <img src="/assets/elearning/client/img/hayatanthayyibah.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMPIT Hayatan Thayyibah Sukabumi">
+                <img src="/assets/elearning/client/img/none.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Ibadurrahman Sukabumi">
             </div>
 
             <!-- Track 2 (Reverse) -->
             <div class="partner-track flex items-center track-right">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Meta_Platforms_Inc._logo.svg"
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Lambang_Kota_Sukabumi_Vektor.svg?uselang=id"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Meta">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Samsung_logo.svg"
+                    alt="Kota Sukabumi">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/archive/6/6a/20170428132038%21Lambang_Kab_Sukabumi.svg?uselang=id"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Samsung">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Tesla_logo.png"
+                    alt="Kabupaten Sukabumi">
+                <img src="/assets/elearning/client/img/dispusipda.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Tesla">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                    alt="DISPUSIPDA Kota Sukabumi">
+                <img src="/assets/elearning/client/img/sdmtik.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/48/Microsoft_logo.svg"
+                    alt="LSP SDMTIK">
+                <img src="/assets/elearning/client/img/perpuscisarua.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Microsoft">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png"
+                    alt="Perpustakaan Kelurahan Cisarua">
+                <img src="/assets/elearning/client/img/arei.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="Apple">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/OpenAI_Logo.svg"
+                    alt="Asosiasi Robotik Edukasi Indonesia">
+                <img src="/assets/elearning/client/img/dinaspendidikan.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="OpenAI">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/IBM_logo.svg"
+                    alt="Dinas Pendidikan Kota Sukabumi">
+                <img src="/assets/elearning/client/img/lspteknologidigital.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="IBM">
+                    alt="LSP Teknologi Digital">
+                <img src="/assets/elearning/client/img/lspmsdmasphri.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="LSP MSDM Asphri">
+                <img src="/assets/elearning/client/img/lsppelatinas.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="LSP Pelatinas">                
+                <img src="/assets/elearning/client/img/PRSI.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="Persatuan Robotika Seluruh Indonesia">
+                <img src="/assets/elearning/client/img/botanisquare.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="Botani Mal Square">
+                <img src="/assets/elearning/client/img/PTSTG.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="PT Suka Teknologi Global">
             </div>
         </div>
     </section>
@@ -915,9 +956,9 @@
                             showCancelButton: true,
                             cancelButtonText: 'Batal'
                         }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "{{ route('login') }}";
-                            }
+                            //if (result.isConfirmed) {
+                                //window.location.href = "{{ route('login') }}";
+                            //}
                         });
                     @endif
                 });
