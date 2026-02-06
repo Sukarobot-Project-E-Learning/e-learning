@@ -5,18 +5,18 @@
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
 
             <!-- Branding -->
-            <div class="col-span-2 lg:col-span-1 space-y-4 text-center lg:text-left">
-                <div class="flex flex-col items-center lg:items-start">
+            <div class="col-span-2 md:col-span-1 space-y-4 text-center md:text-left">
+                <div class="flex flex-col items-center md:items-start">
                     <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Sukarobot</h3>
                     <p class="text-blue-600 font-medium text-sm mt-1">Belajar - Berinovasi - Berprestasi</p>
                 </div>
-                <p class="text-sm leading-relaxed text-gray-500 max-w-md mx-auto lg:mx-0">
+                <p class="text-sm leading-relaxed text-gray-500 max-w-md mx-auto md:mx-0">
                     Jl. A. Yani No.283, Kebonjati, Kec. Cikole, Kota Sukabumi, Jawa Barat 43111
                 </p>
             </div>
 
             <!-- Navigasi -->
-            <div class="space-y-4 text-left">
+            <div class="space-y-4 text-center md:text-left">
                 <h4 class="text-lg font-bold text-gray-900">Tentang</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ url('/instruktur') }}" class="hover:text-blue-600 transition-colors duration-200">Instruktur</a></li>
@@ -29,9 +29,9 @@
             </div>
 
             <!-- Kontak -->
-            <div class="space-y-4 text-left">
+            <div class="space-y-4 text-center md:text-left">
                 <h4 class="text-lg font-bold text-gray-900">Kontak</h4>
-                <div class="space-y-3 text-sm">
+                <div class="space-y-3 text-sm flex flex-col items-center md:items-start">
                     <a href="mailto:sukarobotacademy@gmail.com" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
                         <div class="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-all border border-gray-100 flex-shrink-0">
                             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,9 +52,9 @@
             </div>
 
             <!-- Sosial Media -->
-            <div class="col-span-2 lg:col-span-1 space-y-4 text-center lg:text-left">
+            <div class="col-span-2 md:col-span-1 space-y-4 text-center md:text-left">
                 <h4 class="text-lg font-bold text-gray-900">Sosial Media</h4>
-                <div class="flex flex-row lg:flex-col justify-center lg:justify-start gap-4 lg:gap-3 flex-wrap text-sm">
+                <div class="flex flex-row md:flex-col justify-center md:justify-start gap-4 md:gap-3 flex-wrap text-sm">
                     <a href="https://www.instagram.com/sukarobot.academy" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
                         <div class="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-all border border-gray-100">
                             <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -105,3 +105,4 @@
         </div>
     </div>
 </footer>
+

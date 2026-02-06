@@ -151,7 +151,7 @@
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-gray-900 mb-1">Akses Selamanya</h3>
+                    <h3 class="font-bold text-gray-900 mb-1">Akses Fleksibel</h3>
                     <p class="text-xs text-gray-500">Belajar kapanpun dimanapun</p>
                 </div>
 
@@ -607,7 +607,7 @@
                             </div>
                             <div class="p-8 lg:w-1/2 flex flex-col justify-center">
                                 <h3 class="text-3xl font-bold text-gray-900 mb-2">SRC (Sukabumi Robotic Competition)</h3>
-                                <p class="text-blue-600 font-semibold mb-6">Tingkat Kabupaten/Kota</p>
+                                <p class="text-blue-600 font-semibold mb-6">Tingkat Nasional</p>
                                 <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                                     SRC merupakan kompetisi tahunan yang luar biasa. Karena kegiatan ini bukan hanya tentang
                                     teknologi dan robot, tetapi juga tentang kolaborasi, inovasi dan semangat untuk belajar.
@@ -636,20 +636,22 @@
                             </div>
                             <div class="p-8 lg:w-1/2 flex flex-col justify-center">
                                 <h3 class="text-3xl font-bold text-gray-900 mb-2">BRC (Botani Robotic Competition)</h3>
-                                <p class="text-blue-600 font-semibold mb-6">Tingkat Provinsi</p>
+                                <p class="text-blue-600 font-semibold mb-6">Tingkat Nasional</p>
                                 <p class="text-gray-600 mb-8 leading-relaxed text-lg">
                                     BRC merupakan kompetisi tahunan yang luar biasa. Karena kegiatan ini bukan hanya tentang
                                     teknologi dan robot, tetapi juga tentang kolaborasi, inovasi dan semangat untuk belajar.
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
                                 </p>                                
-                                    <a href="https://brc.sukarobot.com/"
-                                        class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30">
-                                        Daftar Sekarang
-                                    </a>
+                                    <div class="flex items-center">
+                                        <a href="https://brc.sukarobot.com/"
+                                            class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30">
+                                            Daftar Sekarang
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+        
                 </div>
             </div>
 
@@ -676,7 +678,7 @@
             <div class="text-center mb-14" data-aos="fade-up">
                 <h2 class="text-3xl font-bold text-gray-900">Instruktur & Pengajar Terbaik</h2>
                 <p class="text-gray-600 mt-2 max-w-2xl mx-auto">
-                    Belajar langsung dari para ahli robotika, programmer, dan pendidik profesional yang berpengalaman.
+                    Belajar langsung dari para pendidik profesional yang berpengalaman.
                 </p>
             </div>
 
@@ -743,7 +745,7 @@
     <!-- Partner Section -->
     <section id="partner" class="py-16 bg-gray-50 border-y border-gray-100 overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 mb-10 text-center">
-            <h2 class="text-2xl font-bold text-gray-900">Dipercaya Oleh Partner Industri</h2>
+            <h2 class="text-2xl font-bold text-gray-900">Bekerjasama Dengan</h2>
         </div>
 
         <div class="partner-wrapper relative">
