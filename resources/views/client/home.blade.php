@@ -773,9 +773,9 @@
                 <img src="/assets/elearning/client/img/mardiwaluya.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SD Mardi Waluya Sukabumi">
-                <img src="/assets/elearning/client/img/none.png"
+                <!-- <img src="/assets/elearning/client/img/none.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="SD Aisyiyah Sukabumi">
+                    alt="SD Aisyiyah Sukabumi"> -->
                 <img src="/assets/elearning/client/img/sekolahalamindonesia.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="Sekolah Alam Indonesia Sukabumi">
@@ -791,15 +791,45 @@
                 <img src="/assets/elearning/client/img/sditinsani.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SDIT Insani Sukabumi">
-                <img src="/assets/elearning/client/img/none.png"
+                <img src="/assets/elearning/client/img/andalusia.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SDIT Andalusia Sukabumi">
                 <img src="/assets/elearning/client/img/hayatanthayyibah.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SMPIT Hayatan Thayyibah Sukabumi">
-                <img src="/assets/elearning/client/img/none.png"
+                <img src="/assets/elearning/client/img/ibadurrahman.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SMK Ibadurrahman Sukabumi">
+                <img src="/assets/elearning/client/img/gunungguruh.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMKN Gunungguruh Sukabumi">
+                <img src="/assets/elearning/client/img/rahmaniyah.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMP IT Rahmaniyah Sukabumi">
+                <img src="/assets/elearning/client/img/tunasharapan.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SDK Tunas Harapan Bogor">
+                <img src="/assets/elearning/client/img/darussalam.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Darussalam Sukabumi">
+                <img src="/assets/elearning/client/img/informatikacbi.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Informatika CBI Sukabumi">
+                <img src="/assets/elearning/client/img/abdibangsa.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Komputer Abdi Bangsa Sukabumi">
+                <img src="/assets/elearning/client/img/amalislami.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK IT Amal Islami Sukabumi">
+                <img src="/assets/elearning/client/img/teknologikarawang.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Teknologi Karawang">
+                <img src="/assets/elearning/client/img/ululalbab.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="SMK Ulul Albab Sukabumi">
+                <img src="/assets/elearning/client/img/ipb.png"
+                    class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
+                    alt="DEPARTEMEN ILMU KOMPUTER FMIPA IPB">         
             </div>
 
             <!-- Track 2 (Reverse) -->
@@ -828,9 +858,9 @@
                 <img src="/assets/elearning/client/img/lspteknologidigital.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="LSP Teknologi Digital">
-                <img src="/assets/elearning/client/img/lspmsdmasphri.png"
+                <!-- <img src="/assets/elearning/client/img/none.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="LSP MSDM Asphri">
+                    alt="LSP MSDM Asphri"> -->
                 <img src="/assets/elearning/client/img/lsppelatinas.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="LSP Pelatinas">                
@@ -840,9 +870,9 @@
                 <img src="/assets/elearning/client/img/botanisquare.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="Botani Mal Square">
-                <img src="/assets/elearning/client/img/PTSTG.png"
+                <!-- <img src="/assets/elearning/client/img/none.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
-                    alt="PT Suka Teknologi Global">
+                    alt="PT Suka Teknologi Global"> -->
             </div>
         </div>
     </section>
