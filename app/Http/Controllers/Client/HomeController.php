@@ -106,7 +106,7 @@ class HomeController extends Controller
 
         try {
             // Send email to specific address for testing
-            Mail::to('sudahdigunakan07@gmail.com')->send(new ContactMessage($data));
+            Mail::to('sukarobotacademy@gmail.com')->send(new ContactMessage($data));
 
             return back()->with('success', 'Pesan Anda berhasil dikirim! Kami akan segera menghubungi Anda.');
         } catch (\Exception $e) {

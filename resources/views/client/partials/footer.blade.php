@@ -20,9 +20,11 @@
                 <h4 class="text-lg font-bold text-gray-900">Tentang</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ url('/instruktur') }}" class="hover:text-blue-600 transition-colors duration-200">Instruktur</a></li>
-                    <li><a href="{{ url('/tentang#FAQ') }}" class="hover:text-blue-600 transition-colors duration-200">FAQ</a></li>
-                    <li><a href="{{ url('/tentang#kebijakan') }}" class="hover:text-blue-600 transition-colors duration-200">Kebijakan Privasi</a></li>
+                    <li><a href="{{ url('/tentang#tentang-kami') }}" 
+                    class="hover:text-blue-600 transition-colors duration-200">Tentang Kami</a></li>
+                    <li><a href="{{ url('/tentang#kebijakan') }}"class="hover:text-blue-600 transition-colors duration-200">Kebijakan & Privasi</a></li>
                     <li><a href="{{ url('/tentang#ketentuan') }}" class="hover:text-blue-600 transition-colors duration-200">Ketentuan Pengguna</a></li>
+                    <li><a href="{{ url('/tentang#FAQ') }}" class="hover:text-blue-600 transition-colors duration-200">Bantuan (FAQ)</a></li>
                 </ul>
             </div>
 
@@ -30,13 +32,13 @@
             <div class="space-y-4 text-left">
                 <h4 class="text-lg font-bold text-gray-900">Kontak</h4>
                 <div class="space-y-3 text-sm">
-                    <a href="mailto:info@sukarobot.com" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
+                    <a href="mailto:sukarobotacademy@gmail.com" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
                         <div class="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-all border border-gray-100 flex-shrink-0">
                             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <span class="break-all">info@sukarobot.com</span>
+                        <span class="break-all">sukarobotacademy@gmail.com</span>
                     </a>
                     <a href="tel:+6285795899901" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
                         <div class="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-all border border-gray-100 flex-shrink-0">
@@ -80,7 +82,7 @@
                         </div>
                         <span class="hidden sm:inline">Sukarobot</span>
                     </a>
-                    <a href="https://www.linkedin.com/in/sukarobot-academy" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
+                    <a href="https://www.linkedin.com/company/sukarobotacademy/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:text-blue-600 transition-colors duration-200 group">
                         <div class="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-all border border-gray-100">
                             <svg class="w-4 h-4 text-blue-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/>

@@ -67,24 +67,6 @@
                         Lihat Kompetisi
                     </a>
                 </div>
-
-                <!-- Stats -->
-                <div class="mt-12 flex items-center gap-8 border-t border-gray-200 pt-8">
-                    <div>
-                        <h4 class="text-3xl font-bold text-gray-900">10K+</h4>
-                        <p class="text-sm text-gray-600">Siswa Aktif</p>
-                    </div>
-                    <div class="w-px h-10 bg-gray-200"></div>
-                    <div>
-                        <h4 class="text-3xl font-bold text-gray-900">500+</h4>
-                        <p class="text-sm text-gray-600">Kelas Online</p>
-                    </div>
-                    <div class="w-px h-10 bg-gray-200"></div>
-                    <div>
-                        <h4 class="text-3xl font-bold text-gray-900">4.9</h4>
-                        <p class="text-sm text-gray-600">Rating Rata-rata</p>
-                    </div>
-                </div>
             </div>
 
             <!-- Right Image -->
@@ -499,10 +481,10 @@
                 Bergabunglah dengan ribuan siswa lainnya dan mulai perjalanan belajar Anda hari ini.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#alumni"
+                <!-- <a href="#alumni"
                     class="px-8 py-4 bg-orange-500 text-white font-bold rounded-xl shadow-lg hover:shadow-orange-500/30 hover:scale-105 transition-all duration-300">
                     Testimoni Alumni
-                </a>
+                </a> -->
                 <a href="#instructor"
                     class="px-8 py-4 bg-white/10 text-white backdrop-blur-sm border border-white/20 font-bold rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300">
                     Instruktur Kami
@@ -660,18 +642,7 @@
                                     teknologi dan robot, tetapi juga tentang kolaborasi, inovasi dan semangat untuk belajar.
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
                                 </p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex -space-x-2">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/women/4.jpg" alt="User">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/men/5.jpg" alt="User">
-                                        <img class="w-10 h-10 rounded-full border-2 border-white"
-                                            src="https://randomuser.me/api/portraits/women/6.jpg" alt="User">
-                                        <div
-                                            class="w-10 h-10 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">
-                                            +300</div>
-                                    </div>
+                                <div class="flex items-center">
                                     <a href="https://brc.sukarobot.com/"
                                         class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30">
                                         Daftar Sekarang

@@ -88,13 +88,13 @@
       <!-- FAQ 1 -->
       <div class="border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 hover:border-blue-300">
       <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center bg-gray-50 hover:bg-blue-50 transition-colors">
-        <span>Siapa saja yang dapat belajar di Sukarobot?</span>
+        <span>Siapa saja yang dapat belajar di Sukarobot Academy?</span>
         <svg class="w-5 h-5 transition-transform transform text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
       <div class="faq-content hidden px-6 py-4 text-gray-600 bg-white leading-relaxed">
-        Semua orang dapat belajar di Sukarobot selama dapat memahami bahasa Indonesia dan memiliki kemampuan dasar menggunakan komputer. Kami menyediakan materi dari tingkat pemula hingga mahir.
+        Semua orang dapat belajar di Sukarobot Academy selama memiliki kemampuan dasar menggunakan komputer. Kami menyediakan materi dari tingkat pemula hingga mahir.
       </div>
     </div>
 
@@ -120,7 +120,7 @@
         </svg>
       </button>
       <div class="faq-content hidden px-6 py-4 text-gray-600 bg-white leading-relaxed">
-        Kamu cukup mengunjungi situs resmi Sukarobot, klik tombol “Daftar” di pojok kanan atas, isi data diri dengan lengkap, dan pilih program belajar yang kamu minati.
+        Kamu cukup mengunjungi situs resmi Sukarobot Academy, klik tombol “Masuk” di pojok kanan atas, daftar dan masuk dengan email dan password kamu, lalu pilih program belajar yang kamu minati.
       </div>
     </div>
 
@@ -133,7 +133,7 @@
         </svg>
       </button>
       <div class="faq-content hidden px-6 py-4 text-gray-600 bg-white leading-relaxed">
-        Ya! Peserta yang telah menyelesaikan seluruh materi kursus dan lulus ujian akhir akan mendapatkan sertifikat resmi Sukarobot dalam format digital yang dapat diunduh di dashboard.
+        Ya! Peserta yang telah menyelesaikan materi program akan mendapatkan sertifikat resmi Sukarobot Academy dalam format digital yang dapat diunduh di dashboard akun kamu.
       </div>
     </div>
   </div>
