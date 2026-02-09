@@ -21,7 +21,7 @@ body {
 .partner-track {
   display: flex;
   width: max-content;
-  animation: scroll-left 25s linear infinite;
+  animation: scroll-left 40s linear infinite;
 }
 
 .partner-track.track-right {

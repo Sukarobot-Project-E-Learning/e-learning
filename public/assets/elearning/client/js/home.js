@@ -126,18 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // === Infinite Scroll Partner (dua arah — versi kiri dan kanan) ===
 document.addEventListener("DOMContentLoaded", () => {
-  const leftTrack = document.querySelector(".track-left");
-  const rightTrack = document.querySelector(".track-right");
+  const leftTracks = document.querySelectorAll(".track-left");
+  const rightTracks = document.querySelectorAll(".track-right");
 
-  if (leftTrack && rightTrack) {
-    // Gandakan isi agar loop tanpa ujung
-    leftTrack.innerHTML += leftTrack.innerHTML;
-    rightTrack.innerHTML += rightTrack.innerHTML;
+  leftTracks.forEach(track => {
+    track.innerHTML += track.innerHTML;
+    track.style.animation = "scroll-left 40s linear infinite";
+  });
 
-    // Terapkan animasi untuk arah berbeda
-    leftTrack.style.animation = "scroll-left 40s linear infinite";
-    rightTrack.style.animation = "scroll-right 40s linear infinite";
-  }
+  rightTracks.forEach(track => {
+    track.innerHTML += track.innerHTML;
+    track.style.animation = "scroll-right 40s linear infinite";
+  });
 });
 
 // === Popup otomatis dengan handler close ===

@@ -745,7 +745,7 @@
     <!-- Partner Section -->
     <section id="partner" class="py-16 bg-gray-50 border-y border-gray-100 overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 mb-10 text-center">
-            <h2 class="text-2xl font-bold text-gray-900">Bekerjasama Dengan</h2>
+            <h2 class="text-2xl font-bold text-gray-900">Bekerja Sama Dengan</h2>
         </div>
 
         <div class="partner-wrapper relative">
@@ -790,6 +790,10 @@
                 <img src="/assets/elearning/client/img/alumanaa.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SMP & SMA Al-Umanaa Sukabumi">
+            </div>
+
+            <!-- Track 2 (Reverse) -->
+            <div class="partner-track flex items-center track-right mb-8">
                 <img src="/assets/elearning/client/img/sditinsani.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SDIT Insani Sukabumi">
@@ -826,16 +830,16 @@
                 <img src="/assets/elearning/client/img/teknologikarawang.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SMK Teknologi Karawang">
+            </div>
+
+            <!-- Track 3 -->
+            <div class="partner-track flex items-center track-left">
                 <img src="/assets/elearning/client/img/ululalbab.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="SMK Ulul Albab Sukabumi">
                 <img src="/assets/elearning/client/img/ipb.png"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="DEPARTEMEN ILMU KOMPUTER FMIPA IPB">         
-            </div>
-
-            <!-- Track 2 (Reverse) -->
-            <div class="partner-track flex items-center track-right">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Lambang_Kota_Sukabumi_Vektor.svg?uselang=id"
                     class="partner-logo h-8 md:h-10 mx-8 opacity-50 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                     alt="Kota Sukabumi">

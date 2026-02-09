@@ -49,14 +49,33 @@ class HomeController extends Controller
             ->get()
             ->map(function ($instructor) {
                 // Determine photo to use: instructor-specific photo > user avatar > default
-                $photo = null;
-                
+                $defaultAvatar = asset('assets/elearning/client/img/default-avatar.jpeg');
+                $photo = $defaultAvatar;
+
+                // Check Instructor specific photo
                 if ($instructor->foto) {
-                    $photo = str_starts_with($instructor->foto, 'http') ? $instructor->foto : asset('storage/' . $instructor->foto);
-                } elseif ($instructor->avatar) {
-                    $photo = str_starts_with($instructor->avatar, 'http') ? $instructor->avatar : asset('storage/' . $instructor->avatar);
-                } else {
-                    $photo = 'https://ui-avatars.com/api/?name=' . urlencode($instructor->nama);
+                     if (filter_var($instructor->foto, FILTER_VALIDATE_URL)) {
+                         $photo = $instructor->foto;
+                     } elseif (file_exists(public_path($instructor->foto))) {
+                         $photo = asset($instructor->foto);
+                     } elseif (file_exists(storage_path('app/public/' . $instructor->foto))) {
+                         $photo = asset('storage/' . $instructor->foto);
+                     }
+                } 
+                
+                // Fallback to User avatar if instructor photo not valid/set
+                if ($photo === $defaultAvatar && $instructor->avatar) {
+                    if (filter_var($instructor->avatar, FILTER_VALIDATE_URL)) {
+                        $photo = $instructor->avatar;
+                    } else {
+                        if (file_exists(public_path($instructor->avatar))) {
+                             $photo = asset($instructor->avatar);
+                        } elseif (file_exists(public_path('storage/' . $instructor->avatar))) {
+                             $photo = asset('storage/' . $instructor->avatar);
+                        } elseif (file_exists(storage_path('app/public/' . $instructor->avatar))) {
+                             $photo = asset('storage/' . $instructor->avatar);
+                        }
+                    }
                 }
 
                 return (object) [ // Return as object to match blade syntax
