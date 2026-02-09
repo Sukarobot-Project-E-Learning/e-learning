@@ -954,7 +954,7 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-blue-600/30 transition-all duration-300">
+                            class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-blue-600/30 transition-all duration-300 pointer-events-none opacity-75 cursor-not-allowed">
                             Kirim Pesan
                         </button>
                     </form>
