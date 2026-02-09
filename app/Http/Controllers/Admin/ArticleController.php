@@ -206,13 +206,13 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
 
-        // Validation
+        // Validation (image is optional on edit)
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'content' => 'required|string',
             'status' => 'required|in:Publish,Draft',
-            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // Optional on edit, 5MB max
             'excerpt' => 'nullable|string',
             'meta_title' => 'nullable|string|max:60',
             'meta_description' => 'nullable|string|max:160',
@@ -222,7 +222,6 @@ class ArticleController extends Controller
             'category.required' => 'Kategori artikel harus diisi',
             'content.required' => 'Konten artikel harus diisi',
             'status.required' => 'Status artikel harus dipilih',
-            'image.required' => 'Gambar artikel harus diunggah',
             'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG',
             'image.max' => 'Ukuran gambar maksimal 5MB',

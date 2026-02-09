@@ -350,7 +350,7 @@ class ProgramController extends Controller
             'start_time' => 'required',
             'end_date' => 'required|date|after_or_equal:start_date',
             'end_time' => 'required',
-            'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'tools.*' => 'nullable|string',
             'materials.*.title' => 'nullable|string',
             'materials.*.duration' => 'nullable|string',
