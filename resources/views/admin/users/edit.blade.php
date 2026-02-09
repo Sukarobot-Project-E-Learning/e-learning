@@ -9,7 +9,7 @@
 
         <!-- Form Card -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
-            <form id="userForm" data-user-form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+            <form id="userForm" action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -191,26 +191,76 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/elearning/admin/js/components/image-cropper.js') }}"></script>
-    <script src="{{ asset('assets/elearning/admin/js/components/password-validator.js') }}"></script>
-    <script src="{{ asset('assets/elearning/admin/js/forms/user-form.js') }}"></script>
-    
-    <script>
-        // Handle success/error messages from session
-        @if(session('success'))
-        Swal.fire({
-            title: "{{ session('success') }}",
-            icon: "success",
-            draggable: true
-        });
-        @endif
+<script src="{{ asset('assets/elearning/admin/js/components/image-cropper.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('assets/elearning/admin/js/components/password-validator.js') }}?v={{ time() }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Image Cropper
+    const cropperContainers = document.querySelectorAll('[data-image-cropper]');
+    cropperContainers.forEach(container => {
+        new ImageCropper(container);
+    });
 
-        @if(session('error'))
-        Swal.fire({
-            title: "Error!",
-            text: "{{ session('error') }}",
-            icon: "error"
+    // Initialize Password Validation (optional for edit)
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('password_confirmation');
+    if (passwordInput && confirmInput) {
+        new PasswordValidator(passwordInput, confirmInput, {
+            minLength: 8,
+            required: false
         });
-        @endif
-    </script>
+    }
+
+    // Form Validation
+    const form = document.getElementById('userForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password_confirmation').value;
+            
+            // Only validate if password is being changed
+            if (password) {
+                if (password.length < 8) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Password minimal harus 8 karakter!'
+                    });
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Konfirmasi password tidak cocok!'
+                    });
+                    return;
+                }
+            }
+        });
+    }
+});
+</script>
+
+<script>
+    // Handle success/error messages from session
+    @if(session('success'))
+    Swal.fire({
+        title: "{{ session('success') }}",
+        icon: "success",
+        draggable: true
+    });
+    @endif
+
+    @if(session('error'))
+    Swal.fire({
+        title: "Error!",
+        text: "{{ session('error') }}",
+        icon: "error"
+    });
+    @endif
+</script>
 @endpush

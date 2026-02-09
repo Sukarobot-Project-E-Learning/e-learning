@@ -9,7 +9,7 @@
 
         <!-- Form Card -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
-            <form id="userForm" data-user-form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Section 1: Account Information -->
@@ -174,7 +174,54 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/elearning/admin/js/components/image-cropper.js') }}"></script>
-    <script src="{{ asset('assets/elearning/admin/js/components/password-validator.js') }}"></script>
-    <script src="{{ asset('assets/elearning/admin/js/forms/user-form.js') }}"></script>
+<script src="{{ asset('assets/elearning/admin/js/components/image-cropper.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('assets/elearning/admin/js/components/password-validator.js') }}?v={{ time() }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Image Cropper
+    const cropperContainers = document.querySelectorAll('[data-image-cropper]');
+    cropperContainers.forEach(container => {
+        new ImageCropper(container);
+    });
+
+    // Initialize Password Validation
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('password_confirmation');
+    if (passwordInput && confirmInput) {
+        new PasswordValidator(passwordInput, confirmInput, {
+            minLength: 8,
+            required: true
+        });
+    }
+
+    // Form Validation
+    const form = document.getElementById('userForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password_confirmation').value;
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: 'Password minimal harus 8 karakter!'
+                });
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: 'Konfirmasi password tidak cocok!'
+                });
+                return;
+            }
+        });
+    }
+});
+</script>
 @endpush

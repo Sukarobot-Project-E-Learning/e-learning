@@ -18,7 +18,7 @@
 
         <!-- Form Card -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
-            <form id="instructorForm" data-instructor-form action="{{ route('admin.instructors.update', $instructor->id) }}" method="POST" enctype="multipart/form-data">
+            <form id="instructorForm" action="{{ route('admin.instructors.update', $instructor->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -105,13 +105,10 @@
                             'required' => true,
                             'value' => old('expertise', $instructor->expertise ?? ''),
                             'options' => [
-                                'Web Development' => 'Web Development',
-                                'Mobile Development' => 'Mobile Development',
-                                'Data Science' => 'Data Science',
+                                'Web Programming' => 'Web Programming',
                                 'Digital Marketing' => 'Digital Marketing',
-                                'UI/UX Design' => 'UI/UX Design',
-                                'Project Management' => 'Project Management',
-                                'Business Analytics' => 'Business Analytics'
+                                'Microsoft Office' => 'Microsoft Office',
+                                'Desain Grafis' => 'Desain Grafis'
                             ],
                             'placeholder' => 'Pilih Keahlian',
                             'addNewText' => '➕ Tambah Keahlian Baru...',
@@ -125,7 +122,7 @@
                                 'label' => 'Pekerjaan',
                                 'required' => true,
                                 'value' => old('job', $instructor->job ?? ''),
-                                'placeholder' => 'Contoh: Web Developer, UI/UX Designer'
+                                'placeholder' => 'Contoh: Web Programming, Digital Marketing'
                             ])
 
                             @include('panel.partials.forms.input-text', [

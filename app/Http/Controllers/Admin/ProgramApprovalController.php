@@ -251,9 +251,10 @@ class ProgramApprovalController extends Controller
     public function reject(Request $request, $id)
     {
         $request->validate([
-            'rejection_reason' => 'required|string|min:15|max:1000',
+            'rejection_reason' => 'required|string|min:15|max:100',
         ], [
             'rejection_reason.min' => 'Alasan penolakan minimal 15 karakter.',
+            'rejection_reason.max' => 'Alasan penolakan maksimal 100 karakter.',
         ]);
 
         $approval = DB::table('program_approvals')
@@ -330,9 +331,10 @@ class ProgramApprovalController extends Controller
             'ids' => 'required|array',
             'ids.*' => 'integer|exists:program_approvals,id',
             'status' => 'required|in:approved,rejected',
-            'rejection_reason' => 'required_if:status,rejected|nullable|string|min:15|max:1000',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|min:15|max:100',
         ], [
             'rejection_reason.min' => 'Alasan penolakan minimal 15 karakter.',
+            'rejection_reason.max' => 'Alasan penolakan maksimal 100 karakter.',
         ]);
 
         $ids = $request->ids;

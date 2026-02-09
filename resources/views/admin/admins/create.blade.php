@@ -9,7 +9,7 @@
 
         <!-- Form Card -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
-            <form id="adminForm" data-admin-form action="{{ route('admin.admins.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="adminForm" action="{{ route('admin.admins.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Section 1: Account Information -->
