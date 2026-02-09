@@ -599,8 +599,8 @@
                         <div
                             class="bg-white rounded-3xl border border-gray-100 overflow-hidden group h-full flex flex-col lg:flex-row">
                             <div class="relative lg:w-1/2 h-64 lg:h-auto overflow-hidden">
-                                <img src="{{ asset('assets/elearning/client/img/posterevent.jpeg') }}" alt="SRC"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ asset('assets/elearning/client/img/logo-src.png') }}" alt="SRC"
+                                    class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:bg-gradient-to-r">
                                 </div>
@@ -628,8 +628,8 @@
                         <div
                             class="bg-white rounded-3xl border border-gray-100 overflow-hidden group h-full flex flex-col lg:flex-row">
                             <div class="relative lg:w-1/2 h-64 lg:h-auto overflow-hidden">
-                                <img src="{{ asset('assets/elearning/client/img/banner.jpeg') }}" alt="BRC"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ asset('assets/elearning/client/img/logo-brc.png') }}" alt="BRC"
+                                    class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:bg-gradient-to-r">
                                 </div>
