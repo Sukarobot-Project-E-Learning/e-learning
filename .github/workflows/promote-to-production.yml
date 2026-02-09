@@ -12,16 +12,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Debug - Check token
-        run: |
-          if [ -z "${{ secrets.PROD_REPO_TOKEN }}" ]; then
-            echo "ERROR: PROD_REPO_TOKEN is empty"
-            exit 1
-          fi
-          TOKEN="${{ secrets.PROD_REPO_TOKEN }}"
-          echo "Token is set (length: ${#TOKEN})"
-          echo "Token starts with: ${TOKEN:0:10}..."
+          token: ${{ secrets.PROD_REPO_TOKEN }}
 
       - name: Push to production repository
         env:
@@ -29,9 +20,12 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-
-          git remote add production https://oauth2:${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo.git
-
-          git remote -v
           
-          git push production main --force
+          # Try without oauth2 prefix - just use the token directly
+          git remote add production https://${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo.git
+          
+          echo "Remote configured:"
+          git remote get-url production | sed 's/:[^@]*@/:***@/'
+          
+          echo "Attempting push..."
+          git push production main --force --verbose
