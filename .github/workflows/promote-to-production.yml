@@ -13,31 +13,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug everything
+      - name: Push to production repository
         env:
           TOKEN: ${{ secrets.PROD_REPO_TOKEN }}
         run: |
-          echo "=== Token Info ==="
-          echo "Token length: ${#TOKEN}"
-          echo "Token prefix: ${TOKEN:0:15}..."
-          
-          echo -e "\n=== Current Repository ==="
-          git remote -v
-          
-          echo -e "\n=== Test API Access ==="
-          curl -s -H "Authorization: token ${TOKEN}" \
-            https://api.github.com/repos/Sukarobot-Project-E-Learning/sukarobot-elearning-demo \
-            | jq -r '.name, .permissions.push'
-          
-          echo -e "\n=== Attempting Git Push ==="
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          
-          # Try with username in URL
-          git remote add production https://rahmanditya:${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo.git
-          
-          echo "Remote URL (masked):"
-          git remote get-url production | sed 's/:.*@/:***@/'
-          
-          # Enable verbose git output
-          GIT_TRACE=1 GIT_CURL_VERBOSE=1 git push production main --force 2>&1 | head -50
+
+          git remote add production https://x-access-token:${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo.git
+
+          git push production main --force
