@@ -10,6 +10,18 @@ jobs:
     steps:
       - name: Checkout staging repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Debug - Check token
+        run: |
+          if [ -z "${{ secrets.PROD_REPO_TOKEN }}" ]; then
+            echo "ERROR: PROD_REPO_TOKEN is empty"
+            exit 1
+          fi
+          TOKEN="${{ secrets.PROD_REPO_TOKEN }}"
+          echo "Token is set (length: ${#TOKEN})"
+          echo "Token starts with: ${TOKEN:0:10}..."
 
       - name: Push to production repository
         env:
@@ -18,6 +30,8 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-          git remote add production https://x-access-token:${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo
+          git remote add production https://oauth2:${TOKEN}@github.com/Sukarobot-Project-E-Learning/sukarobot-elearning-demo.git
 
+          git remote -v
+          
           git push production main --force
