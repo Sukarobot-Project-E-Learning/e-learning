@@ -94,14 +94,22 @@ class UserController extends Controller
                 'updated_at' => now(),
             ];
 
-            // Upload photo - prioritize cropped_photo (base64) over regular file upload
-            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
-                $base64Image = $request->input('cropped_photo');
-                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-                $imageData = base64_decode($imageData);
-                $photoName = 'user_' . time() . '_' . uniqid() . '.png';
-                Storage::disk('public')->put('users/' . $photoName, $imageData);
-                $data['avatar'] = 'users/' . $photoName;
+            // Upload photo - prioritize cropped_photo over regular file upload
+            if ($request->filled('cropped_photo')) {
+                $croppedPhoto = $request->input('cropped_photo');
+                
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Store URL directly - no download or processing needed
+                    $data['avatar'] = $croppedPhoto;
+                } elseif (preg_match('/^data:image\/\w+;base64,/', $croppedPhoto)) {
+                    // It's a base64 cropped image - decode and save to storage
+                    $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $croppedPhoto);
+                    $imageData = base64_decode($imageData);
+                    $photoName = 'user_' . time() . '_' . uniqid() . '.png';
+                    Storage::disk('public')->put('users/' . $photoName, $imageData);
+                    $data['avatar'] = 'users/' . $photoName;
+                }
             } elseif ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
@@ -183,26 +191,43 @@ class UserController extends Controller
             // Get old user data for photo deletion
             $oldUser = DB::table('users')->where('id', $id)->first();
 
-            // Upload photo - prioritize cropped_photo (base64) over regular file upload
-            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
-                // Delete old photo first
-                if ($oldUser && $oldUser->avatar) {
-                    if (Storage::disk('public')->exists($oldUser->avatar)) {
-                        Storage::disk('public')->delete($oldUser->avatar);
-                    } elseif (file_exists(public_path($oldUser->avatar))) {
-                        unlink(public_path($oldUser->avatar));
+            // Upload photo - prioritize cropped_photo over regular file upload
+            if ($request->filled('cropped_photo')) {
+                $croppedPhoto = $request->input('cropped_photo');
+                
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Delete old photo only if it's a local file (not a URL)
+                    if ($oldUser && $oldUser->avatar && !str_starts_with($oldUser->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($oldUser->avatar)) {
+                            Storage::disk('public')->delete($oldUser->avatar);
+                        } elseif (file_exists(public_path($oldUser->avatar))) {
+                            unlink(public_path($oldUser->avatar));
+                        }
                     }
-                }
+                    
+                    // Store URL directly - no download or processing needed
+                    $updateData['avatar'] = $croppedPhoto;
+                } elseif (preg_match('/^data:image\/\w+;base64,/', $croppedPhoto)) {
+                    // Delete old photo first
+                    if ($oldUser && $oldUser->avatar && !str_starts_with($oldUser->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($oldUser->avatar)) {
+                            Storage::disk('public')->delete($oldUser->avatar);
+                        } elseif (file_exists(public_path($oldUser->avatar))) {
+                            unlink(public_path($oldUser->avatar));
+                        }
+                    }
 
-                $base64Image = $request->input('cropped_photo');
-                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-                $imageData = base64_decode($imageData);
-                $photoName = 'user_' . time() . '_' . uniqid() . '.png';
-                Storage::disk('public')->put('users/' . $photoName, $imageData);
-                $updateData['avatar'] = 'users/' . $photoName;
+                    // It's a base64 cropped image - decode and save to storage
+                    $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $croppedPhoto);
+                    $imageData = base64_decode($imageData);
+                    $photoName = 'user_' . time() . '_' . uniqid() . '.png';
+                    Storage::disk('public')->put('users/' . $photoName, $imageData);
+                    $updateData['avatar'] = 'users/' . $photoName;
+                }
             } elseif ($request->hasFile('photo')) {
                 // Delete old photo first
-                if ($oldUser && $oldUser->avatar) {
+                if ($oldUser && $oldUser->avatar && !str_starts_with($oldUser->avatar, 'http')) {
                     if (Storage::disk('public')->exists($oldUser->avatar)) {
                         Storage::disk('public')->delete($oldUser->avatar);
                     } elseif (file_exists(public_path($oldUser->avatar))) {
@@ -229,9 +254,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            // Delete photo file if exists
+            // Delete photo file if exists (skip if it's a URL)
             $user = DB::table('users')->where('id', $id)->first();
-            if ($user && $user->avatar && file_exists(public_path($user->avatar))) {
+            if ($user && $user->avatar && !str_starts_with($user->avatar, 'http') && file_exists(public_path($user->avatar))) {
                 unlink(public_path($user->avatar));
             }
             
@@ -319,14 +344,22 @@ class UserController extends Controller
                 'updated_at' => now(),
             ];
 
-            // Upload photo - prioritize cropped_photo (base64) over regular file upload
-            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
-                $base64Image = $request->input('cropped_photo');
-                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-                $imageData = base64_decode($imageData);
-                $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
-                Storage::disk('public')->put('admins/' . $photoName, $imageData);
-                $data['avatar'] = 'admins/' . $photoName;
+            // Upload photo - prioritize cropped_photo over regular file upload
+            if ($request->filled('cropped_photo')) {
+                $croppedPhoto = $request->input('cropped_photo');
+                
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Store URL directly - no download or processing needed
+                    $data['avatar'] = $croppedPhoto;
+                } elseif (preg_match('/^data:image\/\w+;base64,/', $croppedPhoto)) {
+                    // It's a base64 cropped image - decode and save to storage
+                    $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $croppedPhoto);
+                    $imageData = base64_decode($imageData);
+                    $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
+                    Storage::disk('public')->put('admins/' . $photoName, $imageData);
+                    $data['avatar'] = 'admins/' . $photoName;
+                }
             } elseif ($request->hasFile('photo')) {
                 $photo = $request->file('photo');
                 $photoName = time() . '_' . $photo->getClientOriginalName();
@@ -390,26 +423,43 @@ class UserController extends Controller
             // Get old admin data for photo deletion
             $oldAdmin = DB::table('users')->where('id', $id)->first();
 
-            // Upload photo - prioritize cropped_photo (base64) over regular file upload
-            if ($request->filled('cropped_photo') && preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_photo'))) {
-                // Delete old photo first
-                if ($oldAdmin && $oldAdmin->avatar) {
-                    if (Storage::disk('public')->exists($oldAdmin->avatar)) {
-                        Storage::disk('public')->delete($oldAdmin->avatar);
-                    } elseif (file_exists(public_path($oldAdmin->avatar))) {
-                        unlink(public_path($oldAdmin->avatar));
+            // Upload photo - prioritize cropped_photo over regular file upload
+            if ($request->filled('cropped_photo')) {
+                $croppedPhoto = $request->input('cropped_photo');
+                
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Delete old photo only if it's a local file (not a URL)
+                    if ($oldAdmin && $oldAdmin->avatar && !str_starts_with($oldAdmin->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($oldAdmin->avatar)) {
+                            Storage::disk('public')->delete($oldAdmin->avatar);
+                        } elseif (file_exists(public_path($oldAdmin->avatar))) {
+                            unlink(public_path($oldAdmin->avatar));
+                        }
                     }
-                }
+                    
+                    // Store URL directly - no download or processing needed
+                    $updateData['avatar'] = $croppedPhoto;
+                } elseif (preg_match('/^data:image\/\w+;base64,/', $croppedPhoto)) {
+                    // Delete old photo first
+                    if ($oldAdmin && $oldAdmin->avatar && !str_starts_with($oldAdmin->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($oldAdmin->avatar)) {
+                            Storage::disk('public')->delete($oldAdmin->avatar);
+                        } elseif (file_exists(public_path($oldAdmin->avatar))) {
+                            unlink(public_path($oldAdmin->avatar));
+                        }
+                    }
 
-                $base64Image = $request->input('cropped_photo');
-                $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-                $imageData = base64_decode($imageData);
-                $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
-                Storage::disk('public')->put('admins/' . $photoName, $imageData);
-                $updateData['avatar'] = 'admins/' . $photoName;
+                    // It's a base64 cropped image - decode and save to storage
+                    $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $croppedPhoto);
+                    $imageData = base64_decode($imageData);
+                    $photoName = 'admin_' . time() . '_' . uniqid() . '.png';
+                    Storage::disk('public')->put('admins/' . $photoName, $imageData);
+                    $updateData['avatar'] = 'admins/' . $photoName;
+                }
             } elseif ($request->hasFile('photo')) {
                 // Delete old photo first
-                if ($oldAdmin && $oldAdmin->avatar) {
+                if ($oldAdmin && $oldAdmin->avatar && !str_starts_with($oldAdmin->avatar, 'http')) {
                     if (Storage::disk('public')->exists($oldAdmin->avatar)) {
                         Storage::disk('public')->delete($oldAdmin->avatar);
                     } elseif (file_exists(public_path($oldAdmin->avatar))) {
@@ -436,9 +486,9 @@ class UserController extends Controller
     public function destroyAdmin($id)
     {
         try {
-            // Delete photo file if exists
+            // Delete photo file if exists (skip if it's a URL)
             $admin = DB::table('users')->where('id', $id)->first();
-            if ($admin && $admin->avatar && file_exists(public_path($admin->avatar))) {
+            if ($admin && $admin->avatar && !str_starts_with($admin->avatar, 'http') && file_exists(public_path($admin->avatar))) {
                 unlink(public_path($admin->avatar));
             }
             

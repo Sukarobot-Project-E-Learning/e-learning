@@ -42,6 +42,11 @@ class ImageCropper {
         this.outputInput = container.querySelector('[data-cropper-output]');
         this.canvas = container.querySelector('[data-cropper-canvas]');
         this.currentImageWrapper = container.querySelector('[data-current-image-wrapper]');
+        this.googleUrlInput = container.querySelector('[data-google-url-input]');
+        this.googleUrlSection = container.querySelector('[data-google-url-section]');
+
+        // Track if using external URL (Google)
+        this.isExternalUrl = false;
 
         this.init();
     }
@@ -87,6 +92,12 @@ class ImageCropper {
         if (this.clearBtn) {
             this.clearBtn.addEventListener('click', () => this.clearImage());
         }
+
+        // Google URL input
+        if (this.googleUrlInput) {
+            this.googleUrlInput.addEventListener('input', (e) => this.handleGoogleUrlInput(e));
+        }
+
 
         // Preview container interactions
         if (this.previewContainer) {
@@ -158,6 +169,12 @@ class ImageCropper {
      * @param {File} file 
      */
     processFile(file) {
+        // Clear external URL if file is being uploaded
+        if (this.googleUrlInput) {
+            this.googleUrlInput.value = '';
+        }
+        this.isExternalUrl = false;
+
         // Validate type
         if (!this.allowedTypes.includes(file.type)) {
             this.showError('Upload Gagal', 'Format file tidak sesuai.');
@@ -202,6 +219,136 @@ class ImageCropper {
             Swal.fire({ icon: 'error', title, text });
         } else {
             alert(title + ': ' + text);
+        }
+    }
+
+    
+    /**
+     * Handle Google/External URL input
+     * @param {Event} event 
+     */
+    handleGoogleUrlInput(event) {
+        const url = event.target.value.trim();
+
+        if (!url) {
+            this.isExternalUrl = false;
+            this.clearImage();
+            return;
+        }
+
+        // Validate URL format
+        try {
+            new URL(url);
+        } catch (e) {
+            return; // Invalid URL, don't process
+        }
+
+        // Check if it's a valid image URL (simple check)
+        if (!this.isValidImageUrl(url)) {
+            this.showError('URL Tidak Valid', 'Pastikan URL menunjuk ke gambar yang valid (jpg, png, etc)');
+            event.target.value = '';
+            return;
+        }
+
+        // Set external URL mode
+        this.isExternalUrl = true;
+        this.previewUrl = url;
+        this.resetPosition();
+
+        // Set output directly to URL (no cropping for external URLs)
+        if (this.outputInput) {
+            this.outputInput.value = url;
+        }
+
+        // Show preview without cropping interface
+        this.showExternalImagePreview(url);
+    }
+
+    /**
+     * Validate if URL points to an image
+     * @param {string} url 
+     * @returns {boolean}
+     */
+    isValidImageUrl(url) {
+        // Static image extensions only
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.bmp'];
+        const lowerUrl = url.toLowerCase();
+        
+        // Check if URL contains static image extension
+        if (imageExtensions.some(ext => lowerUrl.includes(ext))) {
+            return true;
+        }
+        
+        // Check for supported image CDNs and social platforms
+        const supportedDomains = [
+            // Google services
+            'lh3.googleusercontent.com',      // Google accounts, Gmail profile pictures
+            'googleusercontent.com',          // Google Drive, Google Photos
+            
+            // Facebook
+            'graph.facebook.com',             // Facebook images
+            
+            // Instagram
+            'scontent.cdninstagram.com',      // Instagram images
+            'cdninstagram.com',               // Instagram CDN
+            
+            // Pinterest
+            'i.pinimg.com',                   // Pinterest images
+            
+            // Twitter/X
+            'pbs.twimg.com',                  // Twitter/X images
+            'ton.twitter.com',                // Twitter/X images (new CDN)
+            
+            // Imgur
+            'i.imgur.com',                    // Imgur images
+            'imgur.com',                      // Imgur direct
+            
+            // AWS & CDNs
+            's3.amazonaws.com',               // AWS S3
+            'cloudfront.net',                 // AWS CloudFront
+        ];
+        
+        return supportedDomains.some(domain => lowerUrl.includes(domain));
+    }
+
+    /**
+     * Show preview for external URL without cropping
+     * @param {string} url 
+     */
+    showExternalImagePreview(url) {
+        if (!this.previewWrapper || !this.dropzoneWrapper) {
+            return;
+        }
+
+        // Create simple preview without cropping tools
+        this.previewWrapper.innerHTML = `
+            <div class="border-2 border-green-200 dark:border-green-800 rounded-xl p-4 bg-green-50 dark:bg-green-900/20">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <img src="${url}" alt="External image preview" class="w-full max-h-64 rounded-lg object-cover mb-3">
+                <button type="button" class="text-sm text-red-500 hover:text-red-700 font-medium" data-google-url-clear-btn>Ganti URL</button>
+            </div>
+        `;
+
+        this.previewWrapper.classList.remove('hidden');
+        this.dropzoneWrapper.classList.add('hidden');
+        
+        if (this.currentImageWrapper) {
+            this.currentImageWrapper.classList.add('hidden');
+        }
+
+        // Add clear button listener
+        const clearBtn = this.previewWrapper.querySelector('[data-google-url-clear-btn]');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                if (this.googleUrlInput) {
+                    this.googleUrlInput.value = '';
+                    this.handleGoogleUrlInput({ target: this.googleUrlInput });
+                }
+            });
         }
     }
 
@@ -339,6 +486,10 @@ class ImageCropper {
         this.previewUrl = null;
         this.originalImage = null;
         this.fileInput.value = '';
+        if (this.googleUrlInput) {
+            this.googleUrlInput.value = '';
+        }
+        this.isExternalUrl = false;
         if (this.outputInput) {
             this.outputInput.value = '';
         }
@@ -350,6 +501,11 @@ class ImageCropper {
      * Update the cropped image output
      */
     updateCroppedImage() {
+        // Skip processing for external URLs (they're stored as-is)
+        if (this.isExternalUrl) {
+            return;
+        }
+
         if (!this.originalImage || !this.previewUrl || !this.canvas || !this.previewImage || !this.previewContainer) {
             return;
         }

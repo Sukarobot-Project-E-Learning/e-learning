@@ -25,6 +25,18 @@
     @endif
 
     <div class="image-cropper-wrapper" data-image-cropper data-max-size="{{ $maxSizeMB }}">
+        <!-- Google Image URL Input -->
+        <div class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl" data-google-url-section>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Atau gunakan URL gambar dari Google/eksternal
+            </label>
+            <input type="url" 
+                   placeholder="Contoh: https://lh3.googleusercontent.com/a/..." 
+                   data-google-url-input
+                   class="w-full px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-colors">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">💡 Paste link gambar Google/eksternal</p>
+        </div>
+
         <!-- Preview Area with controls -->
         <div class="image-cropper-preview hidden mb-4" data-cropper-preview-wrapper>
             <div class="border-2 border-gray-200 dark:border-gray-600 rounded-xl p-4 bg-gray-50 dark:bg-gray-700">

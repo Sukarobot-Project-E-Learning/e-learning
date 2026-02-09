@@ -195,20 +195,26 @@ class InstructorController extends Controller
                 'updated_at' => now(),
             ];
 
-            // Upload photo jika ada (cropped atau original)
+            // Upload photo jika ada (cropped, URL, atau original)
             $croppedPhoto = $request->input('cropped_photo');
             
-            if ($croppedPhoto && str_starts_with($croppedPhoto, 'data:image')) {
-                // Decode base64 cropped image
-                $imageData = explode(',', $croppedPhoto);
-                $decodedImage = base64_decode($imageData[1]);
-                
-                // Generate unique filename
-                $photoName = time() . '_cropped_new.png';
-                
-                // Save cropped image to storage
-                Storage::disk('public')->put('users/' . $photoName, $decodedImage);
-                $data['avatar'] = 'users/' . $photoName;
+            if ($croppedPhoto) {
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Store URL directly - no download or processing needed
+                    $data['avatar'] = $croppedPhoto;
+                } elseif (str_starts_with($croppedPhoto, 'data:image')) {
+                    // Decode base64 cropped image
+                    $imageData = explode(',', $croppedPhoto);
+                    $decodedImage = base64_decode($imageData[1]);
+                    
+                    // Generate unique filename
+                    $photoName = time() . '_cropped_new.png';
+                    
+                    // Save cropped image to storage
+                    Storage::disk('public')->put('users/' . $photoName, $decodedImage);
+                    $data['avatar'] = 'users/' . $photoName;
+                }
             } elseif ($request->hasFile('photo')) {
                 // Fallback: Upload original file if no cropped version
                 $photo = $request->file('photo');
@@ -331,33 +337,56 @@ class InstructorController extends Controller
                 $data['password'] = Hash::make($validated['password']);
             }
 
-            // Upload photo jika ada (cropped atau original)
+            // Upload photo jika ada (cropped, URL, atau original)
             $croppedPhoto = $request->input('cropped_photo');
             
-            if ($croppedPhoto && str_starts_with($croppedPhoto, 'data:image')) {
-                // Delete old photo if exists (menghindari duplikasi storage)
-                if ($user->avatar && file_exists(public_path($user->avatar))) {
-                    try {
-                        unlink(public_path($user->avatar));
-                    } catch (\Exception $e) {
-                        // Ignore error if file not found
+            if ($croppedPhoto) {
+                // Check if it's an external URL (Google, Facebook, etc.)
+                if (str_starts_with($croppedPhoto, 'http://') || str_starts_with($croppedPhoto, 'https://')) {
+                    // Delete old photo only if it's a local file (not a URL)
+                    if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($user->avatar)) {
+                            Storage::disk('public')->delete($user->avatar);
+                        } elseif (file_exists(public_path($user->avatar))) {
+                            try {
+                                unlink(public_path($user->avatar));
+                            } catch (\Exception $e) {
+                                // Ignore error if file not found
+                            }
+                        }
                     }
+                    
+                    // Store URL directly - no download or processing needed
+                    $data['avatar'] = $croppedPhoto;
+                } elseif (str_starts_with($croppedPhoto, 'data:image')) {
+                    // Delete old photo if exists (menghindari duplikasi storage)
+                    if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                        if (Storage::disk('public')->exists($user->avatar)) {
+                            Storage::disk('public')->delete($user->avatar);
+                        } elseif (file_exists(public_path($user->avatar))) {
+                            try {
+                                unlink(public_path($user->avatar));
+                            } catch (\Exception $e) {
+                                // Ignore error if file not found
+                            }
+                        }
+                    }
+                    
+                    // Decode base64 cropped image
+                    $imageData = explode(',', $croppedPhoto);
+                    $decodedImage = base64_decode($imageData[1]);
+                    
+                    // Generate unique filename
+                    $photoName = time() . '_cropped_' . $id . '.png';
+                    
+                    // Save cropped image to storage
+                    Storage::disk('public')->put('users/' . $photoName, $decodedImage);
+                    $data['avatar'] = 'users/' . $photoName;
                 }
-                
-                // Decode base64 cropped image
-                $imageData = explode(',', $croppedPhoto);
-                $decodedImage = base64_decode($imageData[1]);
-                
-                // Generate unique filename
-                $photoName = time() . '_cropped_' . $id . '.png';
-                
-                // Save cropped image to storage
-                Storage::disk('public')->put('users/' . $photoName, $decodedImage);
-                $data['avatar'] = 'users/' . $photoName;
             } elseif ($request->hasFile('photo')) {
                 // Fallback: Upload original file if no cropped version
                 // Delete old photo if exists
-                if ($user->avatar) {
+                if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
                     if (Storage::disk('public')->exists($user->avatar)) {
                         Storage::disk('public')->delete($user->avatar);
                     } elseif (file_exists(public_path($user->avatar))) {
@@ -418,7 +447,8 @@ class InstructorController extends Controller
         try {
             $user = DB::table('users')->where('id', $id)->first();
 
-            if ($user && $user->avatar && file_exists(public_path($user->avatar))) {
+            // Delete photo file if exists (skip if it's a URL)
+            if ($user && $user->avatar && !str_starts_with($user->avatar, 'http') && file_exists(public_path($user->avatar))) {
                 unlink(public_path($user->avatar));
             }
 
