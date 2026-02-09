@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- Artikel -->
-                <a href="{{ url('/artikel') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Artikel</a>
+                <a href="{{ url('/artikel') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors cursor-not-allowed pointer-events-none opacity-75">Artikel</a>
 
                 <!-- Auth Buttons -->
                 @guest
