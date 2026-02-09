@@ -76,20 +76,23 @@ document.addEventListener("DOMContentLoaded", function () {
     function expandSection(content) {
         if (!content) return;
 
-        // Set to auto height to measure
-        content.style.height = 'auto';
+        // Remove hidden class first so scrollHeight can be measured correctly
+        content.classList.remove('hidden');
+        
+        // Measure the full height of the content
         const targetHeight = content.scrollHeight + 'px';
+        
+        // Set height to 0 to prepare for the transition
         content.style.height = '0px';
 
-        // Force reflow
+        // Force reflow to ensure the browser recognizes the 0px height before transition starts
         content.offsetHeight;
 
-        // Animate to target height
+        // Start the expanding animation
         content.style.height = targetHeight;
-        content.classList.remove('hidden');
         content.classList.add('sidebar-expanded');
 
-        // Reset height to auto after animation completes
+        // Reset to auto height after animation finishes so content can be dynamic
         setTimeout(() => {
             if (content.classList.contains('sidebar-expanded')) {
                 content.style.height = 'auto';
