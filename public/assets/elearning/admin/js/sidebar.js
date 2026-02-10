@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         } catch (e) {
-            console.warn("Failed to load sidebar state from localStorage:", e);
+            console.warn("[Admin Sidebar] Failed to load sidebar state from localStorage:", e);
         }
     }
 
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             localStorage.setItem(CONFIG.storageKey, JSON.stringify([...state.expandedItems]));
         } catch (e) {
-            console.warn("Failed to save sidebar state to localStorage:", e);
+            console.warn("[Admin Sidebar] Failed to save sidebar state to localStorage:", e);
         }
     }
 
@@ -76,23 +76,20 @@ document.addEventListener("DOMContentLoaded", function () {
     function expandSection(content) {
         if (!content) return;
 
-        // Remove hidden class first so scrollHeight can be measured correctly
-        content.classList.remove('hidden');
-        
-        // Measure the full height of the content
+        // Set to auto height to measure
+        content.style.height = 'auto';
         const targetHeight = content.scrollHeight + 'px';
-        
-        // Set height to 0 to prepare for the transition
         content.style.height = '0px';
 
-        // Force reflow to ensure the browser recognizes the 0px height before transition starts
-        content.offsetHeight;
+        // Force reflow
+        void content.offsetHeight;
 
-        // Start the expanding animation
+        // Animate to target height
         content.style.height = targetHeight;
+        content.classList.remove('hidden');
         content.classList.add('sidebar-expanded');
 
-        // Reset to auto height after animation finishes so content can be dynamic
+        // Reset height to auto after animation completes
         setTimeout(() => {
             if (content.classList.contains('sidebar-expanded')) {
                 content.style.height = 'auto';
@@ -145,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function initExpandableSection(button, itemId) {
         const content = button.nextElementSibling;
         if (!content || !content.classList.contains(CONFIG.expandableContentClass)) {
-            console.warn("Expandable content not found for button:", button);
+            console.warn("[Admin Sidebar] Expandable content not found for button:", button);
             return;
         }
 
@@ -193,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!container) return;
 
         const expandBtns = container.querySelectorAll('.' + CONFIG.expandableBtnClass);
+        console.log("[Admin Sidebar] Found", expandBtns.length, "expandable buttons in container");
         expandBtns.forEach((btn, index) => {
             const itemId = btn.dataset.sidebarItem || `item-${index}`;
             initExpandableSection(btn, itemId);
@@ -211,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Show overlay
         mobileSidebarOverlay.classList.remove('hidden');
-        mobileSidebarOverlay.offsetHeight; // Force reflow
+        void mobileSidebarOverlay.offsetHeight; // Force reflow
         mobileSidebarOverlay.classList.add('sidebar-overlay-active');
 
         // Show sidebar
@@ -220,6 +218,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
+
+        console.log("[Admin Sidebar] Mobile sidebar opened");
     }
 
     /**
@@ -245,6 +245,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Restore body scroll
         document.body.style.overflow = '';
+
+        console.log("[Admin Sidebar] Mobile sidebar closed");
     }
 
     /**
@@ -265,11 +267,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize desktop sidebar expandable sections
     if (desktopSidebar) {
+        console.log("[Admin Sidebar] Initializing desktop sidebar");
         initExpandableSections(desktopSidebar);
     }
 
     // Initialize mobile sidebar expandable sections
     if (mobileSidebar) {
+        console.log("[Admin Sidebar] Initializing mobile sidebar");
         initExpandableSections(mobileSidebar);
     }
 
@@ -277,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Listen for toggle-mobile-sidebar event from header
     document.addEventListener('toggle-mobile-sidebar', function () {
+        console.log("[Admin Sidebar] Received toggle-mobile-sidebar event");
         toggleMobileSidebar();
     });
 
