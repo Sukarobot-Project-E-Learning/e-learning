@@ -21,8 +21,8 @@
                         Kompetisi <span class="ml-1"></span>
                     </button>
                     <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
-                        <a href="https://brc.sukarobot.com/" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">BRC</a>
-                        <a href="https://src.sukarobot.com/" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">SRC</a>
+                        <a href="https://brc.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">BRC</a>
+                        <a href="https://src.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">SRC</a>
                     </div>
                 </div>
 
@@ -92,8 +92,8 @@
                     Kompetisi <span>▾</span>
                 </button>
                 <div class="hidden pl-4 space-y-2 mobile-dropdown-content">
-                    <a href="https://brc.sukarobot.com/" class="block text-sm font-medium text-gray-600 hover:text-blue-600">BRC</a>
-                    <a href="https://src.sukarobot.com/" class="block text-sm font-medium text-gray-600 hover:text-blue-600">SRC</a>
+                    <a href="https://brc.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block text-sm font-medium text-gray-600 hover:text-blue-600">BRC</a>
+                    <a href="https://src.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block text-sm font-medium text-gray-600 hover:text-blue-600">SRC</a>
                 </div>
             </div>
 
