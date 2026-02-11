@@ -149,8 +149,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (visibleCards.length === 0) {
             container.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <p class="text-gray-500 text-lg">Belum ada program tersedia</p>
+                <div class="col-span-full w-full flex flex-col items-center justify-center py-20 text-center">
+                    <div class="relative w-48 h-48 mb-6 animate-bounce" style="animation-duration: 3s;">
+                        <!-- Animated Illustration (Robotic/Tech Theme) -->
+                        <svg class="w-full h-full drop-shadow-xl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Floating Elements -->
+                            <circle cx="100" cy="100" r="80" class="fill-blue-50 animate-pulse" style="animation-duration: 4s;"/>
+                            
+                            <!-- Robot Head / Search Icon Composite -->
+                            <path d="M60 90C60 67.9086 77.9086 50 100 50C122.091 50 140 67.9086 140 90V130C140 141.046 131.046 150 120 150H80C68.9543 150 60 141.046 60 130V90Z" class="fill-white"/>
+                            <rect x="75" y="80" width="15" height="15" rx="7.5" class="fill-blue-200"/>
+                            <rect x="110" y="80" width="15" height="15" rx="7.5" class="fill-blue-200"/>
+                            <path d="M85 115C85 115 90 122 100 122C110 122 115 115 115 115" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+                            
+                            <!-- Gear Icon (Rotating) -->
+                            <g class="origin-center animate-[spin_10s_linear_infinite]" style="transform-box: fill-box;">
+                                <path d="M160 50L170 45L165 35L155 40L160 50Z" class="fill-orange-400"/>
+                                <circle cx="160" cy="45" r="3" class="fill-white"/>
+                            </g>
+
+                            <!-- Search Magnifier -->
+                            <path d="M130 130L150 150" stroke="#F97316" stroke-width="8" stroke-linecap="round"/>
+                            <circle cx="125" cy="125" r="15" class="stroke-orange-500 fill-white" stroke-width="4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Belum Ada Program</h3>
+                    <p class="text-gray-500 max-w-md mx-auto mb-8 text-lg">
+                        Saat ini kami sedang menyiapkan program terbaik untuk kategori ini. <br>Silakan cek kategori lainnya!
+                    </p>
                 </div>
             `;
         } else {

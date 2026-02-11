@@ -323,144 +323,175 @@
             </div>
 
             <div class="relative">
-                <div class="swiper programSwiper pb-12 px-4">
-                    <div class="swiper-wrapper">
-                        @forelse ($popularPrograms as $program)
-                            <!-- Program Card: {{ $program->program }} -->
-                            <div class="swiper-slide h-auto">
-                                <a href="{{ route('client.program.detail', $program->slug) }}"
-                                    class="block program-card bg-white rounded-2xl shadow-sm transition-all duration-300 border border-gray-100 overflow-hidden group h-full flex flex-col">
-                                    <div class="relative overflow-hidden">
-                                        @php
-                                            $programImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
-                                                ? asset($program->image) 
-                                                : ($program->image ? asset('storage/' . $program->image) : asset('assets/elearning/client/img/home1.jpeg'));
-                                            
-                                            $now = \Carbon\Carbon::now();
-                                            $startDate = \Carbon\Carbon::parse($program->start_date);
-                                            $endDate = \Carbon\Carbon::parse($program->end_date);
-                                            $isRunning = $now->between($startDate, $endDate);
-                                            $isFinished = $now->gt($endDate);
-                                        @endphp
-                                        <img src="{{ $programImageUrl }}"
-                                            alt="{{ $program->program }}"
-                                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
-                                            
-                                        @if($program->available_slots == 0)
-                                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-                                                <span class="bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
-                                                    Kuota Habis
-                                                </span>
-                                            </div>
-                                        @elseif($isFinished)
-                                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-                                                <span class="bg-gray-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
-                                                    Selesai
-                                                </span>
-                                            </div>
-                                        @elseif($isRunning)
-                                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-                                                <span class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
-                                                    Sedang Berjalan
-                                                </span>
-                                            </div>
-                                        @endif
+                @if($popularPrograms->isNotEmpty())
+                    <div class="swiper programSwiper pb-12 px-4">
+                        <div class="swiper-wrapper">
+                            @foreach ($popularPrograms as $program)
+                                <!-- Program Card: {{ $program->program }} -->
+                                <div class="swiper-slide h-auto">
+                                    <a href="{{ route('client.program.detail', $program->slug) }}"
+                                        class="block program-card bg-white rounded-2xl shadow-sm transition-all duration-300 border border-gray-100 overflow-hidden group h-full flex flex-col">
+                                        <div class="relative overflow-hidden">
+                                            @php
+                                                $programImageUrl = ($program->image && str_starts_with($program->image, 'images/'))
+                                                    ? asset($program->image) 
+                                                    : ($program->image ? asset('storage/' . $program->image) : asset('assets/elearning/client/img/home1.jpeg'));
+                                                
+                                                $now = \Carbon\Carbon::now();
+                                                $startDate = \Carbon\Carbon::parse($program->start_date);
+                                                $endDate = \Carbon\Carbon::parse($program->end_date);
+                                                $isRunning = $now->between($startDate, $endDate);
+                                                $isFinished = $now->gt($endDate);
+                                            @endphp
+                                            <img src="{{ $programImageUrl }}"
+                                                alt="{{ $program->program }}"
+                                                class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                                                
+                                            @if($program->available_slots == 0)
+                                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                                                    <span class="bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                                                        Kuota Habis
+                                                    </span>
+                                                </div>
+                                            @elseif($isFinished)
+                                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                                                    <span class="bg-gray-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                                                        Selesai
+                                                    </span>
+                                                </div>
+                                            @elseif($isRunning)
+                                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                                                    <span class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                                                        Sedang Berjalan
+                                                    </span>
+                                                </div>
+                                            @endif
 
-                                        <div
-                                            class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 z-20">
-                                            {{ ucfirst($program->category) }}
-                                        </div>
-                                        <!-- Hover Description Overlay -->
-                                        <div
-                                            class="absolute inset-0 bg-black/80 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center text-center z-10">
-                                            <p class="text-white text-sm leading-relaxed line-clamp-4">
-                                                {{ $program->description }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="p-5 flex-grow flex flex-col">
-                                        <div class="flex items-center gap-1 mb-2">
-                                            <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
-                                            <span
-                                                class="text-sm font-bold text-gray-700">{{ number_format($program->rating, 1) }}</span>
-                                            <span class="text-xs text-gray-500">({{ $program->total_reviews }} Review)</span>
-                                        </div>
-                                        <h3
-                                            class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                            {{ $program->program }}
-                                        </h3>
-                                        <div class="text-sm text-gray-500 mb-4 space-y-2">
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                                    </path>
-                                                </svg>
-                                                <span>Oleh: {{ $program->instructor_name ?? 'Sukarobot' }}</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                                                    </path>
-                                                </svg>
-                                                <span>Kuota: {{ $program->available_slots }} Slot</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                                    </path>
-                                                </svg>
-                                                <span>Pelaksanaan: {{ ucfirst($program->type) }}</span>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between relative z-20 bg-white">
-                                            <span class="text-lg font-bold text-orange-500">Rp
-                                                {{ number_format($program->price, 0, ',', '.') }}</span>
                                             <div
-                                                class="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                                </svg>
+                                                class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 z-20">
+                                                {{ ucfirst($program->category) }}
+                                            </div>
+                                            <!-- Hover Description Overlay -->
+                                            <div
+                                                class="absolute inset-0 bg-black/80 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center text-center z-10">
+                                                <p class="text-white text-sm leading-relaxed line-clamp-4">
+                                                    {{ $program->description }}
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                        @empty
-                            <!-- No Programs -->
-                            <div class="swiper-slide h-auto">
-                                <div class="text-center py-12 text-gray-500">
-                                    Belum ada program tersedia
+                                        <div class="p-5 flex-grow flex flex-col">
+                                            <div class="flex items-center gap-1 mb-2">
+                                                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                                <span
+                                                    class="text-sm font-bold text-gray-700">{{ number_format($program->rating, 1) }}</span>
+                                                <span class="text-xs text-gray-500">({{ $program->total_reviews }} Review)</span>
+                                            </div>
+                                            <h3
+                                                class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                                {{ $program->program }}
+                                            </h3>
+                                            <div class="text-sm text-gray-500 mb-4 space-y-2">
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                                        </path>
+                                                    </svg>
+                                                    <span>Oleh: {{ $program->instructor_name ?? 'Sukarobot' }}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                                        </path>
+                                                    </svg>
+                                                    <span>Kuota: {{ $program->available_slots }} Slot</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                                        </path>
+                                                    </svg>
+                                                    <span>Pelaksanaan: {{ ucfirst($program->type) }}</span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between relative z-20 bg-white">
+                                                <span class="text-lg font-bold text-orange-500">Rp
+                                                    {{ number_format($program->price, 0, ',', '.') }}</span>
+                                                <div
+                                                    class="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
-                            </div>
-                        @endforelse
+                            @endforeach
+                        </div>
                     </div>
-                </div>
 
-                <!-- Navigation Buttons -->
-                <button
-                    class="program-prev absolute top-1/2 -left-4 lg:-left-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
-                <button
-                    class="program-next absolute top-1/2 -right-4 lg:-right-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
+                    <!-- Navigation Buttons -->
+                    <button
+                        class="program-prev absolute top-1/2 -left-4 lg:-left-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button
+                        class="program-next absolute top-1/2 -right-4 lg:-right-6 z-30 w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-blue-600 hover:text-white transition-all duration-300 focus:outline-none transform -translate-y-1/2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                @else
+                    <!-- Empty State -->
+                    <div class="w-full flex flex-col items-center justify-center py-12 px-4 text-center">
+                        <div class="relative w-48 h-48 mb-6 animate-bounce" style="animation-duration: 3s;">
+                            <!-- Animated Illustration (Robotic/Tech Theme) -->
+                            <svg class="w-full h-full drop-shadow-xl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Floating Elements -->
+                                <circle cx="100" cy="100" r="80" class="fill-blue-50 animate-pulse" style="animation-duration: 4s;"/>
+                                
+                                <!-- Robot Head / Search Icon Composite -->
+                                <path d="M60 90C60 67.9086 77.9086 50 100 50C122.091 50 140 67.9086 140 90V130C140 141.046 131.046 150 120 150H80C68.9543 150 60 141.046 60 130V90Z" class="fill-white"/>
+                                <rect x="75" y="80" width="15" height="15" rx="7.5" class="fill-blue-200"/>
+                                <rect x="110" y="80" width="15" height="15" rx="7.5" class="fill-blue-200"/>
+                                <path d="M85 115C85 115 90 122 100 122C110 122 115 115 115 115" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+                                
+                                <!-- Gear Icon (Rotating) -->
+                                <g class="origin-center animate-[spin_10s_linear_infinite]" style="transform-box: fill-box;">
+                                    <path d="M160 50L170 45L165 35L155 40L160 50Z" class="fill-orange-400"/>
+                                    <circle cx="160" cy="45" r="3" class="fill-white"/>
+                                </g>
+
+                                <!-- Search Magnifier -->
+                                <path d="M130 130L150 150" stroke="#F97316" stroke-width="8" stroke-linecap="round"/>
+                                <circle cx="125" cy="125" r="15" class="stroke-orange-500 fill-white" stroke-width="4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Belum Ada Program</h3>
+                        <p class="text-gray-500 max-w-xs mx-auto mb-6">
+                            Saat ini kami sedang menyiapkan program terbaik untuk Anda. Cek kembali nanti ya!
+                        </p>
+                        <a href="#category" class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-50 text-blue-600 rounded-full font-semibold hover:bg-blue-100 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                            </svg>
+                            Lihat Kategori Lain
+                        </a>
+                    </div>
+                @endif
         </div>
     </section>
 
@@ -954,7 +985,7 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-blue-600/30 transition-all duration-300 pointer-events-none opacity-75 cursor-not-allowed">
+                            class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-blue-600/30 transition-all duration-300 cursor-pointer">
                             Kirim Pesan
                         </button>
                     </form>
@@ -992,9 +1023,9 @@
                             showCancelButton: true,
                             cancelButtonText: 'Batal'
                         }).then((result) => {
-                            //if (result.isConfirmed) {
-                                //window.location.href = "{{ route('login') }}";
-                            //}
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ route('login') }}";
+                            }
                         });
                     @endif
                 });

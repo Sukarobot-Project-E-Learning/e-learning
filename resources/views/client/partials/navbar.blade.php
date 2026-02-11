@@ -38,11 +38,11 @@
                 </div>
 
                 <!-- Artikel -->
-                <a href="{{ url('/artikel') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors cursor-not-allowed pointer-events-none opacity-75">Artikel</a>
+                <a href="{{ url('/artikel') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Artikel</a>
 
                 <!-- Auth Buttons -->
                 @guest
-                    <a href="{{ url('/login') }}" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30 cursor-not-allowed pointer-events-none opacity-75">
+                    <a href="{{ url('/login') }}" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30">
                         Masuk
                     </a>
                 @endguest
