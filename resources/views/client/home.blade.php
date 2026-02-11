@@ -614,7 +614,7 @@
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
                                 </p>
                                 <div class="flex items-center">
-                                    <a href="https://src.sukarobot.com/"
+                                    <a href="https://src.sukarobot.com/" target="_blank" rel="noopener noreferrer"
                                         class="px-8 py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-lg hover:shadow-orange-500/30">
                                         Daftar Sekarang
                                     </a>
@@ -643,7 +643,7 @@
                                     Selain itu hadiah menarik dan penghargaan yang menanti untuk para pemenang!
                                 </p>                                
                                     <div class="flex items-center">
-                                        <a href="https://brc.sukarobot.com/"
+                                        <a href="https://brc.sukarobot.com/" target="_blank" rel="noopener noreferrer"s
                                             class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30">
                                             Daftar Sekarang
                                         </a>
