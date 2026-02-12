@@ -58,7 +58,6 @@ class TransactionController extends Controller
             'headerAction' => [
                 'label' => 'Export',
                 'url' => route('admin.transactions.export'),
-                'icon' => 'fa-download',
             ],
             'filter' => [
                 'key' => 'status',

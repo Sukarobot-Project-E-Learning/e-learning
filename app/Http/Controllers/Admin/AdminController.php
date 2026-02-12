@@ -145,7 +145,15 @@ class AdminController extends Controller
                 'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ]);
 
+            // Check admin count and active status to ensure at least 1 active admin remains
+            $adminCount = DB::table('users')->where('role', 'admin')->count();
+            $activeAdminCount = DB::table('users')->where('role', 'admin')->where('is_active', true)->count();
             $isActive = strtolower($validated['status'] ?? 'aktif') === 'aktif';
+            
+            // Prevent status change to inactive if this would leave no active admins
+            if (!$isActive && $activeAdminCount <= 1) {
+                return redirect()->back()->withInput()->with('error', 'Tidak dapat mengubah status admin menjadi tidak aktif. Minimal harus ada 1 admin aktif dalam sistem.');
+            }
 
             $updateData = [
                 'name' => $validated['name'],

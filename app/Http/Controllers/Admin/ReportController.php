@@ -45,7 +45,6 @@ class ReportController extends Controller
             'headerAction' => [
                 'label' => 'Export',
                 'url' => route('admin.reports.export'),
-                'icon' => 'fa-download',
             ],
             'transformer' => function ($report) {
                 $schedule = DB::table('schedules')

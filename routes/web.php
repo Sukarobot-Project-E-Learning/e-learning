@@ -83,12 +83,12 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     Route::delete('users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
     // Admin Management (role='admin')
-    Route::get('admins', [\App\Http\Controllers\Admin\UserController::class, 'indexAdmins'])->name('admins.index');
-    Route::get('admins/create', [\App\Http\Controllers\Admin\UserController::class, 'createAdmin'])->name('admins.create');
-    Route::post('admins', [\App\Http\Controllers\Admin\UserController::class, 'storeAdmin'])->name('admins.store');
-    Route::get('admins/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'editAdmin'])->name('admins.edit');
-    Route::put('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'updateAdmin'])->name('admins.update');
-    Route::delete('admins/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroyAdmin'])->name('admins.destroy');
+    Route::get('admins', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admins.index');
+    Route::get('admins/create', [\App\Http\Controllers\Admin\AdminController::class, 'create'])->name('admins.create');
+    Route::post('admins', [\App\Http\Controllers\Admin\AdminController::class, 'store'])->name('admins.store');
+    Route::get('admins/{id}/edit', [\App\Http\Controllers\Admin\AdminController::class, 'edit'])->name('admins.edit');
+    Route::put('admins/{id}', [\App\Http\Controllers\Admin\AdminController::class, 'update'])->name('admins.update');
+    Route::delete('admins/{id}', [\App\Http\Controllers\Admin\AdminController::class, 'destroy'])->name('admins.destroy');
 
 
     // Program Management
