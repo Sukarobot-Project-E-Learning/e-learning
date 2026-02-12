@@ -122,7 +122,7 @@ class InstructorController extends Controller
             $instructor->application_id = $applicationData->id ?? null;
         }
 
-        return view('admin.instructors.detail', compact('instructor'));
+        return view('admin.instructors.show', compact('instructor'));
     }
 
     /**

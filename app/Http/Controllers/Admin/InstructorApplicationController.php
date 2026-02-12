@@ -72,7 +72,7 @@ class InstructorApplicationController extends Controller
             return response()->json($data);
         }
 
-        return view('admin.instructors.applications', compact('data'));
+        return view('admin.instructor-applications.index', compact('data'));
     }
 
     /**
@@ -94,7 +94,7 @@ class InstructorApplicationController extends Controller
                 ->with('error', 'Pengajuan tidak ditemukan');
         }
 
-        return view('admin.instructors.show', compact('application'));
+        return view('admin.instructor-applications.show', compact('application'));
     }
 
     /**
