@@ -248,8 +248,8 @@
             <tr class="hover:bg-blue-50/50 dark:hover:bg-gray-700/50 transition-colors duration-150">
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                            <span class="text-sm font-bold text-white">${TableUtils.escapeHtml((item.title || 'P').charAt(0).toUpperCase())}</span>
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+                            ${item.image ? `<img src="/storage/${item.image}" alt="${TableUtils.escapeHtml(item.title)}" class="w-full h-full object-cover">` : `<span class="text-sm font-bold text-white">${TableUtils.escapeHtml((item.title || 'P').charAt(0).toUpperCase())}</span>`}
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="font-semibold text-gray-900 dark:text-white truncate">${title}</p>
@@ -310,8 +310,8 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden p-4">
                 <div class="flex items-start justify-between gap-3 mb-3">
                     <div class="flex items-center gap-3 min-w-0 flex-1">
-                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <span class="text-lg font-bold text-white">${TableUtils.escapeHtml((item.title || 'P').charAt(0).toUpperCase())}</span>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
+                            ${item.image ? `<img src="/storage/${item.image}" alt="${TableUtils.escapeHtml(item.title)}" class="w-full h-full object-cover">` : `<span class="text-lg font-bold text-white">${TableUtils.escapeHtml((item.title || 'P').charAt(0).toUpperCase())}</span>`}
                         </div>
                         <div class="min-w-0 flex-1">
                             <h3 class="font-semibold text-gray-900 dark:text-white truncate">${title}</h3>

@@ -541,14 +541,8 @@ class ImageCropper {
         const srcW = circleSizeInDisplayed * scaleX;
         const srcH = circleSizeInDisplayed * scaleY;
 
-        // Clear and clip to circle
+        // Clear and clip to square
         ctx.clearRect(0, 0, this.outputSize, this.outputSize);
-        ctx.beginPath();
-        ctx.arc(this.outputSize / 2, this.outputSize / 2, this.outputSize / 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-
-        // Fill white background
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, this.outputSize, this.outputSize);
 
