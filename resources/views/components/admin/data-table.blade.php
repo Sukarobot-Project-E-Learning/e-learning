@@ -87,6 +87,19 @@
         ];
         return $defaultClasses[$value] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     };
+    
+    // Helper to check if show view exists
+    $hasShowView = function() use ($route) {
+        if (!$route) return false;
+        $viewPath = $route . '.show';
+        return view()->exists($viewPath);
+    };
+    
+    // Determine if show action should be visible
+    $showActionExists = $hasShowView();
+    
+    // Check if there are any actions available
+    $hasAnyActions = $showActionExists || (in_array('edit', $actions) && $route) || (in_array('delete', $actions) && $route);
 @endphp
 
 <div class="admin-data-table" 
@@ -137,7 +150,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
                     @endif
-                    {{ $headerAction['label'] ?? 'Action' }}
+                    {{ $headerAction['label'] ?? 'Aksi' }}
                 </a>
             @endif
             @if($showCreate && $route)
@@ -276,7 +289,7 @@
                     @endif
                 </div>
                 <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-2">
-                    @if((in_array('show', $actions) || in_array('view', $actions)) && $route)
+                    @if($showActionExists && $route)
                         <a href="{{ route($route . '.show', [$routeParam => $item->id]) }}"
                            class="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors">Lihat</a>
                     @endif
@@ -318,6 +331,7 @@
                         @endif
                         @foreach($columns as $col)
                             @php $col = is_array($col) ? (object) $col : $col; @endphp
+                            @if(!(($col->type ?? '') === 'actions' && !$hasAnyActions))
                             <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider {{ ($col->sortable ?? false) ? 'cursor-pointer hover:bg-orange-600 active:bg-orange-700 select-none transition-colors' : '' }}"
                                 @if($col->sortable ?? false)
                                     onclick="window.AdminDataTable.sort('{{ $col->key }}')"
@@ -331,6 +345,7 @@
                                     @endif
                                 </div>
                             </th>
+                            @endif
                         @endforeach
                     </tr>
                 </thead>
@@ -350,6 +365,7 @@
                                     $colType = $col->type ?? 'text';
                                     $colVal = $item->$colKey ?? null;
                                 @endphp
+                                @if(!($colType === 'actions' && !$hasAnyActions))
                                 <td class="px-6 py-4">
                                     @switch($colType)
                                         @case('primary')
@@ -407,7 +423,7 @@
                                             @break
                                         @case('actions')
                                             <div class="flex items-center gap-3">
-                                                @if((in_array('show', $actions) || in_array('view', $actions)) && $route)
+                                                @if($showActionExists && $route)
                                                     <a href="{{ route($route . '.show', [$routeParam => $item->id]) }}"
                                                        class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                        title="Lihat Detail"
@@ -449,11 +465,15 @@
                                             </span>
                                     @endswitch
                                 </td>
+                                @endif
                             @endforeach
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ count($columns) }}" class="px-6 py-12 text-center text-gray-500">
+                            @php
+                                $visibleColCount = collect($columns)->filter(fn($c) => !((is_array($c) ? ($c['type'] ?? '') : ($c->type ?? '')) === 'actions' && !$hasAnyActions))->count();
+                            @endphp
+                            <td colspan="{{ $visibleColCount }}" class="px-6 py-12 text-center text-gray-500">
                                 <svg class="w-16 h-16 mx-auto mb-4 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                                 </svg>

@@ -22,18 +22,33 @@ class RevenueChart {
   /**
    * Build chart configuration
    * @param {Object} yearData - Data for specific year
+   * @param {number} year - Current year for filtering future months
    * @returns {Object} ApexCharts configuration
    */
-  buildConfig(yearData) {
+  buildConfig(yearData, year) {
     const colors = ChartTheme.getColors();
     const baseConfig = ChartTheme.getBaseConfig();
+
+    // Filter data to only show months up to current month
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth(); // 0-indexed
+    
+    let filteredRevenue = yearData.revenue || [];
+    let filteredMonths = yearData.months || [];
+    
+    // Only filter if viewing the current year
+    if (year == currentYear) {
+      filteredRevenue = filteredRevenue.slice(0, currentMonth + 1);
+      filteredMonths = filteredMonths.slice(0, currentMonth + 1);
+    }
 
     return {
       ...baseConfig,
       series: [
         {
           name: 'Pendapatan',
-          data: yearData.revenue || []
+          data: filteredRevenue
         }
       ],
       chart: {
@@ -52,7 +67,7 @@ class RevenueChart {
         enabled: false
       },
       xaxis: {
-        categories: yearData.months || [],
+        categories: filteredMonths,
         labels: {
           style: {
             fontSize: '12px',
@@ -141,7 +156,7 @@ class RevenueChart {
     }
 
     // Create and render new chart
-    const config = this.buildConfig(yearData);
+    const config = this.buildConfig(yearData, year);
     this.chart = new ApexCharts(this.container, config);
     this.chart.render();
   }

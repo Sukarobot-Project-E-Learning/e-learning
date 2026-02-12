@@ -28,7 +28,7 @@ class InstructorController extends Controller
                 ['key' => 'avatar', 'label' => 'Foto', 'sortable' => false, 'type' => 'avatar'],
                 ['key' => 'expertise', 'label' => 'Keahlian', 'sortable' => false],
                 ['key' => 'is_active', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
-                ['key' => 'actions', 'label' => 'Action', 'sortable' => false, 'type' => 'actions'],
+                ['key' => 'actions', 'label' => 'Aksi', 'sortable' => false, 'type' => 'actions'],
             ],
             'searchable' => ['name', 'email', 'phone'],
             'sortable' => ['name', 'email', 'phone', 'is_active', 'created_at'],
