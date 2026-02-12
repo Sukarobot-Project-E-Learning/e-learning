@@ -24,8 +24,8 @@ jobs:
 
       - name: Prepare staging code for production
         run: |
-          # Create a temporary worktree with staging code
-          git worktree add /tmp/prod-push main
+          # Create a temporary worktree with staging code (detached HEAD to avoid branch conflict)
+          git worktree add /tmp/prod-push --detach main
           cd /tmp/prod-push
           
           # Remove workflows to prevent production environment from being affected
