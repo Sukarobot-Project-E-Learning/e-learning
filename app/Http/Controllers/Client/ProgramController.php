@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Artesaos\SEOTools\Facades\SEOTools;
 
 class ProgramController extends Controller
 {
@@ -24,6 +25,13 @@ class ProgramController extends Controller
             ->where('data_programs.status', 'published')
             ->where('data_programs.status', 'published');
             // ->where('data_programs.start_date', '>', now()); // Removed to show all programs
+
+        SEOTools::setTitle('Program Kami');
+        SEOTools::setDescription('Temukan berbagai program belajar robotika dan coding yang sesuai dengan kebutuhan Anda. Mulai dari kursus, pelatihan, hingga sertifikasi.');
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'website');
+        SEOTools::twitter()->setSite('@sukarobot');
 
         // Get active category from query parameter (for URL state and tab highlighting)
         $activeCategory = $request->get('category', 'all');
@@ -84,6 +92,43 @@ class ProgramController extends Controller
                 ->where('program_id', $program->id)
                 ->where('status', 'active')
                 ->exists();
+        }
+
+        SEOTools::setTitle($program->program);
+        SEOTools::setDescription(\Illuminate\Support\Str::limit(strip_tags($program->description), 150));
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'article');
+        
+        if ($program->image) {
+             $imgUrl = ($program->image && str_starts_with($program->image, 'images/'))
+                ? asset($program->image) 
+                : asset('storage/' . $program->image);
+            SEOTools::addImages($imgUrl);
+            SEOTools::jsonLd()->addImage($imgUrl);
+        }
+
+        // Add JSON-LD for Course Schema
+        SEOTools::jsonLd()->addValue('@context', 'https://schema.org');
+        SEOTools::jsonLd()->addValue('@type', 'Course');
+        SEOTools::jsonLd()->addValue('name', $program->program);
+        SEOTools::jsonLd()->addValue('description', \Illuminate\Support\Str::limit(strip_tags($program->description), 150));
+        SEOTools::jsonLd()->addValue('provider', [
+            '@type' => 'Organization',
+            'name' => 'Sukarobot Academy',
+            'sameAs' => url('/')
+        ]);
+        
+        // Add Offer/Pricing
+        if ($program->price >= 0) {
+             SEOTools::jsonLd()->addValue('offers', [
+                '@type' => 'Offer',
+                'price' => $program->price,
+                'priceCurrency' => 'IDR',
+                'availability' => $program->available_slots > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'url' => url()->current(),
+                'category' => $program->category
+            ]);
         }
 
         return view('client.program.detail-program', compact('program', 'isPurchased'));

@@ -117,9 +117,7 @@ class ArticleController extends Controller
             'status' => 'required|in:Publish,Draft',
             'image' => 'required|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
             'excerpt' => 'nullable|string',
-            'meta_title' => 'nullable|string|max:60',
-            'meta_description' => 'nullable|string|max:160',
-            'meta_keywords' => 'nullable|string|max:255',
+            'excerpt' => 'nullable|string',
         ], [
             'title.required' => 'Judul artikel harus diisi',
             'category.required' => 'Kategori artikel harus diisi',
@@ -150,9 +148,6 @@ class ArticleController extends Controller
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
                 'published_at' => $validated['status'] === 'Publish' ? now() : null,
-                'meta_title' => $validated['meta_title'],
-                'meta_description' => $validated['meta_description'],
-                'meta_keywords' => $validated['meta_keywords'],
                 'author_id' => Auth::id(),
                 'views' => 0,
             ]);
@@ -256,9 +251,6 @@ class ArticleController extends Controller
                 'image' => $imagePath,
                 'is_published' => $validated['status'] === 'Publish',
                 'published_at' => $validated['status'] === 'Publish' && !$article->published_at ? now() : $article->published_at,
-                'meta_title' => $validated['meta_title'],
-                'meta_description' => $validated['meta_description'],
-                'meta_keywords' => $validated['meta_keywords'],
             ]);
 
             return redirect()->route('admin.articles.index')

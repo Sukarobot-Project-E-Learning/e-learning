@@ -179,9 +179,7 @@ Route::name('client.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Client\HomeController::class, 'index'])->name('home');
     Route::post('/contact', [\App\Http\Controllers\Client\HomeController::class, 'sendContact'])->name('contact.send');
 
-    Route::get('/tentang', function () {
-        return view('client.about.tentang');
-    })->name('tentang');
+    Route::get('/tentang', [\App\Http\Controllers\Client\PageController::class, 'tentang'])->name('tentang');
 
     // Program Routes
     Route::prefix('program')->name('program')->group(function () {
@@ -202,21 +200,10 @@ Route::name('client.')->group(function () {
         Route::get('/{slug}', [\App\Http\Controllers\Client\ProgramController::class, 'show'])->name('.detail');
     });
 
-    Route::get('/kompetisi', function () {
-        return view('client.kompetisi');
-    })->name('kompetisi');
-
-    Route::get('/kompetisi/{id}', function () {
-        return view('client.detail-kompetisi');
-    })->name('kompetisi.detail');
 
     Route::get('/artikel', [\App\Http\Controllers\Client\ArticleController::class, 'index'])->name('artikel');
     Route::get('/artikel/api', [\App\Http\Controllers\Client\ArticleController::class, 'getArticles'])->name('artikel.api');
     Route::get('/artikel/{slug}', [\App\Http\Controllers\Client\ArticleController::class, 'show'])->name('artikel.detail');
-
-    Route::get('/berita', function () {
-        return view('client.berita');
-    })->name('berita');
 
     Route::get('/instruktur', [\App\Http\Controllers\Client\InstructorController::class, 'index'])->name('instruktur');
 

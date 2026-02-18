@@ -5,11 +5,18 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
+use Artesaos\SEOTools\Facades\SEOTools;
 
 class InstructorController extends Controller
 {
     public function index()
     {
+        SEOTools::setTitle('Instruktur & Pengajar');
+        SEOTools::setDescription('Kenalan dengan para instruktur dan pengajar berpengalaman di Sukarobot Academy yang siap membimbing Anda.');
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'profile');
+
         $instructors = Instructor::join('users', function($join) {
             $join->on('users.email', '=', \Illuminate\Support\Facades\DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
         })

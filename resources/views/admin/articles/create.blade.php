@@ -80,37 +80,6 @@
                     </div>
                 </div>
 
-                <!-- Section 2: SEO Config -->
-                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
-                    @include('panel.partials.forms.section-header', [
-                        'title' => 'Konfigurasi SEO',
-                        'subtitle' => 'Optimasi untuk mesin pencari',
-                        'color' => 'green',
-                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>'
-                    ])
-
-                    <div class="space-y-5">
-                        @include('panel.partials.forms.input-text', [
-                            'name' => 'meta_title',
-                            'label' => 'Meta Title',
-                            'placeholder' => 'Judul untuk mesin pencari (opsional)'
-                        ])
-
-                        @include('panel.partials.forms.textarea', [
-                            'name' => 'meta_description',
-                            'label' => 'Meta Description',
-                            'placeholder' => 'Deskripsi untuk mesin pencari (opsional)',
-                            'rows' => 2
-                        ])
-
-                        @include('panel.partials.forms.input-text', [
-                            'name' => 'meta_keywords',
-                            'label' => 'Meta Keywords',
-                            'placeholder' => 'keyword1, keyword2, keyword3 (pisahkan dengan koma)'
-                        ])
-                    </div>
-                </div>
-
                 <!-- Section 3: Content -->
                 <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
                     @include('panel.partials.forms.section-header', [

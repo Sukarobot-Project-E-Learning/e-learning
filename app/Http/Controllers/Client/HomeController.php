@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactMessage;
+use Artesaos\SEOTools\Facades\SEOTools;
 
 class HomeController extends Controller
 {
@@ -15,6 +16,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+        SEOTools::setTitle('Home');
+        SEOTools::setDescription('Platform Belajar Robotika dan Coding Terbaik di Indonesia. Tingkatkan kompetensi Anda di berbagai bidang bersama para ahli.');
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'website');
+        SEOTools::twitter()->setSite('@sukarobot');
+
         // Get popular programs (top rated and most enrolled)
         $popularPrograms = DB::table('data_programs')
             ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')

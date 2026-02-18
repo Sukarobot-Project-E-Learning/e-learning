@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Artesaos\SEOTools\Facades\SEOTools;
 
 class ArticleController extends Controller
 {
@@ -13,6 +14,12 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
+        SEOTools::setTitle('Artikel & Berita');
+        SEOTools::setDescription('Baca artikel terbaru seputar teknologi, robotika, dan coding serta berita terkini dari Sukarobot Academy.');
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'website');
+
         $query = Article::published()
             ->with('author')
             ->orderBy('published_at', 'desc');
@@ -127,6 +134,21 @@ class ArticleController extends Controller
             ->orderBy('published_at', 'desc')
             ->limit(3)
             ->get();
+
+        SEOTools::setTitle($article->title);
+        SEOTools::setDescription($article->excerpt);
+        SEOTools::opengraph()->setUrl(url()->current());
+        SEOTools::setCanonical(url()->current());
+        SEOTools::opengraph()->addProperty('type', 'article');
+        SEOTools::jsonLd()->addValue('author', [
+            '@type' => 'Person',
+            'name' => $article->author->name ?? 'Admin',
+        ]);
+        SEOTools::jsonLd()->addValue('datePublished', $article->published_at);
+        
+        if ($article->image_url) {
+            SEOTools::addImages($article->image_url);
+        }
 
         return view('client.artikel.detail', compact('article', 'relatedArticles'));
     }
