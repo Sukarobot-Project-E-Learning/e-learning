@@ -89,12 +89,7 @@
                             'name' => 'expertise',
                             'label' => 'Keahlian',
                             'required' => true,
-                            'options' => [
-                                'Web Programming' => 'Web Programming',
-                                'Digital Marketing' => 'Digital Marketing',
-                                'Microsoft Office' => 'Microsoft Office',
-                                'Desain Grafis' => 'Desain Grafis'
-                            ],
+                            'options' => $expertiseOptions ?? [],
                             'placeholder' => 'Pilih Keahlian',
                             'addNewText' => '➕ Tambah Keahlian Baru...',
                             'customPlaceholder' => 'Masukkan keahlian baru...'

@@ -104,12 +104,7 @@
                             'label' => 'Keahlian',
                             'required' => true,
                             'value' => old('expertise', $instructor->expertise ?? ''),
-                            'options' => [
-                                'Web Programming' => 'Web Programming',
-                                'Digital Marketing' => 'Digital Marketing',
-                                'Microsoft Office' => 'Microsoft Office',
-                                'Desain Grafis' => 'Desain Grafis'
-                            ],
+                            'options' => $expertiseOptions ?? [],
                             'placeholder' => 'Pilih Keahlian',
                             'addNewText' => '➕ Tambah Keahlian Baru...',
                             'customPlaceholder' => 'Masukkan keahlian baru...'
