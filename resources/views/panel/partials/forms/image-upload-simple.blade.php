@@ -81,7 +81,6 @@
                    type="file" 
                    class="hidden" 
                    accept="{{ $accept }}"
-                   @if($isRequired && empty($currentImage)) required @endif
                    data-file-input>
         </div>
     </div>

@@ -11,24 +11,7 @@
         <x-admin.data-table :data="$data" />
     </div>
 
-    @if(session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ title: "{{ session('success') }}", icon: "success" });
-                }
-            });
-        </script>
-    @endif
-    @if(session('error'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ title: "Error!", text: "{{ session('error') }}", icon: "error" });
-                }
-            });
-        </script>
-    @endif
+
 @endsection
 
 @push('scripts')

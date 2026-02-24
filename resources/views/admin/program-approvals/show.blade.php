@@ -251,36 +251,6 @@
                 if (document.body.dataset.programApprovalAlertsInitialized === 'true') return;
                 document.body.dataset.programApprovalAlertsInitialized = 'true';
 
-                // Session flash messages
-                @if(session('success'))
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: '{{ session('success') }}',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    });
-                @endif
-
-                @if(session('error'))
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: '{{ session('error') }}',
-                        confirmButtonColor: '#EF4444'
-                    });
-                @endif
-
-                @if(session('info'))
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Info',
-                        text: '{{ session('info') }}',
-                        confirmButtonColor: '#3B82F6'
-                    });
-                @endif
-
                 // Approve button with SweetAlert2 confirmation
                 const approveBtn = document.getElementById('approveBtn');
                 const approveForm = document.getElementById('approveForm');

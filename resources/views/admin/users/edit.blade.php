@@ -245,22 +245,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script>
-    // Handle success/error messages from session
-    @if(session('success'))
-    Swal.fire({
-        title: "{{ session('success') }}",
-        icon: "success",
-        draggable: true
-    });
-    @endif
 
-    @if(session('error'))
-    Swal.fire({
-        title: "Error!",
-        text: "{{ session('error') }}",
-        icon: "error"
-    });
-    @endif
-</script>
 @endpush

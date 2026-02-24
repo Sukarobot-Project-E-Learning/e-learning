@@ -81,24 +81,70 @@
     // Handle Flash Messages on Page Load
     @php
         $isProgramForm = request()->is('*/programs/create') || request()->is('*/programs/*/edit');
+        $hasFlash = session('success') || session('error') || $errors->any() || session('info');
     @endphp
     
     @unless($isProgramForm)
-    document.addEventListener('DOMContentLoaded', function () {
-        // Flash Messages
-        @if(session('success'))
-            SwalConfig.success('Berhasil!', '{{ session('success') }}');
-        @endif
+    @if($hasFlash)
+    (function() {
+        // Generate unique ID per page load to prevent bfcache re-triggering
+        var flashId = '{{ md5(session()->getId() . microtime()) }}';
 
-        @if(session('error'))
-            SwalConfig.error('Gagal!', '{{ session('error') }}');
-        @endif
+        function showFlashAlerts() {
+            // Prevent duplicate firing (bfcache / double-init)
+            if (sessionStorage.getItem('_swal_shown_' + flashId)) return;
+            sessionStorage.setItem('_swal_shown_' + flashId, '1');
 
-        @if($errors->any())
-            const errorMessages = @json($errors->all());
-            SwalConfig.validationError(errorMessages);
-        @endif
-    });
+            // Clean up old flash IDs (keep only last 10)
+            var keys = [];
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                if (key && key.startsWith('_swal_shown_')) keys.push(key);
+            }
+            if (keys.length > 10) {
+                keys.slice(0, keys.length - 10).forEach(function(k) { sessionStorage.removeItem(k); });
+            }
+
+            @if(session('success'))
+                SwalConfig.success('Berhasil!', '{{ session('success') }}');
+            @endif
+
+            @if(session('error'))
+                SwalConfig.error('Gagal!', '{{ session('error') }}');
+            @endif
+
+            @if(session('info'))
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Info',
+                    text: '{{ session('info') }}',
+                    confirmButtonColor: window.SwalConfig.primaryColor
+                });
+            @endif
+
+            @if($errors->any())
+                var errorMessages = @json($errors->all());
+                SwalConfig.validationError(errorMessages);
+            @endif
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showFlashAlerts);
+        } else {
+            showFlashAlerts();
+        }
+
+        // Clean up SweetAlert DOM when page is restored from bfcache
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                // Page restored from bfcache - dismiss any lingering SweetAlert
+                if (typeof Swal !== 'undefined' && Swal.isVisible()) {
+                    Swal.close();
+                }
+            }
+        });
+    })();
+    @endif
     @endunless
 
     // Helper function for delete forms

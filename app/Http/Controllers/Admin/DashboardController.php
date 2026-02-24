@@ -81,16 +81,22 @@ class DashboardController extends Controller
             ->count();
 
         // ===== PROGRAM REVIEWS DATA =====
-        $programReviews = DB::table('program_reviews')
-            ->join('users', 'program_reviews.student_id', '=', 'users.id')
-            ->join('data_programs', 'program_reviews.program_id', '=', 'data_programs.id')
+        $programReviews = DB::table('program_proofs')
+            ->join('users', 'program_proofs.student_id', '=', 'users.id')
+            ->join('data_programs', 'program_proofs.program_id', '=', 'data_programs.id')
+            ->whereNotNull('program_proofs.rating')
             ->select(
-                'program_reviews.*',
+                'program_proofs.id',
+                'program_proofs.student_id',
+                'program_proofs.program_id',
+                'program_proofs.rating',
+                'program_proofs.review',
+                'program_proofs.created_at',
                 'users.name as student_name',
                 'users.avatar as student_avatar',
                 'data_programs.program as program_name'
             )
-            ->orderBy('program_reviews.created_at', 'desc')
+            ->orderBy('program_proofs.created_at', 'desc')
             ->limit(20)
             ->get();
 
