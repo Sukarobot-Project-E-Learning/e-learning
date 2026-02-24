@@ -24,14 +24,20 @@ class DashboardController extends Controller
         $totalStudents = DB::table('users')->where('role', 'user')->where('is_active', 1)->count();
         $totalPrograms = DB::table('data_programs')->count();
         
-        // Program tersedia (status = published)
+        $now = Carbon::now();
+        
+        // Program Aktif: published AND not finished (running or upcoming)
         $programsAvailable = DB::table('data_programs')
             ->where('status', 'published')
+            ->where('end_date', '>=', $now)
             ->count();
         
-        // Program tidak tersedia (status != published)
+        // Program Non Aktif: finished (end_date passed) OR not published (draft/archived)
         $programsUnavailable = DB::table('data_programs')
-            ->whereIn('status', ['draft', 'archived'])
+            ->where(function ($query) use ($now) {
+                $query->where('end_date', '<', $now)
+                      ->orWhereIn('status', ['draft', 'archived']);
+            })
             ->count();
         
         // Calculate total revenue from transactions table (only paid transactions)
