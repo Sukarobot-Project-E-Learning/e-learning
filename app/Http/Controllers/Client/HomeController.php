@@ -25,10 +25,10 @@ class HomeController extends Controller
 
         // Get popular programs (top rated and most enrolled)
         $popularPrograms = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name'
+                'data_trainers.nama as instructor_name'
             )
             ->where('data_programs.status', 'published')
             // ->where('data_programs.start_date', '>', now()) // Removed to show all programs

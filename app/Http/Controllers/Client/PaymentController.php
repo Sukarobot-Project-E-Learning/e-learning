@@ -33,10 +33,10 @@ class PaymentController extends Controller
 
         // Get program by slug
         $program = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name'
+                'data_trainers.nama as instructor_name'
             )
             ->where('data_programs.slug', $programSlug)
             ->where('data_programs.status', 'published')

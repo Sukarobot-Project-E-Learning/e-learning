@@ -15,14 +15,13 @@ class ProgramController extends Controller
     public function index(Request $request)
     {
         $query = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name',
-                'users.avatar as instructor_avatar',
-                'users.job as instructor_job'
+                'data_trainers.nama as instructor_name',
+                'data_trainers.foto as instructor_avatar',
+                'data_trainers.pekerjaan as instructor_job'
             )
-            ->where('data_programs.status', 'published')
             ->where('data_programs.status', 'published');
             // ->where('data_programs.start_date', '>', now()); // Removed to show all programs
 
@@ -59,15 +58,12 @@ class ProgramController extends Controller
     public function show($slug)
     {
         $program = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
-            ->leftJoin('data_trainers', function($join) {
-                $join->on('users.email', '=', DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
-            })
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name',
-                'users.avatar as instructor_avatar',
-                'users.job as instructor_job',
+                'data_trainers.nama as instructor_name',
+                'data_trainers.foto as instructor_avatar',
+                'data_trainers.pekerjaan as instructor_job',
                 'data_trainers.bio as instructor_description'
             )
             ->where('data_programs.slug', $slug)
@@ -168,14 +164,13 @@ class ProgramController extends Controller
     public function getPopularPrograms()
     {
         $programs = DB::table('data_programs')
-            ->leftJoin('users', 'data_programs.instructor_id', '=', 'users.id')
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
             ->select(
                 'data_programs.*',
-                'users.name as instructor_name',
-                'users.avatar as instructor_avatar',
-                'users.job as instructor_job'
+                'data_trainers.nama as instructor_name',
+                'data_trainers.foto as instructor_avatar',
+                'data_trainers.pekerjaan as instructor_job'
             )
-            ->where('data_programs.status', 'published')
             ->where('data_programs.status', 'published')
             // ->where('data_programs.start_date', '>', now()) // Removed to show all programs
             ->orderBy('data_programs.rating', 'desc')
