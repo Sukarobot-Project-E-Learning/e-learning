@@ -29,7 +29,7 @@ class PromoController extends Controller
             'sortable' => ['title', 'is_active', 'created_at'],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.promos',
-            'title' => 'Promo Management',
+            'title' => 'Manajemen Promo',
             'entity' => 'promo',
             'createLabel' => 'Tambah Promo',
             'searchPlaceholder' => 'Cari judul promo...',

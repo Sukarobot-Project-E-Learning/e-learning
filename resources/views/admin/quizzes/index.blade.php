@@ -1,6 +1,6 @@
 @extends('panel.layouts.app')
 
-@section('title', 'Quiz Management')
+@section('title', 'Manajemen Post Test')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/admin-table.css') }}">

@@ -53,7 +53,7 @@ class ArticleController extends Controller
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.articles',
-            'title' => 'Artikel Management',
+            'title' => 'Manajemen Artikel',
             'entity' => 'artikel',
             'createLabel' => 'Tambah Artikel',
             'searchPlaceholder' => 'Cari judul, kategori, penulis...',

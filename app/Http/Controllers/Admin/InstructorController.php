@@ -35,7 +35,7 @@ class InstructorController extends Controller
             'actions' => ['edit', 'delete'],
             'route' => 'admin.instructors',
             'routeParam' => 'id',
-            'title' => 'Instruktur Management',
+            'title' => 'Manajemen Instruktur',
             'entity' => 'instruktur',
             'createLabel' => 'Tambah Instruktur',
             'transformer' => function($user) {

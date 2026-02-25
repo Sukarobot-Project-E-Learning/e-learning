@@ -1,6 +1,6 @@
 @extends('panel.layouts.app')
 
-@section('title', 'Broadcast Management')
+@section('title', 'Manajemen Broadcast')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/admin-table.css') }}">

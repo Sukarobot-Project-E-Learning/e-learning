@@ -7,9 +7,13 @@
 @php
     $avatarUrl = null;
     if (!empty($admin->avatar)) {
-        $avatarUrl = str_starts_with($admin->avatar, 'images/') 
-            ? asset($admin->avatar) 
-            : asset('storage/' . $admin->avatar);
+        if (str_starts_with($admin->avatar, 'http://') || str_starts_with($admin->avatar, 'https://')) {
+            $avatarUrl = $admin->avatar;
+        } elseif (str_starts_with($admin->avatar, 'images/')) {
+            $avatarUrl = asset($admin->avatar);
+        } else {
+            $avatarUrl = asset('storage/' . $admin->avatar);
+        }
     }
 @endphp
 

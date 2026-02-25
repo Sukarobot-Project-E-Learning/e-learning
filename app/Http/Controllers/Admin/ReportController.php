@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ReportController extends Controller
 {
@@ -37,7 +43,7 @@ class ReportController extends Controller
             'actions' => [],
             'route' => 'admin.reports',
             'routeParam' => 'id',
-            'title' => 'Laporan Management',
+            'title' => 'Manajemen Laporan',
             'entity' => 'laporan',
             'showCreate' => false,
             'showFilter' => false,
@@ -82,11 +88,10 @@ class ReportController extends Controller
     }
 
     /**
-     * Export reports to Excel/CSV
+     * Export reports to Excel (.xlsx)
      */
     public function export()
     {
-        // Get all reports data
         $reports = DB::table('data_programs')
             ->select(
                 'data_programs.id',
@@ -96,9 +101,29 @@ class ReportController extends Controller
             ->orderBy('data_programs.created_at', 'desc')
             ->get();
 
-        // Transform data
-        $exportData = $reports->map(function ($report) {
-            // Get schedule for this program
+        // ── Build spreadsheet ──
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator('E-Learning Platform')
+            ->setTitle('Laporan Program')
+            ->setDescription('Exported program report data');
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan Program');
+
+        $headers = ['Judul Program', 'Jadwal', 'Total Peserta Tersertifikasi', 'Tanggal Dibuat'];
+        $colLetters = ['A', 'B', 'C', 'D'];
+
+        foreach ($headers as $i => $header) {
+            $sheet->setCellValue($colLetters[$i] . '1', $header);
+        }
+
+        // ── Populate rows ──
+        $row = 2;
+        foreach ($reports as $report) {
+            $clean = fn($v) => ($v === null || $v === '' || $v === 'N/A') ? '-' : $v;
+
+            // Schedule lookup
             $schedule = DB::table('schedules')
                 ->where('id_program', $report->id)
                 ->where('ket', 'Aktif')
@@ -113,50 +138,113 @@ class ReportController extends Controller
                 $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
             }
 
-            // Get total certified users for this program
             $totalCertified = DB::table('certificates')
                 ->where('program_id', $report->id)
                 ->count();
 
-            return [
-                'Judul Program' => $report->title ?? 'N/A',
-                'Jadwal' => $scheduleText,
-                'Total User Tersertifikasi' => $totalCertified,
-                'Tanggal Dibuat' => $report->created_at ? date('d/m/Y H:i', strtotime($report->created_at)) : '-'
-            ];
-        });
+            $sheet->setCellValue("A{$row}", $clean($report->title));
+            $sheet->setCellValue("B{$row}", $scheduleText);
+            $sheet->setCellValue("C{$row}", $totalCertified);
+            $sheet->setCellValue("D{$row}", $report->created_at ? date('d/m/Y H:i', strtotime($report->created_at)) : '-');
+            $row++;
+        }
 
-        // Generate CSV
-        $filename = 'laporan_program_' . date('Y-m-d_His') . '.csv';
+        $lastRow = max($row - 1, 1);
+        $lastCol = end($colLetters);
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0'
-        ];
+        // ── Styling ──
+        $this->applySpreadsheetStyles($sheet, $colLetters, $lastRow);
 
-        $callback = function () use ($exportData) {
-            $file = fopen('php://output', 'w');
+        // Center the numeric "Total" column
+        $sheet->getStyle("C2:C{$lastRow}")->applyFromArray([
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+            'font'      => ['bold' => true],
+        ]);
 
-            // Add BOM for Excel UTF-8 compatibility
-            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        // ── Write & download ──
+        $filename = 'laporan_program_' . date('Y-m-d_His') . '.xlsx';
+        $temp = tempnam(sys_get_temp_dir(), 'rpt_');
+        (new Xlsx($spreadsheet))->save($temp);
 
-            // Add headers
-            if ($exportData->isNotEmpty()) {
-                fputcsv($file, array_keys($exportData->first()), ';');
+        return response()->download($temp, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Apply shared professional styling to any export sheet.
+     */
+    private function applySpreadsheetStyles($sheet, array $colLetters, int $lastRow): void
+    {
+        $lastCol = end($colLetters);
+        $dataRange = "A1:{$lastCol}{$lastRow}";
+
+        // ── Header row ──
+        $headerRange = "A1:{$lastCol}1";
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => [
+                'bold'  => true,
+                'size'  => 11,
+                'color' => ['argb' => 'FFFFFFFF'],
+                'name'  => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType'   => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF1E293B'], // Slate-800
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'bottom' => ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF334155']],
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(28);
+
+        // ── Data body font ──
+        if ($lastRow >= 2) {
+            $sheet->getStyle("A2:{$lastCol}{$lastRow}")->applyFromArray([
+                'font' => ['size' => 10, 'name' => 'Segoe UI'],
+                'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+            ]);
+        }
+
+        // ── Alternating row bands (soft blue-gray) ──
+        for ($r = 2; $r <= $lastRow; $r++) {
+            $sheet->getRowDimension($r)->setRowHeight(22);
+            if ($r % 2 === 0) {
+                $sheet->getStyle("A{$r}:{$lastCol}{$r}")->applyFromArray([
+                    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFF1F5F9']], // Slate-100
+                ]);
             }
+        }
 
-            // Add data rows
-            foreach ($exportData as $row) {
-                fputcsv($file, $row, ';');
-            }
+        // ── Thin inner borders ──
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['argb' => 'FFCBD5E1']], // Slate-300
+            ],
+        ]);
 
-            fclose($file);
-        };
+        // ── Outer border ──
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => [
+                'outline' => ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF64748B']], // Slate-500
+            ],
+        ]);
 
-        return response()->stream($callback, 200, $headers);
+        // ── Auto-fit column widths ──
+        foreach ($colLetters as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // ── Freeze header row ──
+        $sheet->freezePane('A2');
+
+        // ── Print settings ──
+        $sheet->getPageSetup()->setFitToWidth(1)->setFitToHeight(0);
+        $sheet->setAutoFilter($dataRange);
     }
 
     /**

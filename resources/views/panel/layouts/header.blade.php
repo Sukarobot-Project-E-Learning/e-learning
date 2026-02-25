@@ -29,10 +29,11 @@
 
     // Avatar Logic
     $avatarUrl = '';
-    if ($role === 'admin') {
-        $avatarUrl = ($user && $user->avatar) ? (str_starts_with($user->avatar, 'http') ? $user->avatar : (str_starts_with($user->avatar, 'images/') ? asset($user->avatar) : asset('storage/' . $user->avatar))) : '';
-    } else {
-        $avatarUrl = ($user && $user->avatar_url) ? $user->avatar_url : 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'Instruktur') . '&background=1d4ed8&color=fff';
+    if ($user) {
+        $avatarUrl = $user->avatar_url ?? '';
+    }
+    if (!$avatarUrl && $role === 'instructor') {
+        $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'Instruktur') . '&background=1d4ed8&color=fff';
     }
 @endphp
 

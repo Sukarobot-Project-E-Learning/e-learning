@@ -48,8 +48,8 @@ class ProgramApprovalController extends Controller
             'actions' => ['view'],
             'route' => 'admin.program-approvals',
             'routeParam' => 'id',
-            'title' => 'Persetujuan Program',
-            'entity' => 'persetujuan program',
+            'title' => 'Pengajuan Program',
+            'entity' => 'pengajuan program',
             'showCreate' => false,
             'searchPlaceholder' => 'Cari judul, instruktur, kategori...',
             'filter' => [

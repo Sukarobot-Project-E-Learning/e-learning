@@ -48,7 +48,7 @@ class ProgramController extends Controller
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.programs',
-            'title' => 'Program Management',
+            'title' => 'Manajemen Program',
             'entity' => 'program',
             'createLabel' => 'Tambah Program',
             'searchPlaceholder' => 'Cari program, kategori, tipe...',

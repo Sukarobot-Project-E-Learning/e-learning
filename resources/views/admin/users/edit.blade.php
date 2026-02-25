@@ -160,9 +160,13 @@
                     @php
                         $currentPhotoUrl = null;
                         if ($user->photo) {
-                            $currentPhotoUrl = str_starts_with($user->photo, 'images/') 
-                                ? asset($user->photo) 
-                                : asset('storage/' . $user->photo);
+                            if (str_starts_with($user->photo, 'http://') || str_starts_with($user->photo, 'https://')) {
+                                $currentPhotoUrl = $user->photo;
+                            } elseif (str_starts_with($user->photo, 'images/')) {
+                                $currentPhotoUrl = asset($user->photo);
+                            } else {
+                                $currentPhotoUrl = asset('storage/' . $user->photo);
+                            }
                         }
                     @endphp
 

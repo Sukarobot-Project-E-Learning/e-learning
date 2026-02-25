@@ -60,13 +60,15 @@ class User extends Authenticatable
 
     /**
      * Get the user's avatar URL.
-     * Overrides the raw avatar attribute.
+     * Accessible as $user->avatar_url
      *
      * @return string
      */
-    public function getAvatarAttribute($value): string
+    public function getAvatarUrlAttribute(): string
     {
         $defaultAvatar = asset('assets/elearning/client/img/default-avatar.jpeg');
+
+        $value = $this->attributes['avatar'] ?? null;
 
         if (!$value) {
             return $defaultAvatar;

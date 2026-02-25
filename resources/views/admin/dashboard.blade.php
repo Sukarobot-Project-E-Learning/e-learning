@@ -176,7 +176,7 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Total Instructor</p>
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Total Instruktur</p>
                     <h4 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{{ $totalInstructors }}</h4>
                 </div>
 

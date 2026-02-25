@@ -1,6 +1,6 @@
 @extends('panel.layouts.app')
 
-@section('title', 'Voucher Management')
+@section('title', 'Manajemen Voucher')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/admin-table.css') }}">

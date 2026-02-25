@@ -75,7 +75,7 @@
             <div class="sidebar-expandable-content hidden space-y-1 mt-1">
                 <a href="{{ route('admin.users.index') }}"
                     class="flex items-center pl-16 pr-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.users.*') ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-gray-700/50' : 'text-slate-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-gray-700/30' }}">
-                    Users
+                    User
                 </a>
                 <a href="{{ route('admin.admins.index') }}"
                     class="flex items-center pl-16 pr-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('admin.admins.*') ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-gray-700/50' : 'text-slate-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-gray-700/30' }}">

@@ -46,7 +46,7 @@ class VoucherController extends Controller
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.vouchers',
-            'title' => 'Voucher Management',
+            'title' => 'Manajemen Voucher',
             'entity' => 'voucher',
             'createLabel' => 'Tambah Voucher',
             'searchPlaceholder' => 'Cari nama, kode, program...',

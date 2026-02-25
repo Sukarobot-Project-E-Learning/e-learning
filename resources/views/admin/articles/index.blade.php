@@ -1,6 +1,6 @@
 @extends('panel.layouts.app')
 
-@section('title', 'Artikel Management')
+@section('title', 'Manajemen Artikel')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/elearning/admin/css/admin-table.css') }}">

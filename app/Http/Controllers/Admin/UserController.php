@@ -34,7 +34,7 @@ class UserController extends Controller
             'actions' => ['edit', 'delete'],
             'route' => 'admin.users',
             'routeParam' => 'id',
-            'title' => 'User Management',
+            'title' => 'Manajemen User',
             'entity' => 'user',
             'createLabel' => 'Tambah User',
         ];

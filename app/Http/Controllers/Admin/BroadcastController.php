@@ -30,7 +30,7 @@ class BroadcastController extends Controller
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.broadcasts',
-            'title' => 'Broadcast Management',
+            'title' => 'Manajemen Broadcast',
             'entity' => 'broadcast',
             'createLabel' => 'Tambah Broadcast',
             'searchPlaceholder' => 'Cari pesan broadcast...',

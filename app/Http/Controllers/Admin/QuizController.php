@@ -29,7 +29,7 @@ class QuizController extends Controller
 
         $data = app(DataTableService::class)->make($query, [
             'columns' => [
-                ['key' => 'title', 'label' => 'Judul Quiz', 'sortable' => true, 'type' => 'primary'],
+                ['key' => 'title', 'label' => 'Judul Tugas', 'sortable' => true, 'type' => 'primary'],
                 ['key' => 'instructor', 'label' => 'Instruktur', 'sortable' => true],
                 ['key' => 'program', 'label' => 'Program', 'sortable' => true],
                 ['key' => 'type', 'label' => 'Tipe', 'sortable' => true, 'type' => 'badge'],
@@ -49,10 +49,10 @@ class QuizController extends Controller
             'actions' => ['edit', 'delete'],
             'route' => 'admin.quizzes',
             'routeParam' => 'id',
-            'title' => 'Quiz Management',
+            'title' => 'Manajemen Tugas/Post Test',
             'entity' => 'quiz',
-            'createLabel' => 'Tambah Quiz',
-            'searchPlaceholder' => 'Cari quiz, program, instruktur...',
+            'createLabel' => 'Tambah Tugas/Post Test',
+            'searchPlaceholder' => 'Cari tugas, program, instruktur...',
             'filter' => [
                 'key' => 'type',
                 'column' => 'quizzes.type',

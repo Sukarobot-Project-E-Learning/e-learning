@@ -54,7 +54,7 @@ class ProgramProofController extends Controller
             'actions' => ['view'],
             'route' => 'admin.program-proofs',
             'routeParam' => 'id',
-            'title' => 'Bukti Program Management',
+            'title' => 'Manajemen Bukti Program',
             'entity' => 'bukti program',
             'showCreate' => false,
             'searchPlaceholder' => 'Cari nama peserta, program...',

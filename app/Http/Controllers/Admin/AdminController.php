@@ -34,7 +34,7 @@ class AdminController extends Controller
             'actions' => ['edit', 'delete'],
             'route' => 'admin.admins',
             'routeParam' => 'id',
-            'title' => 'Admin Management',
+            'title' => 'Manajemen Admin',
             'entity' => 'admin',
             'createLabel' => 'Tambah Admin',
             'searchPlaceholder' => 'Cari nama, email, telepon...',

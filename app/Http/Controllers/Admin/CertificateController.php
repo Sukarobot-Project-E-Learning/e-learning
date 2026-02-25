@@ -49,7 +49,7 @@ class CertificateController extends Controller
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.certificates',
-            'title' => 'Sertifikat Management',
+            'title' => 'Manajemen Sertifikat',
             'entity' => 'sertifikat',
             'createLabel' => 'Tambah Template',
             'searchPlaceholder' => 'Cari program, prefix...',

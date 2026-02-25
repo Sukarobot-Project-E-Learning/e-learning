@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class TransactionController extends Controller
 {
@@ -51,7 +57,7 @@ class TransactionController extends Controller
             'actions' => ['view'],
             'route' => 'admin.transactions',
             'routeParam' => 'id',
-            'title' => 'Transaksi Management',
+            'title' => 'Manajemen Transaksi',
             'entity' => 'transaksi',
             'showCreate' => false,
             'searchPlaceholder' => 'Cari nama, program, kode transaksi...',
@@ -113,11 +119,10 @@ class TransactionController extends Controller
     }
 
     /**
-     * Export transactions to Excel/CSV
+     * Export transactions to Excel (.xlsx)
      */
     public function export()
     {
-        // Get all transactions data
         $transactions = DB::table('transactions')
             ->leftJoin('users', 'transactions.student_id', '=', 'users.id')
             ->leftJoin('data_programs', 'transactions.program_id', '=', 'data_programs.id')
@@ -129,61 +134,161 @@ class TransactionController extends Controller
             ->orderBy('transactions.created_at', 'desc')
             ->get();
 
-        // Format status mapping
         $statusMap = [
-            'pending' => 'Menunggu',
-            'paid' => 'Lunas',
-            'failed' => 'Gagal',
-            'refunded' => 'Dikembalikan',
-            'cancelled' => 'Dibatalkan'
+            'pending'   => 'Menunggu',
+            'paid'      => 'Lunas',
+            'failed'    => 'Gagal',
+            'refunded'  => 'Dikembalikan',
+            'cancelled' => 'Dibatalkan',
         ];
 
-        // Transform data
-        $exportData = $transactions->map(function ($transaction) use ($statusMap) {
-            return [
-                'Kode Transaksi' => $transaction->transaction_code ?? '-',
-                'Nama Siswa' => $transaction->student_name ?? 'N/A',
-                'Program' => $transaction->program_name ?? 'N/A',
-                'Tanggal Pembayaran' => $transaction->payment_date
-                    ? date('d/m/Y', strtotime($transaction->payment_date))
-                    : ($transaction->created_at ? date('d/m/Y', strtotime($transaction->created_at)) : '-'),
-                'Nominal' => $transaction->amount ?? 0,
-                'Status' => $statusMap[$transaction->status] ?? $transaction->status,
-                'Tanggal Dibuat' => $transaction->created_at ? date('d/m/Y H:i', strtotime($transaction->created_at)) : '-'
-            ];
-        });
+        // ── Build spreadsheet ──
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator('E-Learning Platform')
+            ->setTitle('Data Transaksi')
+            ->setDescription('Exported transaction data');
 
-        // Generate CSV
-        $filename = 'transaksi_' . date('Y-m-d_His') . '.csv';
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Transaksi');
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0'
+        $headers = ['Kode Transaksi', 'Nama Siswa', 'Program', 'Tanggal Pembayaran', 'Nominal (Rp)', 'Status', 'Tanggal Dibuat'];
+        $colLetters = range('A', 'G');
+
+        foreach ($headers as $i => $header) {
+            $sheet->setCellValue($colLetters[$i] . '1', $header);
+        }
+
+        // ── Populate rows ──
+        $row = 2;
+        foreach ($transactions as $tx) {
+            $clean = fn($v) => ($v === null || $v === '' || $v === 'N/A') ? '-' : $v;
+
+            $sheet->setCellValue("A{$row}", $clean($tx->transaction_code));
+            $sheet->setCellValue("B{$row}", $clean($tx->student_name));
+            $sheet->setCellValue("C{$row}", $clean($tx->program_name));
+            $sheet->setCellValue("D{$row}", $tx->payment_date
+                ? date('d/m/Y', strtotime($tx->payment_date))
+                : ($tx->created_at ? date('d/m/Y', strtotime($tx->created_at)) : '-'));
+            $sheet->setCellValue("E{$row}", $tx->amount ?? 0);
+            $sheet->setCellValue("F{$row}", $statusMap[$tx->status] ?? $tx->status);
+            $sheet->setCellValue("G{$row}", $tx->created_at ? date('d/m/Y H:i', strtotime($tx->created_at)) : '-');
+            $row++;
+        }
+
+        $lastRow = max($row - 1, 1);
+        $lastCol = end($colLetters);
+
+        // ── Styling ──
+        $this->applySpreadsheetStyles($sheet, $colLetters, $lastRow);
+
+        // Currency format for Nominal column
+        $sheet->getStyle("E2:E{$lastRow}")->getNumberFormat()
+            ->setFormatCode('#,##0');
+
+        // Status badge colouring
+        $statusColors = [
+            'Lunas'        => ['bg' => 'FFDCFCE7', 'fg' => 'FF166534'],
+            'Menunggu'     => ['bg' => 'FFFEF9C3', 'fg' => 'FF854D0E'],
+            'Gagal'        => ['bg' => 'FFFEE2E2', 'fg' => 'FF991B1B'],
+            'Dikembalikan' => ['bg' => 'FFDBEAFE', 'fg' => 'FF1E40AF'],
+            'Dibatalkan'   => ['bg' => 'FFF3F4F6', 'fg' => 'FF374151'],
         ];
-
-        $callback = function () use ($exportData) {
-            $file = fopen('php://output', 'w');
-
-            // Add BOM for Excel UTF-8 compatibility
-            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
-            // Add headers
-            if ($exportData->isNotEmpty()) {
-                fputcsv($file, array_keys($exportData->first()), ';');
+        for ($r = 2; $r <= $lastRow; $r++) {
+            $val = $sheet->getCell("F{$r}")->getValue();
+            if (isset($statusColors[$val])) {
+                $sheet->getStyle("F{$r}")->applyFromArray([
+                    'font'      => ['bold' => true, 'color' => ['argb' => $statusColors[$val]['fg']]],
+                    'fill'      => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => $statusColors[$val]['bg']]],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+                ]);
             }
+        }
 
-            // Add data rows
-            foreach ($exportData as $row) {
-                fputcsv($file, $row, ';');
+        // ── Write & download ──
+        $filename = 'transaksi_' . date('Y-m-d_His') . '.xlsx';
+        $temp = tempnam(sys_get_temp_dir(), 'tx_');
+        (new Xlsx($spreadsheet))->save($temp);
+
+        return response()->download($temp, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Apply shared professional styling to any export sheet.
+     */
+    private function applySpreadsheetStyles($sheet, array $colLetters, int $lastRow): void
+    {
+        $lastCol = end($colLetters);
+        $dataRange = "A1:{$lastCol}{$lastRow}";
+
+        // ── Header row ──
+        $headerRange = "A1:{$lastCol}1";
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => [
+                'bold'  => true,
+                'size'  => 11,
+                'color' => ['argb' => 'FFFFFFFF'],
+                'name'  => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType'   => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF1E293B'], // Slate-800
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'bottom' => ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF334155']],
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(28);
+
+        // ── Data body font ──
+        if ($lastRow >= 2) {
+            $sheet->getStyle("A2:{$lastCol}{$lastRow}")->applyFromArray([
+                'font' => ['size' => 10, 'name' => 'Segoe UI'],
+                'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+            ]);
+        }
+
+        // ── Alternating row bands (soft blue-gray) ──
+        for ($r = 2; $r <= $lastRow; $r++) {
+            $sheet->getRowDimension($r)->setRowHeight(22);
+            if ($r % 2 === 0) {
+                $sheet->getStyle("A{$r}:{$lastCol}{$r}")->applyFromArray([
+                    'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFF1F5F9']], // Slate-100
+                ]);
             }
+        }
 
-            fclose($file);
-        };
+        // ── Thin inner borders ──
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['argb' => 'FFCBD5E1']], // Slate-300
+            ],
+        ]);
 
-        return response()->stream($callback, 200, $headers);
+        // ── Outer border ──
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => [
+                'outline' => ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF64748B']], // Slate-500
+            ],
+        ]);
+
+        // ── Auto-fit column widths ──
+        foreach ($colLetters as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // ── Freeze header row ──
+        $sheet->freezePane('A2');
+
+        // ── Print settings ──
+        $sheet->getPageSetup()->setFitToWidth(1)->setFitToHeight(0);
+        $sheet->setAutoFilter($dataRange);
     }
 
     /**
