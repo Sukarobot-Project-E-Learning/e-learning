@@ -61,25 +61,13 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
                             })
-                            .then(r => {
-                                if (!r.ok) {
-                                    return r.text().then(text => {
-                                        try {
-                                            const json = JSON.parse(text);
-                                            throw new Error(json.message || 'Terjadi kesalahan server');
-                                        } catch (e) {
-                                            throw new Error('Terjadi kesalahan server: ' + r.status);
-                                        }
-                                    });
-                                }
-                                return r.json();
-                            })
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message || 'Bukti program berhasil diterima.', timer: 2000, showConfirmButton: false })
+                            .then(r => r.json())
+                            .then(result => {
+                                if (result.success) {
+                                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message || 'Bukti program berhasil diterima.', timer: 2000, showConfirmButton: false })
                                     .then(() => window.location.href = '{{ route("admin.program-proofs.index") }}');
                                 } else {
-                                    Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });
+                                    Swal.fire('Error!', result.message || 'Gagal menerima bukti program.', 'error');
                                 }
                             })
                             .catch(err => Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message || 'Terjadi kesalahan' }));
@@ -109,25 +97,13 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
                             })
-                            .then(r => {
-                                if (!r.ok) {
-                                    return r.text().then(text => {
-                                        try {
-                                            const json = JSON.parse(text);
-                                            throw new Error(json.message || 'Terjadi kesalahan server');
-                                        } catch (e) {
-                                            throw new Error('Terjadi kesalahan server: ' + r.status);
-                                        }
-                                    });
-                                }
-                                return r.json();
-                            })
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire({ icon: 'success', title: 'Ditolak!', text: data.message || 'Bukti program berhasil ditolak.', timer: 2000, showConfirmButton: false })
+                            .then(r => r.json())
+                            .then(result => {
+                                if (result.success) {
+                                    Swal.fire({ icon: 'success', title: 'Ditolak!', text: result.message || 'Bukti program berhasil ditolak.', timer: 2000, showConfirmButton: false })
                                     .then(() => window.location.href = '{{ route("admin.program-proofs.index") }}');
                                 } else {
-                                    Swal.fire({ icon: 'error', title: 'Gagal!', text: data.message || 'Terjadi kesalahan' });
+                                    Swal.fire('Error!', result.message || 'Gagal menolak bukti program.', 'error');
                                 }
                             })
                             .catch(err => Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message || 'Terjadi kesalahan' }));
