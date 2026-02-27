@@ -100,9 +100,6 @@ jobs:
           # Sync storage/app/private for sensitive documents (KTP, CV, NPWP - admin only)
           mirror --reverse --only-newer --verbose --parallel=2 storage/app/private/ storage/app/private/;
 
-          # Clear bootstrap cache
-          mirror --reverse --delete --verbose --parallel=1 bootstrap/cache/ bootstrap/cache/;
-
           echo '✅ E-Learning sync completed!';
           quit
           "
@@ -125,7 +122,10 @@ jobs:
           sudo chmod -R 775 /var/www/e-learning/storage
           sudo chmod -R 775 /var/www/e-learning/bootstrap/cache
 
-          echo "� Installing Composer dependencies..."
+          echo "🧹 Clearing old bootstrap cache to prevent cache mismatch..."
+          sudo rm -f /var/www/e-learning/bootstrap/cache/*.php
+
+          echo "🚀 Installing Composer dependencies..."
 
           # Install production dependencies (no dev packages)
           sudo -u www-data composer install --no-dev --optimize-autoloader --no-interaction
