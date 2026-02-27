@@ -724,9 +724,9 @@ class ProgramFormManager {
         }
 
         // Validate type
-        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         if (!validTypes.includes(file.type)) {
-            this.showFieldError('image', 'Format gambar harus jpeg, png, jpg, gif, atau webp.');
+            this.showFieldError('image', 'Format gambar harus .png, .jpg, atau .jpeg.');
             e.target.value = '';
             return;
         }
