@@ -77,9 +77,9 @@ jobs:
 
           echo 'Starting E-Learning smart sync...';
 
-          # Sync composer files for dependency management
-          put composer.json -o composer.json;
-          put composer.lock -o composer.lock;
+          # Sync composer files (needed for composer install on server)
+          put -O ./ composer.json;
+          put -O ./ composer.lock;
 
           # Sync core Laravel folders (only newer files)
           mirror --reverse --only-newer --verbose --parallel=2 app/ app/;
@@ -125,24 +125,20 @@ jobs:
           sudo chmod -R 775 /var/www/e-learning/storage
           sudo chmod -R 775 /var/www/e-learning/bootstrap/cache
 
-          echo "� Installing required PHP extensions..."
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq php8.4-gd > /dev/null 2>&1 || echo "php8.4-gd already installed or using different PHP package"
-          sudo phpenmod gd 2>/dev/null || true
-          sudo systemctl reload php8.4-fpm 2>/dev/null || sudo systemctl reload php-fpm 2>/dev/null || true
+          echo "� Installing Composer dependencies..."
 
-          echo "📦 Installing Composer dependencies..."
-          sudo -u www-data composer install --no-dev --optimize-autoloader --no-interaction --working-dir=/var/www/e-learning
+          # Install production dependencies (no dev packages)
+          sudo -u www-data composer install --no-dev --optimize-autoloader --no-interaction
 
-          echo "�🔧 Running Laravel optimization commands..."
+          echo "🔧 Running Laravel optimization commands..."
 
-          # Create storage symlink (important for uploaded files)
-          sudo -u www-data php artisan storage:link --force 2>/dev/null || echo "Storage link already exists"
-
-          # Clear all caches
+          # Clear all caches first
           sudo -u www-data php artisan config:clear
           sudo -u www-data php artisan route:clear
           sudo -u www-data php artisan view:clear
+
+          # Create storage symlink (important for uploaded files)
+          sudo -u www-data php artisan storage:link --force 2>/dev/null || echo "Storage link already exists"
 
           # Cache for production
           sudo -u www-data php artisan config:cache
