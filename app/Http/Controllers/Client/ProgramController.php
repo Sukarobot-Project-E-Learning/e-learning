@@ -16,10 +16,14 @@ class ProgramController extends Controller
     {
         $query = DB::table('data_programs')
             ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
+            ->leftJoin('users', function ($join) {
+                $join->on('users.email', '=', DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
+            })
             ->select(
                 'data_programs.*',
                 'data_trainers.nama as instructor_name',
-                'data_trainers.foto as instructor_avatar',
+                'data_trainers.foto as instructor_foto',
+                'users.avatar as instructor_user_avatar',
                 'data_trainers.pekerjaan as instructor_job'
             )
             ->where('data_programs.status', 'published');
@@ -46,6 +50,11 @@ class ProgramController extends Controller
             $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
             $program->benefits = json_decode($program->benefits, true) ?? [];
             $program->available_slots = $program->quota - $program->enrolled_count;
+            $program->instructor_avatar = $this->resolveInstructorAvatar(
+                $program->instructor_foto ?? null,
+                $program->instructor_user_avatar ?? null,
+                $program->instructor_name ?? null
+            );
             return $program;
         });
 
@@ -59,10 +68,14 @@ class ProgramController extends Controller
     {
         $program = DB::table('data_programs')
             ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
+            ->leftJoin('users', function ($join) {
+                $join->on('users.email', '=', DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
+            })
             ->select(
                 'data_programs.*',
                 'data_trainers.nama as instructor_name',
-                'data_trainers.foto as instructor_avatar',
+                'data_trainers.foto as instructor_foto',
+                'users.avatar as instructor_user_avatar',
                 'data_trainers.pekerjaan as instructor_job',
                 'data_trainers.bio as instructor_description'
             )
@@ -79,6 +92,11 @@ class ProgramController extends Controller
         $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
         $program->benefits = json_decode($program->benefits, true) ?? [];
         $program->available_slots = $program->quota - $program->enrolled_count;
+        $program->instructor_avatar = $this->resolveInstructorAvatar(
+            $program->instructor_foto ?? null,
+            $program->instructor_user_avatar ?? null,
+            $program->instructor_name ?? null
+        );
 
         // Check if user has purchased the program
         $isPurchased = false;
@@ -165,10 +183,14 @@ class ProgramController extends Controller
     {
         $programs = DB::table('data_programs')
             ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
+            ->leftJoin('users', function ($join) {
+                $join->on('users.email', '=', DB::raw('data_trainers.email COLLATE utf8mb4_unicode_ci'));
+            })
             ->select(
                 'data_programs.*',
                 'data_trainers.nama as instructor_name',
-                'data_trainers.foto as instructor_avatar',
+                'data_trainers.foto as instructor_foto',
+                'users.avatar as instructor_user_avatar',
                 'data_trainers.pekerjaan as instructor_job'
             )
             ->where('data_programs.status', 'published')
@@ -181,7 +203,58 @@ class ProgramController extends Controller
         return $programs->map(function ($program) {
             $program->tools = json_decode($program->tools, true) ?? [];
             $program->available_slots = $program->quota - $program->enrolled_count;
+            $program->instructor_avatar = $this->resolveInstructorAvatar(
+                $program->instructor_foto ?? null,
+                $program->instructor_user_avatar ?? null,
+                $program->instructor_name ?? null
+            );
             return $program;
         });
+    }
+
+    /**
+     * Resolve instructor avatar URL.
+     * Priority: data_trainers.foto > users.avatar > ui-avatars fallback.
+     * Handles external URLs, public path, and storage path (same logic as InstructorController & User model).
+     */
+    private function resolveInstructorAvatar(?string $foto, ?string $userAvatar, ?string $name): string
+    {
+        $defaultAvatar = asset('assets/elearning/client/img/default-avatar.jpeg');
+
+        // 1. Try data_trainers.foto first
+        if ($foto) {
+            if (filter_var($foto, FILTER_VALIDATE_URL)) {
+                return $foto;
+            }
+            if (file_exists(public_path($foto))) {
+                return asset($foto);
+            }
+            if (file_exists(storage_path('app/public/' . $foto))) {
+                return asset('storage/' . $foto);
+            }
+        }
+
+        // 2. Fallback to users.avatar
+        if ($userAvatar) {
+            if (filter_var($userAvatar, FILTER_VALIDATE_URL)) {
+                return $userAvatar;
+            }
+            if (file_exists(public_path($userAvatar))) {
+                return asset($userAvatar);
+            }
+            if (file_exists(public_path('storage/' . $userAvatar))) {
+                return asset('storage/' . $userAvatar);
+            }
+            if (file_exists(storage_path('app/public/' . $userAvatar))) {
+                return asset('storage/' . $userAvatar);
+            }
+        }
+
+        // 3. Fallback to UI Avatars (name-based) or default
+        if ($name) {
+            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=random';
+        }
+
+        return $defaultAvatar;
     }
 }

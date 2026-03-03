@@ -219,7 +219,7 @@
 
                             <div class="mt-auto pt-5 border-t border-gray-100 flex justify-between items-center">
                                 <div class="flex items-center gap-2">
-                                    <img src="{{ $program->instructor_avatar ? asset('storage/' . $program->instructor_avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($program->instructor_name ?? 'Instructor') . '&background=random' }}" class="w-9 h-9 rounded-full border-2 border-white shadow-sm" alt="Instructor">
+                                    <img src="{{ $program->instructor_avatar }}" class="w-9 h-9 rounded-full border-2 border-white shadow-sm" alt="Instructor">
                                     <div class="text-xs">
                                         <p class="font-bold text-gray-900">{{ $program->instructor_name ?? 'Sukarobot' }}</p>
                                         <p class="text-gray-500">{{ $program->instructor_job ?? 'Mentor' }}</p>

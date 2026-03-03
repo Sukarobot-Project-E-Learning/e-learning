@@ -120,7 +120,7 @@
       <div
         class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
         <img
-          src="{{ $program->instructor_avatar ? asset('storage/' . $program->instructor_avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($program->instructor_name ?? 'Instructor') . '&background=random' }}"
+          src="{{ $program->instructor_avatar }}"
           alt="Instruktur" class="w-20 h-20 rounded-full border-4 border-blue-50 shadow-sm">
         <div>
           <h3 class="font-bold text-xl text-gray-900 mb-1">{{ $program->instructor_name ?? 'Sukarobot' }}</h3>
