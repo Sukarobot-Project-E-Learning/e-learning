@@ -16,67 +16,101 @@
                 <div class="p-5 sm:p-8">
                     @include('panel.partials.forms.section-header', [
                         'title' => 'Informasi Voucher',
-                        'subtitle' => 'Detail voucher diskon',
+                        'subtitle' => 'Detail pengaturan promosi diskon',
                         'color' => 'orange',
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>'
                     ])
 
                     <div class="space-y-5">
-                        <!-- Nama Voucher -->
-                        @include('panel.partials.forms.input-text', [
-                            'name' => 'name',
-                            'label' => 'Nama Voucher',
-                            'required' => true,
-                            'placeholder' => 'Masukkan nama voucher'
-                        ])
-
-                        <!-- Diskon & Kode Grid -->
+                        
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Nama Voucher -->
                             @include('panel.partials.forms.input-text', [
-                                'name' => 'discount',
-                                'label' => 'Diskon',
+                                'name' => 'name',
+                                'label' => 'Nama Voucher',
                                 'required' => true,
-                                'placeholder' => '10%'
+                                'placeholder' => 'Misal: Promo Nyepi 2026'
                             ])
 
                             @include('panel.partials.forms.input-text', [
                                 'name' => 'code',
-                                'label' => 'Kode Voucher',
+                                'label' => 'Kode Voucher (Unik)',
                                 'required' => true,
-                                'placeholder' => 'NCEFLAT20'
+                                'placeholder' => 'Misal: NYEPI26'
                             ])
                         </div>
 
-                        <!-- Program/Event -->
-                        @include('panel.partials.forms.input-text', [
-                            'name' => 'program_event',
-                            'label' => 'Program/Event',
-                            'required' => true,
-                            'placeholder' => 'Workshop Branding'
-                        ])
+                        <!-- Diskon Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('panel.partials.forms.select', [
+                                'name' => 'discount_type',
+                                'label' => 'Tipe Diskon',
+                                'required' => true,
+                                'options' => [
+                                    'percentage' => 'Persentase (%)',
+                                    'fixed' => 'Potongan Tetap (Rp)'
+                                ],
+                                'selected' => 'percentage'
+                            ])
 
-                        <!-- Status -->
-                        @include('panel.partials.forms.select', [
-                            'name' => 'status',
-                            'label' => 'Status',
-                            'required' => true,
-                            'placeholder' => 'Pilih Status',
-                            'options' => [
-                                'Aktif' => '✅ Aktif',
-                                'Non-Aktif' => '❌ Non-Aktif'
-                            ]
-                        ])
+                            @include('panel.partials.forms.input-text', [
+                                'type' => 'number',
+                                'name' => 'discount_value',
+                                'label' => 'Nilai Diskon',
+                                'required' => true,
+                                'placeholder' => 'Misal: 10 atau 50000',
+                                'attributes' => 'min="0"'
+                            ])
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('panel.partials.forms.input-text', [
+                                'type' => 'date',
+                                'name' => 'start_date',
+                                'label' => 'Tanggal Berlaku (Mulai)',
+                                'required' => false
+                            ])
+
+                            @include('panel.partials.forms.input-text', [
+                                'type' => 'date',
+                                'name' => 'end_date',
+                                'label' => 'Tanggal Berlaku (Selesai)',
+                                'required' => false
+                            ])
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('panel.partials.forms.input-text', [
+                                'type' => 'number',
+                                'name' => 'max_usages',
+                                'label' => 'Batas Penggunaan (Opsional)',
+                                'required' => false,
+                                'placeholder' => 'Misal: 100',
+                                'attributes' => 'min="1"'
+                            ])
+
+                            @include('panel.partials.forms.select', [
+                                'name' => 'is_active',
+                                'label' => 'Status Voucher',
+                                'required' => true,
+                                'options' => [
+                                    '1' => 'Aktif',
+                                    '0' => 'Non-Aktif'
+                                ],
+                                'selected' => '1'
+                            ])
+                        </div>
+
                     </div>
                 </div>
 
+                <!-- Action Buttons -->
+                @include('panel.partials.forms.action-buttons', [
+                    'backUrl' => route('admin.vouchers.index'),
+                    'formId' => 'voucherForm',
+                    'submitText' => 'Simpan Voucher'
+                ])
             </form>
-
-            <!-- Action Buttons -->
-            @include('panel.partials.forms.action-buttons', [
-                'backUrl' => route('admin.vouchers.index'),
-                'formId' => 'voucherForm',
-                'submitText' => 'Simpan Voucher'
-            ])
         </div>
 
     </div>

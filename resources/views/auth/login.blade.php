@@ -62,49 +62,8 @@
                     radial-gradient(circle at 60% 80%, rgba(248,180,0,0.14), transparent 35%);"></div>
 
         <div class="relative z-10 flex items-center justify-center min-h-screen px-6 py-10">
-            <div class="w-full max-w-5xl">
-                <div class="grid overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl shadow-indigo-100/70 backdrop-blur-xl dark:border-gray-800/80 dark:bg-gray-900/80 dark:shadow-black/40 md:grid-cols-2">
-                    <!-- Brand / Highlight Side -->
-                    <div class="relative hidden h-full md:flex md:flex-col md:justify-between bg-gradient-to-br from-orange-600 via-orange-500 to-amber-400 px-10 py-12 text-white">
-                        <div class="absolute inset-0 opacity-30" aria-hidden="true"
-                             style="background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.32), transparent 35%),
-                                    radial-gradient(circle at 70% 20%, rgba(255,255,255,0.25), transparent 28%),
-                                    radial-gradient(circle at 50% 80%, rgba(255,255,255,0.2), transparent 30%);"></div>
-                        <div class="relative z-10 space-y-6">
-                            <span class="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                                {{ isset($type) && $type === 'admin' ? 'Admin Access' : 'Instruktur Access' }}
-                            </span>
-                            <h2 class="text-3xl font-bold leading-tight">Selamat datang di E-Learning Sukarobot</h2>
-                            <p class="text-sm text-white/80 max-w-md">Kelola kelas, pantau progres peserta, dan akses materi dengan pengalaman yang ringkas dan aman.</p>
-                            <div class="grid gap-3 text-sm">
-                                <div class="flex items-center gap-3 rounded-2xl bg-white/15 px-4 py-3 backdrop-blur">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg font-semibold">✓</span>
-                                    <div>
-                                        <p class="font-semibold">Masuk aman & terpisah</p>
-                                        <p class="text-white/70">Sesi admin dan instruktur dipisahkan untuk keamanan.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg font-semibold">⚡</span>
-                                    <div>
-                                        <p class="font-semibold">Akses cepat</p>
-                                        <p class="text-white/70">Langsung menuju dashboard dan materi terbaru.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg font-semibold">📈</span>
-                                    <div>
-                                        <p class="font-semibold">Pantau performa</p>
-                                        <p class="text-white/70">Statistik pembelajaran dan pembayaran terintegrasi.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="relative z-10 flex items-center justify-between pt-6 text-xs text-white/70">
-                            <span>E-Learning Platform</span>
-                        </div>
-                    </div>
-
+            <div class="w-full max-w-lg">
+                <div class="grid overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl shadow-indigo-100/70 backdrop-blur-xl dark:border-gray-800/80 dark:bg-gray-900/80 dark:shadow-black/40">
                     <!-- Form Side -->
                     <div class="relative w-full p-8 sm:p-12">
                         <div class="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/10 dark:from-gray-900/70 dark:via-gray-900/60 dark:to-gray-900/40" aria-hidden="true"></div>

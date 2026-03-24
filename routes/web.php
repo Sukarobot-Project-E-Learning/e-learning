@@ -244,6 +244,8 @@ Route::name('client.')->group(function () {
         // Payment routes
         Route::get('/pembayaran/{programSlug}', [\App\Http\Controllers\Client\PaymentController::class, 'showPaymentPage'])
             ->name('pembayaran');
+        Route::post('/payment/apply-voucher', [\App\Http\Controllers\Client\PaymentController::class, 'applyVoucher'])
+            ->name('payment.apply-voucher');
         Route::post('/payment/create', [\App\Http\Controllers\Client\PaymentController::class, 'createTransaction'])
             ->name('payment.create');
         Route::get('/payment/finish', [\App\Http\Controllers\Client\PaymentController::class, 'finish'])

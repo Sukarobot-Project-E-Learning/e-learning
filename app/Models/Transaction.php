@@ -16,7 +16,9 @@ class Transaction extends Model
         'snap_token',
         'student_id',
         'program_id',
+        'voucher_id',
         'amount',
+        'discount_amount',
         'payment_method',
         'payment_proof',
         'status',
@@ -32,7 +34,16 @@ class Transaction extends Model
         'payment_date' => 'datetime',
         'expires_at' => 'datetime',
         'amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
     ];
+
+    /**
+     * Relation to Voucher
+     */
+    public function voucher()
+    {
+        return $this->belongsTo(\App\Models\Voucher::class, 'voucher_id');
+    }
 
     /**
      * Relation to User (student)

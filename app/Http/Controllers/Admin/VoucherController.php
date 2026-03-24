@@ -14,18 +14,18 @@ class VoucherController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DB::table('vouchers')
-            ->leftJoin('data_programs', 'vouchers.program_id', '=', 'data_programs.id')
+        $query = \App\Models\Voucher::query()
             ->select(
-                'vouchers.id',
-                'vouchers.name',
-                'vouchers.code',
-                'vouchers.discount_type',
-                'vouchers.discount_value',
-                'vouchers.program_id',
-                'vouchers.is_active',
-                'vouchers.created_at',
-                'data_programs.program as program_name'
+                'id',
+                'name',
+                'code',
+                'discount_type',
+                'discount_value',
+                'max_usages',
+                'start_date',
+                'end_date',
+                'is_active',
+                'created_at'
             );
 
         $data = app(DataTableService::class)->make($query, [
@@ -33,26 +33,27 @@ class VoucherController extends Controller
                 ['key' => 'name', 'label' => 'Nama Voucher', 'sortable' => true, 'type' => 'primary'],
                 ['key' => 'code', 'label' => 'Kode', 'sortable' => true],
                 ['key' => 'discount', 'label' => 'Diskon', 'sortable' => true],
-                ['key' => 'program_event', 'label' => 'Program'],
+                ['key' => 'usage', 'label' => 'Terpakai'],
+                ['key' => 'duration', 'label' => 'Masa Berlaku'],
                 ['key' => 'status', 'label' => 'Status', 'type' => 'status'],
                 ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
             ],
-            'searchable' => ['vouchers.name', 'vouchers.code', 'data_programs.program'],
+            'searchable' => ['name', 'code'],
             'sortable' => ['name', 'code', 'discount_value', 'is_active', 'created_at'],
             'sortColumns' => [
-                'name' => 'vouchers.name',
-                'code' => 'vouchers.code',
-                'discount' => 'vouchers.discount_value',
+                'name' => 'name',
+                'code' => 'code',
+                'discount' => 'discount_value',
             ],
             'actions' => ['edit', 'delete'],
             'route' => 'admin.vouchers',
             'title' => 'Manajemen Voucher',
             'entity' => 'voucher',
             'createLabel' => 'Tambah Voucher',
-            'searchPlaceholder' => 'Cari nama, kode, program...',
+            'searchPlaceholder' => 'Cari nama, kode...',
             'filter' => [
                 'key' => 'status',
-                'column' => 'vouchers.is_active',
+                'column' => 'is_active',
                 'options' => [
                     '' => 'Semua Status',
                     'active' => 'Aktif',
@@ -61,16 +62,30 @@ class VoucherController extends Controller
             ],
             'transformer' => function($voucher) {
                 $discount = $voucher->discount_type === 'percentage' 
-                    ? $voucher->discount_value . '%' 
+                    ? rtrim(rtrim(number_format($voucher->discount_value, 2, ',', '.'), '0'), ',') . '%' 
                     : 'Rp ' . number_format($voucher->discount_value, 0, ',', '.');
+
+                $usage = $voucher->transactions()
+                    ->whereIn('status', ['paid', 'pending'])
+                    ->count();
+
+                $usageText = $voucher->max_usages ? "$usage / {$voucher->max_usages}" : "$usage (Tanpa Batas)";
+
+                $duration = '-';
+                if ($voucher->start_date || $voucher->end_date) {
+                    $start = $voucher->start_date ? $voucher->start_date->format('d M y') : 'Seterusnya';
+                    $end = $voucher->end_date ? $voucher->end_date->format('d M y') : 'Seterusnya';
+                    $duration = "$start - $end";
+                }
 
                 return [
                     'id' => $voucher->id,
-                    'name' => $voucher->name ?? 'N/A',
+                    'name' => $voucher->name ?? '-',
                     'discount' => $discount,
                     'discount_value' => $voucher->discount_value,
-                    'program_event' => $voucher->program_name ?? 'Semua Program',
-                    'code' => $voucher->code ?? 'N/A',
+                    'usage' => $usageText,
+                    'duration' => $duration,
+                    'code' => $voucher->code ?? '-',
                     'is_active' => $voucher->is_active,
                     'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
                 ];
@@ -97,8 +112,18 @@ class VoucherController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: Add validation
-        // TODO: Save to database
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'code' => 'required|string|unique:vouchers,code|max:50',
+            'discount_type' => 'required|in:percentage,fixed',
+            'discount_value' => 'required|numeric|min:0',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'max_usages' => 'nullable|integer|min:1',
+            'is_active' => 'required|boolean',
+        ]);
+
+        \App\Models\Voucher::create($validated);
 
         return redirect()->route('admin.vouchers.index')
             ->with('success', 'Voucher berhasil ditambahkan');
@@ -109,15 +134,7 @@ class VoucherController extends Controller
      */
     public function edit($id)
     {
-        // Dummy data untuk sementara
-        $voucher = [
-            'id' => $id,
-            'name' => 'Nama Voucher',
-            'discount' => '10%',
-            'program_event' => 'Workshop Branding',
-            'code' => 'NCEFLAT20',
-            'status' => 'Aktif'
-        ];
+        $voucher = \App\Models\Voucher::findOrFail($id);
 
         return view('admin.vouchers.edit', compact('voucher'));
     }
@@ -127,8 +144,20 @@ class VoucherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // TODO: Add validation
-        // TODO: Update in database
+        $voucher = \App\Models\Voucher::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'code' => 'required|string|max:50|unique:vouchers,code,' . $voucher->id,
+            'discount_type' => 'required|in:percentage,fixed',
+            'discount_value' => 'required|numeric|min:0',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'max_usages' => 'nullable|integer|min:1',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $voucher->update($validated);
 
         return redirect()->route('admin.vouchers.index')
             ->with('success', 'Voucher berhasil diperbarui');
@@ -140,7 +169,8 @@ class VoucherController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('vouchers')->where('id', $id)->delete();
+            $voucher = \App\Models\Voucher::findOrFail($id);
+            $voucher->delete();
             return response()->json(['success' => true, 'message' => 'Voucher berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus voucher'], 500);

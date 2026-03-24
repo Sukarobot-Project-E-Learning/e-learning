@@ -299,7 +299,23 @@ class UserController extends Controller
 
     public function voucher()
     {
-        return view('client.dashboard.voucher');
+        // Ambil voucher yang aktif dan sesuai tanggal
+        $vouchers = \App\Models\Voucher::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                      ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
+            })
+            ->get()
+            ->filter(function ($voucher) {
+                // Filter tambahan untuk mengecek kuota penggunaan
+                return $voucher->isValid();
+            });
+
+        return view('client.dashboard.voucher', compact('vouchers'));
     }
 
     public function updateProfile(Request $request)

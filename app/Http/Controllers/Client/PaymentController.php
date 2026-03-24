@@ -79,7 +79,23 @@ class PaymentController extends Controller
         $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
         $program->benefits = json_decode($program->benefits, true) ?? [];
 
-        return view('client.program.pembayaran', compact('program'));
+        // Get recommended vouchers
+        $recommendedVouchers = \App\Models\Voucher::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                      ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
+            })
+            ->get()
+            ->filter(function ($voucher) {
+                return $voucher->isValid();
+            })
+            ->take(3);
+
+        return view('client.program.pembayaran', compact('program', 'recommendedVouchers'));
     }
 
     /**
@@ -90,6 +106,7 @@ class PaymentController extends Controller
         try {
             $user = Auth::user();
             $programId = $request->program_id;
+            $voucherCode = $request->voucher_code;
 
             // Get program details
             $program = DB::table('data_programs')->where('id', $programId)->first();
@@ -108,11 +125,36 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'Anda sudah membeli program ini'], 400);
             }
 
+            // Calculate Price & Discount
+            $price = (float) $program->price;
+            $discountAmount = 0;
+            $voucherId = null;
+
+            if ($voucherCode) {
+                $voucher = \App\Models\Voucher::where('code', $voucherCode)->first();
+                if ($voucher && $voucher->isValid()) {
+                    $discountAmount = $voucher->calculateDiscount($price);
+                    $voucherId = $voucher->id;
+                } else {
+                    return response()->json(['error' => 'Voucher tidak valid atau sudah tidak berlaku'], 400);
+                }
+            }
+
+            $finalPrice = max(0, $price - $discountAmount);
+
             // Check for valid pending transaction
-            $pendingTransaction = Transaction::where('student_id', $user->id)
+            // Only return existing if no new voucher is applied so we can recreate if needed
+            $pendingTransactionQuery = Transaction::where('student_id', $user->id)
                 ->where('program_id', $programId)
-                ->validPending()
-                ->first();
+                ->validPending();
+
+            // If applying a voucher, invalidate the previous pending transaction to create a new one with discount
+            if ($voucherId) {
+                $pendingTransactionQuery->update(['status' => 'cancelled']);
+                $pendingTransaction = null;
+            } else {
+                $pendingTransaction = $pendingTransactionQuery->first();
+            }
 
             if ($pendingTransaction && $pendingTransaction->snap_token) {
                 // Return existing snap token if still valid
@@ -135,25 +177,37 @@ class PaymentController extends Controller
             // Set expiration time (3 hours from now)
             $expiresAt = Carbon::now()->addHours(3);
 
+            // Prepare item details
+            $itemDetails = [
+                [
+                    'id' => $programId,
+                    'price' => (int) $price,
+                    'quantity' => 1,
+                    'name' => substr($program->program, 0, 50), // Max 50 chars for Midtrans
+                ]
+            ];
+
+            if ($discountAmount > 0) {
+                $itemDetails[] = [
+                    'id' => 'VOUCHER',
+                    'price' => -(int) $discountAmount,
+                    'quantity' => 1,
+                    'name' => 'Discount ' . $voucher->name,
+                ];
+            }
+
             // Prepare Snap parameters
             $params = [
                 'transaction_details' => [
                     'order_id' => $orderId,
-                    'gross_amount' => (int) $program->price,
+                    'gross_amount' => (int) $finalPrice,
                 ],
                 'customer_details' => [
                     'first_name' => $user->name,
                     'email' => $user->email,
                     'phone' => $user->phone ?? '',
                 ],
-                'item_details' => [
-                    [
-                        'id' => $programId,
-                        'price' => (int) $program->price,
-                        'quantity' => 1,
-                        'name' => substr($program->program, 0, 50), // Max 50 chars for Midtrans
-                    ]
-                ],
+                'item_details' => $itemDetails,
                 'callbacks' => [
                     'finish' => route('client.payment.finish'),
                 ],
@@ -174,7 +228,9 @@ class PaymentController extends Controller
                 'snap_token' => $snapToken,
                 'student_id' => $user->id,
                 'program_id' => $programId,
-                'amount' => $program->price,
+                'voucher_id' => $voucherId,
+                'amount' => $finalPrice,
+                'discount_amount' => $discountAmount,
                 'payment_method' => 'midtrans',
                 'status' => 'pending',
                 'expires_at' => $expiresAt,
@@ -188,6 +244,56 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             Log::error('Midtrans Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Apply voucher API returning calculated discount
+     */
+    public function applyVoucher(Request $request)
+    {
+        try {
+            $request->validate([
+                'voucher_code' => 'required|string',
+                'program_id' => 'required|integer',
+            ]);
+
+            $voucherCode = $request->voucher_code;
+            $programId = $request->program_id;
+
+            $program = DB::table('data_programs')->where('id', $programId)->first();
+            
+            if (!$program) {
+                return response()->json(['error' => 'Program tidak ditemukan'], 404);
+            }
+
+            $voucher = \App\Models\Voucher::where('code', $voucherCode)->first();
+
+            if (!$voucher) {
+                return response()->json(['error' => 'Voucher tidak ditemukan'], 404);
+            }
+
+            if (!$voucher->isValid()) {
+                return response()->json(['error' => 'Voucher tidak valid, sudah kadaluarsa, atau melebihi batas penggunaan.'], 400);
+            }
+
+            $price = (float) $program->price;
+            $discountAmount = $voucher->calculateDiscount($price);
+            $finalPrice = max(0, $price - $discountAmount);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Voucher berhasil diterapkan',
+                'discount_amount' => $discountAmount,
+                'final_price' => $finalPrice,
+                'original_price' => $price,
+                'voucher_code' => $voucher->code,
+                'voucher_name' => $voucher->name,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Voucher Apply Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat menerapkan voucher'], 500);
         }
     }
 

@@ -145,7 +145,23 @@ class ProgramController extends Controller
             ]);
         }
 
-        return view('client.program.detail-program', compact('program', 'isPurchased'));
+        // Get recommended vouchers
+        $recommendedVouchers = \App\Models\Voucher::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                      ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
+            })
+            ->get()
+            ->filter(function ($voucher) {
+                return $voucher->isValid();
+            })
+            ->take(2);
+
+        return view('client.program.detail-program', compact('program', 'isPurchased', 'recommendedVouchers'));
     }
 
     /**
