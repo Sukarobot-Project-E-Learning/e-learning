@@ -12,7 +12,36 @@
             <form id="promoForm" action="{{ route('admin.promos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Section 1: Poster -->
+                <!-- Section 1: Informasi Dasar -->
+                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Informasi Dasar',
+                        'subtitle' => 'Detail informasi promo',
+                        'color' => 'blue',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                    ])
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        @include('panel.partials.forms.input-text', [
+                            'name' => 'title',
+                            'label' => 'Judul Promo',
+                            'placeholder' => 'Masukkan judul promo',
+                            'required' => true,
+                        ])
+
+                        @include('panel.partials.forms.select', [
+                            'name' => 'is_active',
+                            'label' => 'Status Promo',
+                            'options' => [
+                                '1' => 'Aktif',
+                                '0' => 'Non-Aktif',
+                            ],
+                            'required' => true,
+                        ])
+                    </div>
+                </div>
+
+                <!-- Section 2: Poster -->
                 <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
                     @include('panel.partials.forms.section-header', [
                         'title' => 'Poster Promo',
@@ -30,23 +59,7 @@
                     ])
                 </div>
 
-                <!-- Section 2: Carousel -->
-                <div class="p-5 sm:p-8">
-                    @include('panel.partials.forms.section-header', [
-                        'title' => 'Carousel Promo',
-                        'subtitle' => 'Upload gambar untuk carousel',
-                        'color' => 'blue',
-                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>'
-                    ])
 
-                    @include('panel.partials.forms.image-upload-simple', [
-                        'name' => 'carousel',
-                        'label' => 'Upload Carousel',
-                        'required' => true,
-                        'maxSize' => 5,
-                        'aspectHint' => 'Ukuran rekomendasi untuk carousel'
-                    ])
-                </div>
 
             </form>
 

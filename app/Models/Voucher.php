@@ -46,7 +46,7 @@ class Voucher extends Model
             return false;
         }
 
-        if ($this->end_date && $now->gt($this->end_date)) {
+        if ($this->end_date && $now->gt($this->end_date->endOfDay())) {
             return false;
         }
 

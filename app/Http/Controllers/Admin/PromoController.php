@@ -15,13 +15,12 @@ class PromoController extends Controller
     public function index(Request $request)
     {
         $query = DB::table('promos')
-            ->select('id', 'title', 'poster_image', 'carousel_image', 'is_active', 'created_at');
+            ->select('id', 'title', 'poster_image', 'is_active', 'created_at');
 
         $data = app(DataTableService::class)->make($query, [
             'columns' => [
                 ['key' => 'title', 'label' => 'Judul Promo', 'sortable' => true, 'type' => 'primary'],
                 ['key' => 'poster', 'label' => 'Poster', 'type' => 'image'],
-                ['key' => 'carousel', 'label' => 'Carousel', 'type' => 'image'],
                 ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'type' => 'status'],
                 ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
             ],
@@ -46,10 +45,9 @@ class PromoController extends Controller
                 return [
                     'id' => $promo->id,
                     'title' => $promo->title ?? 'N/A',
-                    'poster' => $promo->poster_image,
-                    'carousel' => $promo->carousel_image,
+                    'poster' => $promo->poster_image ? asset($promo->poster_image) : null,
                     'is_active' => $promo->is_active,
-                    'status' => $promo->is_active ? 'Aktif' : 'Non-Aktif'
+                    'status' => ($promo->is_active == 1)
                 ];
             },
         ], $request);
@@ -74,9 +72,32 @@ class PromoController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: Add validation
-        // TODO: Handle file upload for poster and carousel
-        // TODO: Save to database
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
+            'poster' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $posterPath = null;
+        if ($request->hasFile('poster')) {
+            $file = $request->file('poster');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/promos'), $filename);
+            $posterPath = 'uploads/promos/' . $filename;
+        }
+
+        // Jika promo baru disetel aktif, nonaktifkan promo yang lain
+        if ($request->is_active) {
+            DB::table('promos')->update(['is_active' => 0]);
+        }
+
+        DB::table('promos')->insert([
+            'title' => $request->title,
+            'is_active' => $request->is_active,
+            'poster_image' => $posterPath,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('admin.promos.index')
             ->with('success', 'Promo berhasil ditambahkan');
@@ -87,14 +108,12 @@ class PromoController extends Controller
      */
     public function edit($id)
     {
-        // Dummy data untuk sementara
-        $promo = [
-            'id' => $id,
-            'title' => 'Promo Workshop Branding',
-            'poster' => null,
-            'carousel' => null,
-            'status' => 'Aktif'
-        ];
+        $promo = DB::table('promos')->where('id', $id)->first();
+        
+        if (!$promo) {
+            return redirect()->route('admin.promos.index')->with('error', 'Promo tidak ditemukan');
+        }
+
 
         return view('admin.promos.edit', compact('promo'));
     }
@@ -104,9 +123,39 @@ class PromoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // TODO: Add validation
-        // TODO: Handle file upload for poster and carousel if changed
-        // TODO: Update in database
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $promo = DB::table('promos')->where('id', $id)->first();
+        if (!$promo) {
+            return redirect()->route('admin.promos.index')->with('error', 'Promo tidak ditemukan');
+        }
+
+        $posterPath = $promo->poster_image;
+        if ($request->hasFile('poster')) {
+            if ($posterPath && file_exists(public_path($posterPath))) {
+                unlink(public_path($posterPath));
+            }
+            $file = $request->file('poster');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/promos'), $filename);
+            $posterPath = 'uploads/promos/' . $filename;
+        }
+
+        // Jika promo ini disetel aktif, nonaktifkan promo yang lain
+        if ($request->is_active) {
+            DB::table('promos')->where('id', '!=', $id)->update(['is_active' => 0]);
+        }
+
+        DB::table('promos')->where('id', $id)->update([
+            'title' => $request->title,
+            'is_active' => $request->is_active,
+            'poster_image' => $posterPath,
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('admin.promos.index')
             ->with('success', 'Promo berhasil diperbarui');
@@ -125,13 +174,6 @@ class PromoController extends Controller
                     $posterPath = public_path($promo->poster_image);
                     if (file_exists($posterPath)) {
                         unlink($posterPath);
-                    }
-                }
-                // Delete carousel file if exists
-                if ($promo->carousel_image) {
-                    $carouselPath = public_path($promo->carousel_image);
-                    if (file_exists($carouselPath)) {
-                        unlink($carouselPath);
                     }
                 }
             }

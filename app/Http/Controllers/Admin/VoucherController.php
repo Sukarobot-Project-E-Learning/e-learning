@@ -14,6 +14,12 @@ class VoucherController extends Controller
      */
     public function index(Request $request)
     {
+        // Nonaktifkan otomatis voucher yang masa berlakunya sudah habis
+        \App\Models\Voucher::where('is_active', true)
+            ->whereNotNull('end_date')
+            ->whereDate('end_date', '<', now()->toDateString())
+            ->update(['is_active' => false]);
+
         $query = \App\Models\Voucher::query()
             ->select(
                 'id',
@@ -87,7 +93,7 @@ class VoucherController extends Controller
                     'duration' => $duration,
                     'code' => $voucher->code ?? '-',
                     'is_active' => $voucher->is_active,
-                    'status' => $voucher->is_active ? 'Aktif' : 'Non-Aktif'
+                    'status' => ($voucher->is_active == 1)
                 ];
             },
         ], $request);

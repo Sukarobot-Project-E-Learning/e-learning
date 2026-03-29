@@ -153,7 +153,7 @@ class ProgramController extends Controller
             })
             ->where(function ($query) {
                 $query->whereNull('end_date')
-                      ->orWhere('end_date', '>=', now());
+                      ->orWhereDate('end_date', '>=', now()->toDateString());
             })
             ->get()
             ->filter(function ($voucher) {

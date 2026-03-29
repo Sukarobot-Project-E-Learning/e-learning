@@ -9,11 +9,42 @@
 
         <!-- Form Card -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none overflow-hidden">
-            <form id="promoForm" action="{{ route('admin.promos.update', $promo['id']) }}" method="POST" enctype="multipart/form-data">
+            <form id="promoForm" action="{{ route('admin.promos.update', $promo->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <!-- Section 1: Poster -->
+                <!-- Section 1: Informasi Dasar -->
+                <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
+                    @include('panel.partials.forms.section-header', [
+                        'title' => 'Informasi Dasar',
+                        'subtitle' => 'Detail informasi promo',
+                        'color' => 'blue',
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                    ])
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        @include('panel.partials.forms.input-text', [
+                            'name' => 'title',
+                            'label' => 'Judul Promo',
+                            'value' => $promo->title ?? '',
+                            'placeholder' => 'Masukkan judul promo',
+                            'required' => true,
+                        ])
+
+                        @include('panel.partials.forms.select', [
+                            'name' => 'is_active',
+                            'label' => 'Status Promo',
+                            'value' => $promo->is_active ?? '1',
+                            'options' => [
+                                '1' => 'Aktif',
+                                '0' => 'Non-Aktif',
+                            ],
+                            'required' => true,
+                        ])
+                    </div>
+                </div>
+
+                <!-- Section 2: Poster -->
                 <div class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-700">
                     @include('panel.partials.forms.section-header', [
                         'title' => 'Poster Promo',
@@ -28,30 +59,12 @@
                         'required' => false,
                         'maxSize' => 5,
                         'aspectHint' => 'Ukuran rekomendasi untuk poster',
-                        'currentImage' => $promo['poster'] ?? null,
+                        'currentImage' => $promo->poster_image ?? null,
                         'currentImageAlt' => 'Poster saat ini'
                     ])
                 </div>
 
-                <!-- Section 2: Carousel -->
-                <div class="p-5 sm:p-8">
-                    @include('panel.partials.forms.section-header', [
-                        'title' => 'Carousel Promo',
-                        'subtitle' => 'Upload gambar untuk carousel',
-                        'color' => 'blue',
-                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>'
-                    ])
 
-                    @include('panel.partials.forms.image-upload-simple', [
-                        'name' => 'carousel',
-                        'label' => 'Upload Carousel',
-                        'required' => false,
-                        'maxSize' => 5,
-                        'aspectHint' => 'Ukuran rekomendasi untuk carousel',
-                        'currentImage' => $promo['carousel'] ?? null,
-                        'currentImageAlt' => 'Carousel saat ini'
-                    ])
-                </div>
 
             </form>
 

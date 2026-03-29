@@ -105,7 +105,13 @@ class HomeController extends Controller
             return $program;
         });
 
-        return view('client.home', compact('popularPrograms', 'instructors'));
+        // Get active promo for popup overlay
+        $activePromo = DB::table('promos')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return view('client.home', compact('popularPrograms', 'instructors', 'activePromo'));
     }
 
     /**
