@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -55,6 +56,12 @@ class InstructorApplicationController extends Controller
             'searchPlaceholder' => 'Cari nama, email, keahlian...',
             'defaultDir' => 'asc',
             'transformer' => function($application) {
+                $formattedDate = '-';
+                if ($application->created_at) {
+                    $formattedDate = Carbon::parse($application->created_at)->locale('id')->translatedFormat('d F Y');
+                    $formattedDate = mb_strtolower($formattedDate);
+                }
+
                 return [
                     'id' => $application->id,
                     'name' => $application->name ?? 'N/A',
@@ -62,7 +69,7 @@ class InstructorApplicationController extends Controller
                     'avatar' => $application->avatar,
                     'skills' => $application->skills ?? '-',
                     'status' => $application->status,
-                    'date' => $application->created_at ? date('d F Y', strtotime($application->created_at)) : '-',
+                    'date' => $formattedDate,
                     'created_at' => $application->created_at
                 ];
             },

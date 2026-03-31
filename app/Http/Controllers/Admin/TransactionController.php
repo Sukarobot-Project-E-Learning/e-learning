@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -94,15 +95,20 @@ class TransactionController extends Controller
                 ];
                 $statusLabel = $statusMap[$transaction->status] ?? $transaction->status;
 
+                $dateSource = $transaction->payment_date ?: $transaction->created_at;
+                $formattedDate = '-';
+                if ($dateSource) {
+                    $formattedDate = Carbon::parse($dateSource)->locale('id')->translatedFormat('d F Y');
+                    $formattedDate = mb_strtolower($formattedDate);
+                }
+
                 return [
                     'id' => $transaction->id,
                     'transaction_code' => $transaction->transaction_code ?? '-',
                     'name' => $transaction->student_name ?? 'N/A',
                     'program' => $transaction->program_name ?? 'N/A',
                     'proof' => $transaction->payment_proof,
-                    'date' => $transaction->payment_date
-                        ? date('d F Y', strtotime($transaction->payment_date))
-                        : ($transaction->created_at ? date('d F Y', strtotime($transaction->created_at)) : '-'),
+                    'date' => $formattedDate,
                     'nominal' => $transaction->amount ?? 0,
                     'amount_raw' => $transaction->amount,
                     'status' => $statusLabel,

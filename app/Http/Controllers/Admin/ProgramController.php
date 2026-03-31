@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -67,12 +68,18 @@ class ProgramController extends Controller
                     ->where('ket', 'Aktif')
                     ->count();
 
+                $formattedStartDate = '-';
+                if ($program->start_date) {
+                    $formattedStartDate = Carbon::parse($program->start_date)->locale('id')->translatedFormat('d F Y');
+                    $formattedStartDate = mb_strtolower($formattedStartDate);
+                }
+
                 return [
                     'id' => $program->id,
                     'title' => $program->program,
                     'image' => $program->image,
                     'category' => ucfirst($program->category ?? '-'),
-                    'start_date' => $program->start_date ? date('d F Y', strtotime($program->start_date)) : '-',
+                    'start_date' => $formattedStartDate,
                     'start_date_raw' => $program->start_date,
                     'type' => ucfirst($program->type ?? '-'),
                     'price' => $program->price ?? 0,

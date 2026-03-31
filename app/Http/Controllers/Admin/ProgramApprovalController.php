@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -85,6 +86,13 @@ class ProgramApprovalController extends Controller
                     'approved' => 'Disetujui',
                     'rejected' => 'Ditolak',
                 ];
+
+                $formattedDate = '-';
+                if ($approval->created_at) {
+                    $formattedDate = Carbon::parse($approval->created_at)->locale('id')->translatedFormat('d F Y');
+                    $formattedDate = mb_strtolower($formattedDate);
+                }
+
                 return [
                     'id' => $approval->id,
                     'title' => $approval->title ?? 'N/A',
@@ -93,7 +101,7 @@ class ProgramApprovalController extends Controller
                     'category' => $approval->category ?? '-',
                     'status' => $statusMap[$approval->status] ?? ucfirst($approval->status),
                     'status_raw' => $approval->status,
-                    'date' => $approval->created_at ? date('d F Y', strtotime($approval->created_at)) : '-',
+                    'date' => $formattedDate,
                     'created_at' => $approval->created_at
                 ];
             },

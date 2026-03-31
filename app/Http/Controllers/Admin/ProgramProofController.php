@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -25,12 +26,16 @@ class ProgramProofController extends Controller
                 'program_proofs.id',
                 'program_proofs.program_id',
                 'program_proofs.student_id',
+                'program_proofs.schedule_id',
                 'program_proofs.documentation',
                 'program_proofs.status',
                 'program_proofs.created_at',
                 'users.name as student_name',
                 'data_programs.program as program_title',
-                DB::raw("CONCAT(DATE_FORMAT(schedules.tanggal_mulai, '%d %M %Y'), IF(schedules.tanggal_selesai IS NOT NULL AND schedules.tanggal_selesai != schedules.tanggal_mulai, CONCAT(' - ', DATE_FORMAT(schedules.tanggal_selesai, '%d %M %Y')), '')) as schedule"),
+                'data_programs.start_date as program_start_date',
+                'data_programs.end_date as program_end_date',
+                'schedules.tanggal_mulai as schedule_start_date',
+                'schedules.tanggal_selesai as schedule_end_date',
                 DB::raw('IF(certificate_templates.id IS NOT NULL, 1, 0) as has_certificate_template')
             );
 
@@ -82,13 +87,14 @@ class ProgramProofController extends Controller
                     'approved' => 'Disetujui',
                     'rejected' => 'Ditolak',
                 ];
+
                 return [
                     'id' => $proof->id,
                     'name' => $proof->student_name ?? 'N/A',
                     'program_title' => $proof->program_title ?? 'N/A',
                     'program_id' => $proof->program_id,
                     'student_id' => $proof->student_id,
-                    'schedule' => $proof->schedule ?? '-',
+                    'schedule' => $this->resolveProofScheduleText($proof),
                     'documentation' => $proof->documentation ? asset('storage/' . $proof->documentation) : null,
                     'status' => $statusMap[$proof->status] ?? $proof->status,
                     'status_raw' => $proof->status,
@@ -103,6 +109,64 @@ class ProgramProofController extends Controller
         }
 
         return view('admin.program-proofs.index', compact('data'));
+    }
+
+    /**
+     * Resolve schedule text for proof table row with fallback order:
+     * 1) Joined schedule dates from program_proofs.schedule_id
+     * 2) Direct lookup by schedule_id (if selected join did not return)
+     * 3) Latest schedule for related program (active preferred)
+     * 4) Program start/end dates
+     */
+    private function resolveProofScheduleText($proof): string
+    {
+        if (!empty($proof->schedule_start_date)) {
+            return $this->formatScheduleRange($proof->schedule_start_date, $proof->schedule_end_date ?? null);
+        }
+
+        if (!empty($proof->schedule_id)) {
+            $scheduleById = DB::table('schedules')
+                ->select('tanggal_mulai', 'tanggal_selesai')
+                ->where('id', $proof->schedule_id)
+                ->first();
+
+            if ($scheduleById && !empty($scheduleById->tanggal_mulai)) {
+                return $this->formatScheduleRange($scheduleById->tanggal_mulai, $scheduleById->tanggal_selesai ?? null);
+            }
+        }
+
+        if (!empty($proof->program_id)) {
+            $scheduleByProgram = DB::table('schedules')
+                ->select('tanggal_mulai', 'tanggal_selesai')
+                ->where('id_program', $proof->program_id)
+                ->orderByRaw("CASE WHEN LOWER(TRIM(COALESCE(ket, ''))) = 'aktif' THEN 0 ELSE 1 END")
+                ->orderByDesc('tanggal_mulai')
+                ->first();
+
+            if ($scheduleByProgram && !empty($scheduleByProgram->tanggal_mulai)) {
+                return $this->formatScheduleRange($scheduleByProgram->tanggal_mulai, $scheduleByProgram->tanggal_selesai ?? null);
+            }
+        }
+
+        return $this->formatScheduleRange($proof->program_start_date ?? null, $proof->program_end_date ?? null);
+    }
+
+    /**
+     * Format schedule date range to display string.
+     */
+    private function formatScheduleRange($startDate, $endDate): string
+    {
+        if (empty($startDate)) {
+            return '-';
+        }
+
+        $start = Carbon::parse($startDate)->locale('id')->translatedFormat('d F Y');
+
+        if (!empty($endDate) && $endDate !== $startDate) {
+            return $start . ' - ' . Carbon::parse($endDate)->locale('id')->translatedFormat('d F Y');
+        }
+
+        return $start;
     }
 
     /**

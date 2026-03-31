@@ -24,6 +24,8 @@ class ReportController extends Controller
             ->select(
                 'data_programs.id',
                 'data_programs.program as title',
+                'data_programs.start_date',
+                'data_programs.end_date',
                 'data_programs.created_at'
             );
 
@@ -53,19 +55,7 @@ class ReportController extends Controller
                 'url' => route('admin.reports.export'),
             ],
             'transformer' => function ($report) {
-                $schedule = DB::table('schedules')
-                    ->where('id_program', $report->id)
-                    ->where('ket', 'Aktif')
-                    ->first();
-
-                $scheduleText = '-';
-                if ($schedule) {
-                    $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
-                    $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
-                        ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
-                        : '';
-                    $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
-                }
+                $scheduleText = $this->resolveScheduleText($report->id, $report->start_date ?? null, $report->end_date ?? null);
 
                 $totalCertified = DB::table('certificates')
                     ->where('program_id', $report->id)
@@ -96,6 +86,8 @@ class ReportController extends Controller
             ->select(
                 'data_programs.id',
                 'data_programs.program as title',
+                'data_programs.start_date',
+                'data_programs.end_date',
                 'data_programs.created_at'
             )
             ->orderBy('data_programs.created_at', 'desc')
@@ -123,20 +115,7 @@ class ReportController extends Controller
         foreach ($reports as $report) {
             $clean = fn($v) => ($v === null || $v === '' || $v === 'N/A') ? '-' : $v;
 
-            // Schedule lookup
-            $schedule = DB::table('schedules')
-                ->where('id_program', $report->id)
-                ->where('ket', 'Aktif')
-                ->first();
-
-            $scheduleText = '-';
-            if ($schedule) {
-                $startDate = $schedule->tanggal_mulai ? date('d/m/Y', strtotime($schedule->tanggal_mulai)) : '';
-                $endDate = $schedule->tanggal_selesai && $schedule->tanggal_selesai != $schedule->tanggal_mulai
-                    ? date('d/m/Y', strtotime($schedule->tanggal_selesai))
-                    : '';
-                $scheduleText = $endDate ? $startDate . ' - ' . $endDate : $startDate;
-            }
+            $scheduleText = $this->resolveScheduleText($report->id, $report->start_date ?? null, $report->end_date ?? null);
 
             $totalCertified = DB::table('certificates')
                 ->where('program_id', $report->id)
@@ -169,6 +148,45 @@ class ReportController extends Controller
         return response()->download($temp, $filename, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ])->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Resolve schedule text with fallback order:
+     * 1) Active schedule in schedules table (case-insensitive ket)
+     * 2) Latest available schedule row for the program
+     * 3) Program start/end date from data_programs
+     */
+    private function resolveScheduleText(int $programId, $fallbackStartDate = null, $fallbackEndDate = null): string
+    {
+        $schedule = DB::table('schedules')
+            ->where('id_program', $programId)
+            ->orderByRaw("CASE WHEN LOWER(TRIM(COALESCE(ket, ''))) = 'aktif' THEN 0 ELSE 1 END")
+            ->orderByDesc('tanggal_mulai')
+            ->first();
+
+        if ($schedule) {
+            return $this->formatScheduleRange($schedule->tanggal_mulai ?? null, $schedule->tanggal_selesai ?? null);
+        }
+
+        return $this->formatScheduleRange($fallbackStartDate, $fallbackEndDate);
+    }
+
+    /**
+     * Format two dates into a single schedule label.
+     */
+    private function formatScheduleRange($startDate, $endDate): string
+    {
+        if (empty($startDate)) {
+            return '-';
+        }
+
+        $start = date('d/m/Y', strtotime($startDate));
+
+        if (!empty($endDate) && $endDate !== $startDate) {
+            return $start . ' - ' . date('d/m/Y', strtotime($endDate));
+        }
+
+        return $start;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -67,11 +68,17 @@ class ArticleController extends Controller
                 ]
             ],
             'transformer' => function ($article) {
+                $formattedDate = '-';
+                if ($article->created_at) {
+                    $formattedDate = Carbon::parse($article->created_at)->locale('id')->translatedFormat('d F Y');
+                    $formattedDate = mb_strtolower($formattedDate);
+                }
+
                 return [
                     'id' => $article->id,
                     'title' => $article->title ?? 'N/A',
                     'category' => $article->category ?? '-',
-                    'date' => $article->created_at ? date('d F Y', strtotime($article->created_at)) : '-',
+                    'date' => $formattedDate,
                     'image' => $article->image ? (str_starts_with($article->image, 'images/') ? $article->image : $article->image) : null,
                     'status' => $article->is_published ? 'Aktif' : 'Draft',
                     'is_published' => $article->is_published,
