@@ -79,10 +79,9 @@ class DashboardController extends Controller
         }
 
         // Get recent programs
-        $recentPrograms = DB::table('program_approvals')
+        $programs = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
-            ->where('status', 'approved')
-            ->select('id', 'title as program', 'status', 'created_at')
+            ->select('id', 'title', 'category', 'status', 'image', 'description', 'type as execution_type', 'price', 'start_date', 'end_date', 'created_at')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -92,7 +91,7 @@ class DashboardController extends Controller
             'totalQuizzes',
             'totalStudents',
             'totalSubmissions',
-            'recentPrograms'
+            'programs'
         ));
     }
 }

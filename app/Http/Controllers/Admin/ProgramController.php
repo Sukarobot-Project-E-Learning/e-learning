@@ -71,7 +71,6 @@ class ProgramController extends Controller
                 $formattedStartDate = '-';
                 if ($program->start_date) {
                     $formattedStartDate = Carbon::parse($program->start_date)->locale('id')->translatedFormat('d F Y');
-                    $formattedStartDate = mb_strtolower($formattedStartDate);
                 }
 
                 return [

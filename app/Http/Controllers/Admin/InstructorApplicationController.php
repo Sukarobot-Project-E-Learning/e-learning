@@ -59,7 +59,6 @@ class InstructorApplicationController extends Controller
                 $formattedDate = '-';
                 if ($application->created_at) {
                     $formattedDate = Carbon::parse($application->created_at)->locale('id')->translatedFormat('d F Y');
-                    $formattedDate = mb_strtolower($formattedDate);
                 }
 
                 return [

@@ -71,7 +71,6 @@ class ArticleController extends Controller
                 $formattedDate = '-';
                 if ($article->created_at) {
                     $formattedDate = Carbon::parse($article->created_at)->locale('id')->translatedFormat('d F Y');
-                    $formattedDate = mb_strtolower($formattedDate);
                 }
 
                 return [

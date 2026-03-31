@@ -59,7 +59,7 @@
                         'required' => false,
                         'maxSize' => 5,
                         'aspectHint' => 'Ukuran rekomendasi untuk poster',
-                        'currentImage' => $promo->poster_image ?? null,
+                        'currentImage' => !empty($promo->poster_image) ? asset($promo->poster_image) : null,
                         'currentImageAlt' => 'Poster saat ini'
                     ])
                 </div>

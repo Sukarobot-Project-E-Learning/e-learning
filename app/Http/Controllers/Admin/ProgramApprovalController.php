@@ -90,7 +90,6 @@ class ProgramApprovalController extends Controller
                 $formattedDate = '-';
                 if ($approval->created_at) {
                     $formattedDate = Carbon::parse($approval->created_at)->locale('id')->translatedFormat('d F Y');
-                    $formattedDate = mb_strtolower($formattedDate);
                 }
 
                 return [

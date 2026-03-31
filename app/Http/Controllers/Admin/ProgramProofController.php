@@ -69,13 +69,13 @@ class ProgramProofController extends Controller
                 'options' => [
                     '' => 'Semua Status',
                     'pending' => 'Menunggu',
-                    'approved' => 'Disetujui',
+                    'accepted' => 'Disetujui',
                     'rejected' => 'Ditolak',
                 ]
             ],
             'badgeClasses' => [
                 'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-                'approved' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                'accepted' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
                 'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
                 'Menunggu' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
                 'Disetujui' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -84,7 +84,7 @@ class ProgramProofController extends Controller
             'transformer' => function($proof) {
                 $statusMap = [
                     'pending' => 'Menunggu',
-                    'approved' => 'Disetujui',
+                    'accepted' => 'Disetujui',
                     'rejected' => 'Ditolak',
                 ];
 

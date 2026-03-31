@@ -99,7 +99,6 @@ class TransactionController extends Controller
                 $formattedDate = '-';
                 if ($dateSource) {
                     $formattedDate = Carbon::parse($dateSource)->locale('id')->translatedFormat('d F Y');
-                    $formattedDate = mb_strtolower($formattedDate);
                 }
 
                 return [

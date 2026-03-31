@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\DataTableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -180,10 +181,10 @@ class ReportController extends Controller
             return '-';
         }
 
-        $start = date('d/m/Y', strtotime($startDate));
+        $start = Carbon::parse($startDate)->locale('id')->translatedFormat('d F Y');
 
         if (!empty($endDate) && $endDate !== $startDate) {
-            return $start . ' - ' . date('d/m/Y', strtotime($endDate));
+            return $start . ' - ' . Carbon::parse($endDate)->locale('id')->translatedFormat('d F Y');
         }
 
         return $start;

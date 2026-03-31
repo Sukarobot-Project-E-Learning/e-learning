@@ -10,11 +10,11 @@
 
 {{-- Mobile Sidebar Overlay --}}
 <div id="mobile-sidebar-overlay"
-    class="hidden fixed inset-0 z-10 bg-black bg-opacity-50 transition-opacity duration-150"></div>
+    class="hidden fixed inset-0 z-30 bg-black bg-opacity-50 transition-opacity duration-150"></div>
 
 {{-- Mobile Sidebar --}}
 <aside id="mobile-sidebar"
-    class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 bg-white dark:bg-gray-800 md:hidden transition-transform duration-300 ease-in-out flex flex-col -translate-x-full">
+    class="fixed inset-y-0 z-40 flex-shrink-0 w-64 mt-16 bg-white dark:bg-gray-800 md:hidden transition-transform duration-300 ease-in-out flex flex-col -translate-x-full">
 
     {{-- Main Navigation Content --}}
     <div class="flex-1 overflow-y-auto py-4 text-gray-500 dark:text-gray-400">

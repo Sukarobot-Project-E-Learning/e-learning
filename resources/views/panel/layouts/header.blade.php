@@ -35,6 +35,43 @@
     if (!$avatarUrl && $role === 'instructor') {
         $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'Instruktur') . '&background=1d4ed8&color=fff';
     }
+
+    $breadcrumb = '';
+    if (request()->routeIs('*dashboard*')) {
+        $breadcrumb = 'Dashboard';
+    } elseif (request()->routeIs('admin.users.*')) {
+        $breadcrumb = 'Akun <span class="mx-2 text-slate-400">/</span> User';
+    } elseif (request()->routeIs('admin.admins.*')) {
+        $breadcrumb = 'Akun <span class="mx-2 text-slate-400">/</span> Admin';
+    } elseif (request()->routeIs('admin.instructors.*')) {
+        $breadcrumb = 'Akun <span class="mx-2 text-slate-400">/</span> Instruktur';
+    } elseif (request()->routeIs('admin.instructor-applications.*')) {
+        $breadcrumb = 'Akun <span class="mx-2 text-slate-400">/</span> Pengajuan Instruktur';
+    } elseif (request()->routeIs('admin.programs.*')) {
+        $breadcrumb = 'Program <span class="mx-2 text-slate-400">/</span> Program';
+    } elseif (request()->routeIs('admin.program-approvals.*')) {
+        $breadcrumb = 'Program <span class="mx-2 text-slate-400">/</span> Pengajuan Program';
+    } elseif (request()->routeIs('admin.program-proofs.*')) {
+        $breadcrumb = 'Program <span class="mx-2 text-slate-400">/</span> Bukti Program';
+    } elseif (request()->routeIs('admin.certificates.*')) {
+        $breadcrumb = 'Program <span class="mx-2 text-slate-400">/</span> Sertifikat';
+    } elseif (request()->routeIs('admin.promos.*')) {
+        $breadcrumb = 'Promosi <span class="mx-2 text-slate-400">/</span> Promo';
+    } elseif (request()->routeIs('admin.vouchers.*')) {
+        $breadcrumb = 'Promosi <span class="mx-2 text-slate-400">/</span> Voucher';
+    } elseif (request()->routeIs('admin.articles.*')) {
+        $breadcrumb = 'Artikel';
+    } elseif (request()->routeIs('admin.broadcasts.*')) {
+        $breadcrumb = 'Broadcast';
+    } elseif (request()->routeIs('admin.reports.*')) {
+        $breadcrumb = 'Laporan';
+    } elseif (request()->routeIs('admin.transactions.*')) {
+        $breadcrumb = 'Transaksi';
+    } elseif (request()->routeIs('*quizzes.*')) {
+        $breadcrumb = 'Tugas/Post Test';
+    } elseif (request()->routeIs('instructor.programs.*')) {
+        $breadcrumb = 'Pengajuan Program';
+    }
 @endphp
 
 <header id="panel-header"
@@ -51,6 +88,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
+
+            @if(!empty($breadcrumb))
+                <div class="hidden md:flex items-center text-base font-semibold text-slate-700 dark:text-gray-200 ml-2">
+                    {!! $breadcrumb !!}
+                </div>
+            @endif
 
             @if($role === 'instructor')
                 {{-- Navigation Links (Desktop) --}}
