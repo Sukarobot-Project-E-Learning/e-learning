@@ -81,7 +81,25 @@ class DashboardController extends Controller
         // Get recent programs
         $programs = DB::table('program_approvals')
             ->where('instructor_id', $trainerId)
-            ->select('id', 'title', 'category', 'status', 'image', 'description', 'type as execution_type', 'price', 'start_date', 'end_date', 'created_at')
+            ->select(
+                'id',
+                'title',
+                'category',
+                'status',
+                'image',
+                'description',
+                'type as execution_type',
+                'price',
+                'start_date',
+                'end_date',
+                'created_at'
+            )
+            ->selectSub(function ($query) {
+                $query->from('enrollments')
+                    ->selectRaw('COUNT(DISTINCT enrollments.student_id)')
+                    ->whereColumn('enrollments.program_id', 'program_approvals.program_id')
+                    ->where('enrollments.status', 'active');
+            }, 'students_count')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

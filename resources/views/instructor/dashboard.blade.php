@@ -37,15 +37,15 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards - Overlapping the blue band -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+                {{-- Stats Cards --}}
+                <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 
-                    <!-- Stat Card 1 - Program Saya -->
-                    <div class="group bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg border border-gray-100 dark:border-slate-800 transition-all duration-300 hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Program Saya</p>
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-500/20">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Card 1 - Program Saya -->
+                    <div class="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 shadow-md border border-gray-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Program Saya</p>
+                            <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
                                 </svg>
                             </div>
@@ -54,12 +54,12 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Total program aktif</p>
                     </div>
 
-                    <!-- Stat Card 2 - Tugas/Postest -->
-                    <div class="group bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg border border-gray-100 dark:border-slate-800 transition-all duration-300 hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Tugas/Postest</p>
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-500/20">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Card 2 - Tugas/Postest -->
+                    <div class="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 shadow-md border border-gray-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Postest</p>
+                            <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
@@ -68,12 +68,12 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Tugas yang dibuat</p>
                     </div>
 
-                    <!-- Stat Card 3 - Total Siswa -->
-                    <div class="group bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg border border-gray-100 dark:border-slate-800 transition-all duration-300 hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Siswa</p>
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl shadow-lg shadow-emerald-500/20">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Card 3 - Total Siswa -->
+                    <div class="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 shadow-md border border-gray-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Total Siswa</p>
+                            <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
                                 </svg>
                             </div>
@@ -82,12 +82,12 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Siswa terdaftar</p>
                     </div>
 
-                    <!-- Stat Card 4 - Dikumpulkan -->
-                    <div class="group bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg border border-gray-100 dark:border-slate-800 transition-all duration-300 hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Dikumpulkan</p>
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-violet-400 to-violet-600 rounded-xl shadow-lg shadow-violet-500/20">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Card 4 - Terkumpul -->
+                    <div class="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 shadow-md border border-gray-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Terkumpul</p>
+                            <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-gradient-to-br from-violet-400 to-violet-600 rounded-lg">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
                                 </svg>
                             </div>
@@ -97,6 +97,7 @@
                     </div>
 
                 </div>
+
             </div>
         </div>
 

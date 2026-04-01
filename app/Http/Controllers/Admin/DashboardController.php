@@ -202,10 +202,11 @@ class DashboardController extends Controller
                 
                 $months[] = $date->format('M');
                 
-                // Revenue data - cumulative within this year only
+                // Revenue data - monthly (non-cumulative)
+                $monthStart = $date->copy()->startOfMonth();
                 $revenue = DB::table('transactions')
                     ->where('status', 'paid')
-                    ->where('created_at', '>=', $yearStart)
+                    ->where('created_at', '>=', $monthStart)
                     ->where('created_at', '<=', $monthEnd)
                     ->sum('amount') ?? 0;
                 $revenueData[] = (int) $revenue;
