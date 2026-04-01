@@ -99,7 +99,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
             </svg>
-            Jadwal Pelatihan
+            Jadwal {{ ucfirst($program->category) }}
           </h2>
           <p class="text-blue-50 text-lg mb-6">
             {{ $program->start_date == $program->end_date ? \Carbon\Carbon::parse($program->start_date)->format('d M Y') : \Carbon\Carbon::parse($program->start_date)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($program->end_date)->format('d M Y') }} |
