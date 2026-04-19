@@ -211,6 +211,9 @@ class ProgramApprovalController extends Controller
                     ]);
             }
 
+            // Sync LMS Data
+            $this->syncLmsData($programId, $approval);
+
             // Update program_approvals status
             DB::table('program_approvals')
                 ->where('id', $id)
@@ -417,6 +420,9 @@ class ProgramApprovalController extends Controller
                             ]);
                     }
 
+                    // Sync LMS Data
+                    $this->syncLmsData($programId, $approval);
+
                     DB::table('program_approvals')
                         ->where('id', $id)
                         ->update([
@@ -503,6 +509,66 @@ class ProgramApprovalController extends Controller
                     'link' => route('instructor.programs.index'),
                     'is_read' => 0,
                     'created_at' => now(),
+                ]);
+            }
+        }
+    }
+
+    private function syncLmsData($programId, $approval)
+    {
+        // 1. Sync Curriculum
+        if (!empty($approval->lms_curriculum_json)) {
+            $sectionsData = json_decode($approval->lms_curriculum_json, true) ?? [];
+            
+            // Delete old data (simpler than complex tracking for this nested structure)
+            $existingSectionIds = \App\Models\CourseSection::where('program_id', $programId)->pluck('id');
+            \App\Models\CourseLesson::whereIn('section_id', $existingSectionIds)->delete();
+            \App\Models\CourseSection::where('program_id', $programId)->delete();
+
+            $sectionOrder = 1;
+            foreach ($sectionsData as $idx => $sec) {
+                // If the section is empty, it might still have title
+                if (empty($sec['title'])) continue;
+                
+                $section = \App\Models\CourseSection::create([
+                    'program_id' => $programId,
+                    'title' => $sec['title'],
+                    'order' => $sectionOrder++
+                ]);
+
+                if (isset($sec['lessons']) && is_array($sec['lessons'])) {
+                    $lessonOrder = 1;
+                    foreach ($sec['lessons'] as $les) {
+                        if (empty($les['title'])) continue;
+                        
+                        \App\Models\CourseLesson::create([
+                            'section_id' => $section->id,
+                            'title' => $les['title'],
+                            'type' => $les['type'] ?? 'video',
+                            'video_url' => $les['video_url'] ?? null,
+                            'content' => $les['content'] ?? null,
+                            'order' => $lessonOrder++
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // 2. Sync Assignments
+        if (!empty($approval->lms_assignment_json)) {
+            $assignmentsData = json_decode($approval->lms_assignment_json, true) ?? [];
+            
+            \App\Models\CourseAssignment::where('program_id', $programId)->delete();
+            
+            foreach ($assignmentsData as $asg) {
+                if (empty($asg['title'])) continue;
+                
+                \App\Models\CourseAssignment::create([
+                    'program_id' => $programId,
+                    'title' => $asg['title'],
+                    'description' => $asg['description'],
+                    'allowed_extensions' => $asg['allowed_extensions'] ?? 'pdf,zip,rar',
+                    'due_date' => !empty($asg['due_date']) ? $asg['due_date'] . ' 23:59:59' : null,
                 ]);
             }
         }

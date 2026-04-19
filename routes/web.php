@@ -94,6 +94,28 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Admin\ProgramController::class);
 
+    // LMS Curriculum & Assignment (Admin)
+    Route::prefix('programs/{program}/lms')->name('programs.lms.')->group(function () {
+        // Sections
+        Route::get('sections', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'index'])->name('sections.index');
+        Route::post('sections', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'storeSection'])->name('sections.store');
+        Route::put('sections/{section}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'updateSection'])->name('sections.update');
+        Route::delete('sections/{section}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'destroySection'])->name('sections.destroy');
+        Route::post('sections/reorder', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'reorderSections'])->name('sections.reorder');
+        
+        // Lessons
+        Route::post('sections/{section}/lessons', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'storeLesson'])->name('lessons.store');
+        Route::put('sections/{section}/lessons/{lesson}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'updateLesson'])->name('lessons.update');
+        Route::delete('sections/{section}/lessons/{lesson}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'destroyLesson'])->name('lessons.destroy');
+        Route::post('sections/{section}/lessons/reorder', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'reorderLessons'])->name('lessons.reorder');
+
+        // Assignments (Post-test)
+        Route::get('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'index'])->name('assignments.index');
+        Route::post('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'store'])->name('assignments.store');
+        Route::put('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'update'])->name('assignments.update');
+        Route::delete('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'destroy'])->name('assignments.destroy');
+    });
+
     // Program Approval Management (Pengajuan Program dari Instruktur)
     Route::get('program-approvals', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'index'])->name('program-approvals.index');
     Route::get('program-approvals/{id}', [\App\Http\Controllers\Admin\ProgramApprovalController::class, 'show'])->name('program-approvals.show');
@@ -284,6 +306,28 @@ Route::prefix('instructor')->name('instructor.')->middleware([\App\Http\Middlewa
 
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Instructor\ProgramController::class);
+
+    // LMS Curriculum & Assignment (Instructor)
+    Route::prefix('programs/{program}/lms')->name('programs.lms.')->group(function () {
+        // Sections
+        Route::get('sections', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'index'])->name('sections.index');
+        Route::post('sections', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'storeSection'])->name('sections.store');
+        Route::put('sections/{section}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'updateSection'])->name('sections.update');
+        Route::delete('sections/{section}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'destroySection'])->name('sections.destroy');
+        Route::post('sections/reorder', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'reorderSections'])->name('sections.reorder');
+        
+        // Lessons
+        Route::post('sections/{section}/lessons', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'storeLesson'])->name('lessons.store');
+        Route::put('sections/{section}/lessons/{lesson}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'updateLesson'])->name('lessons.update');
+        Route::delete('sections/{section}/lessons/{lesson}', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'destroyLesson'])->name('lessons.destroy');
+        Route::post('sections/{section}/lessons/reorder', [\App\Http\Controllers\Panel\LmsCurriculumController::class, 'reorderLessons'])->name('lessons.reorder');
+
+        // Assignments (Post-test)
+        Route::get('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'index'])->name('assignments.index');
+        Route::post('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'store'])->name('assignments.store');
+        Route::put('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'update'])->name('assignments.update');
+        Route::delete('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'destroy'])->name('assignments.destroy');
+    });
 
     // Quiz/Tugas Management
     Route::get('quizzes', [\App\Http\Controllers\Instructor\QuizController::class, 'index'])->name('quizzes.index');

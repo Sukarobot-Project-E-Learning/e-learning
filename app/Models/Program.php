@@ -62,4 +62,20 @@ class Program extends Model
     {
         return $this->hasMany(\App\Models\Transaction::class, 'program_id');
     }
+
+    /**
+     * Relation to LMS Sections
+     */
+    public function sections()
+    {
+        return $this->hasMany(\App\Models\CourseSection::class, 'program_id')->orderBy('order', 'asc');
+    }
+
+    /**
+     * Relation to LMS Assignments (Post-test)
+     */
+    public function assignments()
+    {
+        return $this->hasMany(\App\Models\CourseAssignment::class, 'program_id');
+    }
 }

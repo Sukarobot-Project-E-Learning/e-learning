@@ -128,7 +128,9 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        return view('instructor.programs.create');
+        $lmsCurriculumJson = '[]';
+        $lmsAssignmentJson = '[]';
+        return view('instructor.programs.create', compact('lmsCurriculumJson', 'lmsAssignmentJson'));
     }
 
     /**
@@ -211,6 +213,8 @@ class ProgramController extends Controller
             'materials' => json_encode($validated['materials'] ?? []),
             'benefits' => json_encode($validated['benefits'] ?? []),
             'status' => 'pending',
+            'lms_curriculum_json' => $request->lms_curriculum_json ?? null,
+            'lms_assignment_json' => $request->lms_assignment_json ?? null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -277,7 +281,11 @@ class ProgramController extends Controller
         if ($submission->type === 'offline') {
             $locationData = $this->getLocationIds($submission);
         }
-        return view('instructor.programs.edit', compact('submission','locationData'));
+        // Pass LMS JSON
+        $lmsCurriculumJson = $submission->lms_curriculum_json ?? '[]';
+        $lmsAssignmentJson = $submission->lms_assignment_json ?? '[]';
+
+        return view('instructor.programs.edit', compact('submission','locationData','lmsCurriculumJson','lmsAssignmentJson'));
     }
 
     private function getLocationIds($submission)
@@ -448,6 +456,8 @@ class ProgramController extends Controller
                 'benefits' => json_encode($validated['benefits'] ?? []),
                 'status' => 'pending', // Reset to pending after edit
                 'rejection_reason' => null, // Clear rejection reason
+                'lms_curriculum_json' => $request->lms_curriculum_json ?? null,
+                'lms_assignment_json' => $request->lms_assignment_json ?? null,
                 'updated_at' => now(),
             ]);
 

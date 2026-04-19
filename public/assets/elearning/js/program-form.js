@@ -12,7 +12,7 @@ class ProgramFormManager {
 
         this.form = this.container.querySelector('#programForm');
         this.currentStep = 1;
-        this.totalSteps = 5;
+        this.totalSteps = 7;
         this.isAdmin = this.container.dataset.isAdmin === 'true';
         this.isEdit = this.container.dataset.isEdit === 'true';
         this.primaryColor = this.container.dataset.primaryColor || 'orange';
@@ -307,6 +307,10 @@ class ProgramFormManager {
                 break;
             case 5:
                 isValid = this.validateStep5(errors);
+                break;
+            case 6:
+            case 7:
+                isValid = true;
                 break;
         }
 

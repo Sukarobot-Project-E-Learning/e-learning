@@ -56,14 +56,14 @@
     <!-- Progress Header -->
     <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center justify-center gap-2 sm:gap-3" id="stepIndicators">
-            @for($step = 1; $step <= 5; $step++)
+            @for($step = 1; $step <= 7; $step++)
                 <div class="flex items-center">
                     <button type="button" 
                             class="step-indicator w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 {{ $step === 1 ? 'bg-'.$primaryColor.'-600 text-white shadow-lg' : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400' }}"
                             data-step="{{ $step }}">
                         {{ $step }}
                     </button>
-                    @if($step < 5)
+                    @if($step < 7)
                         <div class="step-line w-6 sm:w-12 h-1 mx-1 rounded bg-gray-200 dark:bg-gray-700 transition-all duration-300"></div>
                     @endif
                 </div>
@@ -74,11 +74,16 @@
     <form id="programForm" 
           action="{{ $formAction }}" 
           method="POST" 
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          novalidate>
         @csrf
         @if($isEdit)
             @method('PUT')
         @endif
+        
+        <!-- Hidden inputs for LMS Unified Save -->
+        <input type="hidden" name="lms_curriculum_json" id="lms_curriculum_json" value="[]">
+        <input type="hidden" name="lms_assignment_json" id="lms_assignment_json" value="[]">
 
         <!-- Step 1: Informasi Dasar -->
         <div class="form-step" data-step="1">
@@ -619,6 +624,44 @@
                         <input type="hidden" name="existing_image" id="existing-image" value="{{ $data->image }}">
                     @endif
                 </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Kurikulum LMS -->
+        <div class="form-step hidden" data-step="6">
+            <div class="p-5 sm:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Kurikulum LMS</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Kelola bab dan materi pembelajaran</p>
+                    </div>
+                </div>
+
+                @include('panel.programs._lms_curriculum', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
+            </div>
+        </div>
+
+        <!-- Step 7: Tugas Post-Test -->
+        <div class="form-step hidden" data-step="7">
+            <div class="p-5 sm:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Tugas Post-Test</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Kelola post-test siswa sebagai syarat kelulusan</p>
+                    </div>
+                </div>
+
+                @include('panel.programs._lms_assignment', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
             </div>
         </div>
 

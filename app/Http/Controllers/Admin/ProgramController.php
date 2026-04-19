@@ -110,7 +110,10 @@ class ProgramController extends Controller
             ->orderBy('nama')
             ->get();
 
-        return view('admin.programs.create', compact('instructors'));
+        $lmsCurriculumJson = '[]';
+        $lmsAssignmentJson = '[]';
+
+        return view('admin.programs.create', compact('instructors', 'lmsCurriculumJson', 'lmsAssignmentJson'));
     }
 
     /**
@@ -228,7 +231,9 @@ class ProgramController extends Controller
             $data['full_address'] = $validated['full_address'];
         }
 
-        DB::table('data_programs')->insert($data);
+        $programId = DB::table('data_programs')->insertGetId($data);
+
+        $this->syncLmsData($programId, $request);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil ditambahkan');
     }
@@ -249,6 +254,13 @@ class ProgramController extends Controller
         $program->learning_materials = json_decode($program->learning_materials, true) ?? [];
         $program->benefits = json_decode($program->benefits, true) ?? [];
 
+        // Build LMS JSON from relationships for the form
+        $sections = \App\Models\CourseSection::with('lessons')->where('program_id', $program->id)->orderBy('order')->get();
+        $lmsCurriculumJson = $sections->toJson();
+
+        $assignments = \App\Models\CourseAssignment::where('program_id', $program->id)->get();
+        $lmsAssignmentJson = $assignments->toJson();
+
         // Get all instructors from data_trainers table
         $instructors = DB::table('data_trainers')
             ->select('id', 'nama')
@@ -261,7 +273,7 @@ class ProgramController extends Controller
             $locationData = $this->getLocationIds($program);
         }
 
-        return view('admin.programs.edit', compact('program', 'instructors', 'locationData'));
+        return view('admin.programs.edit', compact('program', 'instructors', 'locationData', 'lmsCurriculumJson', 'lmsAssignmentJson'));
     }
 
     // Add this helper method to find IDs from names
@@ -460,6 +472,8 @@ class ProgramController extends Controller
 
         DB::table('data_programs')->where('id', $id)->update($data);
 
+        $this->syncLmsData($id, $request);
+
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil diupdate');
     }
 
@@ -488,6 +502,66 @@ class ProgramController extends Controller
             return response()->json(['success' => true, 'message' => 'Program berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus program'], 500);
+        }
+    }
+
+    private function syncLmsData($programId, Request $request)
+    {
+        // 1. Sync Curriculum
+        if ($request->filled('lms_curriculum_json')) {
+            $sectionsData = json_decode($request->lms_curriculum_json, true) ?? [];
+            
+            // Delete old data (simpler than complex tracking for this nested structure)
+            $existingSectionIds = \App\Models\CourseSection::where('program_id', $programId)->pluck('id');
+            \App\Models\CourseLesson::whereIn('section_id', $existingSectionIds)->delete();
+            \App\Models\CourseSection::where('program_id', $programId)->delete();
+
+            $sectionOrder = 1;
+            foreach ($sectionsData as $idx => $sec) {
+                // If the section is empty, it might still have title
+                if (empty($sec['title'])) continue;
+                
+                $section = \App\Models\CourseSection::create([
+                    'program_id' => $programId,
+                    'title' => $sec['title'],
+                    'order' => $sectionOrder++
+                ]);
+
+                if (isset($sec['lessons']) && is_array($sec['lessons'])) {
+                    $lessonOrder = 1;
+                    foreach ($sec['lessons'] as $les) {
+                        if (empty($les['title'])) continue;
+                        
+                        \App\Models\CourseLesson::create([
+                            'section_id' => $section->id,
+                            'title' => $les['title'],
+                            'type' => $les['type'] ?? 'video',
+                            'video_url' => $les['video_url'] ?? null,
+                            'content' => $les['content'] ?? null,
+                            'order' => $lessonOrder++
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // 2. Sync Assignments
+        if ($request->filled('lms_assignment_json')) {
+            $assignmentsData = json_decode($request->lms_assignment_json, true) ?? [];
+            
+            \App\Models\CourseAssignment::where('program_id', $programId)->delete();
+            
+            foreach ($assignmentsData as $asg) {
+                if (empty($asg['title'])) continue;
+                
+                \App\Models\CourseAssignment::create([
+                    'program_id' => $programId,
+                    'title' => $asg['title'],
+                    'description' => $asg['description'],
+                    'allowed_extensions' => $asg['allowed_extensions'] ?? 'pdf,zip,rar',
+                    'due_date' => !empty($asg['due_date']) ? $asg['due_date'] . ' 23:59:59' : null,
+                ]);
+            }
         }
     }
 }

@@ -95,4 +95,20 @@ class User extends Authenticatable
         // If file physically missing, return default
         return $defaultAvatar;
     }
+
+    /**
+     * Relation to Course Progresses
+     */
+    public function progresses()
+    {
+        return $this->hasMany(\App\Models\CourseProgress::class, 'user_id');
+    }
+
+    /**
+     * Relation to Course Submissions
+     */
+    public function courseSubmissions()
+    {
+        return $this->hasMany(\App\Models\CourseSubmission::class, 'user_id');
+    }
 }

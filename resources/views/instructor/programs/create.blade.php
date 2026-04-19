@@ -33,6 +33,24 @@
                         timerProgressBar: true
                     });
                 @endif
+
+                @if(session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                @endif
+
+                @if($errors->any())
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        html: '<ul style="text-align: left; padding-left: 20px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                @endif
             });
         </script>
     @endpush
