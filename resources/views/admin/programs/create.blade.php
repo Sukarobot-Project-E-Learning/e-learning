@@ -1,6 +1,6 @@
 @extends('panel.layouts.app')
 
-@section('title', 'Ajukan Program Baru')
+@section('title', 'Tambah Program')
 
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">

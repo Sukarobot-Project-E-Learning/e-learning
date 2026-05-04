@@ -10,83 +10,11 @@
 
     <!-- KONTEN KIRI -->
     <div class="lg:col-span-2 space-y-8">
-      <!-- Lokasi -->
-      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <span
-          class="px-4 py-1.5 text-sm bg-blue-50 text-blue-700 rounded-full font-bold">{{ ucfirst($program->category) }}</span>
-
-        @if($program->type == 'online')
-          <p class="mt-4 text-sm text-gray-500 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-              </path>
-            </svg>
-            <span class="font-medium text-gray-700">Pertemuan Virtual via Zoom</span>
-          </p>
-          
-          {{-- Link Zoom - Hanya tampil untuk user yang sudah membeli program --}}
-          @if($isPurchased && !empty($program->zoom_link))
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-              <div class="flex flex-col sm:flex-row items-center gap-3">
-                <div class="flex items-center gap-3 w-full sm:w-auto overflow-hidden">
-                  <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                      </path>
-                    </svg>
-                  </div>
-                  <div class="flex-1 min-w-0 overflow-hidden">
-                    <p class="text-sm font-semibold text-blue-800 mb-1">Link Meeting Zoom</p>
-                    <a href="{{ $program->zoom_link }}" target="_blank" rel="noopener noreferrer"
-                       class="text-sm text-blue-600 hover:text-blue-800 hover:underline truncate block">
-                      {{ $program->zoom_link }}
-                    </a>
-                  </div>
-                </div>
-                
-                <a href="{{ $program->zoom_link }}" target="_blank" rel="noopener noreferrer"
-                   class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center flex-shrink-0 mt-2 sm:mt-0">
-                  Join Meeting
-                </a>
-              </div>
-            </div>
-          @endif
-        @else
-          <p class="mt-4 text-sm text-gray-500 flex items-center gap-2">
-            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z">
-              </path>
-            </svg>
-            <span class="font-medium text-gray-700">
-              @php
-                $locationParts = array_filter([
-                  $program->village ?? null,
-                  $program->district ?? null,
-                  $program->city ?? null,
-                  $program->province ?? null
-                ]);
-              @endphp
-
-              @if(!empty($locationParts))
-                {{ implode(', ', $locationParts) }}
-              @else
-                Lokasi Offline
-              @endif
-            </span>
-          </p>
-          @if(!empty($program->full_address))
-            <p class="text-xs text-gray-500 mt-2 ml-7 leading-relaxed">{{ $program->full_address }}</p>
-          @endif
-        @endif
-
-        <p class="mt-6 text-gray-700 leading-relaxed text-base">
-          {{ $program->description }}
-        </p>
-      </div>
+      @include('client.program.partials.location-and-type', [
+        'program' => $program,
+        'isPurchased' => $isPurchased,
+        'isCourseProgram' => $isCourseProgram,
+      ])
 
       <!-- Jadwal -->
       <div
@@ -129,13 +57,15 @@
         </div>
       </div>
 
-      <!-- Materi dengan Dropdown -->
-      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <h2 class="font-bold text-xl mb-6 text-gray-900">Materi Pembelajaran</h2>
+      <!-- Silabus -->
+      <div id="silabus-kelas" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 scroll-mt-32">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <h2 class="font-bold text-xl text-gray-900">Silabus Kelas</h2>
+        </div>
+
         <div class="space-y-4">
           @forelse($program->learning_materials as $index => $material)
-            <div
-              class="accordion border border-gray-200 rounded-xl p-5 cursor-pointer hover:bg-gray-50 transition-colors duration-300 group">
+            <div class="accordion border border-gray-200 rounded-xl p-5 cursor-pointer hover:bg-gray-50 transition-colors duration-300 group">
               <div class="flex justify-between items-center">
                 <h4 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
                   {{ $material['title'] ?? 'Hari ' . ($index + 1) }}
@@ -188,21 +118,16 @@
             class="w-full object-cover transform group-hover:scale-105 transition duration-500">
         </div>
 
-        @if($isPurchased)
-          <!-- Tombol -->
-          <div class="flex flex-col gap-3 mb-8">
-            <a href="{{ route('client.dashboard.program') }}"
-                class="w-full bg-green-600 text-white py-3.5 rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg hover:shadow-green-600/30 text-center flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                </svg>
-                Lihat Kelas Saya
-              </a>
-          </div>
-        @else
+        @include('client.program.partials.purchase-cta-button', [
+          'isPurchased' => $isPurchased,
+          'isCourseProgram' => $isCourseProgram,
+          'program' => $program,
+        ])
+
+        @if(!$isPurchased)
           <!-- Harga -->
           <div class="mb-6">
-            <p class="text-sm text-gray-500 mb-1">Harga Kelas</p>
+            <p class="text-sm text-gray-500 mb-1">Harga {{ ucfirst($program->category) }}</p>
             @if($program->price > 0)
               <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($program->price, 0, ',', '.') }}</p>
             @else
@@ -220,87 +145,19 @@
               $isSoldOut = $program->available_slots <= 0;
           @endphp
 
-          <div class="flex flex-col gap-3 mb-8">
-            @if($isSoldOut)
-                 <button disabled
-                  class="w-full bg-red-400 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
-                  Kuota Habis
-                </button>
-            @elseif($isFinished)
-                <button disabled
-                  class="w-full bg-gray-400 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
-                  Program Selesai
-                </button>
-            @elseif($isRunning)
-                 <button disabled
-                  class="w-full bg-blue-300 text-white py-3.5 rounded-xl font-bold cursor-not-allowed text-center opacity-80">
-                  Pendaftaran Ditutup (Sedang Berjalan)
-                </button>
-            @else
-                {{-- Program Available --}}
-                <a href="{{ route('client.pembayaran', ['programSlug' => $program->slug]) }}"
-                  class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/30 text-center">
-                  Beli Kelas Sekarang
-                </a>
-            @endif
-          </div>
+          @include('client.program.partials.purchase-status-buttons', [
+            'isSoldOut' => $isSoldOut,
+            'isCourseProgram' => $isCourseProgram,
+            'isFinished' => $isFinished,
+            'isRunning' => $isRunning,
+            'program' => $program,
+          ])
         @endif
 
-        @if(isset($recommendedVouchers) && $recommendedVouchers->count() > 0 && !$isPurchased)
-        <!-- Promo & Voucher Recommendation -->
-        <div class="mb-8">
-          <div class="flex items-center gap-2 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm4.707 3.707a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L8.414 9H10a3 3 0 013 3v1a1 1 0 102 0v-1a5 5 0 00-5-5H8.414l1.293-1.293z" clip-rule="evenodd" />
-            </svg>
-            <h3 class="font-bold text-gray-900">Promo Spesial Untukmu</h3>
-          </div>
-          <div class="space-y-3">
-            @foreach($recommendedVouchers as $voucher)
-            <div class="border border-orange-200 bg-orange-50/50 rounded-xl p-3 flex justify-between items-center group relative overflow-hidden transition hover:bg-orange-50">
-               <div class="z-10 relative">
-                 <p class="font-bold text-orange-700 text-sm">
-                   @if($voucher->discount_type == 'percentage')
-                     Diskon {{ $voucher->discount_value }}%
-                   @else
-                     Potongan Rp{{ number_format($voucher->discount_value, 0, ',', '.') }}
-                   @endif
-                 </p>
-                 <p class="text-xs text-orange-600/80 font-mono font-bold mt-1 tracking-wider">{{ $voucher->code }}</p>
-               </div>
-               <button onclick="copyVoucherCode('{{ $voucher->code }}', this)" class="z-10 bg-white border border-orange-200 text-orange-600 hover:bg-orange-100 hover:text-orange-700 text-xs px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                 </svg>
-                 Salin
-               </button>
-            </div>
-            @endforeach
-          </div>
-          <script>
-            if (typeof copyVoucherCode !== 'function') {
-              function copyVoucherCode(code, element) {
-                navigator.clipboard.writeText(code).then(function() {
-                  const icon = element.querySelector('.copy-icon');
-                  if(icon) {
-                     const originalHTML = icon.innerHTML;
-                     icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />';
-                     element.classList.remove('text-orange-600', 'border-orange-200');
-                     element.classList.add('text-green-600', 'border-green-300', 'bg-green-50');
-                     element.innerHTML = icon.outerHTML + 'Tersalin!';
-                     
-                     setTimeout(() => {
-                       element.classList.add('text-orange-600', 'border-orange-200');
-                       element.classList.remove('text-green-600', 'border-green-300', 'bg-green-50');
-                       element.innerHTML = originalHTML + 'Salin';
-                     }, 2000);
-                  }
-                });
-              }
-            }
-          </script>
-        </div>
-        @endif
+        @include('client.program.partials.voucher-recommendations', [
+          'recommendedVouchers' => $recommendedVouchers,
+          'isPurchased' => $isPurchased,
+        ])
 
         <!-- Benefit -->
         <div class="mb-8">

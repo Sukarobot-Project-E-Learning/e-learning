@@ -119,7 +119,7 @@
                     @if($isAdmin)
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Instruktur <span class="text-red-500">*</span>
+                            Instruktur 
                         </label>
                         <select name="instructor_id" 
                                 id="input-instructor_id"
@@ -391,7 +391,7 @@
                     <!-- Online Fields (Zoom Link) -->
                     <div id="onlineFields" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Link Zoom/Google Meet <span class="text-red-500">*</span>
+                            Link Zoom/Google Meet 
                         </label>
                         <input type="url" 
                                name="zoom_link" 
@@ -629,40 +629,12 @@
 
         <!-- Step 6: Kurikulum LMS -->
         <div class="form-step hidden" data-step="6">
-            <div class="p-5 sm:p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Kurikulum LMS</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Kelola bab dan materi pembelajaran</p>
-                    </div>
-                </div>
-
                 @include('panel.programs._lms_curriculum', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
-            </div>
         </div>
 
         <!-- Step 7: Tugas Post-Test -->
         <div class="form-step hidden" data-step="7">
-            <div class="p-5 sm:p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Tugas Post-Test</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Kelola post-test siswa sebagai syarat kelulusan</p>
-                    </div>
-                </div>
-
                 @include('panel.programs._lms_assignment', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
-            </div>
         </div>
 
         <!-- Navigation Footer -->

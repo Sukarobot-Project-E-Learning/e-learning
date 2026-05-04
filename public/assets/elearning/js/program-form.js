@@ -254,6 +254,16 @@ class ProgramFormManager {
                 label.classList.add(`text-${this.primaryColor}-600`, `dark:text-${this.primaryColor}-400`, 'font-medium');
             }
         });
+
+        this.scrollStepIndicatorIntoView();
+    }
+
+    scrollStepIndicatorIntoView() {
+        if (!window.matchMedia || !window.matchMedia('(max-width: 640px)').matches) return;
+        const activeIndicator = this.stepIndicators[this.currentStep - 1];
+        if (activeIndicator) {
+            activeIndicator.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        }
     }
 
     updateNavigationState() {
@@ -338,14 +348,6 @@ class ProgramFormManager {
             isValid = false;
         }
 
-        if (this.isAdmin) {
-            const instructorInput = this.container.querySelector('#input-instructor_id');
-            if (!instructorInput?.value) {
-                this.showFieldError('instructor_id', 'Instruktur wajib dipilih.');
-                errors.push('Instruktur wajib dipilih.');
-                isValid = false;
-            }
-        }
 
         if (!categoryInput?.value) {
             this.showFieldError('category', 'Kategori wajib dipilih.');
@@ -433,12 +435,6 @@ class ProgramFormManager {
         }
 
         if (selectedType === 'online') {
-            const zoomLink = this.container.querySelector('#input-zoom_link');
-            if (!zoomLink?.value.trim()) {
-                this.showFieldError('zoom_link', 'Link Zoom/Google Meet wajib diisi.');
-                errors.push('Link Zoom/Google Meet wajib diisi.');
-                isValid = false;
-            }
         } else if (selectedType === 'offline') {
             const province = this.container.querySelector('#input-province');
             const city = this.container.querySelector('#input-city');

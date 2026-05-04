@@ -59,11 +59,35 @@
               <h2 class="text-gray-900 text-lg font-bold leading-tight tracking-[-0.015em]">{{ $enrollment->program_name }}</h2>
               <p class="text-gray-500 text-sm font-normal leading-normal">Dibeli pada: {{ \Carbon\Carbon::parse($enrollment->created_at)->translatedFormat('d M Y') }}</p>
 
+              @if($enrollment->is_course_program)
+                <div class="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-xs font-semibold text-blue-700">Status Kursus: {{ $enrollment->course_status_label }}</p>
+                    <p class="text-xs font-semibold text-blue-700">{{ $enrollment->progress_percent }}%</p>
+                  </div>
+                  <p class="mt-1 text-xs text-blue-600">{{ $enrollment->completed_materials }}/{{ $enrollment->total_materials }} materi selesai</p>
+                </div>
+              @endif
+
               <div class="mt-auto space-y-3">
-                  @if(!$enrollment->proof_id && \Carbon\Carbon::parse($enrollment->end_date)->isPast())
+                  @php
+                    $canSubmitProof = !$enrollment->proof_id && (
+                      $enrollment->is_course_program
+                        ? $enrollment->is_course_completed
+                        : \Carbon\Carbon::parse($enrollment->end_date)->isPast()
+                    );
+                  @endphp
+
+                  @if($canSubmitProof)
                       <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
                         <span class="truncate">Kirim Bukti Program</span>
                       </a>
+                  @endif
+
+                  @if($enrollment->is_course_program && !$enrollment->is_course_completed)
+                    <a href="{{ route('client.program.classroom', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-semibold leading-normal hover:bg-blue-700 transition-colors">
+                      <span class="truncate">Lanjutkan Kursus</span>
+                    </a>
                   @endif
 
                   {{-- Tombol Detail Kelas - selalu tampil untuk melihat detail program --}}
@@ -72,7 +96,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
-                    <span class="truncate">Detail Kelas</span>
+                    <span class="truncate">Detail Program</span>
                   </a>
               </div>
             </div>

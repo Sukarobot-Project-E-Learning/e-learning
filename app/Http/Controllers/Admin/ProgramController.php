@@ -145,7 +145,7 @@ class ProgramController extends Controller
 
         // Conditional validation
         if ($request->type === 'online') {
-            $rules['zoom_link'] = 'required|url';
+            $rules['zoom_link'] = 'nullable|url';
         } elseif ($request->type === 'offline') {
             $rules['province'] = 'required|string';
             $rules['city'] = 'required|string';
@@ -377,7 +377,7 @@ class ProgramController extends Controller
         ];
 
         if ($request->type === 'online') {
-            $rules['zoom_link'] = 'required|url';
+            $rules['zoom_link'] = 'nullable|url';
         } elseif ($request->type === 'offline') {
             $rules['province'] = 'required|string';
             $rules['city'] = 'required|string';

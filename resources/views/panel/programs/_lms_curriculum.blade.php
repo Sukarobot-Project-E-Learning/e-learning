@@ -4,7 +4,7 @@
             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Kurikulum LMS</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">Kelola bab dan materi pembelajaran program</p>
         </div>
-        <button type="button" onclick="openSectionModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors focus:ring-4 focus:ring-indigo-200">
+        <button type="button" onclick="openSectionModal()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors focus:ring-4 focus:ring-orange-200">
             <i class="fas fa-plus mr-2"></i> Tambah Bab Baru
         </button>
     </div>
@@ -13,7 +13,7 @@
     <div class="p-5 sm:p-8 bg-gray-50 dark:bg-gray-900/50 min-h-[300px]" id="sections-container">
         <!-- Sections will be rendered here dynamically -->
         <div class="text-center py-10" id="loading-indicator">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mx-auto mb-3"></div>
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-600 mx-auto mb-3"></div>
             <p class="text-gray-500 text-sm">Memuat kurikulum...</p>
         </div>
     </div>
@@ -33,12 +33,12 @@
                 <input type="hidden" id="section_id" name="section_id">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Judul Bab <span class="text-red-500">*</span></label>
-                    <input type="text" id="section_title" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-colors" placeholder="Contoh: Pengenalan Robotika">
+                    <input type="text" id="section_title" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-colors" placeholder="Contoh: Pengenalan Robotika">
                 </div>
             </div>
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3">
                 <button type="button" onclick="closeSectionModal()" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm font-medium">Batal</button>
-                <button type="button" onclick="submitSection(event)" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm font-medium">Simpan</button>
+                <button type="button" onclick="submitSection(event)" class="px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors text-sm font-medium">Simpan</button>
             </div>
         </div>
     </div>
@@ -61,11 +61,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Judul Materi <span class="text-red-500">*</span></label>
-                        <input type="text" id="lesson_title" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-colors" placeholder="Judul materi">
+                        <input type="text" id="lesson_title" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-colors" placeholder="Judul materi">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipe Materi <span class="text-red-500">*</span></label>
-                        <select id="lesson_type" onchange="toggleLessonType()" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-colors">
+                        <select id="lesson_type" onchange="toggleLessonType()" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-colors">
                             <option value="video">Video URL (YouTube)</option>
                             <option value="text">Artikel / Teks (Rich Editor)</option>
                         </select>
@@ -74,7 +74,7 @@
 
                 <div id="video_field" class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL Video YouTube <span class="text-red-500">*</span></label>
-                    <input type="url" id="lesson_video_url" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-colors" placeholder="https://youtube.com/watch?v=...">
+                    <input type="url" id="lesson_video_url" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-colors" placeholder="https://youtube.com/watch?v=...">
                     <p class="text-xs text-gray-500 mt-1">Sistem akan otomatis mengatur video agar bisa diputar langsung di dalam panel siswa.</p>
                 </div>
 
@@ -89,7 +89,7 @@
             </div>
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3 sticky bottom-0">
                 <button type="button" onclick="closeLessonModal()" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors text-sm font-medium">Batal</button>
-                <button type="button" onclick="submitLesson(event)" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm font-medium">Simpan Materi</button>
+                <button type="button" onclick="submitLesson(event)" class="px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors text-sm font-medium">Simpan Materi</button>
             </div>
         </div>
     </div>
@@ -104,7 +104,17 @@
     const prefix = isAdmin ? 'admin' : 'instructor';
     let ckEditorInstance = null;
 
+    function mountModalToBody(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal && modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        mountModalToBody('sectionModal');
+        mountModalToBody('lessonModal');
+
         ClassicEditor.create(document.querySelector('#lesson_content'), {
             toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', '|', 'undo', 'redo'],
         })
@@ -135,12 +145,12 @@
         if (lmsData.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600">
-                    <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-book-open text-2xl text-indigo-500"></i>
+                    <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-book-open text-2xl text-orange-500"></i>
                     </div>
                     <h4 class="text-large font-bold text-gray-800 dark:text-white mb-2">Belum ada kurikulum</h4>
                     <p class="text-gray-500 dark:text-gray-400 mb-6">Mulai buat bab pertama untuk program ini</p>
-                    <button type="button" onclick="openSectionModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
+                    <button type="button" onclick="openSectionModal()" class="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
                         <i class="fas fa-plus mr-2"></i> Tambah Bab Baru
                     </button>
                 </div>
@@ -154,14 +164,14 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 flex justify-between items-center group">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <span class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm">${sIndex+1}</span>
+                        <span class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 flex items-center justify-center text-sm">${sIndex+1}</span>
                         ${escapeHtml(section.title)}
                     </h4>
-                    <div class="flex items-center gap-2 opacity-100 sm:opacity-50 sm:group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        <button type="button" onclick="openLessonModal('${section.id}')" class="p-1.5 text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg dark:bg-indigo-900/40 dark:text-indigo-400 dark:hover:bg-indigo-900/60" title="Tambah Materi">
+                    <div class="flex items-center gap-2 opacity-100 transition-opacity whitespace-nowrap">
+                        <button type="button" onclick="openLessonModal('${section.id}')" class="p-1.5 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg dark:bg-orange-900/40 dark:text-orange-400 dark:hover:bg-orange-900/60" title="Tambah Materi">
                             <i class="fas fa-plus mr-1"></i> Materi
                         </button>
-                        <button type="button" onclick="openSectionModal('${section.id}', '${escapeHtml(section.title)}')" class="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg" title="Edit Bab">
+                        <button type="button" onclick="openSectionModal('${section.id}', '${escapeHtml(section.title)}')" class="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-gray-700 rounded-lg" title="Edit Bab">
                             <i class="fas fa-pen"></i>
                         </button>
                         <button type="button" onclick="deleteSection('${section.id}')" class="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg" title="Hapus Bab">
@@ -178,8 +188,8 @@
             } else {
                 html += `<div class="space-y-3">`;
                 section.lessons.forEach((lesson, lIndex) => {
-                    const icon = lesson.type === 'video' ? 'fa-play-circle text-red-500' : 'fa-file-alt text-blue-500';
-                    const iconBg = lesson.type === 'video' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-blue-50 dark:bg-blue-900/20';
+                    const icon = lesson.type === 'video' ? 'fa-play-circle text-red-500' : 'fa-file-alt text-orange-500';
+                    const iconBg = lesson.type === 'video' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-orange-50 dark:bg-orange-900/20';
                     const label = lesson.type === 'video' ? 'Video' : 'Artikel';
                     
                     html += `
@@ -193,8 +203,8 @@
                                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">${label}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                <button type="button" onclick="editLesson('${section.id}', '${lesson.id}')" class="p-2 text-gray-400 hover:text-blue-500 rounded-lg">
+                            <div class="flex items-center gap-1 opacity-100 transition-opacity">
+                                <button type="button" onclick="editLesson('${section.id}', '${lesson.id}')" class="p-2 text-gray-400 hover:text-orange-500 rounded-lg">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button type="button" onclick="deleteLesson('${section.id}', '${lesson.id}')" class="p-2 text-gray-400 hover:text-red-500 rounded-lg">

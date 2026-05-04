@@ -266,6 +266,16 @@ Route::name('client.')->group(function () {
         // Payment routes
         Route::get('/pembayaran/{programSlug}', [\App\Http\Controllers\Client\PaymentController::class, 'showPaymentPage'])
             ->name('pembayaran');
+        Route::get('/program/{slug}/kelas', [\App\Http\Controllers\Client\ProgramController::class, 'classroom'])
+            ->name('program.classroom');
+        Route::get('/program/{slug}/kelas/posttest', [\App\Http\Controllers\Client\ProgramController::class, 'posttest'])
+            ->name('program.posttest');
+        Route::get('/program/{slug}/kelas/selesai', [\App\Http\Controllers\Client\ProgramController::class, 'courseCompleted'])
+            ->name('program.course-complete');
+        Route::post('/program/{slug}/syllabus/{index}/complete', [\App\Http\Controllers\Client\ProgramController::class, 'markMaterialComplete'])
+            ->name('program.syllabus.complete');
+        Route::post('/program/{slug}/assignments/{assignment}/submit', [\App\Http\Controllers\Client\CourseAssignmentController::class, 'store'])
+            ->name('program.assignment.submit');
         Route::post('/payment/apply-voucher', [\App\Http\Controllers\Client\PaymentController::class, 'applyVoucher'])
             ->name('payment.apply-voucher');
         Route::post('/payment/create', [\App\Http\Controllers\Client\PaymentController::class, 'createTransaction'])

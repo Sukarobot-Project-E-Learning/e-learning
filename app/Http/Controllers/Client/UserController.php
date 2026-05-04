@@ -69,7 +69,66 @@ class UserController extends Controller
             ->orderBy('enrollments.created_at', 'desc')
             ->get();
 
+        $programIds = $enrollments->pluck('program_id')->filter()->unique()->values();
+        $lessonTotalsByProgram = collect();
+        $completedTotalsByProgram = collect();
+
+        if ($programIds->isNotEmpty()) {
+            $lessonTotalsByProgram = DB::table('lms_sections')
+                ->join('lms_lessons', 'lms_sections.id', '=', 'lms_lessons.section_id')
+                ->selectRaw('lms_sections.program_id, COUNT(lms_lessons.id) as total_lessons')
+                ->whereIn('lms_sections.program_id', $programIds)
+                ->groupBy('lms_sections.program_id')
+                ->pluck('total_lessons', 'lms_sections.program_id');
+
+            $completedTotalsByProgram = DB::table('lms_progresses as progress')
+                ->join('lms_lessons as lessons', 'progress.lesson_id', '=', 'lessons.id')
+                ->join('lms_sections as sections', 'lessons.section_id', '=', 'sections.id')
+                ->selectRaw('sections.program_id, COUNT(DISTINCT progress.lesson_id) as completed_lessons')
+                ->where('progress.user_id', $user->id)
+                ->where('progress.is_completed', true)
+                ->whereIn('sections.program_id', $programIds)
+                ->groupBy('sections.program_id')
+                ->pluck('completed_lessons', 'sections.program_id');
+        }
+
+        $enrollments = $enrollments->map(function ($enrollment) use ($lessonTotalsByProgram, $completedTotalsByProgram) {
+            $isCourseProgram = $this->isCourseCategory($enrollment->category ?? null);
+            $totalMaterials = $isCourseProgram
+                ? (int) ($lessonTotalsByProgram[$enrollment->program_id] ?? 0)
+                : 0;
+
+            $completedMaterials = $isCourseProgram
+                ? (int) ($completedTotalsByProgram[$enrollment->program_id] ?? 0)
+                : 0;
+
+            if ($totalMaterials > 0) {
+                $completedMaterials = min($completedMaterials, $totalMaterials);
+            }
+
+            $progressPercent = ($isCourseProgram && $totalMaterials > 0)
+                ? (int) round(($completedMaterials / $totalMaterials) * 100)
+                : 0;
+            $isCourseCompleted = $isCourseProgram && $totalMaterials > 0 && $completedMaterials >= $totalMaterials;
+
+            $enrollment->is_course_program = $isCourseProgram;
+            $enrollment->total_materials = $totalMaterials;
+            $enrollment->completed_materials = $completedMaterials;
+            $enrollment->progress_percent = $progressPercent;
+            $enrollment->is_course_completed = $isCourseCompleted;
+            $enrollment->course_status_label = $isCourseProgram
+                ? ($isCourseCompleted ? 'Selesai' : 'Berjalan')
+                : null;
+
+            return $enrollment;
+        });
+
         return view('client.dashboard.program', compact('enrollments'));
+    }
+
+    private function isCourseCategory(?string $category): bool
+    {
+        return strtolower(trim((string) $category)) === 'kursus';
     }
 
     public function certificate()

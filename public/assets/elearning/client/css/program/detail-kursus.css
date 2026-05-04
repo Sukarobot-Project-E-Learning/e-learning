@@ -1,0 +1,22 @@
+.kursus-hero-panel {
+  background:
+    radial-gradient(1200px 500px at 15% 90%, rgba(37, 99, 235, 0.16), transparent 65%),
+    radial-gradient(900px 420px at 88% 88%, rgba(249, 115, 22, 0.14), transparent 60%),
+    linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+}
+
+.kursus-card {
+  backdrop-filter: blur(2px);
+}
+
+@media (min-width: 1024px) {
+  .kursus-card {
+    /* Removed max-height and overflow-y to allow smooth window scrolling */
+  }
+}
+
+@media (max-width: 1024px) {
+  .kursus-hero-panel {
+    padding-top: 5.5rem;
+  }
+}

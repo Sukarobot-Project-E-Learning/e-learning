@@ -37,6 +37,9 @@
     <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
 
+    <!-- Font Awesome (icons used in panel views) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Panel CSS via Vite (only CSS, no JS imports) -->
     @vite(['resources/css/panel.css'])
 
