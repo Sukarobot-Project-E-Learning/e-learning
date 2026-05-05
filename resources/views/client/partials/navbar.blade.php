@@ -20,7 +20,7 @@
                     <button class="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors focus:outline-none cursor-pointer">
                         Kompetisi <span class="ml-1"></span>
                     </button>
-                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                    <div class="absolute left-0 mt-10 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                         <a href="https://brc.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">BRC</a>
                         <a href="https://src.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">SRC</a>
                     </div>
@@ -31,7 +31,7 @@
                     <button class="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors focus:outline-none cursor-pointer">
                         Tentang Sukarobot <span class="ml-1"></span>
                     </button>
-                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                    <div class="absolute left-0 mt-10 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
                         <a href="{{ url('/instruktur') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">Instruktur</a>
                         <a href="{{ url('/tentang') }}" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600">Tentang Kami</a>
                     </div>
@@ -91,7 +91,7 @@
                 <button class="w-full flex justify-between items-center text-base font-medium text-gray-700 hover:text-blue-600 mobile-dropdown-btn">
                     Kompetisi <span>▾</span>
                 </button>
-                <div class="hidden pl-4 space-y-2 mobile-dropdown-content">
+                <div class="hidden mt-2 pl-4 space-y-2 mobile-dropdown-content">
                     <a href="https://brc.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block text-sm font-medium text-gray-600 hover:text-blue-600">BRC</a>
                     <a href="https://src.sukarobot.com/" target="_blank" rel="noopener noreferrer" class="block text-sm font-medium text-gray-600 hover:text-blue-600">SRC</a>
                 </div>
@@ -101,7 +101,7 @@
                 <button class="w-full flex justify-between items-center text-base font-medium text-gray-700 hover:text-blue-600 mobile-dropdown-btn">
                     Tentang Sukarobot <span>▾</span>
                 </button>
-                <div class="hidden pl-4 space-y-2 mobile-dropdown-content">
+                <div class="hidden mt-2 pl-4 space-y-2 mobile-dropdown-content">
                     <a href="{{ url('/instruktur') }}" class="block text-sm font-medium text-gray-600 hover:text-blue-600">Instruktur</a>
                     <a href="{{ url('/tentang') }}" class="block text-sm font-medium text-gray-600 hover:text-blue-600">Tentang Kami</a>
                 </div>
