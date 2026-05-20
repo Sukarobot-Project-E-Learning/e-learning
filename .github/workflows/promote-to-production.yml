@@ -33,26 +33,24 @@ jobs:
           # Fetch production's main branch to get its current workflows
           git fetch production main --depth=1
           
-          # Save production's workflows
-          mkdir -p /tmp/prod-workflows
-          git show production/main:.github/workflows/ > /tmp/prod-workflows-tar 2>/dev/null || echo "No workflows on production yet"
+          # Create an orphan branch to avoid staging history in production
+          git checkout --orphan temp-prod-sync
+          git rm -rf .
           
-          # Create a temporary branch with staging code
-          git checkout -b temp-prod-sync main
+          # Bring in staging snapshot
+          git checkout main -- .
           
-          # Push staging code to production
-          echo "🚀 Syncing code to production..."
-          git push production temp-prod-sync:main --force
-          
-          # Restore production's workflows if they existed
-          git checkout production/main -- .github/workflows/ 2>/dev/null || echo "Keeping staging workflows for first sync"
-          
-          # Commit the workflow restoration
-          git add .github/workflows/
-          if ! git diff --cached --quiet; then
-            git commit -m "Restore production's workflows"
-            git push production HEAD:main --force
-            echo "✅ Production workflows restored"
+          # Replace workflows with production's workflows when available
+          git rm -rf .github/workflows || true
+          if git checkout production/main -- .github/workflows 2>/dev/null; then
+            echo "✅ Using production workflows"
           else
-            echo "✅ Workflows already in sync"
+            echo "ℹ️ No production workflows, keeping staging workflows"
+            git checkout main -- .github/workflows || true
           fi
+          
+          # Commit a single snapshot and force update production
+          git add -A
+          git commit -m "Sync staging snapshot to production"
+          echo "🚀 Syncing snapshot to production..."
+          git push production temp-prod-sync:main --force
