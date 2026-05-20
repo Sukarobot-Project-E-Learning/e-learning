@@ -36,111 +36,39 @@ class QuizController extends Controller
         $trainerId = $this->getTrainerId();
 
         if (!$trainerId) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'data' => [],
-                    'stats' => ['published' => 0, 'draft' => 0],
-                    'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0]
-                ]);
-            }
-
             return view('instructor.quizzes.index', [
-                'quizzes' => collect([])
+                'programs' => collect([]),
             ]);
         }
 
-        // Base query
-        $query = DB::table('quizzes')
-            ->leftJoin('data_programs', 'quizzes.program_id', '=', 'data_programs.id')
+        $programs = DB::table('data_programs')
+            ->leftJoin('lms_assignments', function ($join) {
+                $join->on('lms_assignments.program_id', '=', 'data_programs.id')
+                    ->where(function ($query) {
+                        $query->where('lms_assignments.type', '=', 'post-test')
+                            ->orWhereNull('lms_assignments.type');
+                    });
+            })
+            ->leftJoin('lms_submissions', 'lms_submissions.assignment_id', '=', 'lms_assignments.id')
+            ->where('data_programs.instructor_id', $trainerId)
             ->select(
-                'quizzes.*',
-                'data_programs.program as program_name'
+                'data_programs.id',
+                'data_programs.program',
+                'data_programs.image',
+                'data_programs.slug',
+                DB::raw('COUNT(DISTINCT lms_assignments.id) as final_assignment_count'),
+                DB::raw('COUNT(DISTINCT lms_submissions.id) as submission_count')
             )
-            ->where('quizzes.instructor_id', $trainerId);
-
-        // Get stats for all quizzes (before filtering)
-        $allQuizzes = DB::table('quizzes')
-            ->where('instructor_id', $trainerId)
+            ->groupBy(
+                'data_programs.id',
+                'data_programs.program',
+                'data_programs.image',
+                'data_programs.slug'
+            )
+            ->orderBy('data_programs.program')
             ->get();
 
-        $stats = [
-            'published' => $allQuizzes->where('status', 'published')->count(),
-            'draft' => $allQuizzes->where('status', 'draft')->count(),
-            'total' => $allQuizzes->count(),
-        ];
-
-        // Apply search filter if provided
-        if ($request->filled('search')) {
-            $searchTerm = '%' . $request->search . '%';
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('quizzes.title', 'LIKE', $searchTerm)
-                    ->orWhere('data_programs.program', 'LIKE', $searchTerm);
-            });
-        }
-
-        // Apply sorting
-        $sortColumn = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
-
-        // Validate sort column to prevent SQL injection
-        $allowedColumns = ['title', 'created_at', 'status'];
-        if (!in_array($sortColumn, $allowedColumns)) {
-            $sortColumn = 'created_at';
-        }
-
-        $query->orderBy('quizzes.' . $sortColumn, $sortDirection === 'asc' ? 'asc' : 'desc');
-
-        // Handle AJAX request for dynamic table updates
-        if ($request->ajax() || $request->wantsJson()) {
-            $perPage = min((int) $request->get('per_page', 10), 100);
-            $quizzes = $query->paginate($perPage);
-
-            // Transform data
-            $data = collect($quizzes->items())->map(function ($quiz) {
-                $quiz->total_questions = DB::table('quiz_questions')
-                    ->where('quiz_id', $quiz->id)
-                    ->count();
-                $quiz->total_responses = DB::table('quiz_responses')
-                    ->where('quiz_id', $quiz->id)
-                    ->count();
-                $quiz->program = $quiz->program_name ?? 'N/A';
-                $quiz->type = $quiz->type ?? 'Postest';
-                $quiz->status = $quiz->status ?? 'draft';
-                return $quiz;
-            });
-
-            return response()->json([
-                'data' => $data,
-                'stats' => $stats,
-                'pagination' => [
-                    'current_page' => $quizzes->currentPage(),
-                    'last_page' => $quizzes->lastPage(),
-                    'per_page' => $quizzes->perPage(),
-                    'total' => $quizzes->total(),
-                    'from' => $quizzes->firstItem(),
-                    'to' => $quizzes->lastItem(),
-                ]
-            ]);
-        }
-
-        // Regular page load - get all data for client-side filtering
-        $quizzes = $query->get();
-
-        // Transform data
-        $quizzes = $quizzes->map(function ($quiz) {
-            $quiz->total_questions = DB::table('quiz_questions')
-                ->where('quiz_id', $quiz->id)
-                ->count();
-            $quiz->total_responses = DB::table('quiz_responses')
-                ->where('quiz_id', $quiz->id)
-                ->count();
-            $quiz->program = $quiz->program_name ?? 'N/A';
-            $quiz->type = $quiz->type ?? 'Postest';
-            $quiz->status = $quiz->status ?? 'draft';
-            return $quiz;
-        });
-
-        return view('instructor.quizzes.index', compact('quizzes', 'stats'));
+        return view('instructor.quizzes.index', compact('programs'));
     }
 
     /**

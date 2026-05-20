@@ -12,11 +12,12 @@ class ProgramFormManager {
 
         this.form = this.container.querySelector('#programForm');
         this.currentStep = 1;
-        this.totalSteps = 7;
+        this.totalSteps = 6;
         this.isAdmin = this.container.dataset.isAdmin === 'true';
         this.isEdit = this.container.dataset.isEdit === 'true';
         this.primaryColor = this.container.dataset.primaryColor || 'orange';
         this.materialIndex = 0;
+        this.isCourseCategory = false;
 
         this.init();
     }
@@ -25,6 +26,7 @@ class ProgramFormManager {
         this.cacheElements();
         this.bindEvents();
         this.initTypeToggle();
+        this.initCategoryToggle();
         this.updateNavigationState();
         this.countExistingMaterials();
         this.handleServerValidationErrors();
@@ -79,8 +81,7 @@ class ProgramFormManager {
             'quota': 2, 'available_slots': 2, 'price': 2, 'tools': 2, 'benefits': 2,
             'start_date': 3, 'end_date': 3, 'start_time': 3, 'end_time': 3,
             'zoom_link': 3, 'province': 3, 'city': 3, 'district': 3, 'village': 3, 'full_address': 3,
-            'materials': 4,
-            'image': 5
+            'image': 4
         };
 
         // Check for error step data attribute
@@ -117,6 +118,7 @@ class ProgramFormManager {
         // Steps
         this.steps = this.container.querySelectorAll('.form-step');
         this.stepIndicators = this.container.querySelectorAll('.step-indicator');
+        this.stepIndicatorItems = this.container.querySelectorAll('.step-indicator-item');
         this.stepLines = this.container.querySelectorAll('.step-line');
         this.stepLabels = this.container.querySelectorAll('.step-label');
 
@@ -136,6 +138,16 @@ class ProgramFormManager {
         this.onlineFields = this.container.querySelector('#onlineFields');
         this.offlineFields = this.container.querySelector('#offlineFields');
         this.typeRadios = this.container.querySelectorAll('input[name="type"]');
+        this.categorySelect = this.container.querySelector('#input-category');
+        this.scheduleFields = this.container.querySelector('#scheduleFields');
+        this.courseScheduleNotice = this.container.querySelector('#courseScheduleNotice');
+        this.courseScheduleNoticeStep = this.container.querySelector('#courseScheduleNoticeStep');
+        this.typeFields = this.container.querySelector('#typeFields');
+        this.instructorField = this.container.querySelector('#instructorField');
+        this.categoryBanner = this.container.querySelector('#selectedCategoryBanner');
+        this.categoryLabel = this.container.querySelector('#selectedCategoryLabel');
+        this.lmsCurriculumStep = this.container.querySelector('.form-step[data-step="5"]');
+        this.lmsAssignmentStep = this.container.querySelector('.form-step[data-step="6"]');
     }
 
     bindEvents() {
@@ -149,6 +161,10 @@ class ProgramFormManager {
         // Type toggle
         this.typeRadios.forEach(radio => {
             radio.addEventListener('change', () => this.handleTypeChange(radio.value));
+        });
+
+        this.categorySelect?.addEventListener('change', () => {
+            this.handleCategoryChange(this.categorySelect.value);
         });
 
         // Dynamic lists - Add buttons
@@ -186,7 +202,12 @@ class ProgramFormManager {
     // ==================== STEP NAVIGATION ====================
 
     goToStep(step) {
-        if (step < 1 || step > this.totalSteps) return;
+        const totalSteps = this.getTotalSteps();
+        if (step < 1 || step > totalSteps) return;
+
+        if (this.isCourseCategory && step === 3) {
+            step = 4;
+        }
 
         // Hide all steps
         this.steps.forEach(s => s.classList.add('hidden'));
@@ -206,21 +227,50 @@ class ProgramFormManager {
 
     nextStep() {
         if (this.validateStep(this.currentStep)) {
-            this.goToStep(this.currentStep + 1);
+            this.goToStep(this.getNextStep());
         }
     }
 
     prevStep() {
-        this.goToStep(this.currentStep - 1);
+        this.goToStep(this.getPrevStep());
+    }
+
+    getNextStep() {
+        const nextStep = this.currentStep + 1;
+        if (this.isCourseCategory && nextStep === 3) {
+            return 4;
+        }
+
+        if (!this.isCourseCategory && nextStep > 4) {
+            return 4;
+        }
+
+        return nextStep;
+    }
+
+    getPrevStep() {
+        const prevStep = this.currentStep - 1;
+        if (this.isCourseCategory && prevStep === 3) {
+            return 2;
+        }
+
+        return prevStep;
     }
 
     updateStepIndicators() {
+        const totalSteps = this.getTotalSteps();
         this.stepIndicators.forEach((indicator, index) => {
             const step = index + 1;
             indicator.classList.remove(
                 `bg-${this.primaryColor}-600`, 'text-white', 'shadow-lg',
                 'bg-green-600', 'bg-gray-200', 'text-gray-500'
             );
+
+            if (step > totalSteps) {
+                indicator.textContent = step;
+                indicator.classList.add('bg-gray-200', 'text-gray-500', 'dark:bg-gray-700', 'dark:text-gray-400');
+                return;
+            }
 
             if (step < this.currentStep) {
                 // Completed
@@ -238,8 +288,8 @@ class ProgramFormManager {
         });
 
         // Update lines
-        this.stepLines.forEach((line, index) => {
-            const step = index + 1;
+        this.stepLines.forEach((line) => {
+            const step = parseInt(line.dataset.lineStep || '0', 10);
             line.classList.remove(`bg-${this.primaryColor}-600`, 'bg-green-500');
             if (step < this.currentStep) {
                 line.classList.add('bg-green-500');
@@ -281,7 +331,8 @@ class ProgramFormManager {
         }
 
         // Next/Submit buttons
-        if (this.currentStep === this.totalSteps) {
+        const totalSteps = this.getTotalSteps();
+        if (this.currentStep === totalSteps) {
             this.nextBtn?.classList.add('hidden');
             this.nextBtn?.classList.remove('flex');
             this.submitBtn?.classList.remove('hidden');
@@ -292,6 +343,10 @@ class ProgramFormManager {
             this.submitBtn?.classList.add('hidden');
             this.submitBtn?.classList.remove('flex');
         }
+    }
+
+    getTotalSteps() {
+        return this.isCourseCategory ? 6 : 4;
     }
 
     // ==================== VALIDATION ====================
@@ -312,14 +367,10 @@ class ProgramFormManager {
                 isValid = this.validateStep3(errors);
                 break;
             case 4:
-                // Materials are optional
-                isValid = true;
+                isValid = this.validateStep4(errors);
                 break;
             case 5:
-                isValid = this.validateStep5(errors);
-                break;
             case 6:
-            case 7:
                 isValid = true;
                 break;
         }
@@ -405,6 +456,11 @@ class ProgramFormManager {
         const startTime = this.container.querySelector('#input-start_time');
         const endTime = this.container.querySelector('#input-end_time');
         const selectedType = this.container.querySelector('input[name="type"]:checked')?.value;
+        const categoryValue = this.categorySelect?.value || '';
+
+        if (categoryValue === 'Kursus') {
+            return true;
+        }
 
         if (!startDate?.value) {
             this.showFieldError('start_date', 'Tanggal mulai wajib diisi.');
@@ -472,7 +528,7 @@ class ProgramFormManager {
         return isValid;
     }
 
-    validateStep5(errors) {
+    validateStep4(errors) {
         let isValid = true;
         const imageInput = this.container.querySelector('#input-image');
         const existingImage = this.container.querySelector('#existing-image');
@@ -521,8 +577,7 @@ class ProgramFormManager {
             'quota': 2, 'available_slots': 2, 'price': 2, 'tools': 2, 'benefits': 2,
             'start_date': 3, 'end_date': 3, 'start_time': 3, 'end_time': 3,
             'zoom_link': 3, 'province': 3, 'city': 3, 'district': 3, 'village': 3, 'full_address': 3,
-            'materials': 4,
-            'image': 5
+            'image': 4
         };
 
         // Find visible error messages
@@ -554,7 +609,18 @@ class ProgramFormManager {
         }
     }
 
+    initCategoryToggle() {
+        if (this.categorySelect) {
+            this.handleCategoryChange(this.categorySelect.value);
+        }
+    }
+
     handleTypeChange(type) {
+        if (this.isCourseCategory) {
+            this.onlineFields?.classList.add('hidden');
+            this.offlineFields?.classList.add('hidden');
+            return;
+        }
         // Update visual state
         this.container.querySelectorAll('.type-card').forEach(card => {
             card.classList.remove(
@@ -583,6 +649,108 @@ class ProgramFormManager {
         } else if (type === 'offline') {
             this.onlineFields?.classList.add('hidden');
             this.offlineFields?.classList.remove('hidden');
+        }
+    }
+
+    handleCategoryChange(category) {
+        this.isCourseCategory = category === 'Kursus';
+        const isInstructorHiddenCategory = category === 'Pelatihan' || category === 'Sertifikasi';
+
+        if (this.categoryBanner && this.categoryLabel) {
+            if (category) {
+                this.categoryLabel.textContent = category;
+                this.categoryBanner.classList.remove('hidden');
+            } else {
+                this.categoryLabel.textContent = '-';
+                this.categoryBanner.classList.add('hidden');
+            }
+        }
+
+        if (this.isAdmin && this.instructorField) {
+            if (isInstructorHiddenCategory) {
+                this.instructorField.classList.add('hidden');
+            } else {
+                this.instructorField.classList.remove('hidden');
+            }
+        }
+
+        if (this.isCourseCategory) {
+            this.typeFields?.classList.add('hidden');
+            this.scheduleFields?.classList.add('hidden');
+            this.courseScheduleNotice?.classList.remove('hidden');
+            this.courseScheduleNoticeStep?.classList.remove('hidden');
+            this.clearScheduleValues();
+            this.setTypeValue('online');
+            this.onlineFields?.classList.add('hidden');
+            this.offlineFields?.classList.add('hidden');
+        } else {
+            this.typeFields?.classList.remove('hidden');
+            this.scheduleFields?.classList.remove('hidden');
+            this.courseScheduleNotice?.classList.add('hidden');
+            this.courseScheduleNoticeStep?.classList.add('hidden');
+            const checkedType = this.container.querySelector('input[name="type"]:checked');
+            if (checkedType) {
+                this.handleTypeChange(checkedType.value);
+            }
+        }
+
+        if (this.lmsCurriculumStep && !this.isCourseCategory) {
+            this.lmsCurriculumStep.classList.add('hidden');
+        }
+        if (this.lmsAssignmentStep && !this.isCourseCategory) {
+            this.lmsAssignmentStep.classList.add('hidden');
+        }
+        this.stepIndicatorItems?.forEach((item) => {
+            const step = parseInt(item.dataset.step || '0', 10);
+            if (step >= 5) {
+                item.classList.toggle('hidden', !this.isCourseCategory);
+            }
+        });
+        this.stepLines?.forEach((line) => {
+            const step = parseInt(line.dataset.lineStep || '0', 10);
+            if (step >= 4) {
+                line.classList.toggle('hidden', !this.isCourseCategory);
+            }
+        });
+
+        if (this.currentStep === 3 && this.isCourseCategory) {
+            this.goToStep(4);
+        }
+
+        if (!this.isCourseCategory && this.currentStep > 4) {
+            this.goToStep(4);
+        }
+
+        this.updateStepIndicators();
+        this.updateNavigationState();
+    }
+
+    clearScheduleValues() {
+        const scheduleInputs = [
+            '#input-start_date',
+            '#input-end_date',
+            '#input-start_time',
+            '#input-end_time',
+            '#input-zoom_link',
+            '#input-province',
+            '#input-city',
+            '#input-district',
+            '#input-village',
+            '#input-full_address'
+        ];
+
+        scheduleInputs.forEach(selector => {
+            const field = this.container.querySelector(selector);
+            if (field) {
+                field.value = '';
+            }
+        });
+    }
+
+    setTypeValue(value) {
+        const typeInput = this.container.querySelector(`input[name="type"][value="${value}"]`);
+        if (typeInput) {
+            typeInput.checked = true;
         }
     }
 

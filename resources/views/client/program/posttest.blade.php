@@ -110,17 +110,60 @@
               @endforelse
 
               @if($hasAssignments)
+                @php
+                  $allSubmitted = $assignments->every(function ($assignment) use ($assignmentSubmissions) {
+                    return $assignmentSubmissions->has($assignment->id);
+                  });
+                  $allGraded = $assignments->every(function ($assignment) use ($assignmentSubmissions) {
+                    $submission = $assignmentSubmissions->get($assignment->id);
+                    return $submission && $submission->score !== null;
+                  });
+                  $allPassed = $assignments->every(function ($assignment) use ($assignmentSubmissions) {
+                    $submission = $assignmentSubmissions->get($assignment->id);
+                    return $submission
+                      && $submission->score !== null
+                      && $submission->score >= ($assignment->passing_score ?? 70);
+                  });
+
+                  if ($allGraded && $allPassed) {
+                    $posttestLabel = 'Selesai';
+                    $posttestClass = 'text-emerald-600';
+                    $posttestContainer = 'border-emerald-200 bg-emerald-50';
+                    $posttestIcon = 'text-emerald-600';
+                  } elseif ($allGraded) {
+                    $posttestLabel = 'Belum Lulus';
+                    $posttestClass = 'text-red-600';
+                    $posttestContainer = 'border-red-200 bg-red-50';
+                    $posttestIcon = 'text-red-600';
+                  } elseif ($allSubmitted) {
+                    $posttestLabel = 'Menunggu penilaian';
+                    $posttestClass = 'text-amber-600';
+                    $posttestContainer = 'border-amber-200 bg-amber-50';
+                    $posttestIcon = 'text-amber-600';
+                  } else {
+                    $posttestLabel = 'Kerjakan sekarang';
+                    $posttestClass = 'text-slate-500';
+                    $posttestContainer = 'border-blue-200 bg-blue-50';
+                    $posttestIcon = 'text-blue-600';
+                  }
+                @endphp
                 <div class="mt-4 border-t border-slate-100 pt-4">
                   <p class="px-2 pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">POST-TEST</p>
-                  <div data-lesson-title="post-test" class="lesson-entry mb-2 block rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
+                  <div data-lesson-title="post-test" class="lesson-entry mb-2 block rounded-xl border px-4 py-3 {{ $posttestContainer }}">
                     <div class="flex items-start justify-between gap-3">
                       <div>
-                        <p class="text-sm font-semibold text-blue-700">Post-Test</p>
-                        <p class="mt-1 text-xs font-semibold text-slate-500">Kerjakan sekarang</p>
+                        <p class="text-sm font-semibold text-slate-700">Post-Test</p>
+                        <p class="mt-1 text-xs font-semibold {{ $posttestClass }}">{{ $posttestLabel }}</p>
                       </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6a2 2 0 012 2v10a2 2 0 01-2 2H9a2 2 0 01-2-2V7a2 2 0 012-2z" />
-                      </svg>
+                      @if($posttestLabel === 'Selesai')
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 {{ $posttestIcon }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      @else
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 {{ $posttestIcon }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6a2 2 0 012 2v10a2 2 0 01-2 2H9a2 2 0 01-2-2V7a2 2 0 012-2z" />
+                        </svg>
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -193,12 +236,53 @@
                         <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600">
                           <p class="font-semibold text-slate-700">Status</p>
                           @if($submission)
-                            <p class="mt-1 text-emerald-600">Terkirim {{ optional($submission->submitted_at)->format('d M Y H:i') }}</p>
-                            @if(!is_null($submission->grade))
-                              <p class="mt-1">Nilai: <span class="font-semibold text-slate-800">{{ $submission->grade }}</span></p>
+                            <p class="mt-1 text-emerald-600">
+                              Terkirim {{ optional($submission->submitted_at)->format('d M Y H:i') }}
+                            </p>
+                            @if(!is_null($submission->score))
+                              @php
+                                $passed = $submission->score >= ($assignment->passing_score ?? 70);
+                              @endphp
+                              <p class="mt-1">
+                                Nilai:
+                                <span class="font-bold text-lg {{ $passed ? 'text-emerald-600' : 'text-red-500' }}">
+                                  {{ $submission->score }}
+                                </span>
+                                <span class="text-slate-400">/ 100</span>
+                              </p>
+                              <p class="mt-1">
+                                @if($passed)
+                                  <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-emerald-700 font-semibold">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Lulus (KKM: {{ $assignment->passing_score ?? 70 }})
+                                  </span>
+                                @else
+                                  <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-red-600 font-semibold">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                    Belum Lulus (KKM: {{ $assignment->passing_score ?? 70 }})
+                                  </span>
+                                @endif
+                              </p>
+                            @elseif(!is_null($submission->grade))
+                              <p class="mt-1">
+                                Nilai: <span class="font-semibold text-slate-800">{{ $submission->grade }}</span>
+                              </p>
+                            @else
+                              <p class="mt-1 text-yellow-600 font-medium">
+                                Menunggu penilaian
+                              </p>
                             @endif
                             @if(!empty($submission->feedback))
-                              <p class="mt-1 text-slate-500">Feedback: {{ $submission->feedback }}</p>
+                              <div class="mt-2 p-2 bg-slate-50 rounded-lg">
+                                <p class="text-slate-500">
+                                  <span class="font-semibold">Feedback:</span>
+                                  {{ $submission->feedback }}
+                                </p>
+                              </div>
                             @endif
                           @else
                             <p class="mt-1 text-slate-500">Belum dikumpulkan</p>
@@ -219,6 +303,25 @@
                     </div>
                   @endforeach
                 </div>
+                @php
+                  $allGraded = $assignments->every(function ($assignment) use ($assignmentSubmissions) {
+                    $submission = $assignmentSubmissions->get($assignment->id);
+                    return $submission && $submission->score !== null;
+                  });
+                  $allPassed = $assignments->every(function ($assignment) use ($assignmentSubmissions) {
+                    $submission = $assignmentSubmissions->get($assignment->id);
+                    return $submission
+                      && $submission->score !== null
+                      && $submission->score >= ($assignment->passing_score ?? 70);
+                  });
+                @endphp
+                @if($allGraded && $allPassed)
+                  <div class="mt-8 flex justify-center">
+                    <a href="{{ route('client.program.course-complete', ['slug' => $program->slug]) }}" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-7 py-3 text-base font-bold text-white shadow-md transition hover:bg-emerald-700">
+                      Selesaikan Kursus
+                    </a>
+                  </div>
+                @endif
               @else
                 <p class="text-sm text-slate-500">Post-test belum tersedia untuk kelas ini.</p>
               @endif

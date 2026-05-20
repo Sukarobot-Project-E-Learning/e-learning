@@ -278,6 +278,28 @@ class ProgramController extends Controller
 
         $hasAssignments = $assignments->isNotEmpty();
 
+        $posttestAssignments = CourseAssignment::where('program_id', $program->id)
+            ->where('type', 'post-test')
+            ->get();
+        $hasPosttestAssignments = $posttestAssignments->isNotEmpty();
+        $posttestSubmissions = collect();
+        if ($hasPosttestAssignments) {
+            $posttestSubmissions = CourseSubmission::where('user_id', Auth::id())
+                ->whereIn('assignment_id', $posttestAssignments->pluck('id'))
+                ->get()
+                ->keyBy('assignment_id');
+        }
+
+        $passedAllPosttests = $hasPosttestAssignments
+            ? $posttestAssignments->every(function ($asg) use ($posttestSubmissions) {
+                $sub = $posttestSubmissions->get($asg->id);
+                return $sub
+                    && $sub->score !== null
+                    && $sub->score >= ($asg->passing_score ?? 70);
+            })
+            : true;
+        $canViewCompletion = $isCourseCompleted && $passedAllPosttests;
+
         SEOTools::setTitle('Kelas - ' . $program->program);
         SEOTools::setDescription('Lanjutkan pembelajaran Anda pada kelas ' . $program->program . '.');
         SEOTools::opengraph()->setUrl(url()->current());
@@ -291,9 +313,11 @@ class ProgramController extends Controller
             'completedCount',
             'totalItems',
             'isCourseCompleted',
+            'canViewCompletion',
             'assignments',
             'assignmentSubmissions',
-            'hasAssignments'
+            'hasAssignments',
+            'hasPosttestAssignments'
         ));
     }
 
@@ -409,11 +433,45 @@ class ProgramController extends Controller
         $totalItems = count($lessons);
         $completedLessonIds = $this->getCompletedLessonIdsForUser($program->id, Auth::id());
         $completedCount = $this->computeContiguousCompletedCount($lessons, $completedLessonIds);
-        $isCompleted = $totalItems > 0 && $completedCount >= $totalItems;
+        $isMaterialsCompleted = $totalItems > 0 && $completedCount >= $totalItems;
 
-        if (!$isCompleted) {
+        if (!$isMaterialsCompleted) {
             return redirect()->route('client.program.classroom', ['slug' => $slug])
                 ->with('error', 'Selesaikan semua materi terlebih dahulu untuk membuka halaman ini.');
+        }
+
+        // Check for post-test completion if any exist
+        $assignments = \App\Models\CourseAssignment::where('program_id', $program->id)
+            ->where('type', 'post-test')
+            ->get();
+
+        if ($assignments->isNotEmpty()) {
+            $submissions = \App\Models\CourseSubmission::where('user_id', Auth::id())
+                ->whereIn('assignment_id', $assignments->pluck('id'))
+                ->get();
+
+            $passedAll = $assignments->every(function($asg) use ($submissions) {
+                $sub = $submissions->firstWhere('assignment_id', $asg->id);
+                return $sub && $sub->score !== null && $sub->score >= ($asg->passing_score ?? 70);
+            });
+
+            if (!$passedAll) {
+                return redirect()->route('client.program.posttest', ['slug' => $slug]);
+            }
+        }
+
+        $posttestAverage = null;
+        $posttestCount = 0;
+        if ($assignments->isNotEmpty()) {
+            $scores = $submissions
+                ->pluck('score')
+                ->filter(function ($score) {
+                    return $score !== null;
+                });
+            $posttestCount = $scores->count();
+            $posttestAverage = $posttestCount > 0
+                ? round($scores->avg(), 1)
+                : null;
         }
 
         $proof = DB::table('program_proofs')
@@ -421,7 +479,12 @@ class ProgramController extends Controller
             ->where('program_id', $program->id)
             ->first();
 
-        return view('client.program.course-complete', compact('program', 'proof'));
+        return view('client.program.course-complete', compact(
+            'program',
+            'proof',
+            'posttestAverage',
+            'posttestCount'
+        ));
     }
 
     /**

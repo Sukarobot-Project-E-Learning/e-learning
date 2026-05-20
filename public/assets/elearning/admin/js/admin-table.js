@@ -542,46 +542,44 @@
             allMobileCards = Array.from(mobileViewContainer.querySelectorAll('.bg-white, .dark\\:bg-gray-800')).filter(el => !el.classList.contains('empty-search-card'));
         }
 
-        // Real-time search handler
+        // Search handler - server-side search for full dataset
         if (searchInput) {
-            const debouncedFilter = debounce(function() {
-                applyRealTimeFilter(container);
-            }, 150);
+            const debouncedServerSearch = debounce(function(value) {
+                navigateWithParams({ search: value, page: 1 });
+            }, 350);
 
             searchInput.addEventListener('input', function(e) {
                 const value = e.target.value;
                 currentSearchTerm = value;
-                
+
                 // Show/hide clear button
                 if (searchClear) {
                     searchClear.classList.toggle('hidden', !value);
                 }
-                
-                // Apply real-time filter
-                debouncedFilter();
+
+                debouncedServerSearch(value);
             });
 
-            // Handle Enter key - still do server search for comprehensive results
+            // Handle Enter key - force immediate server search
             searchInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    // If user presses Enter, do a full server-side search
-                    navigateWithParams({ search: e.target.value });
+                    navigateWithParams({ search: e.target.value, page: 1 });
                 }
             });
-            
+
             // Initialize search term from input value
             currentSearchTerm = searchInput.value || '';
         }
 
-        // Search clear button - real-time clear
+        // Search clear button - server-side clear
         if (searchClear) {
             searchClear.addEventListener('click', function() {
                 if (searchInput) {
                     searchInput.value = '';
                     currentSearchTerm = '';
                     searchClear.classList.add('hidden');
-                    applyRealTimeFilter(container);
+                    navigateWithParams({ search: '', page: 1 });
                 }
             });
         }

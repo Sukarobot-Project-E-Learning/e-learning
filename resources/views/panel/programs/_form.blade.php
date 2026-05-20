@@ -27,8 +27,7 @@
             'quota' => 2, 'available_slots' => 2, 'price' => 2, 'tools' => 2, 'benefits' => 2,
             'start_date' => 3, 'end_date' => 3, 'start_time' => 3, 'end_time' => 3,
             'zoom_link' => 3, 'province' => 3, 'city' => 3, 'district' => 3, 'village' => 3, 'full_address' => 3,
-            'materials' => 4,
-            'image' => 5
+            'image' => 4
         ];
         foreach ($errors->keys() as $errorKey) {
             // Handle array fields like materials.0.title
@@ -55,16 +54,19 @@
     
     <!-- Progress Header -->
     <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div id="selectedCategoryBanner" class="hidden mb-4 rounded-xl border border-{{ $primaryColor }}-200 bg-{{ $primaryColor }}-50 px-4 py-3 text-sm text-{{ $primaryColor }}-700">
+            Kategori Program: <span id="selectedCategoryLabel" class="font-semibold">-</span>
+        </div>
         <div class="flex items-center justify-center gap-2 sm:gap-3" id="stepIndicators">
-            @for($step = 1; $step <= 7; $step++)
-                <div class="flex items-center">
+            @for($step = 1; $step <= 6; $step++)
+                <div class="flex items-center step-indicator-item" data-step="{{ $step }}">
                     <button type="button" 
                             class="step-indicator w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 {{ $step === 1 ? 'bg-'.$primaryColor.'-600 text-white shadow-lg' : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400' }}"
                             data-step="{{ $step }}">
                         {{ $step }}
                     </button>
-                    @if($step < 7)
-                        <div class="step-line w-6 sm:w-12 h-1 mx-1 rounded bg-gray-200 dark:bg-gray-700 transition-all duration-300"></div>
+                    @if($step < 6)
+                        <div class="step-line w-6 sm:w-12 h-1 mx-1 rounded bg-gray-200 dark:bg-gray-700 transition-all duration-300" data-line-step="{{ $step }}"></div>
                     @endif
                 </div>
             @endfor
@@ -115,26 +117,6 @@
                         <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="title"></p>
                     </div>
 
-                    <!-- Instructor (Admin only) -->
-                    @if($isAdmin)
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Instruktur 
-                        </label>
-                        <select name="instructor_id" 
-                                id="input-instructor_id"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 focus:ring-4 focus:ring-{{ $primaryColor }}-100 transition-all">
-                            <option value="">Pilih Instruktur</option>
-                            @foreach($instructors ?? [] as $instructor)
-                                <option value="{{ $instructor->id }}" {{ old('instructor_id', $data->instructor_id ?? '') == $instructor->id ? 'selected' : '' }}>
-                                    {{ $instructor->nama }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="instructor_id"></p>
-                    </div>
-                    @endif
-
                     <!-- Category -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -151,8 +133,28 @@
                         <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="category"></p>
                     </div>
 
+                    <!-- Instructor (Admin only) -->
+                    @if($isAdmin)
+                    <div id="instructorField">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Instruktur
+                        </label>
+                        <select name="instructor_id" 
+                                id="input-instructor_id"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 focus:ring-4 focus:ring-{{ $primaryColor }}-100 transition-all">
+                            <option value="">Pilih Instruktur</option>
+                            @foreach($instructors ?? [] as $instructor)
+                                <option value="{{ $instructor->id }}" {{ old('instructor_id', $data->instructor_id ?? '') == $instructor->id ? 'selected' : '' }}>
+                                    {{ $instructor->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="instructor_id"></p>
+                    </div>
+                    @endif
+
                     <!-- Type -->
-                    <div>
+                    <div id="typeFields">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Tipe Program <span class="text-red-500">*</span>
                         </label>
@@ -179,6 +181,9 @@
                                 </div>
                             </label>
                             @endforeach
+                        </div>
+                        <div id="courseScheduleNotice" class="hidden mt-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                            Jadwal tidak diperlukan untuk program Kursus.
                         </div>
                         <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="type"></p>
                     </div>
@@ -336,74 +341,79 @@
                 </div>
 
                 <div class="space-y-6">
-                    <!-- Date Range -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Tanggal Mulai <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" 
-                                   name="start_date" 
-                                   id="input-start_date"
-                                   value="{{ old('start_date', $data->start_date ?? '') }}"
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
-                            <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="start_date"></p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Tanggal Selesai <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" 
-                                   name="end_date" 
-                                   id="input-end_date"
-                                   value="{{ old('end_date', $data->end_date ?? '') }}"
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
-                            <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="end_date"></p>
-                        </div>
+                    <div id="courseScheduleNoticeStep" class="hidden rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                        Jadwal tidak diperlukan untuk program Kursus.
                     </div>
 
-                    <!-- Time Range -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Waktu Mulai <span class="text-red-500">*</span>
-                            </label>
-                            <input type="time" 
-                                   name="start_time" 
-                                   id="input-start_time"
-                                   value="{{ old('start_time', $data->start_time ?? '') }}"
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
-                            <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="start_time"></p>
+                    <div id="scheduleFields" class="space-y-6">
+                        <!-- Date Range -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Tanggal Mulai <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" 
+                                       name="start_date" 
+                                       id="input-start_date"
+                                       value="{{ old('start_date', $data->start_date ?? '') }}"
+                                       class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
+                                <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="start_date"></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Tanggal Selesai <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" 
+                                       name="end_date" 
+                                       id="input-end_date"
+                                       value="{{ old('end_date', $data->end_date ?? '') }}"
+                                       class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
+                                <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="end_date"></p>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Waktu Selesai <span class="text-red-500">*</span>
-                            </label>
-                            <input type="time" 
-                                   name="end_time" 
-                                   id="input-end_time"
-                                   value="{{ old('end_time', $data->end_time ?? '') }}"
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
-                            <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="end_time"></p>
+
+                        <!-- Time Range -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Waktu Mulai <span class="text-red-500">*</span>
+                                </label>
+                                <input type="time" 
+                                       name="start_time" 
+                                       id="input-start_time"
+                                       value="{{ old('start_time', $data->start_time ?? '') }}"
+                                       class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
+                                <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="start_time"></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Waktu Selesai <span class="text-red-500">*</span>
+                                </label>
+                                <input type="time" 
+                                       name="end_time" 
+                                       id="input-end_time"
+                                       value="{{ old('end_time', $data->end_time ?? '') }}"
+                                       class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all">
+                                <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="end_time"></p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Online Fields (Zoom Link) -->
-                    <div id="onlineFields" class="hidden">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Link Zoom/Google Meet 
-                        </label>
-                        <input type="url" 
-                               name="zoom_link" 
-                               id="input-zoom_link"
-                               value="{{ old('zoom_link', $data->zoom_link ?? '') }}"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all"
-                               placeholder="https://zoom.us/j/...">
-                        <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="zoom_link"></p>
-                    </div>
+                        <!-- Online Fields (Zoom Link) -->
+                        <div id="onlineFields" class="hidden">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Link Zoom/Google Meet 
+                            </label>
+                            <input type="url" 
+                                   name="zoom_link" 
+                                   id="input-zoom_link"
+                                   value="{{ old('zoom_link', $data->zoom_link ?? '') }}"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all"
+                                   placeholder="https://zoom.us/j/...">
+                            <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="zoom_link"></p>
+                        </div>
 
-                    <!-- Offline Fields (Location) -->
-                    <div id="offlineFields" class="hidden space-y-4">
+                        <!-- Offline Fields (Location) -->
+                        <div id="offlineFields" class="hidden space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -468,88 +478,13 @@
                             <p class="field-error text-red-500 text-sm mt-1 hidden" data-field="full_address"></p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 4: Materi Pembelajaran -->
-        <div class="form-step hidden" data-step="4">
-            <div class="p-5 sm:p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Materi Pembelajaran</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Tambahkan materi yang akan dipelajari</p>
-                        </div>
                     </div>
-                    <button type="button" 
-                            id="addMaterialBtn"
-                            class="flex items-center gap-2 px-4 py-2 bg-{{ $primaryColor }}-600 hover:bg-{{ $primaryColor }}-700 text-white rounded-lg transition-colors text-sm font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Tambah Materi
-                    </button>
-                </div>
-
-                <div id="materialsContainer" class="space-y-4">
-                    @php $materials = old('materials', $data->materials ?? []); @endphp
-                    @if(is_array($materials) && count($materials) > 0)
-                        @foreach($materials as $index => $material)
-                        <div class="material-item bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
-                            <div class="flex items-start justify-between mb-3">
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Materi {{ $index + 1 }}</span>
-                                <button type="button" class="remove-material-btn p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="space-y-3">
-                                <input type="text" name="materials[{{ $index }}][title]" 
-                                       value="{{ is_array($material) ? ($material['title'] ?? '') : '' }}"
-                                       class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all"
-                                       placeholder="Judul Materi">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="text-xs text-gray-500 dark:text-gray-400">Jam</label>
-                                        <input type="number" name="materials[{{ $index }}][duration_hours]" min="0"
-                                               value="{{ is_array($material) ? ($material['duration_hours'] ?? 0) : 0 }}"
-                                               class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-gray-500 dark:text-gray-400">Menit</label>
-                                        <input type="number" name="materials[{{ $index }}][duration_minutes]" min="0" max="59"
-                                               value="{{ is_array($material) ? ($material['duration_minutes'] ?? 0) : 0 }}"
-                                               class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-sm">
-                                    </div>
-                                </div>
-                                <textarea name="materials[{{ $index }}][description]" rows="2"
-                                          class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:border-{{ $primaryColor }}-500 transition-all resize-none text-sm"
-                                          placeholder="Deskripsi materi (opsional)">{{ is_array($material) ? ($material['description'] ?? '') : '' }}</textarea>
-                            </div>
-                        </div>
-                        @endforeach
-                    @endif
-                </div>
-
-                <div id="emptyMaterialsState" class="text-center py-8 text-gray-500 dark:text-gray-400 {{ (is_array($materials) && count($materials) > 0) ? 'hidden' : '' }}">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <p>Belum ada materi ditambahkan</p>
-                    <p class="text-sm">Klik "Tambah Materi" untuk menambahkan</p>
                 </div>
             </div>
         </div>
 
-        <!-- Step 5: Gambar Program -->
-        <div class="form-step hidden" data-step="5">
+        <!-- Step 4: Gambar Program -->
+        <div class="form-step hidden" data-step="4">
             <div class="p-5 sm:p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-xl bg-{{ $primaryColor }}-100 dark:bg-{{ $primaryColor }}-900/30 flex items-center justify-center">
@@ -627,13 +562,13 @@
             </div>
         </div>
 
-        <!-- Step 6: Kurikulum LMS -->
-        <div class="form-step hidden" data-step="6">
+        <!-- Step 5: Kurikulum LMS -->
+        <div class="form-step hidden" data-step="5">
                 @include('panel.programs._lms_curriculum', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
         </div>
 
-        <!-- Step 7: Tugas Post-Test -->
-        <div class="form-step hidden" data-step="7">
+        <!-- Step 6: Tugas Akhir -->
+        <div class="form-step hidden" data-step="6">
                 @include('panel.programs._lms_assignment', ['programId' => $isEdit && $data ? $data->id : 'null', 'isAdmin' => $isAdmin])
         </div>
 

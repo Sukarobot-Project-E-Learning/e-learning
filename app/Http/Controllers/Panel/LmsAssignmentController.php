@@ -30,11 +30,28 @@ class LmsAssignmentController extends Controller
      */
     public function store(Request $request, $programId)
     {
+        $existing = CourseAssignment::query()
+            ->where('program_id', $programId)
+            ->where(function ($query) {
+                $query->where('type', 'post-test')
+                    ->orWhereNull('type');
+            })
+            ->exists();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tugas akhir sudah ada. Silakan edit atau hapus terlebih dahulu.',
+            ], 409);
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'allowed_extensions' => 'required|string',
             'due_date' => 'nullable|date',
+            'type' => 'nullable|in:post-test,standard',
+            'passing_score' => 'nullable|integer|min:0|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -43,10 +60,12 @@ class LmsAssignmentController extends Controller
 
         $assignment = CourseAssignment::create([
             'program_id' => $programId,
+            'type' => 'post-test',
             'title' => $request->title,
             'description' => $request->description,
             'allowed_extensions' => $request->allowed_extensions,
             'due_date' => $request->due_date,
+            'passing_score' => $request->passing_score ?? 70,
         ]);
 
         return response()->json([
@@ -66,6 +85,8 @@ class LmsAssignmentController extends Controller
             'description' => 'required|string',
             'allowed_extensions' => 'required|string',
             'due_date' => 'nullable|date',
+            'type' => 'nullable|in:post-test,standard',
+            'passing_score' => 'nullable|integer|min:0|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -74,10 +95,12 @@ class LmsAssignmentController extends Controller
 
         $assignment = CourseAssignment::where('program_id', $programId)->findOrFail($assignmentId);
         $assignment->update([
+            'type' => 'post-test',
             'title' => $request->title,
             'description' => $request->description,
             'allowed_extensions' => $request->allowed_extensions,
             'due_date' => $request->due_date,
+            'passing_score' => $request->passing_score ?? $assignment->passing_score ?? 70,
         ]);
 
         return response()->json([

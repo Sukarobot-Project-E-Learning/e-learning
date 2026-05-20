@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\ProgramProof;
+use App\Models\CourseAssignment;
+use App\Models\CourseSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +33,12 @@ class ProgramProofController extends Controller
             return redirect()->route('client.program.detail', $slug)->with('error', 'Anda belum terdaftar di program ini.');
         }
 
+        if ($this->isCourseCategory($program->category ?? null)
+            && !$this->hasPassedPosttests($program->id, $user->id)) {
+            return redirect()->route('client.program.posttest', $slug)
+                ->with('error', 'Selesaikan dan lulus post-test terlebih dahulu untuk mengirim bukti program.');
+        }
+
         // Check if proof already exists
         $proof = ProgramProof::where('student_id', $user->id)
             ->where('program_id', $program->id)
@@ -52,6 +60,12 @@ class ProgramProofController extends Controller
 
         if (!$program) {
             return back()->with('error', 'Program tidak ditemukan.');
+        }
+
+        if ($this->isCourseCategory($program->category ?? null)
+            && !$this->hasPassedPosttests($program->id, $user->id)) {
+            return redirect()->route('client.program.posttest', $slug)
+                ->with('error', 'Selesaikan dan lulus post-test terlebih dahulu untuk mengirim bukti program.');
         }
 
         $request->validate([
@@ -111,5 +125,35 @@ class ProgramProofController extends Controller
             ]);
 
         return redirect()->route('client.dashboard.program')->with('success', 'Bukti program dan ulasan berhasil dikirim!');
+    }
+
+    private function isCourseCategory(?string $category): bool
+    {
+        return strtolower(trim((string) $category)) === 'kursus';
+    }
+
+    private function hasPassedPosttests(int $programId, int $userId): bool
+    {
+        $assignments = CourseAssignment::where('program_id', $programId)
+            ->where('type', 'post-test')
+            ->get();
+
+        if ($assignments->isEmpty()) {
+            return true;
+        }
+
+        $submissions = CourseSubmission::where('user_id', $userId)
+            ->whereIn('assignment_id', $assignments->pluck('id'))
+            ->get()
+            ->keyBy('assignment_id');
+
+        return $assignments->every(function ($assignment) use ($submissions) {
+            $submission = $submissions->get($assignment->id);
+            $passingScore = $assignment->passing_score ?? 70;
+
+            return $submission
+                && $submission->score !== null
+                && $submission->score >= $passingScore;
+        });
     }
 }

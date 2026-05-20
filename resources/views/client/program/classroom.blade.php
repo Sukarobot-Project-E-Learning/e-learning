@@ -72,9 +72,9 @@
                         <p class="text-sm font-semibold text-slate-500">{{ $item['title'] }}</p>
                         <p class="mt-1 text-xs font-medium text-slate-400">Terkunci</p>
                       </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2h-1V7a5 5 0 00-10 0v2H6a2 2 0 00-2 2v6a2 2 0 002 2zm3-8V7a3 3 0 116 0v2H9z" />
-                      </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0v4m-9 0h10a2 2 0 012 2v4a2 2 0 01-2 2H7a2 2 0 01-2-2v-4a2 2 0 012-2z" />
+													</svg>
                     </div>
                   </div>
                 @else
@@ -265,7 +265,7 @@
             @endphp
 
             <div class="border-t border-slate-100 px-5 py-4 sm:px-8">
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex flex-row items-center justify-between gap-3">
                 <div>
                   @if($previousItem && !$previousItem['is_locked'])
                     <a href="{{ route('client.program.classroom', ['slug' => $program->slug, 'item' => $previousItem['index']]) }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:border-slate-300 hover:bg-slate-50">
@@ -278,10 +278,14 @@
                 </div>
 
                 <div>
-                  @if($isCourseCompleted && $selectedItem && $selectedItem['index'] >= $totalItems)
+                  @if($canViewCompletion && $selectedItem && $selectedItem['index'] >= $totalItems)
                     <a href="{{ route('client.program.course-complete', ['slug' => $program->slug]) }}" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-7 py-3 text-base font-bold text-white shadow-md transition hover:bg-emerald-700">
-                      Lihat Halaman Kelulusan
+                      Selesaikan Kursus
                     </a>
+                  @elseif($isCourseCompleted && $selectedItem && $selectedItem['index'] >= $totalItems)
+                    <span class="inline-flex items-center justify-center rounded-xl bg-amber-100 px-6 py-3 text-sm font-semibold text-amber-700">
+                      Post-test belum dinilai atau belum lulus
+                    </span>
                   @elseif($selectedItem && $selectedItem['is_current'])
                     @php
                       $redirectAfterComplete = route('client.program.classroom', [
@@ -292,8 +296,8 @@
                     <form action="{{ route('client.program.syllabus.complete', ['slug' => $program->slug, 'index' => $selectedItem['index']]) }}" method="POST" class="inline-block">
                       @csrf
                       <input type="hidden" name="redirect_to" value="{{ $redirectAfterComplete }}">
-                      <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-3 text-base font-bold text-white shadow-md transition hover:bg-blue-700">
-                        {{ $selectedItem['index'] >= $totalItems ? 'Selesaikan Kursus' : 'Selanjutnya' }}
+                      <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700">
+                        {{ $selectedItem['index'] >= $totalItems ? ($hasPosttestAssignments ? 'Post-Test' : 'Selesaikan Kursus') : 'Selanjutnya' }}
                       </button>
                     </form>
                   @elseif($nextItem && !$nextItem['is_locked'])

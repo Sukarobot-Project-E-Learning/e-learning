@@ -1,22 +1,16 @@
 @extends('client.main')
 @section('body')
-
     @php
-    // Get current active category
-    $currentCategory = $activeCategory ?? 'all';
-    
-    // Category display names
-    $categoryNames = [
-        'all' => 'Semua Kelas',
-        'kursus' => 'Kursus',
-        'pelatihan' => 'Pelatihan',
-        'sertifikasi' => 'Sertifikasi',
-        'outing-class' => 'Outing Class',
-        'outboard' => 'Outboard'
-    ];
-
-    // Hero Content Data
-    $heroContent = [
+        $currentCategory = $activeCategory ?? 'all';
+        $categoryNames = [
+            'kursus' => 'Kursus',
+            'pelatihan' => 'Pelatihan',
+            'sertifikasi' => 'Sertifikasi',
+            'outing-class' => 'Outing Class',
+            'outboard' => 'Outboard',
+        ];
+        // Hero Content Data
+        $heroContent = [
         'all' => [
             'title' => 'Kelas di E-Learning tersedia dari level <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Dasar hingga Profesional</span>',
             'description' => 'Tingkatkan kompetensi Anda sesuai kebutuhan industri terkini dengan kurikulum yang terstruktur dan mentor berpengalaman.'
@@ -41,7 +35,7 @@
             'title' => 'Bangun karakter dan kerjasama tim melalui <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500">Program Outboard</span>',
             'description' => 'Kegiatan luar ruangan yang menantang untuk meningkatkan kepemimpinan dan soliditas tim.'
         ]
-    ];
+        ];
     @endphp
 
     <!-- Top Navigation Menu -->

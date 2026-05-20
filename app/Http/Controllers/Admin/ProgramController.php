@@ -125,16 +125,16 @@ class ProgramController extends Controller
         $rules = [
             'program' => 'required|string|max:255',
             'category' => 'required|in:Kursus,Pelatihan,Sertifikasi,Outing Class,Outboard',
-            'type' => 'required|in:online,offline',
+            'type' => 'nullable|in:online,offline',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'instructor_id' => 'nullable|exists:data_trainers,id',
 
             'quota' => 'required|integer|min:1',
-            'start_date' => 'required|date',
-            'start_time' => 'required',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'end_time' => 'required',
+            'start_date' => 'nullable|date',
+            'start_time' => 'nullable',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'end_time' => 'nullable',
             'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
             'tools.*' => 'nullable|string',
             'materials.*.title' => 'nullable|string',
@@ -144,9 +144,17 @@ class ProgramController extends Controller
         ];
 
         // Conditional validation
+        if ($request->category !== 'Kursus') {
+            $rules['type'] = 'required|in:online,offline';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'required';
+            $rules['end_date'] = 'required|date|after_or_equal:start_date';
+            $rules['end_time'] = 'required';
+        }
+
         if ($request->type === 'online') {
             $rules['zoom_link'] = 'nullable|url';
-        } elseif ($request->type === 'offline') {
+        } elseif ($request->type === 'offline' && $request->category !== 'Kursus') {
             $rules['province'] = 'required|string';
             $rules['city'] = 'required|string';
             $rules['district'] = 'required|string';
@@ -193,7 +201,7 @@ class ProgramController extends Controller
             'slug' => $slug,
             'description' => $validated['description'],
             'category' => $validated['category'],
-            'type' => $validated['type'],
+            'type' => $validated['type'] ?? 'online',
             'price' => $validated['price'],
             'instructor_id' => $validated['instructor_id'] ?? null,
 
@@ -215,7 +223,19 @@ class ProgramController extends Controller
         ];
 
         // Type-specific fields
-        if ($validated['type'] === 'online') {
+        if ($validated['category'] === 'Kursus') {
+            $data['start_date'] = null;
+            $data['start_time'] = null;
+            $data['end_date'] = null;
+            $data['end_time'] = null;
+            $data['zoom_link'] = null;
+            $data['province'] = null;
+            $data['city'] = null;
+            $data['district'] = null;
+            $data['village'] = null;
+            $data['full_address'] = null;
+            $data['type'] = 'online';
+        } elseif ($validated['type'] === 'online') {
             $data['zoom_link'] = $validated['zoom_link'];
             $data['province'] = null;
             $data['city'] = null;
@@ -234,6 +254,7 @@ class ProgramController extends Controller
         $programId = DB::table('data_programs')->insertGetId($data);
 
         $this->syncLmsData($programId, $request);
+        $this->syncProgramApprovalFromAdmin($programId, $data, $request);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil ditambahkan');
     }
@@ -359,15 +380,15 @@ class ProgramController extends Controller
         $rules = [
             'program' => 'required|string|max:255',
             'category' => 'required|in:Kursus,Pelatihan,Sertifikasi,Outing Class,Outboard',
-            'type' => 'required|in:online,offline',
+            'type' => 'nullable|in:online,offline',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'instructor_id' => 'nullable|exists:data_trainers,id',
             'quota' => 'required|integer|min:1',
-            'start_date' => 'required|date',
-            'start_time' => 'required',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'end_time' => 'required',
+            'start_date' => 'nullable|date',
+            'start_time' => 'nullable',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'end_time' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'tools.*' => 'nullable|string',
             'materials.*.title' => 'nullable|string',
@@ -376,9 +397,17 @@ class ProgramController extends Controller
             'benefits.*' => 'nullable|string',
         ];
 
+        if ($request->category !== 'Kursus') {
+            $rules['type'] = 'required|in:online,offline';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'required';
+            $rules['end_date'] = 'required|date|after_or_equal:start_date';
+            $rules['end_time'] = 'required';
+        }
+
         if ($request->type === 'online') {
             $rules['zoom_link'] = 'nullable|url';
-        } elseif ($request->type === 'offline') {
+        } elseif ($request->type === 'offline' && $request->category !== 'Kursus') {
             $rules['province'] = 'required|string';
             $rules['city'] = 'required|string';
             $rules['district'] = 'required|string';
@@ -437,7 +466,7 @@ class ProgramController extends Controller
             'slug' => $slug,
             'description' => $validated['description'],
             'category' => $validated['category'],
-            'type' => $validated['type'],
+            'type' => $validated['type'] ?? 'online',
             'price' => $validated['price'],
             'instructor_id' => $validated['instructor_id'] ?? null,
 
@@ -454,7 +483,19 @@ class ProgramController extends Controller
         ];
 
         // Type-specific fields
-        if ($validated['type'] === 'online') {
+        if ($validated['category'] === 'Kursus') {
+            $data['start_date'] = null;
+            $data['start_time'] = null;
+            $data['end_date'] = null;
+            $data['end_time'] = null;
+            $data['zoom_link'] = null;
+            $data['province'] = null;
+            $data['city'] = null;
+            $data['district'] = null;
+            $data['village'] = null;
+            $data['full_address'] = null;
+            $data['type'] = 'online';
+        } elseif ($validated['type'] === 'online') {
             $data['zoom_link'] = $validated['zoom_link'];
             $data['province'] = null;
             $data['city'] = null;
@@ -473,6 +514,7 @@ class ProgramController extends Controller
         DB::table('data_programs')->where('id', $id)->update($data);
 
         $this->syncLmsData($id, $request);
+        $this->syncProgramApprovalFromAdmin($id, $data, $request);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program berhasil diupdate');
     }
@@ -553,15 +595,78 @@ class ProgramController extends Controller
             
             foreach ($assignmentsData as $asg) {
                 if (empty($asg['title'])) continue;
-                
+
                 \App\Models\CourseAssignment::create([
                     'program_id' => $programId,
+                    'type' => $asg['type'] ?? 'post-test',
                     'title' => $asg['title'],
                     'description' => $asg['description'],
                     'allowed_extensions' => $asg['allowed_extensions'] ?? 'pdf,zip,rar',
-                    'due_date' => !empty($asg['due_date']) ? $asg['due_date'] . ' 23:59:59' : null,
+                    'due_date' => !empty($asg['due_date'])
+                        ? $asg['due_date'] . ' 23:59:59'
+                        : null,
+                    'passing_score' => $asg['passing_score'] ?? 70,
                 ]);
             }
         }
+    }
+
+    private function syncProgramApprovalFromAdmin(int $programId, array $data, Request $request): void
+    {
+        $instructorId = $data['instructor_id'] ?? null;
+
+        if (!$instructorId) {
+            DB::table('program_approvals')
+                ->where('program_id', $programId)
+                ->delete();
+            return;
+        }
+
+        $payload = [
+            'program_id' => $programId,
+            'instructor_id' => $instructorId,
+            'title' => $data['program'] ?? null,
+            'description' => $data['description'] ?? null,
+            'category' => $data['category'] ?? null,
+            'type' => $data['type'] ?? null,
+            'price' => $data['price'] ?? 0,
+            'available_slots' => $data['quota'] ?? null,
+            'province' => $data['province'] ?? null,
+            'city' => $data['city'] ?? null,
+            'district' => $data['district'] ?? null,
+            'village' => $data['village'] ?? null,
+            'full_address' => $data['full_address'] ?? null,
+            'start_date' => $data['start_date'] ?? null,
+            'start_time' => $data['start_time'] ?? null,
+            'end_date' => $data['end_date'] ?? null,
+            'end_time' => $data['end_time'] ?? null,
+            'zoom_link' => $data['zoom_link'] ?? null,
+            'image' => $data['image'] ?? null,
+            'tools' => $data['tools'] ?? null,
+            'materials' => $data['learning_materials'] ?? null,
+            'benefits' => $data['benefits'] ?? null,
+            'status' => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+            'rejection_reason' => null,
+            'rejected_at' => null,
+            'lms_curriculum_json' => $request->lms_curriculum_json ?? null,
+            'lms_assignment_json' => $request->lms_assignment_json ?? null,
+            'updated_at' => now(),
+        ];
+
+        $existing = DB::table('program_approvals')
+            ->where('program_id', $programId)
+            ->first();
+
+        if ($existing) {
+            DB::table('program_approvals')
+                ->where('program_id', $programId)
+                ->update($payload);
+            return;
+        }
+
+        $payload['created_at'] = now();
+        DB::table('program_approvals')->insert($payload);
     }
 }

@@ -114,6 +114,11 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
         Route::post('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'store'])->name('assignments.store');
         Route::put('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'update'])->name('assignments.update');
         Route::delete('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'destroy'])->name('assignments.destroy');
+
+        // Submissions (Review & Grade)
+        Route::get('submissions', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'index'])->name('submissions.index');
+        Route::get('submissions/{submission}', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'show'])->name('submissions.show');
+        Route::post('submissions/{submission}/grade', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'grade'])->name('submissions.grade');
     });
 
     // Program Approval Management (Pengajuan Program dari Instruktur)
@@ -317,6 +322,12 @@ Route::prefix('instructor')->name('instructor.')->middleware([\App\Http\Middlewa
     // Program Management
     Route::resource('programs', \App\Http\Controllers\Instructor\ProgramController::class);
 
+    // Assignment & Post-test UI
+    Route::get('assignments', [\App\Http\Controllers\Instructor\AssignmentController::class, 'index'])
+        ->name('assignments.index');
+    Route::get('assignments/posttest-dashboard', [\App\Http\Controllers\Instructor\AssignmentController::class, 'dashboard'])
+        ->name('assignments.dashboard');
+
     // LMS Curriculum & Assignment (Instructor)
     Route::prefix('programs/{program}/lms')->name('programs.lms.')->group(function () {
         // Sections
@@ -337,6 +348,11 @@ Route::prefix('instructor')->name('instructor.')->middleware([\App\Http\Middlewa
         Route::post('assignments', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'store'])->name('assignments.store');
         Route::put('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'update'])->name('assignments.update');
         Route::delete('assignments/{assignment}', [\App\Http\Controllers\Panel\LmsAssignmentController::class, 'destroy'])->name('assignments.destroy');
+
+        // Submissions (Review & Grade)
+        Route::get('submissions', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'index'])->name('submissions.index');
+        Route::get('submissions/{submission}', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'show'])->name('submissions.show');
+        Route::post('submissions/{submission}/grade', [\App\Http\Controllers\Panel\LmsSubmissionController::class, 'grade'])->name('submissions.grade');
     });
 
     // Quiz/Tugas Management

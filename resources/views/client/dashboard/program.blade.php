@@ -70,15 +70,7 @@
               @endif
 
               <div class="mt-auto space-y-3">
-                  @php
-                    $canSubmitProof = !$enrollment->proof_id && (
-                      $enrollment->is_course_program
-                        ? $enrollment->is_course_completed
-                        : \Carbon\Carbon::parse($enrollment->end_date)->isPast()
-                    );
-                  @endphp
-
-                  @if($canSubmitProof)
+                  @if($enrollment->can_submit_proof)
                       <a href="{{ route('client.program.proof', $enrollment->slug) }}" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 text-white text-sm font-medium leading-normal hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-md shadow-blue-500/20">
                         <span class="truncate">Kirim Bukti Program</span>
                       </a>

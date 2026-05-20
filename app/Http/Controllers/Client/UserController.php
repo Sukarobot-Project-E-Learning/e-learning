@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Admin\CertificateController;
+use App\Models\CourseAssignment;
+use App\Models\CourseSubmission;
 
 class UserController extends Controller
 {
@@ -72,6 +74,8 @@ class UserController extends Controller
         $programIds = $enrollments->pluck('program_id')->filter()->unique()->values();
         $lessonTotalsByProgram = collect();
         $completedTotalsByProgram = collect();
+        $posttestAssignmentsByProgram = collect();
+        $posttestSubmissionsByAssignment = collect();
 
         if ($programIds->isNotEmpty()) {
             $lessonTotalsByProgram = DB::table('lms_sections')
@@ -90,9 +94,28 @@ class UserController extends Controller
                 ->whereIn('sections.program_id', $programIds)
                 ->groupBy('sections.program_id')
                 ->pluck('completed_lessons', 'sections.program_id');
+
+            $posttestAssignments = CourseAssignment::whereIn('program_id', $programIds)
+                ->where('type', 'post-test')
+                ->get(['id', 'program_id', 'passing_score']);
+            $posttestAssignmentsByProgram = $posttestAssignments
+                ->groupBy('program_id');
+
+            $assignmentIds = $posttestAssignments->pluck('id');
+            if ($assignmentIds->isNotEmpty()) {
+                $posttestSubmissionsByAssignment = CourseSubmission::where('user_id', $user->id)
+                    ->whereIn('assignment_id', $assignmentIds)
+                    ->get(['assignment_id', 'score'])
+                    ->keyBy('assignment_id');
+            }
         }
 
-        $enrollments = $enrollments->map(function ($enrollment) use ($lessonTotalsByProgram, $completedTotalsByProgram) {
+        $enrollments = $enrollments->map(function ($enrollment) use (
+            $lessonTotalsByProgram,
+            $completedTotalsByProgram,
+            $posttestAssignmentsByProgram,
+            $posttestSubmissionsByAssignment
+        ) {
             $isCourseProgram = $this->isCourseCategory($enrollment->category ?? null);
             $totalMaterials = $isCourseProgram
                 ? (int) ($lessonTotalsByProgram[$enrollment->program_id] ?? 0)
@@ -111,11 +134,35 @@ class UserController extends Controller
                 : 0;
             $isCourseCompleted = $isCourseProgram && $totalMaterials > 0 && $completedMaterials >= $totalMaterials;
 
+            $posttestAssignments = $posttestAssignmentsByProgram
+                ->get($enrollment->program_id, collect());
+            $hasPosttests = $posttestAssignments->isNotEmpty();
+            $passedPosttests = true;
+
+            if ($isCourseProgram && $hasPosttests) {
+                $passedPosttests = $posttestAssignments->every(function ($assignment) use ($posttestSubmissionsByAssignment) {
+                    $submission = $posttestSubmissionsByAssignment->get($assignment->id);
+                    $passingScore = $assignment->passing_score ?? 70;
+
+                    return $submission
+                        && $submission->score !== null
+                        && $submission->score >= $passingScore;
+                });
+            }
+
+            $canSubmitProof = !$enrollment->proof_id && (
+                $isCourseProgram
+                    ? ($isCourseCompleted && $passedPosttests)
+                    : \Carbon\Carbon::parse($enrollment->end_date)->isPast()
+            );
+
             $enrollment->is_course_program = $isCourseProgram;
             $enrollment->total_materials = $totalMaterials;
             $enrollment->completed_materials = $completedMaterials;
             $enrollment->progress_percent = $progressPercent;
             $enrollment->is_course_completed = $isCourseCompleted;
+            $enrollment->passed_posttests = $passedPosttests;
+            $enrollment->can_submit_proof = $canSubmitProof;
             $enrollment->course_status_label = $isCourseProgram
                 ? ($isCourseCompleted ? 'Selesai' : 'Berjalan')
                 : null;

@@ -154,12 +154,16 @@
 
 							@if(!$isPurchased)
 								@php
-									$now = \Carbon\Carbon::now();
-									$startDate = \Carbon\Carbon::parse($program->start_date);
-									$endDate = \Carbon\Carbon::parse($program->end_date);
-									$isRunning = $now->between($startDate, $endDate);
-									$isFinished = $now->gt($endDate);
 									$isSoldOut = $program->available_slots <= 0;
+									$isRunning = false;
+									$isFinished = false;
+									if (!$isCourseProgram) {
+										$now = \Carbon\Carbon::now();
+										$startDate = \Carbon\Carbon::parse($program->start_date);
+										$endDate = \Carbon\Carbon::parse($program->end_date);
+										$isRunning = $now->between($startDate, $endDate);
+										$isFinished = $now->gt($endDate);
+									}
 								@endphp
 
 								@include('client.program.partials.purchase-status-buttons', [
@@ -235,12 +239,16 @@
 					</a>
 				@else
 					@php
-						$nowMobile = \Carbon\Carbon::now();
-						$startDateMobile = \Carbon\Carbon::parse($program->start_date);
-						$endDateMobile = \Carbon\Carbon::parse($program->end_date);
-						$isRunningMobile = $nowMobile->between($startDateMobile, $endDateMobile);
-						$isFinishedMobile = $nowMobile->gt($endDateMobile);
 						$isSoldOutMobile = $program->available_slots <= 0;
+						$isRunningMobile = false;
+						$isFinishedMobile = false;
+						if (!$isCourseProgram) {
+							$nowMobile = \Carbon\Carbon::now();
+							$startDateMobile = \Carbon\Carbon::parse($program->start_date);
+							$endDateMobile = \Carbon\Carbon::parse($program->end_date);
+							$isRunningMobile = $nowMobile->between($startDateMobile, $endDateMobile);
+							$isFinishedMobile = $nowMobile->gt($endDateMobile);
+						}
 					@endphp
 
 					@if($isSoldOutMobile)

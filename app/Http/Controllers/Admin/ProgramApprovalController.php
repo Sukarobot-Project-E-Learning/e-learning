@@ -562,13 +562,17 @@ class ProgramApprovalController extends Controller
             
             foreach ($assignmentsData as $asg) {
                 if (empty($asg['title'])) continue;
-                
+
                 \App\Models\CourseAssignment::create([
                     'program_id' => $programId,
+                    'type' => $asg['type'] ?? 'post-test',
                     'title' => $asg['title'],
                     'description' => $asg['description'],
                     'allowed_extensions' => $asg['allowed_extensions'] ?? 'pdf,zip,rar',
-                    'due_date' => !empty($asg['due_date']) ? $asg['due_date'] . ' 23:59:59' : null,
+                    'due_date' => !empty($asg['due_date'])
+                        ? $asg['due_date'] . ' 23:59:59'
+                        : null,
+                    'passing_score' => $asg['passing_score'] ?? 70,
                 ]);
             }
         }

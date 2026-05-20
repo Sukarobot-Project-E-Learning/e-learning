@@ -117,3 +117,10 @@
     max-height: none;
   }
 }
+
+@media (max-width: 640px) {
+  .lesson-list {
+    max-height: 13.5rem;
+    overflow-y: auto;
+  }
+}

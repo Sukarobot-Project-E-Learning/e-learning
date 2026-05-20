@@ -54,10 +54,10 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Total program aktif</p>
                     </div>
 
-                    <!-- Card 2 - Tugas/Postest -->
+                    <!-- Card 2 - Tugas Akhir -->
                     <div class="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 shadow-md border border-gray-100 dark:border-slate-800">
                         <div class="flex items-start justify-between gap-2 mb-3">
-                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Postest</p>
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">Tugas Akhir</p>
                             <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($totalQuizzes ?? 0) }}</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Tugas yang dibuat</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Tugas akhir dibuat</p>
                     </div>
 
                     <!-- Card 3 - Total Siswa -->

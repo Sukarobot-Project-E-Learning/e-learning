@@ -72,12 +72,6 @@
 
     <div class="relative mx-auto max-w-3xl">
 
-      @if(session('success'))
-        <div class="animate-float-up mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 shadow-sm">
-          ✓ {{ session('success') }}
-        </div>
-      @endif
-
       <div class="animate-float-up mt-8 rounded-3xl border border-white bg-white/80 p-8 shadow-2xl backdrop-blur-md sm:p-12">
 
         {{-- Trophy / Badge --}}
@@ -103,8 +97,34 @@
           </div>
         </div>
 
+        @if($posttestAverage !== null)
+          @php
+            $starCount = (int) max(1, min(5, ceil($posttestAverage / 20)));
+          @endphp
+          <div class="animate-float-up delay-400 mt-6 rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+            <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Nilai Post-Test</p>
+                <div class="mt-2 flex items-baseline gap-2">
+                  <span class="text-3xl font-extrabold text-slate-900">{{ $posttestAverage }}</span>
+                  <span class="text-sm font-semibold text-slate-500">/ 100</span>
+                  <span class="text-xs font-medium text-slate-400">({{ $posttestCount }} penilaian)</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                @for($i = 1; $i <= 5; $i++)
+                  @php $isActive = $i <= $starCount; @endphp
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ $isActive ? 'text-yellow-400' : 'text-slate-200' }}" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.379 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.379-2.455a1 1 0 00-1.176 0l-3.379 2.455c-.784.57-1.838-.196-1.539-1.118l1.286-3.966a1 1 0 00-.364-1.118L2.05 9.393c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.966z" />
+                  </svg>
+                @endfor
+              </div>
+            </div>
+          </div>
+        @endif
+
         {{-- Info card --}}
-        <div class="animate-float-up delay-500 mt-10 rounded-2xl border border-slate-200 bg-slate-50/70 p-6">
+        <div class="animate-float-up delay-500 mt-8 rounded-2xl border border-slate-200 bg-slate-50/70 p-6">
           <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

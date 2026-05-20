@@ -68,7 +68,9 @@
     } elseif (request()->routeIs('admin.transactions.*')) {
         $breadcrumb = 'Transaksi';
     } elseif (request()->routeIs('*quizzes.*')) {
-        $breadcrumb = 'Tugas/Post Test';
+        $breadcrumb = 'Nilai Tugas Akhir';
+    } elseif (request()->routeIs('instructor.assignments.*')) {
+        $breadcrumb = 'Kelola Tugas Akhir';
     } elseif (request()->routeIs('instructor.programs.*')) {
         $breadcrumb = 'Pengajuan Program';
     }

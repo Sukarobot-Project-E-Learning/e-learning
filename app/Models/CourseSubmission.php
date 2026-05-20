@@ -14,21 +14,50 @@ class CourseSubmission extends Model
         'file_path',
         'file_name',
         'grade',
+        'score',
         'feedback',
         'submitted_at',
     ];
 
     protected $casts = [
         'submitted_at' => 'datetime',
+        'score' => 'integer',
     ];
 
+    /**
+     * Relation to parent assignment.
+     */
     public function assignment()
     {
-        return $this->belongsTo(CourseAssignment::class, 'assignment_id');
+        return $this->belongsTo(
+            CourseAssignment::class,
+            'assignment_id'
+        );
     }
 
+    /**
+     * Relation to submitting user.
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(
+            User::class,
+            'user_id'
+        );
+    }
+
+    /**
+     * Check if this submission passed the assignment.
+     */
+    public function hasPassed(): bool
+    {
+        if ($this->score === null) {
+            return false;
+        }
+
+        $passingScore = $this->assignment
+            ->passing_score ?? 70;
+
+        return $this->score >= $passingScore;
     }
 }

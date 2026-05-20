@@ -139,12 +139,12 @@ class ProgramController extends Controller
     public function store(Request $request)
     {
         // Validation
-        $validated = $request->validate([
+        $rules = [
             'title' => 'required|string|max:255',
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price' => 'nullable|numeric|min:0',
-            'type' => 'required|in:online,offline,video',
+            'type' => 'nullable|in:online,offline,video',
             'available_slots' => 'nullable|integer|min:1',
             'province' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
@@ -160,7 +160,25 @@ class ProgramController extends Controller
             'tools' => 'nullable|array',
             'materials' => 'nullable|array',
             'benefits' => 'nullable|array',
-        ], [
+        ];
+
+        if ($request->category !== 'Kursus') {
+            $rules['type'] = 'required|in:online,offline,video';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'required';
+            $rules['end_date'] = 'required|date|after_or_equal:start_date';
+            $rules['end_time'] = 'required';
+        }
+
+        if ($request->type === 'offline' && $request->category !== 'Kursus') {
+            $rules['province'] = 'required|string|max:255';
+            $rules['city'] = 'required|string|max:255';
+            $rules['district'] = 'required|string|max:255';
+            $rules['village'] = 'required|string|max:255';
+            $rules['full_address'] = 'required|string';
+        }
+
+        $validated = $request->validate($rules, [
             'title.required' => 'Judul program wajib diisi.',
             'title.max' => 'Judul program maksimal 255 karakter.',
             'type.required' => 'Tipe program wajib dipilih.',
@@ -195,19 +213,19 @@ class ProgramController extends Controller
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'category' => $validated['category'] ?? null,
-            'type' => $validated['type'],
+            'type' => $validated['type'] ?? 'online',
             'price' => $validated['price'] ?? 0,
             'available_slots' => $validated['available_slots'] ?? null,
-            'province' => $validated['province'] ?? null,
-            'city' => $validated['city'] ?? null,
-            'district' => $validated['district'] ?? null,
-            'village' => $validated['village'] ?? null,
-            'full_address' => $validated['full_address'] ?? null,
-            'start_date' => $validated['start_date'] ?? null,
-            'start_time' => $validated['start_time'] ?? null,
-            'end_date' => $validated['end_date'] ?? null,
-            'end_time' => $validated['end_time'] ?? null,
-            'zoom_link' => $validated['type'] === 'online' ? ($validated['zoom_link'] ?? null) : null,
+            'province' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['province'] ?? null),
+            'city' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['city'] ?? null),
+            'district' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['district'] ?? null),
+            'village' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['village'] ?? null),
+            'full_address' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['full_address'] ?? null),
+            'start_date' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['start_date'] ?? null),
+            'start_time' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['start_time'] ?? null),
+            'end_date' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['end_date'] ?? null),
+            'end_time' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['end_time'] ?? null),
+            'zoom_link' => ($validated['category'] ?? '') === 'Kursus' ? null : (($validated['type'] ?? 'online') === 'online' ? ($validated['zoom_link'] ?? null) : null),
             'image' => $imagePath,
             'tools' => json_encode($validated['tools'] ?? []),
             'materials' => json_encode($validated['materials'] ?? []),
@@ -379,12 +397,12 @@ class ProgramController extends Controller
         }
 
         // Validation
-        $validated = $request->validate([
+        $rules = [
             'title' => 'required|string|max:255',
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price' => 'nullable|numeric|min:0',
-            'type' => 'required|in:online,offline,video',
+            'type' => 'nullable|in:online,offline,video',
             'available_slots' => 'nullable|integer|min:1',
             'province' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
@@ -400,7 +418,25 @@ class ProgramController extends Controller
             'tools' => 'nullable|array',
             'materials' => 'nullable|array',
             'benefits' => 'nullable|array',
-        ], [
+        ];
+
+        if ($request->category !== 'Kursus') {
+            $rules['type'] = 'required|in:online,offline,video';
+            $rules['start_date'] = 'required|date';
+            $rules['start_time'] = 'required';
+            $rules['end_date'] = 'required|date|after_or_equal:start_date';
+            $rules['end_time'] = 'required';
+        }
+
+        if ($request->type === 'offline' && $request->category !== 'Kursus') {
+            $rules['province'] = 'required|string|max:255';
+            $rules['city'] = 'required|string|max:255';
+            $rules['district'] = 'required|string|max:255';
+            $rules['village'] = 'required|string|max:255';
+            $rules['full_address'] = 'required|string';
+        }
+
+        $validated = $request->validate($rules, [
             'title.required' => 'Judul program wajib diisi.',
             'title.max' => 'Judul program maksimal 255 karakter.',
             'type.required' => 'Tipe program wajib dipilih.',
@@ -437,19 +473,19 @@ class ProgramController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'] ?? null,
                 'category' => $validated['category'] ?? null,
-                'type' => $validated['type'],
+                'type' => $validated['type'] ?? 'online',
                 'price' => $validated['price'] ?? 0,
                 'available_slots' => $validated['available_slots'] ?? null,
-                'province' => $validated['province'] ?? null,
-                'city' => $validated['city'] ?? null,
-                'district' => $validated['district'] ?? null,
-                'village' => $validated['village'] ?? null,
-                'full_address' => $validated['full_address'] ?? null,
-                'start_date' => $validated['start_date'] ?? null,
-                'start_time' => $validated['start_time'] ?? null,
-                'end_date' => $validated['end_date'] ?? null,
-                'end_time' => $validated['end_time'] ?? null,
-                'zoom_link' => $validated['type'] === 'online' ? ($validated['zoom_link'] ?? null) : null,
+                'province' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['province'] ?? null),
+                'city' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['city'] ?? null),
+                'district' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['district'] ?? null),
+                'village' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['village'] ?? null),
+                'full_address' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['full_address'] ?? null),
+                'start_date' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['start_date'] ?? null),
+                'start_time' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['start_time'] ?? null),
+                'end_date' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['end_date'] ?? null),
+                'end_time' => ($validated['category'] ?? '') === 'Kursus' ? null : ($validated['end_time'] ?? null),
+                'zoom_link' => ($validated['category'] ?? '') === 'Kursus' ? null : (($validated['type'] ?? 'online') === 'online' ? ($validated['zoom_link'] ?? null) : null),
                 'image' => $imagePath,
                 'tools' => json_encode($validated['tools'] ?? []),
                 'materials' => json_encode($validated['materials'] ?? []),

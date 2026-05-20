@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,86 +13,34 @@ class QuizController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DB::table('quizzes')
-            ->leftJoin('data_programs', 'quizzes.program_id', '=', 'data_programs.id')
-            ->leftJoin('data_trainers', 'quizzes.instructor_id', '=', 'data_trainers.id')
+        $programs = DB::table('data_programs')
+            ->join('lms_assignments', 'lms_assignments.program_id', '=', 'data_programs.id')
+            ->leftJoin('data_trainers', 'data_programs.instructor_id', '=', 'data_trainers.id')
+            ->leftJoin('lms_submissions', 'lms_submissions.assignment_id', '=', 'lms_assignments.id')
+            ->where(function ($query) {
+                $query->where('lms_assignments.type', 'post-test')
+                    ->orWhereNull('lms_assignments.type');
+            })
             ->select(
-                'quizzes.id',
-                'quizzes.title',
-                'quizzes.type',
-                'quizzes.status',
-                'quizzes.created_at',
-                'data_programs.program as program_name',
-                'data_trainers.nama as instructor_name'
-            );
+                'data_programs.id',
+                'data_programs.program',
+                'data_programs.image',
+                'data_programs.slug',
+                'data_trainers.nama as instructor_name',
+                DB::raw('COUNT(DISTINCT lms_assignments.id) as posttest_count'),
+                DB::raw('COUNT(DISTINCT lms_submissions.id) as submission_count')
+            )
+            ->groupBy(
+                'data_programs.id',
+                'data_programs.program',
+                'data_programs.image',
+                'data_programs.slug',
+                'data_trainers.nama'
+            )
+            ->orderBy('data_programs.program')
+            ->get();
 
-        $data = app(DataTableService::class)->make($query, [
-            'columns' => [
-                ['key' => 'title', 'label' => 'Judul Tugas', 'sortable' => true, 'type' => 'primary'],
-                ['key' => 'instructor', 'label' => 'Instruktur', 'sortable' => true],
-                ['key' => 'program', 'label' => 'Program', 'sortable' => true],
-                ['key' => 'type', 'label' => 'Tipe', 'sortable' => true, 'type' => 'badge'],
-                ['key' => 'total_questions', 'label' => 'Soal'],
-                ['key' => 'total_responses', 'label' => 'Respons'],
-                ['key' => 'actions', 'label' => 'Aksi', 'type' => 'actions'],
-            ],
-            'searchable' => ['quizzes.title', 'data_programs.program', 'data_trainers.nama'],
-            'sortable' => ['title', 'instructor', 'program', 'type', 'created_at'],
-            'sortColumns' => [
-                'title' => 'quizzes.title',
-                'instructor' => 'data_trainers.nama',
-                'program' => 'data_programs.program',
-                'type' => 'quizzes.type',
-                'created_at' => 'quizzes.created_at',
-            ],
-            'actions' => ['edit', 'delete'],
-            'route' => 'admin.quizzes',
-            'routeParam' => 'id',
-            'title' => 'Manajemen Tugas/Post Test',
-            'entity' => 'quiz',
-            'createLabel' => 'Tambah Tugas/Post Test',
-            'searchPlaceholder' => 'Cari tugas, program, instruktur...',
-            'filter' => [
-                'key' => 'type',
-                'column' => 'quizzes.type',
-                'options' => [
-                    '' => 'Semua Tipe',
-                    'pretest' => 'Pretest',
-                    'posttest' => 'Posttest',
-                ]
-            ],
-            'badgeClasses' => [
-                'Pretest' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-                'Posttest' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-            ],
-            'transformer' => function($quiz) {
-                $totalQuestions = DB::table('quiz_questions')
-                    ->where('quiz_id', $quiz->id)
-                    ->count();
-
-                $totalResponses = DB::table('quiz_responses')
-                    ->where('quiz_id', $quiz->id)
-                    ->count();
-
-                return [
-                    'id' => $quiz->id,
-                    'title' => $quiz->title,
-                    'instructor' => $quiz->instructor_name ?? 'N/A',
-                    'program' => $quiz->program_name ?? 'N/A',
-                    'type' => ucfirst($quiz->type ?? 'Posttest'),
-                    'status' => $quiz->status ?? 'draft',
-                    'total_questions' => $totalQuestions,
-                    'total_responses' => $totalResponses,
-                    'created_at' => $quiz->created_at ? date('d F Y', strtotime($quiz->created_at)) : '-'
-                ];
-            },
-        ], $request);
-
-        if ($request->wantsJson()) {
-            return response()->json($data);
-        }
-
-        return view('admin.quizzes.index', compact('data'));
+        return view('admin.quizzes.index', compact('programs'));
     }
 
     /**
