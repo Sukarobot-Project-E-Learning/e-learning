@@ -200,38 +200,20 @@
             </a>
         </li>
 
-        {{-- Laporan --}}
+        {{-- Rekap Program --}}
         <li>
-            <a href="{{ route('admin.reports.index') }}" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
-                                          {{ request()->routeIs('admin.reports.*') ? $activeClass : $inactiveClass }}">
+            <a href="{{ route('admin.rekap-program.index') }}" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
+                                          {{ request()->routeIs('admin.rekap-program.*') ? $activeClass : $inactiveClass }}">
                 <div
                     class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 transition-all duration-200
-                                                {{ request()->routeIs('admin.reports.*') ? $iconActiveWrapper : $iconInactiveWrapper }}">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.reports.*') ? $iconActive : $iconInactive }}"
+                                                {{ request()->routeIs('admin.rekap-program.*') ? $iconActiveWrapper : $iconInactiveWrapper }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.rekap-program.*') ? $iconActive : $iconInactive }}"
                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
-                Laporan
-            </a>
-        </li>
-
-        {{-- Transaksi --}}
-        <li>
-            <a href="{{ route('admin.transactions.index') }}"
-                class="group flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200
-                                          {{ request()->routeIs('admin.transactions.*') ? $activeClass : $inactiveClass }}">
-                <div
-                    class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 transition-all duration-200
-                                                {{ request()->routeIs('admin.transactions.*') ? $iconActiveWrapper : $iconInactiveWrapper }}">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.transactions.*') ? $iconActive : $iconInactive }}"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                </div>
-                Transaksi
+                Rekap Program
             </a>
         </li>
 

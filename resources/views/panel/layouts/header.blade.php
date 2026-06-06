@@ -63,10 +63,8 @@
         $breadcrumb = 'Artikel';
     } elseif (request()->routeIs('admin.broadcasts.*')) {
         $breadcrumb = 'Broadcast';
-    } elseif (request()->routeIs('admin.reports.*')) {
-        $breadcrumb = 'Laporan';
-    } elseif (request()->routeIs('admin.transactions.*')) {
-        $breadcrumb = 'Transaksi';
+    } elseif (request()->routeIs('admin.rekap-program.*')) {
+        $breadcrumb = 'Rekap Program';
     } elseif (request()->routeIs('*quizzes.*')) {
         $breadcrumb = 'Nilai Tugas Akhir';
     } elseif (request()->routeIs('instructor.assignments.*')) {

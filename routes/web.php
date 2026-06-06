@@ -180,15 +180,9 @@ Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\EnsureU
     // Broadcast Management
     Route::resource('broadcasts', \App\Http\Controllers\Admin\BroadcastController::class);
 
-    // Report Management
-    Route::get('reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
-    Route::get('reports/export', [\App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
-    Route::delete('reports/{id}', [\App\Http\Controllers\Admin\ReportController::class, 'destroy'])->name('reports.destroy');
-
-    // Transaction Management
-    Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
-    Route::get('transactions/export', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('transactions.export');
-    Route::delete('transactions/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'destroy'])->name('transactions.destroy');
+    // Rekap Program
+    Route::get('rekap-program', [\App\Http\Controllers\Admin\RekapProgramController::class, 'index'])->name('rekap-program.index');
+    Route::get('rekap-program/{slug}', [\App\Http\Controllers\Admin\RekapProgramController::class, 'show'])->name('rekap-program.show');
 
     // Quiz/Tugas Management (Admin juga bisa buat)
     Route::get('quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'index'])->name('quizzes.index');
